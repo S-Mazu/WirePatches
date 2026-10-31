@@ -1,16 +1,15 @@
 /*{
-    "DESCRIPTION": "Rolling Landscape v2 - Art Deco night skyline as parallax silhouettes (up to 6 layers, back to front), lit windows, moon, searchlights, airships. Nothing moves by itself: scroll is driven from outside.",
-    "CREDIT": "Rolling Landscape v2",
+    "DESCRIPTION": "Rolling Landscape - Art Deco night skyline as parallax silhouettes (up to 6 layers, back to front), lit windows, moon, searchlights, airships. Nothing moves by itself: driven by clock from outside.",
+    "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
     "ISFVSN": "2",
     "CATEGORIES": ["Generator"],
     "INPUTS": [
-        {"NAME": "scroll",      "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1000.0},
-        {"NAME": "scrollDir",   "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "parallax",    "TYPE": "float", "DEFAULT": 0.6,  "MIN": 0.0,  "MAX": 1.0},
+        {"NAME": "clock",       "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1000.0},
+        {"NAME": "parallax",    "TYPE": "float", "DEFAULT": 0.6,  "MIN": -2.0, "MAX": 2.0},
         {"NAME": "layerCount",  "TYPE": "float", "DEFAULT": 3.0,  "MIN": 0.0,  "MAX": 6.0},
         {"NAME": "density",     "TYPE": "float", "DEFAULT": 0.85, "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "horizon",     "TYPE": "float", "DEFAULT": -0.95,"MIN": -1.0, "MAX": 0.5},
-        {"NAME": "seed",        "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 100.0},
+        {"NAME": "horizon",     "TYPE": "float", "DEFAULT": -0.95,"MIN": -2.0, "MAX": 2.0},
+        {"NAME": "seed",        "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1000.0},
         {"NAME": "color1", "TYPE": "color", "DEFAULT": [0.30, 0.33, 0.50, 1.0]},
         {"NAME": "color2", "TYPE": "color", "DEFAULT": [0.24, 0.26, 0.42, 1.0]},
         {"NAME": "color3", "TYPE": "color", "DEFAULT": [0.18, 0.20, 0.34, 1.0]},
@@ -19,21 +18,16 @@
         {"NAME": "color6", "TYPE": "color", "DEFAULT": [0.04, 0.04, 0.10, 1.0]},
         {"NAME": "windowLights","TYPE": "float", "DEFAULT": 0.35, "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "windowColor", "TYPE": "color", "DEFAULT": [1.0, 0.82, 0.45, 1.0]},
-        {"NAME": "layer1On", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
-        {"NAME": "layer2On", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
-        {"NAME": "layer3On", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
-        {"NAME": "layer4On", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
-        {"NAME": "layer5On", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
-        {"NAME": "layer6On", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
-        {"NAME": "moonOn",      "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "moonX",       "TYPE": "float", "DEFAULT": 1.25, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "moonY",       "TYPE": "float", "DEFAULT": 0.62, "MIN": -1.2, "MAX": 1.2},
+        {"NAME": "moonX",       "TYPE": "float", "DEFAULT": 1.25, "MIN": -4.0, "MAX": 4.0},
+        {"NAME": "moonY",       "TYPE": "float", "DEFAULT": 0.62, "MIN": -3.0, "MAX": 3.0},
         {"NAME": "moon",        "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "moonSize",    "TYPE": "float", "DEFAULT": 0.09, "MIN": 0.02, "MAX": 0.4},
+        {"NAME": "moonSize",    "TYPE": "float", "DEFAULT": 0.09, "MIN": 0.0,  "MAX": 2.0},
+        {"NAME": "moonPhase",   "TYPE": "float", "DEFAULT": 0.5,  "MIN": 0.0,  "MAX": 1.0},
+        {"NAME": "moonRays",    "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 10.0},
         {"NAME": "moonColor",   "TYPE": "color", "DEFAULT": [0.95, 0.90, 0.75, 1.0]},
-        {"NAME": "searchlights","TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 6.0},
+        {"NAME": "searchlights","TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 32.0},
         {"NAME": "beamColor",   "TYPE": "color", "DEFAULT": [0.95, 0.92, 0.80, 1.0]},
-        {"NAME": "airships",    "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 3.0},
+        {"NAME": "airships",    "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 16.0},
         {"NAME": "airshipColor","TYPE": "color", "DEFAULT": [0.76, 0.72, 0.60, 1.0]},
         {"NAME": "airshipDir",  "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 2.0},
         {"NAME": "backdropOn",  "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
@@ -71,15 +65,6 @@ void over(inout vec3 col, inout float a, vec3 c, float ca) {
     a = na;
 }
 
-float layerOn(int i) {
-    if (i == 0) return layer1On;
-    if (i == 1) return layer2On;
-    if (i == 2) return layer3On;
-    if (i == 3) return layer4On;
-    if (i == 4) return layer5On;
-    return layer6On;
-}
-
 vec3 layerColor(int i) {
     if (i == 0) return color1.rgb;
     if (i == 1) return color2.rgb;
@@ -89,7 +74,9 @@ vec3 layerColor(int i) {
     return color6.rgb;
 }
 
-const float HALF_CELL = 0.15;   // half cell width in item units
+const float HALF_CELL = 0.15;
+const int MAX_BEAMS = 32;      // must match MAX of searchlights
+const int MAX_AIRSHIPS = 16;   // must match MAX of airships   // half cell width in item units
 
 // motif: returns (distance, window band bottom, window band top)
 vec3 motif(int m, vec2 q, float W, float H, float h3) {
@@ -210,7 +197,7 @@ void main() {
     vec2 res = RENDERSIZE;
     vec2 p = (gl_FragCoord.xy - 0.5 * res) / res.y * 2.0;   // y -1..1, x +-1.78
     float pix = 2.0 / res.y;
-    float dir = scrollDir < 0.5 ? 1.0 : -1.0;              // 0 = Left, 1 = Right
+    const float dir = 1.0;   // direction comes from the clock (play it backwards in Arena)
 
     vec3 col = vec3(0.0);
     float a = 0.0;
@@ -219,29 +206,45 @@ void main() {
     if (backdropOn > 0.5) { col = backdropColor.rgb; a = 1.0; }
 
     // ---------- moon with ray fan ----------
-    if (moon > 0.0 && moonOn > 0.5) {
+    // moonPhase: 0 = new moon, 0.25 = first quarter (right half lit), 0.5 = full, 0.75 = last quarter, 1 = new
+    // moonRays: ray length relative to the classic look (1); 0 = no rays
+    if (moon > 0.0 && moonSize > 0.0) {
         vec2 mc = vec2(moonX, moonY);
         vec2 v = p - mc;
         float r = length(v);
-        float ms = moonSize;
-        float ang = atan(v.y, v.x);
-        float ray = step(0.5, fract(ang * 16.0 / 6.2831853));
-        float fan = ray * (1.0 - smoothstep(1.3 * ms, 3.8 * ms, r)) * smoothstep(ms, 1.2 * ms, r) * 0.25;
-        over(col, a, moonColor.rgb, fan * moon);
-        float disc = smoothstep(pix, -pix, r - ms);
+        float ms = max(moonSize, 1e-4);   // NaN guard: smoothstep needs distinct edges
+        float ph = fract(moonPhase) * 6.2831853;
+        float litFrac = 0.5 - 0.5 * cos(ph);             // 0 at new moon, 1 at full moon
+        if (moonRays > 0.0) {
+            float ang = atan(v.y, v.x);
+            float ray = step(0.5, fract(ang * 16.0 / 6.2831853));
+            float rIn  = 1.3 * ms;
+            float rOut = rIn + 2.5 * ms * moonRays;      // classic look: 3.8 * ms at moonRays = 1
+            float fan = ray * (1.0 - smoothstep(rIn, rOut, r)) * smoothstep(ms, 1.2 * ms, r) * 0.25 * litFrac;
+            over(col, a, moonColor.rgb, fan * moon);
+        }
+        // terminator: per row the lit part ends at an ellipse x = +-(w + 2e) * cos(phase)
+        vec2 u = v / ms;
+        float w = sqrt(max(0.0, 1.0 - u.y * u.y));       // half width of the disc in this row (NaN guard)
+        float e = max(0.02, pix / ms);                   // soft edge, at least one pixel
+        float xt = (max(w, abs(u.x)) + 2.0 * e) * cos(ph);   // max: also covers the anti-aliased rim outside the disc             // 2e: no stray rim at new / full moon
+        float lit = sin(ph) >= 0.0 ? smoothstep(xt - e, xt + e, u.x)          // waxing: right side lit
+                                   : 1.0 - smoothstep(-xt - e, -xt + e, u.x); // waning: left side lit
+        float disc = smoothstep(pix, -pix, r - ms) * lit;
         over(col, a, moonColor.rgb, disc * moon);
     }
 
-    // ---------- searchlights (behind the skyline), count 0-6, fractional fades in ----------
+    // ---------- searchlights (behind the skyline), count 0-32, fractional fades in ----------
     if (searchlights > 0.0) {
-        for (int k = 0; k < 6; k++) {
+        for (int k = 0; k < MAX_BEAMS; k++) {
             float fk = float(k);
             float on = clamp(searchlights - fk, 0.0, 1.0);
-            if (on <= 0.0) continue;
-            // spread over the width, alternating order so few lights still cover the screen
-            float slot = (k == 0) ? 2.0 : (k == 1) ? 4.0 : (k == 2) ? 0.0 : (k == 3) ? 5.0 : (k == 4) ? 1.0 : 3.0;
+            if (on <= 0.0) break;
+            // first six: alternating order so few lights still cover the screen; more: golden-ratio spread
+            float slot = (k == 0) ? 2.0 : (k == 1) ? 4.0 : (k == 2) ? 0.0 : (k == 3) ? 5.0 : (k == 4) ? 1.0 : (k == 5) ? 3.0
+                       : fract(0.5 + fk * 0.6180339887) * 5.0;
             vec2 base = vec2(-1.55 + slot * 0.62, horizon + 0.1);
-            float aim = 0.35 * sin(scroll * (0.12 + 0.02 * fk) + fk * 2.1);
+            float aim = 0.35 * sin(clock * (0.12 + 0.02 * mod(fk, 6.0)) + fk * 2.1);
             vec2 v = p - base;
             float ang = atan(v.x, v.y);
             float beam = smoothstep(0.045, 0.0, abs(ang - aim));
@@ -250,21 +253,26 @@ void main() {
         }
     }
 
-    // ---------- airships, count 0-3, fractional fades in ----------
+    // ---------- airships, count 0-16, fractional fades in ----------
     if (airships > 0.0) {
-        for (int k = 0; k < 3; k++) {
+        for (int k = 0; k < MAX_AIRSHIPS; k++) {
             float fk = float(k);
             float on = clamp(airships - fk, 0.0, 1.0);
-            if (on <= 0.0) continue;
-            float sz = (k == 0) ? 1.0 : ((k == 1) ? 0.65 : 0.8);
-            float ay = (k == 0) ? 0.50 : ((k == 1) ? 0.74 : 0.30);
-            float spd = (k == 0) ? 0.030 : ((k == 1) ? 0.020 : 0.040);
+            if (on <= 0.0) break;
+            // first three keep their classic look, further ones get size, height and speed per hash
+            float g1 = hash3(vec3(fk, 17.0, 3.0));
+            float g2 = hash3(vec3(fk, 29.0, 5.0));
+            float g3 = hash3(vec3(fk, 41.0, 7.0));
+            float sz  = (k == 0) ? 1.0   : (k == 1) ? 0.65  : (k == 2) ? 0.8   : mix(0.5, 1.0, g1);
+            float ay  = (k == 0) ? 0.50  : (k == 1) ? 0.74  : (k == 2) ? 0.30  : mix(0.2, 0.85, g2);
+            float spd = (k == 0) ? 0.030 : (k == 1) ? 0.020 : (k == 2) ? 0.040 : mix(0.015, 0.045, g3);
             // direction: 0 = Left, 1 = Right, 2 = Random (changes with Seed;
-            // airship 2 always flies against airship 1, so Random never looks like one direction)
-            float rnd = hash3(vec3(fk == 1.0 ? 0.0 : fk, 91.0, seed)) < 0.5 ? 1.0 : -1.0;
-            if (k == 1) rnd = -rnd;
+            // airships come in pairs, the second of a pair flies against the first)
+            float pairBase = floor(fk * 0.5) * 2.0;
+            float rnd = hash3(vec3(pairBase, 91.0, seed)) < 0.5 ? 1.0 : -1.0;
+            if (mod(fk, 2.0) > 0.5) rnd = -rnd;
             float ad = airshipDir < 0.5 ? 1.0 : (airshipDir < 1.5 ? -1.0 : rnd);
-            float ax = mod(0.6 + fk * 1.7 - scroll * spd * ad + 2.4, 4.8) - 2.4;
+            float ax = mod(0.6 + fk * 1.7 - clock * spd * ad + 2.4, 4.8) - 2.4;
             vec2 q = (p - vec2(ax, ay)) / sz;
             float d = (length(q / vec2(0.24, 0.06)) - 1.0) * 0.06;
             d = min(d, sdBox(q, vec2(0.02, -0.07), vec2(0.04, 0.012)));
@@ -277,13 +285,13 @@ void main() {
     // ---------- skyline layers, back (0) to front (5) ----------
     for (int i = 0; i < 6; i++) {
         float fi = float(i);
-        float vis = clamp(layerCount - fi, 0.0, 1.0) * step(0.5, layerOn(i));
+        float vis = clamp(layerCount - fi, 0.0, 1.0);
         if (vis <= 0.0) continue;
         float t = fi / 5.0;
         float s = mix(0.60, 1.15, t);                  // item scale
         float speed = 1.0 - parallax * (1.0 - t) * 0.9;
         float yb = horizon + (1.0 - t) * 0.12;          // baseline
-        float wx = p.x / s + scroll * 0.25 * speed * dir / s + fi * 7.31;
+        float wx = p.x / s + clock * 0.25 * speed * dir / s + fi * 7.31;
         float cellW = 2.0 * HALF_CELL;
         float c = floor(wx / cellW);
         vec2 q = vec2((fract(wx / cellW) - 0.5) * cellW, (p.y - yb) / s);
