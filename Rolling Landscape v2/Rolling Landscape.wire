@@ -173,7 +173,7 @@
 				],
 				"to": [
 					0,
-					"searchlights"
+					"beamDensity"
 				]
 			},
 			{
@@ -233,7 +233,7 @@
 				],
 				"to": [
 					0,
-					"airships"
+					"airshipDensity"
 				]
 			},
 			{
@@ -305,6 +305,26 @@
 					0,
 					"moonRays"
 				]
+			},
+			{
+				"from": [
+					41,
+					"output"
+				],
+				"to": [
+					0,
+					"scale"
+				]
+			},
+			{
+				"from": [
+					42,
+					"output"
+				],
+				"to": [
+					0,
+					"beamLength"
+				]
 			}
 		],
 		"inputOrder": {
@@ -358,6 +378,7 @@
 				"1792918036667": {
 					"children": [
 						20,
+						42,
 						27
 					],
 					"collapsed": false,
@@ -376,6 +397,9 @@
 			"roots": [
 				{
 					"node": 4
+				},
+				{
+					"node": 41
 				},
 				{
 					"group": 1792918034038
@@ -409,7 +433,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Rolling Landscape - Art Deco night skyline of the 1930s as parallax silhouettes. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync; play it backwards to scroll the other way). Physics: 'Parallax' sets how much slower the back layers move (0 = all equal, negative = back layers faster, above 1 the back layers move against the front). Skyline: 'Layer Count' 0-6 adds layers from back to front; fractional values fade the next layer in, so it can follow FFT smoothly. Layers 1-2: towers (stepped, crown with needle, mast, fan crown, slab). Layers 3-4: city (water tower, radio mast, theatre, department store, bridge pylon). Layers 5-6: street level (elevated railway with train, street lamps, power station, neon sign). 'Density': share of filled plots. 'Horizon': base height. 'Seed': a different value gives a different city. 'Layer 1-6 Color': one color per layer (Layer 1 = back). 'Window Lights': share of lit windows, 'Window Color' is used for all. Moon: 'Moon X' / 'Moon Y' in screen units (Y -1 = bottom, X about -1.78..1.78, larger values place it off-screen; the moon sits behind the skyline, so animating Moon Y upwards gives a moonrise), 'Moon Opacity', 'Moon Size' (0 hides it), 'Moon Phase' (0 = new moon, 0.25 = first quarter, 0.5 = full, 0.75 = last quarter), 'Moon Ray Length' (1 = classic, 0 = no rays), 'Moon Color'. Searchlights: 'Beam Amount' 0-32 (fractional fades the next one in, beams sweep with Clock), 'Beam Color'. Airships: 'Airship Amount' 0-16 (fractional fades the next one in, they drift with Clock), 'Airship Dir' Left / Right / Random (Random picks a direction per airship, changes with Seed), 'Airship Color'. Backdrop On/Off: colored sky or transparent. Drawn by the ISF shader RollingLandscape.fs in the patch folder (must stay next to the patch).",
+			"description": "Rolling Landscape - Art Deco night skyline of the 1930s as parallax silhouettes. Works on any output: one projector, several projectors side by side or stacked, LED walls. Sizes are in scene units set by 'Scale' (1 = sized for a 1080 px high projector; use 2 for 2160 px), positions are relative to the frame edges (-1 = left / bottom, 1 = right / top), searchlights and airships are densities, so a wider or taller surface simply gets more of them. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync; play it backwards to scroll the other way). Physics: 'Parallax' sets how much slower the back layers move (0 = all equal, negative = back layers faster, above 1 the back layers move against the front). Skyline: 'Layer Count' 0-6 adds layers from back to front; fractional values fade the next layer in, so it can follow FFT smoothly. Layers 1-2: towers (stepped, crown with needle, mast, fan crown, slab). Layers 3-4: city (water tower, radio mast, theatre, department store, bridge pylon). Layers 5-6: street level (elevated railway with train, street lamps, power station, neon sign). 'Density': share of filled plots. 'Horizon': base line relative to the frame (-1 = bottom edge). 'Seed': a different value gives a different city. 'Layer 1-6 Color': one color per layer (Layer 1 = back). 'Window Lights': share of lit windows, 'Window Color' is used for all. Moon: 'Moon X' / 'Moon Y' relative to the frame (values beyond -1 / 1 place it off-screen; the moon sits behind the skyline, so animating Moon Y upwards gives a moonrise), 'Moon Opacity', 'Moon Size' (0 hides it), 'Moon Phase' (0 = new moon, 0.25 = first quarter, 0.5 = full, 0.75 = last quarter), 'Moon Ray Length' (1 = classic, 0 = no rays), 'Moon Color'. Searchlights: 'Beam Density' 0-1 (share of ground spots with a light, rising values fade new ones in, beams sweep with Clock), 'Beam Length', 'Beam Color'. Airships: 'Airship Density' 0-1 (they fly in rows over the whole sky and drift with Clock), 'Airship Dir' Left / Right / Random (Random picks a direction per row, changes with Seed), 'Airship Color'. Backdrop On/Off: colored sky or transparent. Drawn by the ISF shader RollingLandscape.fs in the patch folder (must stay next to the patch).",
 			"displayName": "Rolling Landscape",
 			"identifier": "3473280c-9853-4744-8083-c8dbbaba536b",
 			"licenseName": "",
@@ -446,7 +470,7 @@
 			"url": "https://github.com/S-Mazu/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 41,
+		"nextNodeId": 43,
 		"nodes": {
 			"0": {
 				"attributes": {
@@ -468,6 +492,13 @@
 										"max": 1000.0,
 										"min": 0.0,
 										"name": "clock",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "scale",
 										"type": "float"
 									},
 									{
@@ -583,9 +614,9 @@
 										"type": "color"
 									},
 									{
-										"defaultValue": 1.25,
-										"max": 4.0,
-										"min": -4.0,
+										"defaultValue": 0.703,
+										"max": 3.0,
+										"min": -3.0,
 										"name": "moonX",
 										"type": "float"
 									},
@@ -636,9 +667,16 @@
 									},
 									{
 										"defaultValue": 0.0,
-										"max": 32.0,
+										"max": 1.0,
 										"min": 0.0,
-										"name": "searchlights",
+										"name": "beamDensity",
+										"type": "float"
+									},
+									{
+										"defaultValue": 2.4,
+										"max": 20.0,
+										"min": 0.0,
+										"name": "beamLength",
 										"type": "float"
 									},
 									{
@@ -653,9 +691,9 @@
 									},
 									{
 										"defaultValue": 0.0,
-										"max": 16.0,
+										"max": 1.0,
 										"min": 0.0,
-										"name": "airships",
+										"name": "airshipDensity",
 										"type": "float"
 									},
 									{
@@ -742,10 +780,6 @@
 						]
 					},
 					"airshipDir": {
-						"type": "float",
-						"value": 0
-					},
-					"airships": {
 						"type": "float",
 						"value": 0
 					},
@@ -860,7 +894,7 @@
 					},
 					"moonX": {
 						"type": "float",
-						"value": 1.25
+						"value": 0.703
 					},
 					"moonY": {
 						"type": "float",
@@ -869,10 +903,6 @@
 					"parallax": {
 						"type": "float",
 						"value": 0.6000000238418579
-					},
-					"searchlights": {
-						"type": "float",
-						"value": 1
 					},
 					"seed": {
 						"type": "float",
@@ -906,6 +936,22 @@
 					"moonRays": {
 						"type": "float",
 						"value": 1
+					},
+					"beamDensity": {
+						"type": "float",
+						"value": 0
+					},
+					"airshipDensity": {
+						"type": "float",
+						"value": 0
+					},
+					"scale": {
+						"type": "float",
+						"value": 1
+					},
+					"beamLength": {
+						"type": "float",
+						"value": 2.4
 					}
 				},
 				"hidden": [
@@ -1586,7 +1632,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 32
+						"value": 1
 					},
 					"min": {
 						"type": "float",
@@ -1635,7 +1681,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Beam Amount",
+				"name": "Beam Density",
 				"thumbnail_visible": true
 			},
 			"21": {
@@ -1658,7 +1704,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 16
+						"value": 1
 					},
 					"min": {
 						"type": "float",
@@ -1707,7 +1753,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Airship Amount",
+				"name": "Airship Density",
 				"thumbnail_visible": true
 			},
 			"22": {
@@ -2102,11 +2148,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 4
+						"value": 3
 					},
 					"min": {
 						"type": "float",
-						"value": -4
+						"value": -3
 					},
 					"options-count": {
 						"type": "integer",
@@ -2136,7 +2182,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.25
+						"value": 0.703
 					}
 				},
 				"hidden": [
@@ -2830,6 +2876,150 @@
 					"widget"
 				],
 				"name": "Moon Ray Length",
+				"thumbnail_visible": true
+			},
+			"41": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 160
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"42": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 20
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1120
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 2.4
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Beam Length",
 				"thumbnail_visible": true
 			}
 		},

@@ -1,10 +1,11 @@
 /*{
-    "DESCRIPTION": "Rolling Landscape - Art Deco night skyline as parallax silhouettes (up to 6 layers, back to front), lit windows, moon, searchlights, airships. Nothing moves by itself: driven by clock from outside.",
+    "DESCRIPTION": "Rolling Landscape - Art Deco night skyline as parallax silhouettes (up to 6 layers, back to front), lit windows, moon, searchlights, airships. Works on any output size (one projector, several side by side or stacked, LED walls): sizes in scene units (scale), positions relative to the frame edges, searchlights and airships as densities. Nothing moves by itself: driven by clock from outside.",
     "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
     "ISFVSN": "2",
     "CATEGORIES": ["Generator"],
     "INPUTS": [
         {"NAME": "clock",       "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1000.0},
+        {"NAME": "scale",       "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 10.0},
         {"NAME": "parallax",    "TYPE": "float", "DEFAULT": 0.6,  "MIN": -2.0, "MAX": 2.0},
         {"NAME": "layerCount",  "TYPE": "float", "DEFAULT": 3.0,  "MIN": 0.0,  "MAX": 6.0},
         {"NAME": "density",     "TYPE": "float", "DEFAULT": 0.85, "MIN": 0.0,  "MAX": 1.0},
@@ -18,16 +19,17 @@
         {"NAME": "color6", "TYPE": "color", "DEFAULT": [0.04, 0.04, 0.10, 1.0]},
         {"NAME": "windowLights","TYPE": "float", "DEFAULT": 0.35, "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "windowColor", "TYPE": "color", "DEFAULT": [1.0, 0.82, 0.45, 1.0]},
-        {"NAME": "moonX",       "TYPE": "float", "DEFAULT": 1.25, "MIN": -4.0, "MAX": 4.0},
+        {"NAME": "moonX",       "TYPE": "float", "DEFAULT": 0.703,"MIN": -3.0, "MAX": 3.0},
         {"NAME": "moonY",       "TYPE": "float", "DEFAULT": 0.62, "MIN": -3.0, "MAX": 3.0},
         {"NAME": "moon",        "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "moonSize",    "TYPE": "float", "DEFAULT": 0.09, "MIN": 0.0,  "MAX": 2.0},
         {"NAME": "moonPhase",   "TYPE": "float", "DEFAULT": 0.5,  "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "moonRays",    "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 10.0},
         {"NAME": "moonColor",   "TYPE": "color", "DEFAULT": [0.95, 0.90, 0.75, 1.0]},
-        {"NAME": "searchlights","TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 32.0},
+        {"NAME": "beamDensity", "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1.0},
+        {"NAME": "beamLength",  "TYPE": "float", "DEFAULT": 2.4,  "MIN": 0.0,  "MAX": 20.0},
         {"NAME": "beamColor",   "TYPE": "color", "DEFAULT": [0.95, 0.92, 0.80, 1.0]},
-        {"NAME": "airships",    "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 16.0},
+        {"NAME": "airshipDensity","TYPE": "float","DEFAULT": 0.0, "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "airshipColor","TYPE": "color", "DEFAULT": [0.76, 0.72, 0.60, 1.0]},
         {"NAME": "airshipDir",  "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 2.0},
         {"NAME": "backdropOn",  "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
@@ -74,9 +76,13 @@ vec3 layerColor(int i) {
     return color6.rgb;
 }
 
-const float HALF_CELL = 0.15;
-const int MAX_BEAMS = 32;      // must match MAX of searchlights
-const int MAX_AIRSHIPS = 16;   // must match MAX of airships   // half cell width in item units
+const float HALF_CELL = 0.15;   // half cell width in item units
+const float PX_PER_UNIT = 540.0;   // scene unit at Scale 1: 1080 px = 2 units (one HD projector high)
+const float BEAM_CELL = 0.62;      // searchlight spacing along the ground (scene units)
+const int   BEAM_REACH = 16;       // neighbour cells checked per side; covers Beam Length up to 20
+const float SHIP_CELL = 1.2;       // airship cell length along a row (scene units)
+const float SHIP_ROW = 0.24;       // airship row height (scene units)
+const float SHIP_MIN_ALT = 1.1;    // airships fly at least this high above the horizon
 
 // motif: returns (distance, window band bottom, window band top)
 vec3 motif(int m, vec2 q, float W, float H, float h3) {
@@ -195,8 +201,12 @@ vec3 motif(int m, vec2 q, float W, float H, float h3) {
 
 void main() {
     vec2 res = RENDERSIZE;
-    vec2 p = (gl_FragCoord.xy - 0.5 * res) / res.y * 2.0;   // y -1..1, x +-1.78
-    float pix = 2.0 / res.y;
+    // sizes: scene units, independent of the output size; positions: relative to the frame edges
+    float ppu = PX_PER_UNIT * max(scale, 1e-3);        // pixels per scene unit (Scale 0 guarded)
+    vec2 p = (gl_FragCoord.xy - 0.5 * res) / ppu;      // scene coordinates, origin in the frame centre
+    vec2 halfExt = 0.5 * res / ppu;                    // half width / half height of the frame in scene units
+    float pix = 1.0 / ppu;                             // one pixel in scene units
+    float hz = horizon * halfExt.y;                    // Horizon: -1 = bottom edge, 1 = top edge
     const float dir = 1.0;   // direction comes from the clock (play it backwards in Arena)
 
     vec3 col = vec3(0.0);
@@ -209,7 +219,7 @@ void main() {
     // moonPhase: 0 = new moon, 0.25 = first quarter (right half lit), 0.5 = full, 0.75 = last quarter, 1 = new
     // moonRays: ray length relative to the classic look (1); 0 = no rays
     if (moon > 0.0 && moonSize > 0.0) {
-        vec2 mc = vec2(moonX, moonY);
+        vec2 mc = vec2(moonX * halfExt.x, moonY * halfExt.y);   // -1 / 1 = frame edges
         vec2 v = p - mc;
         float r = length(v);
         float ms = max(moonSize, 1e-4);   // NaN guard: smoothstep needs distinct edges
@@ -234,51 +244,57 @@ void main() {
         over(col, a, moonColor.rgb, disc * moon);
     }
 
-    // ---------- searchlights (behind the skyline), count 0-32, fractional fades in ----------
-    if (searchlights > 0.0) {
-        for (int k = 0; k < MAX_BEAMS; k++) {
-            float fk = float(k);
-            float on = clamp(searchlights - fk, 0.0, 1.0);
-            if (on <= 0.0) break;
-            // first six: alternating order so few lights still cover the screen; more: golden-ratio spread
-            float slot = (k == 0) ? 2.0 : (k == 1) ? 4.0 : (k == 2) ? 0.0 : (k == 3) ? 5.0 : (k == 4) ? 1.0 : (k == 5) ? 3.0
-                       : fract(0.5 + fk * 0.6180339887) * 5.0;
-            vec2 base = vec2(-1.55 + slot * 0.62, horizon + 0.1);
-            float aim = 0.35 * sin(clock * (0.12 + 0.02 * mod(fk, 6.0)) + fk * 2.1);
+    // ---------- searchlights (behind the skyline): one possible light per ground cell, density 0-1 ----------
+    // endless along x like the skyline; each pixel only checks the cells a beam can reach
+    if (beamDensity > 0.0 && beamLength > 0.0) {
+        float c0 = floor(p.x / BEAM_CELL);
+        int reach = int(ceil(beamLength * 0.42 / BEAM_CELL)) + 1;   // sin(max beam angle ~0.4 rad) ~ 0.42
+        for (int k = -BEAM_REACH; k <= BEAM_REACH; k++) {
+            if (k < -reach || k > reach) continue;
+            float c = c0 + float(k);
+            float h = hash3(vec3(c, 61.0, seed)) * 0.95;
+            float on = smoothstep(h, h + 0.05, beamDensity);      // fades in smoothly as density rises
+            if (on <= 0.0) continue;
+            float jx = hash3(vec3(c, 67.0, seed)) - 0.5;
+            vec2 base = vec2((c + 0.5 + jx * 0.6) * BEAM_CELL, hz + 0.1);
+            float aim = 0.35 * sin(clock * (0.12 + 0.02 * mod(c, 6.0)) + c * 2.1);
             vec2 v = p - base;
             float ang = atan(v.x, v.y);
             float beam = smoothstep(0.045, 0.0, abs(ang - aim));
-            beam *= smoothstep(0.0, 0.3, v.y) * (1.0 - smoothstep(0.6, 2.4, length(v)));
+            beam *= smoothstep(0.0, 0.3, v.y) * (1.0 - smoothstep(0.25 * beamLength, beamLength, length(v)));
             over(col, a, beamColor.rgb, beam * 0.35 * on);
         }
     }
 
-    // ---------- airships, count 0-16, fractional fades in ----------
-    if (airships > 0.0) {
-        for (int k = 0; k < MAX_AIRSHIPS; k++) {
-            float fk = float(k);
-            float on = clamp(airships - fk, 0.0, 1.0);
-            if (on <= 0.0) break;
-            // first three keep their classic look, further ones get size, height and speed per hash
-            float g1 = hash3(vec3(fk, 17.0, 3.0));
-            float g2 = hash3(vec3(fk, 29.0, 5.0));
-            float g3 = hash3(vec3(fk, 41.0, 7.0));
-            float sz  = (k == 0) ? 1.0   : (k == 1) ? 0.65  : (k == 2) ? 0.8   : mix(0.5, 1.0, g1);
-            float ay  = (k == 0) ? 0.50  : (k == 1) ? 0.74  : (k == 2) ? 0.30  : mix(0.2, 0.85, g2);
-            float spd = (k == 0) ? 0.030 : (k == 1) ? 0.020 : (k == 2) ? 0.040 : mix(0.015, 0.045, g3);
-            // direction: 0 = Left, 1 = Right, 2 = Random (changes with Seed;
-            // airships come in pairs, the second of a pair flies against the first)
-            float pairBase = floor(fk * 0.5) * 2.0;
-            float rnd = hash3(vec3(pairBase, 91.0, seed)) < 0.5 ? 1.0 : -1.0;
-            if (mod(fk, 2.0) > 0.5) rnd = -rnd;
+    // ---------- airships: rows over the whole sky, each row with its own speed and direction, density 0-1 ----------
+    // cells drift with the clock along endless rows, so they enter from outside and never jump back
+    if (airshipDensity > 0.0) {
+        float r0 = floor(p.y / SHIP_ROW);
+        for (int rk = -1; rk <= 1; rk++) {
+            float r = r0 + float(rk);
+            float rowY = (r + 0.5) * SHIP_ROW;
+            if (rowY < hz + SHIP_MIN_ALT) continue;
+            float spd = mix(0.015, 0.045, hash3(vec3(r, 71.0, 3.0)));
+            // direction: 0 = Left, 1 = Right, 2 = Random per row (changes with Seed)
+            float rnd = hash3(vec3(r, 91.0, seed)) < 0.5 ? 1.0 : -1.0;
             float ad = airshipDir < 0.5 ? 1.0 : (airshipDir < 1.5 ? -1.0 : rnd);
-            float ax = mod(0.6 + fk * 1.7 - clock * spd * ad + 2.4, 4.8) - 2.4;
-            vec2 q = (p - vec2(ax, ay)) / sz;
-            float d = (length(q / vec2(0.24, 0.06)) - 1.0) * 0.06;
-            d = min(d, sdBox(q, vec2(0.02, -0.07), vec2(0.04, 0.012)));
-            float tail = ad > 0.0 ? 0.22 : -0.22;
-            d = min(d, sdBox(q, vec2(tail, 0.0), vec2(0.025, 0.07)));
-            over(col, a, airshipColor.rgb, smoothstep(pix, -pix, d * sz) * on);
+            float u = p.x + clock * spd * ad;                  // position in the drifting row
+            float ci0 = floor(u / SHIP_CELL);
+            for (int ck = -1; ck <= 1; ck++) {
+                float ci = ci0 + float(ck);
+                float h = hash3(vec3(ci, r + 101.0, seed)) * 0.95;
+                float on = smoothstep(h, h + 0.05, airshipDensity);
+                if (on <= 0.0) continue;
+                float sz = mix(0.5, 1.0, hash3(vec3(ci, r + 113.0, 5.0)));
+                float cx = (ci + 0.5 + (hash3(vec3(ci, r + 127.0, 7.0)) - 0.5) * 0.4) * SHIP_CELL;
+                float cy = rowY + (hash3(vec3(ci, r + 131.0, 9.0)) - 0.5) * 0.06;
+                vec2 q = (vec2(u, p.y) - vec2(cx, cy)) / sz;
+                float d = (length(q / vec2(0.24, 0.06)) - 1.0) * 0.06;
+                d = min(d, sdBox(q, vec2(0.02, -0.07), vec2(0.04, 0.012)));
+                float tail = ad > 0.0 ? 0.22 : -0.22;
+                d = min(d, sdBox(q, vec2(tail, 0.0), vec2(0.025, 0.07)));
+                over(col, a, airshipColor.rgb, smoothstep(pix, -pix, d * sz) * on);
+            }
         }
     }
 
@@ -290,7 +306,7 @@ void main() {
         float t = fi / 5.0;
         float s = mix(0.60, 1.15, t);                  // item scale
         float speed = 1.0 - parallax * (1.0 - t) * 0.9;
-        float yb = horizon + (1.0 - t) * 0.12;          // baseline
+        float yb = hz + (1.0 - t) * 0.12;               // baseline
         float wx = p.x / s + clock * 0.25 * speed * dir / s + fi * 7.31;
         float cellW = 2.0 * HALF_CELL;
         float c = floor(wx / cellW);
