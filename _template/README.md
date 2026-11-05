@@ -94,7 +94,7 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] Folder name = patch name = .wire file name, no version suffix
 [ ] All required files are in this folder; no references to other folders
 [ ] No absolute paths:
-      grep -alE '[A-Za-z]:[\\/]|/Users/|/home/' *.wire *.fs *.py 2>/dev/null
+      grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' *.wire *.fs *.py 2>/dev/null
     returns nothing
 [ ] .wire is valid JSON:
       python3 -m json.tool "<Patch Name>.wire" > /dev/null
