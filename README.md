@@ -23,7 +23,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 
 | Tool | Description |
 |---|---|
-| [Kinect](Kinect/) | Sends the outlines of people from a Kinect v2 to Arena and Wire via Spout. |
+| [Kinect](Kinect/) | Sends the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. |
 
 ## Installation
 
