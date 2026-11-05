@@ -119,7 +119,15 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 - **Labels** (lowercase; names are case-sensitive):
   - Type: `bug`, `enhancement`, `documentation`, `idea`, `question`, `invalid`.
   - Patch: `patch:<name>`. `<name>` is the patch name without version suffix, lowercase, with spaces replaced by `_`. Examples: `Autumn Wind` → `patch:autumn_wind`, `Deco Marquee v2` → `patch:deco_marquee`. Description: "Related to Patch <Patch Name>".
+  - Workflow: `claude` marks work assigned to Claude (see below).
   - Not every patch has a label yet. Claude cannot create labels; if one is missing, ask the user.
+- **Label `claude`**: the user assigns an issue to Claude by adding this label.
+  - At the start of every planning or implementation phase, list the open issues labeled `claude` and bring them up with the user:
+    ```
+    list_issues(owner="S-Mazu", repo="WirePatches", labels=["claude"], state="OPEN")
+    ```
+  - The label is a request to discuss, not permission to act. Agree on scope with the user before starting work.
+  - Only the user adds the label. Claude removes it when the issue is closed, or when the user hands the work back.
 - **Ideas**: issue with label `idea`. When work starts, replace `idea` with `enhancement` (or `bug`) in the same issue; do not open a new one.
 - **Cross-patch problems**: one parent issue with one sub-issue per patch.
 - **Closing**: always with a reason (`completed`, `not_planned`, `duplicate`) and a reference to the fixing commit.
