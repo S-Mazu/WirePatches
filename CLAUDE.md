@@ -54,9 +54,10 @@ Rules:
 - **No absolute paths**, anywhere: not in `.wire` files, shaders, scripts or docs.
 - References to resources must be relative to the patch folder.
 - Wire stores ISF shader references in `.wire` files as `"type": "resourceIsf"` → `"value": { "path": { "main": "…" } }`.
+- `main` is resolved relative to the `.wire` file. Wire stores a shader set by absolute path as absolute, so run the check below after every rebuild.
 - Check before every commit:
   ```bash
-  grep -alE '[A-Za-z]:[\\/]|/Users/|/home/' */*.wire */*.fs */*.py 2>/dev/null
+  grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' */*.wire */*.fs */*.py 2>/dev/null
   ```
   This must return nothing.
 
@@ -70,6 +71,7 @@ Every patch must work on any surface:
 1. **Height is the reference.**
    - The image is designed for one screen of any height.
    - On another surface, everything scales with the output height. The width only decides how much of the scene is visible; nothing is ever stretched.
+   - Wire's shape and mesh coordinates follow the shorter side (portrait: x ±1, y ±1/aspect). To make height the reference and apply `Scale`, render through one `Camera 2D` with `zoom = clamp(1/aspect, 1, 1000000) × safeScale`, where `safeScale = clamp(Scale, 0.001, 1000)`. The visible area is then y ±1/`safeScale`, x ±aspect/`safeScale`.
 2. **`Scale` turns "bigger" into "more scene".**
    - `Scale` multiplies all element sizes, distances and speeds; default 1.
    - The choice is made per setup in Arena, not per patch.
@@ -80,7 +82,7 @@ Every patch must work on any surface:
 Rules:
 - Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions.
 - No pixel units in controls (`(px)`). Sizes are relative to the height, multiplied by `Scale`.
-- Arena does not resize a running patch when the composition changes; set the clip size in Arena or reload the clip. Document this in the README.
+- A clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip. `meta.resolution` has no effect in Arena. Document this in the README.
 
 ### Controls
 - **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`).
