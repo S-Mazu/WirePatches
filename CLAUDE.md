@@ -34,7 +34,7 @@ Rules:
 ├── CLAUDE.md          this file
 ├── README.md          overview of all patches (one line each, link to patch folder)
 ├── LICENSE
-├── _template/         template for new patches (planned)
+├── _template/         README template and checklist for new patches
 └── <Patch Name>/      one folder per patch, self-contained
     ├── <Patch Name>.wire
     ├── README.md
@@ -84,16 +84,23 @@ Preliminary rules (final guidelines and test procedure: #11):
 
 ## Patch README
 
-Every patch folder has a `README.md` with these sections:
+Every patch folder has a `README.md` based on [`_template/README.md`](_template/README.md). The template is the single source of truth for the sections and the pre-commit checklist.
 
-1. **Summary**: what it does, one or two sentences.
-2. **Requirements**: Resolume/Wire version, inputs (e.g. audio/FFT, external source), performance notes.
-3. **Files**: every file in the folder and what it is for.
-4. **Installation**: how to put it into Arena/Avenue.
-5. **Parameters**: every exposed control, its range and effect.
-6. **Resolution/aspect behavior**: how the patch adapts; tested sizes.
-7. **Known issues**: link to the patch's issues (`label:"patch:<Patch Name>"`).
-8. **Changelog**: short, newest first.
+Required sections:
+- Summary
+- Requirements
+- Files
+- Installation
+- Parameters
+- Any surface (resolution/aspect behavior, tested sizes)
+- Known issues
+- Changelog
+
+Optional sections:
+- Vision
+- Driving the patch
+
+Dates use ISO format (`YYYY-MM-DD`).
 
 ## Editing `.wire` files directly
 
