@@ -52,11 +52,6 @@ Rules:
 - **No absolute paths**, anywhere: not in `.wire` files, shaders, scripts or docs.
 - References to resources must be relative to the patch folder.
 - Wire stores ISF shader references in `.wire` files as `"type": "resourceIsf"` → `"value": { "path": { "main": "…" } }`. Whether Wire resolves relative paths there is **not yet verified**; see #1.
-- Wire's own sharing features (see [Saving & Sharing](https://resolume.com/support/en/wire-saving-consolidating)):
-  - **Consolidate** copies the patch and all resources into a new folder and redirects the resource nodes to the copies.
-  - **Copy For Sharing** does *not* copy shaders, images or videos.
-  - **Compile** stores resources, presets and patch data in one file.
-  - Which of these yields a portable, path-independent result is part of #1.
 - Check before every commit:
   ```bash
   grep -alE '[A-Za-z]:[\\/]|/Users/|/home/' */*.wire */*.fs */*.py 2>/dev/null
@@ -73,24 +68,14 @@ Every patch must work on any surface:
 1. **Height is the reference.**
    - The image is designed for one screen of any height.
    - On another surface, everything scales with the output height. The width only decides how much of the scene is visible; nothing is ever stretched.
-   - This matches Wire's own shape coordinates: y runs from −1 to 1, x from −aspect to +aspect. To be verified on the show machine.
 2. **`Scale` turns "bigger" into "more scene".**
    - `Scale` multiplies all element sizes, distances and speeds; default 1.
    - Example: on 3 projectors stacked, set `Scale` to ⅓. Elements then keep the size they have on one projector, and more scene becomes visible.
    - The choice is made per setup in Arena, not per patch.
 3. **The scene must extend sideways.** Wide surfaces need content across the whole width (generated, repeating or distributed), not one centered picture with empty sides.
 
-| Surface | `Scale` | Result |
-|---|---|---|
-| 1920×1080, one projector | 1 | reference |
-| 3840×2160, one 4K projector | 1 | same picture, sharper |
-| 5760×1080, 3 side by side | 1 | same height, three times the width of scene |
-| 1920×3240, 3 stacked | 1 | everything three times as large, narrow slice |
-| 1920×3240, 3 stacked | ⅓ | elements as on one projector, more scene above and below |
-| 4096×512, LED strip | 1 | full height, very wide scene |
-
 Rules:
-- Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions. Whether `Patch Info` provides this is to be verified on the show machine.
+- Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions. The Wire details are not yet verified (#11).
 - No pixel units in controls (`(px)`). Sizes are relative to the height, multiplied by `Scale`.
 - Positions and zones (edge / center, bands): see #13, still open.
 - Arena does not resize a running patch when the composition changes; set the clip size in Arena or reload the clip. Document this in the README.
@@ -122,7 +107,7 @@ Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
 | `mail` | `S.Mazur@cati-co.de` |
 | `url` | `https://github.com/S-Mazu/WirePatches` |
 
-`identifier` must be unique per patch (see #16).
+`identifier` must be unique per patch.
 
 ### Naming and versions
 - Folder name = patch name = `.wire` file name (`Patch Name/Patch Name.wire`).
@@ -135,21 +120,7 @@ Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
 
 ## Patch README
 
-Every patch folder has a `README.md` based on [`_template/README.md`](_template/README.md). The template is the single source of truth for the sections and the pre-commit checklist.
-
-Required sections:
-- Summary
-- Vision
-- Requirements
-- Files
-- Installation
-- Clock: required if the patch is driven by a clock. Explain it and give a sensible start value.
-- Parameters
-- Any surface (surface behavior, tested sizes)
-- Known issues
-- Changelog
-
-The README carries a `Last updated: YYYY-MM-DD` line.
+Every patch folder has a `README.md` based on [`_template/README.md`](_template/README.md). The template defines the sections and the pre-commit checklist.
 
 **Whenever a patch is changed, update its README in the same commit**, including `Last updated` and the changelog.
 
@@ -178,16 +149,11 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
   - Workflow: `claude` marks work assigned to Claude (see below). `stefan` marks work for the user; Claude adds it, and also assigns the issue to `S-Mazu`.
   - Not every patch has a label yet. Claude cannot create labels; if one is missing, ask the user.
 - **Label `claude`**: the user assigns an issue to Claude by adding this label.
-  - At the start of every planning or implementation phase, list the open issues labeled `claude` and bring them up with the user:
-    ```
-    list_issues(owner="S-Mazu", repo="WirePatches", labels=["claude"], state="OPEN")
-    ```
+  - At the start of every planning or implementation phase, list the open issues labeled `claude` and bring them up with the user.
   - The label is a request to discuss, not permission to act. Agree on scope with the user before starting work.
   - Only the user adds the label. Claude removes it when the issue is closed, or when the user hands the work back.
 - **Ideas**: issue with label `idea`. When work starts, replace `idea` with `enhancement` (or `bug`) in the same issue; do not open a new one.
-- **Cross-patch problems**: one parent issue with one sub-issue per patch.
 - **Closing**: always with a reason (`completed`, `not_planned`, `duplicate`) and a reference to the fixing commit.
-- GitHub Projects (board view) and Discussions are maintained by the user; Claude has no tooling for them.
 
 ## Commits
 
