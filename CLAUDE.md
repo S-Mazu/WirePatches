@@ -154,7 +154,7 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 - **Labels** (lowercase; names are case-sensitive):
   - Type: `bug`, `enhancement`, `documentation`, `idea`, `question`, `invalid`.
   - Patch: `patch:<name>`. `<name>` is the patch name without version suffix, lowercase, with spaces replaced by `_`. Examples: `Autumn Wind` → `patch:autumn_wind`, `Deco Marquee v2` → `patch:deco_marquee`. Description: "Related to Patch <Patch Name>".
-  - Workflow: `claude` marks work assigned to Claude (see below).
+  - Workflow: `claude` marks work assigned to Claude (see below). `stefan` marks work for the user; Claude adds it, and also assigns the issue to `S-Mazu`.
   - Not every patch has a label yet. Claude cannot create labels; if one is missing, ask the user.
 - **Label `claude`**: the user assigns an issue to Claude by adding this label.
   - At the start of every planning or implementation phase, list the open issues labeled `claude` and bring them up with the user:
