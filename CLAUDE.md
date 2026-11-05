@@ -72,7 +72,6 @@ Every patch must work on any surface:
    - On another surface, everything scales with the output height. The width only decides how much of the scene is visible; nothing is ever stretched.
 2. **`Scale` turns "bigger" into "more scene".**
    - `Scale` multiplies all element sizes, distances and speeds; default 1.
-   - Example: on 3 projectors stacked, set `Scale` to ⅓. Elements then keep the size they have on one projector, and more scene becomes visible.
    - The choice is made per setup in Arena, not per patch.
 3. **The scene must extend sideways.** Wide surfaces need content across the whole width (generated, repeating or distributed), not one centered picture with empty sides.
 4. **Elements are anchored.** Each element has an anchor (bottom, top, left, right or center). Its offset from the anchor is in reference units, multiplied by `Scale`. Example: the horizon sits at a fixed offset above the bottom edge, so with `Scale` ⅓ the city stays at the bottom and the sky grows.
