@@ -78,10 +78,19 @@ Until then:
 
 ### Controls
 - **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`). Audit: #17.
-- **Consistent names**: the same thing has the same name in every patch (e.g. `Clock`, `Backdrop`). A glossary is added here only after the names have been extracted from the patches and reconciled; never guessed.
+- **Consistent names**: the same thing has the same name in every patch. Use only the terms in the glossary below. New terms are added only after the names have been extracted from the patches and reconciled; never guessed.
 - **Grouping**: controls that belong together are grouped.
 - **Wide ranges**: ranges are always wider than needed, to allow creative use.
 - **NaN-safe**: invalid values (NaN, Inf, division by zero, `log`/`sqrt`/`pow` of invalid input, `normalize` of a zero vector) are caught inside the patch, never by narrowing a slider range. Every patch must stay stable at all slider extremes.
+
+### Glossary
+Fixed terms. Every revision uses only these.
+
+| Term | Meaning | Rule |
+|---|---|---|
+| `Clock` | Controls the speed of the patch | Label exactly `Clock`. First parameter of the patch, not in any group. |
+| `Backdrop` | Background behind the source | Group `Backdrop` containing `Backdrop On` and `Backdrop Color`. |
+| `Physics` | All physics and motion settings of a patch | One group `Physics` holding all of them. |
 
 ### Metadata
 Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
@@ -136,6 +145,11 @@ The README carries a `Last updated: YYYY-MM-DD` line.
 ## Issues and ideas
 
 All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There is no TODO file.
+
+**Keep issues lean.** Fixing beats documenting.
+- Report findings in chat first. Create an issue only when the user agrees, or when the work clearly cannot be done right away.
+- No parent issues or sub-issue trees unless the user asks for them.
+- Do not document problems in patches that may still be deleted.
 
 - **Labels** (lowercase; names are case-sensitive):
   - Type: `bug`, `enhancement`, `documentation`, `idea`, `question`, `invalid`.
