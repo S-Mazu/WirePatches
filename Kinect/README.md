@@ -1,10 +1,10 @@
 # Kinect
 
-Makes projections in Arena interactive with a Kinect v2: a Python tool sends the outlines of people to Arena and Wire via Spout.
+Makes projections in Arena interactive with a Kinect v2: a Python tool sends the outlines and skeletons of people to Arena and Wire via Spout.
 
 Last updated: 2026-11-05
 
-**Status:** first version, tested with people in front of the sensor. Pulling the sensor cable while running is not tested yet.
+**Status:** masks and bones are tested with people in front of the sensor. Pulling the sensor cable while running is not tested yet.
 
 ## Usage
 
@@ -13,20 +13,21 @@ py -3.12 kinect_app.py
 ```
 
 1. In the control window, click **Capture empty room**, then leave the picture within 5 seconds. The room is saved and loaded again on the next start.
-2. In Arena, add the sources `Kinect Body` and `Kinect Depth` from the Spout section.
-3. On each clip, set **Resize** to **Fit**. The masks are 1536×1272; with the default setting Arena crops them on a 1080p composition.
+2. In Arena, add the sources `Kinect Body`, `Kinect Depth` and `Kinect Bones` from the Spout section.
+3. On each clip, set **Resize** to **Fit**. The pictures are 1536×1272; with the default setting Arena crops them on a 1080p composition.
 
 Capture the room again whenever the sensor or the room changes. Slider values are saved when the window closes.
 
-A mask is white on transparent, so you can color it and add effects in Arena. In Wire, a `Texture In` node can receive it via Spout.
+All three are white on transparent, so you can color them and add effects in Arena. In Wire, a `Texture In` node can receive it via Spout.
 
 | Control | What it does |
 |---|---|
 | Near, Far | Depth mask: the distance range that counts |
 | Room tolerance | Depth mask: how much closer than the empty room something must be |
 | Min blob size | Drops smaller specks |
-| Calm | Steadies the outline; higher values lag behind movement |
-| Edge softness | From a hard edge to a soft one |
+| Calm | Steadies outlines and bones; higher values lag behind movement |
+| Edge softness | Masks: from a hard edge to a soft one |
+| Bone width | Bones: line width in percent of the picture height |
 
 Tests (no Kinect needed): `py -3.12 -m unittest`
 
@@ -47,9 +48,10 @@ Tests (no Kinect needed): `py -3.12 -m unittest`
 
 ## First version
 
-- **Two masks at the same time**, each with its own Spout sender:
+- **Three pictures at the same time**, each with its own Spout sender:
   - `Kinect Body`: people detected by the Kinect (up to 6).
   - `Kinect Depth`: everything closer than the captured empty room.
+  - `Kinect Bones`: stick figures of the tracked people (up to 6), in line with the masks.
 - **Control window:** preview, "Capture empty room" button, sliders, sensor status and FPS. No keyboard shortcuts.
 - **Smooth edges:** masks are upscaled from 512×424 to 1536×1272.
 
@@ -68,7 +70,8 @@ Depth and body data are 512×424 in the Kinect hardware. Upscaling gives smoothe
 
 - One mask per person
 - Depth and infrared images as Spout sources
-- Skeleton and hand states via OSC to Arena and Wire
+- Joint positions and hand states via OSC to Arena and Wire
+- A head on `Kinect Bones` ([#56](https://github.com/S-Mazu/WirePatches/issues/56)); the Kinect delivers only one point for it
 
 ## Trying alternatives
 

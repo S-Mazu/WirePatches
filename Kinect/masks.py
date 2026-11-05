@@ -27,6 +27,7 @@ class Settings:
     min_area_px: float = 400    # blobs smaller than this are dropped (Kinect pixels)
     calm: float = 0.5           # temporal smoothing: 0 = none, 0.95 = very calm but laggy
     edge_softness: float = 0.15 # width of the soft edge: 0 = hard, 1 = very soft
+    bone_width: float = 1.0     # Bones: line width in % of the picture height
 
     def sanitized(self):
         """Return a copy with invalid values replaced, so no slider value can break a frame."""
@@ -43,6 +44,7 @@ class Settings:
             min_area_px=value("min_area_px", 0, WIDTH * HEIGHT),
             calm=value("calm", 0, 0.95),
             edge_softness=value("edge_softness", 0, 1),
+            bone_width=value("bone_width", 0.05, 20),
         )
 
     def to_dict(self):

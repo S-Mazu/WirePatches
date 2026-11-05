@@ -1,4 +1,4 @@
-"""Kinect v2 -> two Spout masks for Arena and Wire, with a clickable control window.
+"""Kinect v2 -> Spout masks and bones for Arena and Wire, with a clickable control window.
 
 Start: py -3.12 kinect_app.py
 """
@@ -23,6 +23,7 @@ SLIDERS = (
     ("min_area_px", "Min blob size", 0, 5000, "%.0f"),
     ("calm", "Calm", 0, 0.95, "%.2f"),
     ("edge_softness", "Edge softness", 0, 1, "%.2f"),
+    ("bone_width", "Bone width", 0.05, 20, "%.2f"),
 )
 
 
@@ -55,6 +56,7 @@ def build_window(settings, on_change, on_capture):
     with dpg.texture_registry():
         dpg.add_raw_texture(PREVIEW_W, PREVIEW_H, blank, format=dpg.mvFormat_Float_rgba, tag="tex_body")
         dpg.add_raw_texture(PREVIEW_W, PREVIEW_H, blank, format=dpg.mvFormat_Float_rgba, tag="tex_depth")
+        dpg.add_raw_texture(PREVIEW_W, PREVIEW_H, blank, format=dpg.mvFormat_Float_rgba, tag="tex_bones")
 
     with dpg.window(tag="main"):
         dpg.add_text("Starting", tag="status_sensor")
@@ -66,6 +68,9 @@ def build_window(settings, on_change, on_capture):
             with dpg.group():
                 dpg.add_text(f"Spout: {eng.DEPTH_SENDER}")
                 dpg.add_image("tex_depth")
+            with dpg.group():
+                dpg.add_text(f"Spout: {eng.BONES_SENDER}")
+                dpg.add_image("tex_bones")
         dpg.add_spacer(height=8)
         with dpg.group(horizontal=True):
             dpg.add_button(label="Capture empty room", width=180, height=32, callback=on_capture)
@@ -92,7 +97,7 @@ def main():
         engine.set_settings(read_sliders())
 
     build_window(settings, on_change, lambda: engine.capture_room())
-    dpg.create_viewport(title="Kinect", width=820, height=640)
+    dpg.create_viewport(title="Kinect", width=1210, height=670)
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("main", True)
@@ -113,6 +118,7 @@ def main():
             last_seq = status["seq"]
             dpg.set_value("tex_body", preview_pixels(status["preview"][0]))
             dpg.set_value("tex_depth", preview_pixels(status["preview"][1]))
+            dpg.set_value("tex_bones", preview_pixels(status["preview"][2]))
         dpg.render_dearpygui_frame()
         if quit_at is not None and dpg.get_total_time() >= quit_at:
             break

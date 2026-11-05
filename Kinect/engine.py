@@ -1,16 +1,18 @@
-"""Background thread: reads the Kinect, builds both masks and sends them via Spout."""
+"""Background thread: reads the Kinect, builds the masks and bones and sends them via Spout."""
 import threading
 import time
 from pathlib import Path
 
 import numpy as np
 
+import bones
 import masks
 from kinect_source import KinectSource, SourceLost
 from spout_out import MaskSender
 
 BODY_SENDER = "Kinect Body"
 DEPTH_SENDER = "Kinect Depth"
+BONES_SENDER = "Kinect Bones"
 ROOM_FILE = Path(__file__).parent / "empty_room.npy"
 ROOM_FRAMES = 30            # about 1 s at 30 FPS
 ROOM_DELAY_S = 5            # time to leave the picture after the click
@@ -38,6 +40,7 @@ class Engine(threading.Thread):
         self._room_frames = []
         self._body = masks.MaskFilter()
         self._depth = masks.MaskFilter()
+        self._bones = bones.BoneFilter()
         self._preview = None
         self._seq = 0
         self._sensor_state = "Starting"
@@ -75,7 +78,7 @@ class Engine(threading.Thread):
 
     # --- thread -----------------------------------------------------------------
     def run(self):
-        senders = MaskSender(BODY_SENDER), MaskSender(DEPTH_SENDER)
+        senders = MaskSender(BODY_SENDER), MaskSender(DEPTH_SENDER), MaskSender(BONES_SENDER)
         try:
             while not self._stop_event.is_set():
                 try:
@@ -115,7 +118,7 @@ class Engine(threading.Thread):
                     self._fps = counted / (now - t0)
                     counted, t0 = 0, now
 
-    def _process(self, body_index, depth, senders):
+    def _process(self, body_index, depth, skeletons, senders):
         with self._lock:
             settings = self._settings
             room = self._room
@@ -127,10 +130,12 @@ class Engine(threading.Thread):
         small_depth = masks.clean(masks.depth_mask(depth, room, settings), area)
         big_body = self._body.process(small_body, settings)
         big_depth = self._depth.process(small_depth, settings)
+        big_bones = self._bones.process(skeletons, settings)
         senders[0].send(big_body)
         senders[1].send(big_depth)
+        senders[2].send(big_bones)
         with self._lock:
-            self._preview = (big_body, big_depth)
+            self._preview = (big_body, big_depth, big_bones)
             self._seq += 1
 
     def _collect_room(self, depth):
