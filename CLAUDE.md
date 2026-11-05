@@ -51,7 +51,7 @@ Rules:
 ### Paths
 - **No absolute paths**, anywhere: not in `.wire` files, shaders, scripts or docs.
 - References to resources must be relative to the patch folder.
-- Wire stores ISF shader references in `.wire` files as `"type": "resourceIsf"` → `"value": { "path": { "main": "…" } }`. Whether Wire resolves relative paths there is **not yet verified**; see #1.
+- Wire stores ISF shader references in `.wire` files as `"type": "resourceIsf"` → `"value": { "path": { "main": "…" } }`.
 - Check before every commit:
   ```bash
   grep -alE '[A-Za-z]:[\\/]|/Users/|/home/' */*.wire */*.fs */*.py 2>/dev/null
@@ -64,7 +64,7 @@ Every patch must work on any surface:
 - three projectors side by side or stacked
 - an LED wall of any size and aspect ratio
 
-#### Surface model (decided, #11)
+#### Surface model
 1. **Height is the reference.**
    - The image is designed for one screen of any height.
    - On another surface, everything scales with the output height. The width only decides how much of the scene is visible; nothing is ever stretched.
@@ -75,14 +75,12 @@ Every patch must work on any surface:
 3. **The scene must extend sideways.** Wide surfaces need content across the whole width (generated, repeating or distributed), not one centered picture with empty sides.
 
 Rules:
-- Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions. The Wire details are not yet verified (#11).
+- Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions.
 - No pixel units in controls (`(px)`). Sizes are relative to the height, multiplied by `Scale`.
-- Positions and zones (edge / center, bands): see #13, still open.
 - Arena does not resize a running patch when the composition changes; set the clip size in Arena or reload the clip. Document this in the README.
-- `meta.resolution` is fixed to 1920×1080 in all patches. This is a known bug (#14); its role is still to be verified.
 
 ### Controls
-- **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`). Audit: #17.
+- **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`).
 - **Consistent names**: the same thing has the same name in every patch. Use only the terms in the glossary below. New terms are added only after the names have been extracted from the patches and reconciled; never guessed.
 - **Grouping**: controls that belong together are grouped.
 - **Wide ranges**: ranges are always wider than needed, to allow creative use.
@@ -99,7 +97,7 @@ Fixed terms. Every revision uses only these.
 | `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. Second parameter, directly after `Clock`, not in any group. |
 
 ### Metadata
-Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
+Every `.wire` file has these fields filled in `patch.meta`:
 
 | Field | Value |
 |---|---|
@@ -113,7 +111,6 @@ Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
 - Folder name = patch name = `.wire` file name (`Patch Name/Patch Name.wire`).
 - **No version suffixes** (`v2`) in folder or file names. Git history is the version history; tag releases if needed.
 - If two variants really must coexist, give them names that say how they differ.
-- Existing `v2` folders are tracked as a bug: #10.
 
 ### Patch description inside Wire
 - The patch-level `"description"` field in the `.wire` file is the in-app documentation. Keep it consistent with the patch README.
@@ -159,7 +156,7 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 
 - English, imperative mood, prefixed with the patch name where applicable: `Twirl: fix aspect handling`.
 - One patch per commit where possible.
-- Reference issues (`Fixes #7`).
+- Reference issues (`Fixes #<n>`).
 - Keep `README.md` (root) in sync when adding, renaming or removing a patch.
 
 ## Reference documentation
