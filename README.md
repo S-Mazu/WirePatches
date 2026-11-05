@@ -19,6 +19,12 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Star Globe](Star%20Globe/) | source | Glowing stars in a snow-globe container, with gravity, bounce and collision. |
 | [Water Drops](Water%20Drops/) | source | View onto a water surface; drops send out interfering, reflecting rings. |
 
+## Tools
+
+| Tool | Description |
+|---|---|
+| [Kinect](Kinect/) | Sends the outlines of people from a Kinect v2 to Arena and Wire via Spout. |
+
 ## Installation
 
 Copy a patch folder into your Wire patches folder (`Documents/Resolume Wire/Patches/`). Keep all files of the folder together.
