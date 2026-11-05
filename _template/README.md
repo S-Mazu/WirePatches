@@ -72,8 +72,8 @@ Tested sizes:
 
 ## Known issues
 
-See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=is%3Aissue+is%3Aopen+label%3A%22patch%3A<Patch+Name>%22).
-<!-- Replace <Patch+Name> with the folder name, spaces as "+". -->
+See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=is%3Aissue+is%3Aopen+label%3A%22<Patch+Name>%22).
+<!-- Replace <Patch+Name> with the patch label (patch name without version suffix), spaces as "+". -->
 
 ## Changelog
 
@@ -97,5 +97,5 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] Tested on the show machine at the sizes listed above
     (changes made in the cloud session are marked "untested" in the commit message)
 [ ] Root README.md lists the patch
-[ ] Label patch:<Patch Name> exists (ask the repo owner)
+[ ] Label "<Patch Name>" exists (ask the repo owner)
 -->
