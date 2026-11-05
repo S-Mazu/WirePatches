@@ -5,7 +5,7 @@ How to use:
 1. Create a new patch in Wire and save it as `<Patch Name>/<Patch Name>.wire`.
 2. Copy this file into the patch folder.
 3. Replace every <placeholder>, then delete all HTML comments (including this one).
-4. Remove optional sections that do not apply. They are marked "(optional)".
+4. Delete the "Clock" section if the patch has no clock.
 5. Before committing, work through the checklist at the end of this file.
 
 The folder name, the patch name and the .wire file name must be identical.
@@ -18,7 +18,7 @@ No version suffixes (v2, final, …); use git history instead.
 
 Last updated: <YYYY-MM-DD>
 
-## Vision (optional)
+## Vision
 
 <The idea behind the patch: mood, use case, artistic reference.>
 
@@ -41,22 +41,22 @@ Last updated: <YYYY-MM-DD>
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. <Any further step, e.g. "Set Spectrum In to External". If none, write: "No further setup required.">
 
-## Driving the patch (optional)
+## Clock (required)
 
-<!-- For patches without internal motion, e.g. driven by a Clock parameter. -->
-<Which parameter drives the motion, its range, and a recommended setup in Arena (e.g. Timeline with Duration = 1000 s, BPM Sync, FFT).>
+<!-- Required if the patch is driven by a clock; otherwise delete this section. -->
+<What the Clock drives, its range, the default, and a sensible start value in Arena (e.g. phase source Timeline with Duration = 1000 s). Alternatives such as BPM Sync or FFT.>
 
 ## Parameters
 
-<!-- Group as in the Arena UI. Give the range and the effect. Mention safe extremes. -->
+<!-- Group as in the Arena UI. Give the range and the effect. Ranges are deliberately wide; state that extremes are safe. Use the shared control names (CLAUDE.md, "Controls"). -->
 
 **<Group>**
 - `<Parameter>` (<min> to <max>, default <value>): <effect>
 
 ## Any surface
 
-<!-- Required. See CLAUDE.md, "Resolution and aspect-ratio independence", and issue #11. -->
-- Aspect handling: <fit | fill | stretch | extends scene>, <what happens on very wide or very tall surfaces>
+<!-- Required. See CLAUDE.md, "Surface independence", and issues #11 and #13 (still under discussion). -->
+- Behavior: <extends scene | scales | fit | fill>, <what happens on three projectors side by side / stacked, on an LED wall>
 - Size-dependent parameters: <how line widths, blur, density etc. scale with the output size>
 - Notes: <e.g. "set the composition to the full surface size before loading; reload the clip after changing it">
 
@@ -65,6 +65,8 @@ Tested sizes:
 | Size | Aspect | Result |
 |---|---|---|
 | 1920×1080 | 16:9 | <ok / issue #…> |
+| 5760×1080 | 3 side by side | |
+| 1920×3240 | 3 stacked | |
 | 1080×1920 | 9:16 | |
 | 4096×512 | 8:1 | |
 | 512×512 | 1:1 | |
@@ -94,6 +96,11 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] .wire is valid JSON:
       python3 -m json.tool "<Patch Name>.wire" > /dev/null
 [ ] Patch "description" in the .wire matches this README
+[ ] patch.meta: author, mail, url filled; identifier unique
+[ ] No controls duplicating Arena (global opacity/position/scale/rotation)
+[ ] Control names match the other patches
+[ ] Every slider tested at both extremes: no NaN, no black/frozen output
+[ ] README updated: Last updated, Changelog
 [ ] Tested on the show machine at the sizes listed above
     (changes made in the cloud session are marked "untested" in the commit message)
 [ ] Root README.md lists the patch

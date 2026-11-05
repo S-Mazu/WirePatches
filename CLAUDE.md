@@ -63,15 +63,36 @@ Rules:
   ```
   This must return nothing.
 
-### Resolution and aspect-ratio independence
-Every patch must work at any output size and aspect ratio (e.g. LED strips, portrait screens, square tiles).
-The patch resolution is defined by the texture Arena passes to the patch.
+### Surface independence
+Every patch must work on any surface:
+- a single projector
+- three projectors side by side or stacked
+- an LED wall of any size and aspect ratio
 
-Preliminary rules (final guidelines and test procedure: #11):
-- Use normalized coordinates, not pixel values.
-- Handle the aspect ratio explicitly; document the behavior (fit / fill / stretch).
-- Scale size-dependent parameters (line width, blur, grain) relative to the output size.
+**How to achieve this is still under discussion** (#11, placement principles #13). Do not treat any approach as settled.
+
+Until then:
 - In ISF shaders, derive everything from `RENDERSIZE`; no hard-coded resolutions.
+- Document the patch's current behavior in the README ("Any surface").
+- `meta.resolution` is fixed to 1920×1080 in all patches. This is a known bug (#14); do not change it before #11 is settled.
+
+### Controls
+- **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`). Audit: #17.
+- **Consistent names**: the same thing has the same name in every patch (e.g. `Clock`, `Backdrop`). A glossary is added here only after the names have been extracted from the patches and reconciled; never guessed.
+- **Grouping**: controls that belong together are grouped.
+- **Wide ranges**: ranges are always wider than needed, to allow creative use.
+- **NaN-safe**: invalid values (NaN, Inf, division by zero, `log`/`sqrt`/`pow` of invalid input, `normalize` of a zero vector) are caught inside the patch, never by narrowing a slider range. Every patch must stay stable at all slider extremes.
+
+### Metadata
+Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
+
+| Field | Value |
+|---|---|
+| `author` | `Stefan Mazur` |
+| `mail` | `S.Mazur@cati-co.de` |
+| `url` | `https://github.com/S-Mazu/WirePatches` |
+
+`identifier` must be unique per patch (see #16).
 
 ### Naming and versions
 - Folder name = patch name = `.wire` file name (`Patch Name/Patch Name.wire`).
@@ -88,19 +109,19 @@ Every patch folder has a `README.md` based on [`_template/README.md`](_template/
 
 Required sections:
 - Summary
+- Vision
 - Requirements
 - Files
 - Installation
+- Clock: required if the patch is driven by a clock. Explain it and give a sensible start value.
 - Parameters
-- Any surface (resolution/aspect behavior, tested sizes)
+- Any surface (surface behavior, tested sizes)
 - Known issues
 - Changelog
 
-Optional sections:
-- Vision
-- Driving the patch
+The README carries a `Last updated: YYYY-MM-DD` line.
 
-Dates use ISO format (`YYYY-MM-DD`).
+**Whenever a patch is changed, update its README in the same commit**, including `Last updated` and the changelog.
 
 ## Editing `.wire` files directly
 
