@@ -33,7 +33,6 @@ Rules:
 /
 ├── CLAUDE.md          this file
 ├── README.md          overview of all patches (one line each, link to patch folder)
-├── TODO.md            ideas and planned work not yet tracked as issues
 ├── LICENSE
 ├── _template/         template for new patches (planned)
 └── <Patch Name>/      one folder per patch, self-contained
@@ -108,11 +107,13 @@ Every patch folder has a `README.md` with these sections:
 
 ## Issues and ideas
 
-- **Bugs and tasks**: GitHub Issues in `S-Mazu/WirePatches`.
-  - Labels: `bug`, `enhancement`, `documentation`, plus one `patch:<folder name>` label per patch (being set up: #12). Labels cannot be created by Claude; ask the user if one is missing.
-  - Problems that span several patches: one parent issue with one sub-issue per patch.
-  - Close issues with a reason (`completed`, `not_planned`, `duplicate`) and reference the fixing commit.
-- **Ideas**: `TODO.md` in the root. Move an idea to an issue once work on it starts.
+All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There is no TODO file.
+
+- **Labels**: `bug`, `enhancement`, `documentation`, `idea`, plus one `patch:<folder name>` label per patch (being set up: #12). Claude cannot create labels; ask the user if one is missing.
+- **Ideas**: issue with label `idea`. When work starts, replace `idea` with `enhancement` (or `bug`) in the same issue; do not open a new one.
+- **Cross-patch problems**: one parent issue with one sub-issue per patch.
+- **Closing**: always with a reason (`completed`, `not_planned`, `duplicate`) and a reference to the fixing commit.
+- GitHub Projects (board view) and Discussions are maintained by the user; Claude has no tooling for them.
 
 ## Commits
 
