@@ -55,8 +55,11 @@ Last updated: <YYYY-MM-DD>
 
 ## Any surface
 
-<!-- Required. See CLAUDE.md, "Surface independence", and issues #11 and #13 (still under discussion). -->
-- Behavior: <extends scene | scales | fit | fill>, <what happens on three projectors side by side / stacked, on an LED wall>
+<!-- Required. See CLAUDE.md, "Surface model". -->
+- Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched.
+- `Scale`: <recommended values, e.g. 1 for one projector, ⅓ for three stacked to keep element sizes>
+- Exceptions: <anything that does not follow the model, and why>
+- Notes: <e.g. "set the clip size to the full surface; reload the clip after changing the composition size">
 - Size-dependent parameters: <how line widths, blur, density etc. scale with the output size>
 - Notes: <e.g. "set the composition to the full surface size before loading; reload the clip after changing it">
 

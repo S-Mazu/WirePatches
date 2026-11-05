@@ -69,12 +69,32 @@ Every patch must work on any surface:
 - three projectors side by side or stacked
 - an LED wall of any size and aspect ratio
 
-**How to achieve this is still under discussion** (#11, placement principles #13). Do not treat any approach as settled.
+#### Surface model (decided, #11)
+1. **Height is the reference.**
+   - The image is designed for one screen of any height.
+   - On another surface, everything scales with the output height. The width only decides how much of the scene is visible; nothing is ever stretched.
+   - This matches Wire's own shape coordinates: y runs from −1 to 1, x from −aspect to +aspect. To be verified on the show machine.
+2. **`Scale` turns "bigger" into "more scene".**
+   - `Scale` multiplies all element sizes, distances and speeds; default 1.
+   - Example: on 3 projectors stacked, set `Scale` to ⅓. Elements then keep the size they have on one projector, and more scene becomes visible.
+   - The choice is made per setup in Arena, not per patch.
+3. **The scene must extend sideways.** Wide surfaces need content across the whole width (generated, repeating or distributed), not one centered picture with empty sides.
 
-Until then:
-- In ISF shaders, derive everything from `RENDERSIZE`; no hard-coded resolutions.
-- Document the patch's current behavior in the README ("Any surface").
-- `meta.resolution` is fixed to 1920×1080 in all patches. This is a known bug (#14); do not change it before #11 is settled.
+| Surface | `Scale` | Result |
+|---|---|---|
+| 1920×1080, one projector | 1 | reference |
+| 3840×2160, one 4K projector | 1 | same picture, sharper |
+| 5760×1080, 3 side by side | 1 | same height, three times the width of scene |
+| 1920×3240, 3 stacked | 1 | everything three times as large, narrow slice |
+| 1920×3240, 3 stacked | ⅓ | elements as on one projector, more scene above and below |
+| 4096×512, LED strip | 1 | full height, very wide scene |
+
+Rules:
+- Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions. Whether `Patch Info` provides this is to be verified on the show machine.
+- No pixel units in controls (`(px)`). Sizes are relative to the height, multiplied by `Scale`.
+- Positions and zones (edge / center, bands): see #13, still open.
+- Arena does not resize a running patch when the composition changes; set the clip size in Arena or reload the clip. Document this in the README.
+- `meta.resolution` is fixed to 1920×1080 in all patches. This is a known bug (#14); its role is still to be verified.
 
 ### Controls
 - **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`). Audit: #17.
@@ -91,6 +111,7 @@ Fixed terms. Every revision uses only these.
 | `Clock` | Controls the speed of the patch | Label exactly `Clock`. First parameter of the patch, not in any group. |
 | `Backdrop` | Background behind the source | Group `Backdrop` containing `Backdrop On` and `Backdrop Color`. |
 | `Physics` | All physics and motion settings of a patch | One group `Physics` holding all of them. |
+| `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. Second parameter, directly after `Clock`, not in any group. |
 
 ### Metadata
 Every `.wire` file has these fields filled in `patch.meta` (tracked in #15):
