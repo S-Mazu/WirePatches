@@ -75,6 +75,8 @@ Every patch must work on any surface:
    - Example: on 3 projectors stacked, set `Scale` to ⅓. Elements then keep the size they have on one projector, and more scene becomes visible.
    - The choice is made per setup in Arena, not per patch.
 3. **The scene must extend sideways.** Wide surfaces need content across the whole width (generated, repeating or distributed), not one centered picture with empty sides.
+4. **Elements are anchored.** Each element has an anchor (bottom, top, left, right or center). Its offset from the anchor is in reference units, multiplied by `Scale`. Example: the horizon sits at a fixed offset above the bottom edge, so with `Scale` ⅓ the city stays at the bottom and the sky grows.
+   - Percent of the actual frame only for zones and paths that are meant to grow with the frame (e.g. edge zones, the moon's path across the surface).
 
 Rules:
 - Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions.
