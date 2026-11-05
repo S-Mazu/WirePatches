@@ -2,6 +2,8 @@
 
 Guidance for Claude when working in this repository.
 
+**Change this file only when the user explicitly instructs it.**
+
 ## Purpose
 
 A collection of Resolume Wire patches, shared with colleagues for use in Resolume Arena/Avenue.
@@ -82,6 +84,7 @@ Rules:
 ### Controls
 - **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`).
 - **Consistent names**: the same thing has the same name in every patch. Use only the terms in the glossary below. New terms are added only after the names have been extracted from the patches and reconciled; never guessed.
+- **Label length**: at most 20 characters. Arena scales labels and cuts them off at about 19 characters; one clipped letter is accepted.
 - **Grouping**: controls that belong together are grouped.
 - **Wide ranges**: ranges are always wider than needed, to allow creative use.
 - **NaN-safe**: invalid values (NaN, Inf, division by zero, `log`/`sqrt`/`pow` of invalid input, `normalize` of a zero vector) are caught inside the patch, never by narrowing a slider range. Every patch must stay stable at all slider extremes.
