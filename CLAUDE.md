@@ -116,11 +116,11 @@ Dates use ISO format (`YYYY-MM-DD`).
 
 All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There is no TODO file.
 
-- **Labels** (names are case-sensitive):
-  - Type: `bug`, `enhancement`, `documentation`, `Idea`.
-  - Patch: one label per patch, named exactly like the patch **without version suffix** (e.g. `Bass Strings`, `Deco Marquee`), description "Related to Patch <name>".
+- **Labels** (lowercase; names are case-sensitive):
+  - Type: `bug`, `enhancement`, `documentation`, `idea`, `question`, `invalid`.
+  - Patch: `patch:<name>`. `<name>` is the patch name without version suffix, lowercase, with spaces replaced by `_`. Examples: `Autumn Wind` → `patch:autumn_wind`, `Deco Marquee v2` → `patch:deco_marquee`. Description: "Related to Patch <Patch Name>".
   - Not every patch has a label yet. Claude cannot create labels; if one is missing, ask the user.
-- **Ideas**: issue with label `Idea`. When work starts, replace `Idea` with `enhancement` (or `bug`) in the same issue; do not open a new one.
+- **Ideas**: issue with label `idea`. When work starts, replace `idea` with `enhancement` (or `bug`) in the same issue; do not open a new one.
 - **Cross-patch problems**: one parent issue with one sub-issue per patch.
 - **Closing**: always with a reason (`completed`, `not_planned`, `duplicate`) and a reference to the fixing commit.
 - GitHub Projects (board view) and Discussions are maintained by the user; Claude has no tooling for them.
