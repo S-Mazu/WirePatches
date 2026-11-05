@@ -102,6 +102,7 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] patch.meta: author, mail, url filled; identifier unique
 [ ] No controls duplicating Arena (global opacity/position/scale/rotation)
 [ ] Control names match the other patches
+[ ] Every control label has at most 20 characters
 [ ] Every slider tested at both extremes: no NaN, no black/frozen output
 [ ] README updated: Last updated, Changelog
 [ ] Tested on the show machine at the sizes listed above
