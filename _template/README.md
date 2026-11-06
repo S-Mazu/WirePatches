@@ -33,8 +33,8 @@ Last updated: <YYYY-MM-DD>
 | File | Purpose |
 |---|---|
 | `<Patch Name>.wire` | The patch |
-| `<Shader>.fs` | <What this ISF shader does> |
-<!-- List every file in the folder. Every resource the patch loads must be here, referenced by a relative path. -->
+| `Resource/<Shader>.fs` | <What this ISF shader does> |
+<!-- List every file in the folder. Every resource the patch loads must be in Resource/, referenced by a relative path. -->
 
 ## Installation
 
@@ -94,7 +94,7 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] Folder name = patch name = .wire file name, no version suffix
 [ ] All required files are in this folder; no references to other folders
 [ ] No absolute paths:
-      grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' *.wire *.fs *.py 2>/dev/null
+      grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' *.wire Resource/*.fs Resource/*.py 2>/dev/null
     returns nothing
 [ ] .wire is valid JSON:
       python3 -m json.tool "<Patch Name>.wire" > /dev/null

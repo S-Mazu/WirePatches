@@ -40,7 +40,7 @@ Rules:
 └── <Patch Name>/      one folder per patch, self-contained
     ├── <Patch Name>.wire
     ├── README.md
-    └── *.fs, *.py, …  any other required files
+    └── Resource/      all other required files (*.fs, *.py, images, …), as Wire's Consolidate lays them out
 ```
 
 ## Patch rules
@@ -54,10 +54,10 @@ Rules:
 - **No absolute paths**, anywhere: not in `.wire` files, shaders, scripts or docs.
 - References to resources must be relative to the patch folder.
 - Wire stores ISF shader references in `.wire` files as `"type": "resourceIsf"` → `"value": { "path": { "main": "…" } }`.
-- `main` is resolved relative to the `.wire` file. Wire stores a shader set by absolute path as absolute, so run the check below after every rebuild.
+- `main` is resolved relative to the `.wire` file and reads `Resource/<Shader>.fs`. Wire stores a shader set by absolute path as absolute, so run the check below after every rebuild.
 - Check before every commit:
   ```bash
-  grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' */*.wire */*.fs */*.py 2>/dev/null
+  grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' */*.wire */*.fs */*.py */Resource/*.fs */Resource/*.py 2>/dev/null
   ```
   This must return nothing.
 
