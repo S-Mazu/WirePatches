@@ -8,10 +8,13 @@ from masks import OUT_HEIGHT, OUT_WIDTH, UPSCALE, Settings
 
 
 def skeleton(**points):
-    """Skeleton with only the given joints known, e.g. skeleton(j3=(100, 50), j2=(100, 90))."""
-    joints = np.full((bones.JOINT_COUNT, 2), np.nan, np.float32)
+    """Skeleton with only the given joints known, e.g. skeleton(j3=(100, 50, 2.0), j2=(100, 90)).
+
+    Without z the distance is unknown, so no head is drawn.
+    """
+    joints = np.full((bones.JOINT_COUNT, 3), np.nan, np.float32)
     for name, point in points.items():
-        joints[int(name[1:])] = point
+        joints[int(name[1:]), :len(point)] = point
     return joints
 
 
@@ -56,6 +59,39 @@ class Draw(unittest.TestCase):
         self.assertEqual(image.shape, (OUT_HEIGHT, OUT_WIDTH))
 
 
+class Head(unittest.TestCase):
+    # At 2 m the head radius is about 20 depth pixels, at 4 m about 10.
+    def test_head_is_a_filled_disc_around_the_joint(self):
+        image = bones.draw([skeleton(j3=(100, 100, 2.0))], 1)
+        self.assertEqual(at(image, 100, 100), 255)
+        self.assertEqual(at(image, 115, 100), 255)
+        self.assertEqual(at(image, 130, 100), 0)
+
+    def test_head_shrinks_with_distance(self):
+        image = bones.draw([skeleton(j3=(100, 100, 4.0))], 1)
+        self.assertEqual(at(image, 100, 100), 255)
+        self.assertEqual(at(image, 115, 100), 0)
+
+    def test_head_size_scales_the_head(self):
+        image = bones.draw([skeleton(j3=(100, 100, 2.0))], 1, 2.0)
+        self.assertEqual(at(image, 130, 100), 255)
+
+    def test_head_size_zero_means_no_head(self):
+        self.assertEqual(bones.draw([skeleton(j3=(100, 100, 2.0))], 1, 0).max(), 0)
+
+    def test_unusable_distance_means_no_head(self):
+        for z in (0.0, -1.0, float("nan")):
+            self.assertEqual(bones.draw([skeleton(j3=(100, 100, z))], 1).max(), 0)
+
+    def test_very_close_head_and_huge_size_are_safe(self):
+        image = bones.draw([skeleton(j3=(100, 100, 0.001))], 1, 1000)
+        self.assertEqual(image.shape, (OUT_HEIGHT, OUT_WIDTH))
+
+    def test_infinite_distance_is_safe(self):
+        image = bones.draw([skeleton(j3=(100, 100, float("inf")))], 1)
+        self.assertEqual(image.max(), 0)
+
+
 class Filter(unittest.TestCase):
     def setUp(self):
         self.filter = bones.BoneFilter()
@@ -93,7 +129,8 @@ class Filter(unittest.TestCase):
 
     def test_extreme_slider_values_are_safe(self):
         for width in (float("nan"), float("inf"), -5, 1e9):
-            image = self.filter.process({1: self.first}, Settings(bone_width=width).sanitized())
+            settings = Settings(bone_width=width, head_size=width).sanitized()
+            image = self.filter.process({1: self.first}, settings)
             self.assertEqual(image.shape, (OUT_HEIGHT, OUT_WIDTH))
 
 
