@@ -325,13 +325,55 @@
 					0,
 					"beamLength"
 				]
+			},
+			{
+				"from": [
+					43,
+					"output"
+				],
+				"to": [
+					0,
+					"starDensity"
+				]
+			},
+			{
+				"from": [
+					44,
+					"output"
+				],
+				"to": [
+					0,
+					"starSize"
+				]
+			},
+			{
+				"from": [
+					45,
+					"output"
+				],
+				"to": [
+					0,
+					"starColor"
+				]
+			},
+			{
+				"from": [
+					46,
+					"output"
+				],
+				"to": [
+					0,
+					"starScroll"
+				]
 			}
 		],
 		"inputOrder": {
 			"groups": {
 				"1792918034038": {
 					"children": [
-						6
+						6,
+						38,
+						46
 					],
 					"collapsed": false,
 					"name": "Physics"
@@ -362,10 +404,13 @@
 						26,
 						39,
 						40,
-						22
+						22,
+						43,
+						44,
+						45
 					],
 					"collapsed": false,
-					"name": "Moon"
+					"name": "Sky"
 				},
 				"1792918034048": {
 					"children": [
@@ -387,7 +432,6 @@
 				"1792918036669": {
 					"children": [
 						21,
-						38,
 						28
 					],
 					"collapsed": false,
@@ -433,7 +477,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Rolling Landscape - Art Deco night skyline of the 1930s as parallax silhouettes. Works on any output: one projector, several projectors side by side or stacked, LED walls. Sizes are in scene units set by 'Scale' (1 = sized for a 1080 px high projector; use 2 for 2160 px), positions are relative to the frame edges (-1 = left / bottom, 1 = right / top), searchlights and airships are densities, so a wider or taller surface simply gets more of them. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync; play it backwards to scroll the other way). Physics: 'Parallax' sets how much slower the back layers move (0 = all equal, negative = back layers faster, above 1 the back layers move against the front). Skyline: 'Layer Count' 0-6 adds layers from back to front; fractional values fade the next layer in, so it can follow FFT smoothly. Layers 1-2: towers (stepped, crown with needle, mast, fan crown, slab). Layers 3-4: city (water tower, radio mast, theatre, department store, bridge pylon). Layers 5-6: street level (elevated railway with train, street lamps, power station, neon sign). 'Density': share of filled plots. 'Horizon': base line relative to the frame (-1 = bottom edge). 'Seed': a different value gives a different city. 'Layer 1-6 Color': one color per layer (Layer 1 = back). 'Window Lights': share of lit windows, 'Window Color' is used for all. Moon: 'Moon X' / 'Moon Y' relative to the frame (values beyond -1 / 1 place it off-screen; the moon sits behind the skyline, so animating Moon Y upwards gives a moonrise), 'Moon Opacity', 'Moon Size' (0 hides it), 'Moon Phase' (0 = new moon, 0.25 = first quarter, 0.5 = full, 0.75 = last quarter), 'Moon Ray Length' (1 = classic, 0 = no rays), 'Moon Color'. Searchlights: 'Beam Density' 0-1 (share of ground spots with a light, rising values fade new ones in, beams sweep with Clock), 'Beam Length', 'Beam Color'. Airships: 'Airship Density' 0-1 (they fly in rows over the whole sky and drift with Clock), 'Airship Dir' Left / Right / Random (Random picks a direction per row, changes with Seed), 'Airship Color'. Backdrop On/Off: colored sky or transparent. Drawn by the ISF shader RollingLandscape.fs in the patch folder (must stay next to the patch).",
+			"description": "Rolling Landscape - Art Deco night skyline of the 1930s as parallax silhouettes, with lit windows, stars, a moon, searchlights and airships. Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched. 'Scale' multiplies all sizes, distances and speeds: 1 for any single screen, 1\/3 for three stacked to keep element sizes and show more sky. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync; play it backwards to scroll the other way). In Loop mode the city jumps when the timeline restarts. Physics: 'Parallax' sets how much slower the back layers move (0 = all equal, negative = back layers faster), 'Airship Dir' Left \/ Right \/ Random per row, 'Star Scroll' Off = stars fixed, On = stars scroll behind Layer 1. Skyline: 'Layer Count' 0-6 adds layers from back to front; fractional values fade the next layer in. 'Density': share of filled plots. 'Horizon': distance of the base line above the bottom edge. 'Seed': a different value gives a different city, sky and traffic. 'Layer 1-6 Color': one color per layer (1 = back). 'Window Lights': share of lit windows, 'Window Color' for all. Sky: 'Moon X' \/ 'Moon Y' relative to the frame (-1 \/ 1 = edges; the moon sits behind the skyline, so raising Moon Y gives a moonrise), 'Moon Opacity', 'Moon Size' (0 hides it), 'Moon Phase' (0 = new, 0.25 = first quarter, 0.5 = full, 0.75 = last quarter), 'Moon Ray Length' (0 = no rays), 'Moon Color', 'Star Density' (share of possible stars), 'Star Size' (0 hides them), 'Star Color'. Stars keep their position, so density and size can follow FFT. Searchlights: 'Beam Density' 0-1 (share of ground spots with a light; beams sweep with Clock), 'Beam Length', 'Beam Color'. Airships: 'Airship Density' 0-1 (rows over the whole sky, drifting with Clock), 'Airship Color'. Backdrop: 'Backdrop On' colored sky or transparent, 'Backdrop Color'. Drawn by the ISF shader Resource\/RollingLandscape.fs.",
 			"displayName": "Rolling Landscape",
 			"identifier": "3473280c-9853-4744-8083-c8dbbaba536b",
 			"licenseName": "",
@@ -467,10 +511,10 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "https://github.com/S-Mazu/WirePatches",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 43,
+		"nextNodeId": 47,
 		"nodes": {
 			"0": {
 				"attributes": {
@@ -482,250 +526,281 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "C:/Users/StefanMazurCATI-Co/OneDrive - CATI - Consilium et auxilium informaticum et technicum/Dokumente/Resolume Wire/Patches/Rolling Landscape/RollingLandscape.fs",
+								"main": "Resource\/RollingLandscape.fs",
 								"sub": ""
 							},
 							"value": {
 								"inputs": [
 									{
-										"defaultValue": 0.0,
-										"max": 1000.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1000,
+										"min": 0,
 										"name": "clock",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "scale",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.6,
-										"max": 2.0,
-										"min": -2.0,
+										"defaultValue": 0.60000002384185791,
+										"max": 2,
+										"min": -2,
 										"name": "parallax",
 										"type": "float"
 									},
 									{
-										"defaultValue": 3.0,
-										"max": 6.0,
-										"min": 0.0,
+										"defaultValue": 3,
+										"max": 6,
+										"min": 0,
 										"name": "layerCount",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.85,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0.85000002384185791,
+										"max": 1,
+										"min": 0,
 										"name": "density",
 										"type": "float"
 									},
 									{
-										"defaultValue": -0.95,
-										"max": 2.0,
-										"min": -2.0,
+										"defaultValue": 0.05000000074505806,
+										"max": 10,
+										"min": -2,
 										"name": "horizon",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1000.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1000,
+										"min": 0,
 										"name": "seed",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											0.3,
-											0.33,
+											0.30000001192092896,
+											0.33000001311302185,
 											0.5,
-											1.0
+											1
 										],
 										"name": "color1",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.24,
-											0.26,
-											0.42,
-											1.0
+											0.23999999463558197,
+											0.25999999046325684,
+											0.41999998688697815,
+											1
 										],
 										"name": "color2",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.18,
-											0.2,
-											0.34,
-											1.0
+											0.18000000715255737,
+											0.20000000298023224,
+											0.34000000357627869,
+											1
 										],
 										"name": "color3",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.13,
-											0.14,
-											0.26,
-											1.0
+											0.12999999523162842,
+											0.14000000059604645,
+											0.25999999046325684,
+											1
 										],
 										"name": "color4",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.08,
-											0.09,
-											0.18,
-											1.0
+											0.07999999821186066,
+											0.09000000357627869,
+											0.18000000715255737,
+											1
 										],
 										"name": "color5",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.04,
-											0.04,
-											0.1,
-											1.0
+											0.03999999910593033,
+											0.03999999910593033,
+											0.10000000149011612,
+											1
 										],
 										"name": "color6",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.35,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0.34999999403953552,
+										"max": 1,
+										"min": 0,
 										"name": "windowLights",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											1.0,
-											0.82,
-											0.45,
-											1.0
+											1,
+											0.81999999284744263,
+											0.44999998807907104,
+											1
 										],
 										"name": "windowColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.703,
-										"max": 3.0,
-										"min": -3.0,
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
+										"name": "starDensity",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1,
+										"max": 20,
+										"min": 0,
+										"name": "starSize",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											0.94999998807907104,
+											0.93000000715255737,
+											0.85000002384185791,
+											1
+										],
+										"name": "starColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
+										"name": "starScroll",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.70300000905990601,
+										"max": 3,
+										"min": -3,
 										"name": "moonX",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.62,
-										"max": 3.0,
-										"min": -3.0,
+										"defaultValue": 0.62000000476837158,
+										"max": 3,
+										"min": -3,
 										"name": "moonY",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 1,
+										"min": 0,
 										"name": "moon",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.09,
-										"max": 2.0,
-										"min": 0.0,
+										"defaultValue": 0.09000000357627869,
+										"max": 2,
+										"min": 0,
 										"name": "moonSize",
 										"type": "float"
 									},
 									{
 										"defaultValue": 0.5,
-										"max": 1.0,
-										"min": 0.0,
+										"max": 1,
+										"min": 0,
 										"name": "moonPhase",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "moonRays",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											0.95,
-											0.9,
+											0.94999998807907104,
+											0.89999997615814209,
 											0.75,
-											1.0
+											1
 										],
 										"name": "moonColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
 										"name": "beamDensity",
 										"type": "float"
 									},
 									{
-										"defaultValue": 2.4,
-										"max": 20.0,
-										"min": 0.0,
+										"defaultValue": 2.40000009536743164,
+										"max": 20,
+										"min": 0,
 										"name": "beamLength",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											0.95,
-											0.92,
-											0.8,
-											1.0
+											0.94999998807907104,
+											0.92000001668930054,
+											0.80000001192092896,
+											1
 										],
 										"name": "beamColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
 										"name": "airshipDensity",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											0.76,
-											0.72,
-											0.6,
-											1.0
+											0.75999999046325684,
+											0.72000002861022949,
+											0.60000002384185791,
+											1
 										],
 										"name": "airshipColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 2.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 2,
+										"min": 0,
 										"name": "airshipDir",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 1,
+										"min": 0,
 										"name": "backdropOn",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											0.06,
-											0.08,
-											0.18,
-											1.0
+											0.05999999865889549,
+											0.07999999821186066,
+											0.18000000715255737,
+											1
 										],
 										"name": "backdropColor",
 										"type": "color"
@@ -773,11 +848,15 @@
 					"airshipColor": {
 						"type": "color",
 						"value": [
-							0.7599999904632568,
-							0.7200000286102295,
-							0.6000000238418579,
+							0.75999999046325684,
+							0.72000002861022949,
+							0.60000002384185791,
 							1
 						]
+					},
+					"airshipDensity": {
+						"type": "float",
+						"value": 0
 					},
 					"airshipDir": {
 						"type": "float",
@@ -799,15 +878,27 @@
 					"beamColor": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
-							0.9200000166893005,
-							0.800000011920929,
+							0.94999998807907104,
+							0.92000001668930054,
+							0.80000001192092896,
 							1
 						]
+					},
+					"beamDensity": {
+						"type": "float",
+						"value": 0
+					},
+					"beamLength": {
+						"type": "float",
+						"value": 2.40000009536743164
 					},
 					"bypass": {
 						"type": "bool",
 						"value": false
+					},
+					"clock": {
+						"type": "float",
+						"value": 0
 					},
 					"color1": {
 						"type": "color",
@@ -832,7 +923,7 @@
 						"value": [
 							0.18000000715255737,
 							0.20000000298023224,
-							0.3400000035762787,
+							0.34000000357627869,
 							1
 						]
 					},
@@ -865,11 +956,11 @@
 					},
 					"density": {
 						"type": "float",
-						"value": 0.8500000238418579
+						"value": 0.85000002384185791
 					},
 					"horizon": {
 						"type": "float",
-						"value": -0.949999988079071
+						"value": -0.94999998807907104
 					},
 					"layerCount": {
 						"type": "float",
@@ -882,52 +973,11 @@
 					"moonColor": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
-							0.8999999761581421,
+							0.94999998807907104,
+							0.89999997615814209,
 							0.75,
 							1
 						]
-					},
-					"moonSize": {
-						"type": "float",
-						"value": 0.09000000357627869
-					},
-					"moonX": {
-						"type": "float",
-						"value": 0.703
-					},
-					"moonY": {
-						"type": "float",
-						"value": 0.6200000047683716
-					},
-					"parallax": {
-						"type": "float",
-						"value": 0.6000000238418579
-					},
-					"seed": {
-						"type": "float",
-						"value": 0
-					},
-					"time": {
-						"type": "float",
-						"value": 0
-					},
-					"windowColor": {
-						"type": "color",
-						"value": [
-							1,
-							0.8199999928474426,
-							0.44999998807907104,
-							1
-						]
-					},
-					"windowLights": {
-						"type": "float",
-						"value": 0.3499999940395355
-					},
-					"clock": {
-						"type": "float",
-						"value": 0
 					},
 					"moonPhase": {
 						"type": "float",
@@ -937,21 +987,67 @@
 						"type": "float",
 						"value": 1
 					},
-					"beamDensity": {
+					"moonSize": {
 						"type": "float",
-						"value": 0
+						"value": 0.09000000357627869
 					},
-					"airshipDensity": {
+					"moonX": {
 						"type": "float",
-						"value": 0
+						"value": 0.70300000905990601
+					},
+					"moonY": {
+						"type": "float",
+						"value": 0.62000000476837158
+					},
+					"parallax": {
+						"type": "float",
+						"value": 0.60000002384185791
 					},
 					"scale": {
 						"type": "float",
 						"value": 1
 					},
-					"beamLength": {
+					"seed": {
 						"type": "float",
-						"value": 2.4
+						"value": 0
+					},
+					"starColor": {
+						"type": "color",
+						"value": [
+							0.94999998807907104,
+							0.93000000715255737,
+							0.85000002384185791,
+							1
+						]
+					},
+					"starDensity": {
+						"type": "float",
+						"value": 0
+					},
+					"starScroll": {
+						"type": "float",
+						"value": 0
+					},
+					"starSize": {
+						"type": "float",
+						"value": 1
+					},
+					"time": {
+						"type": "float",
+						"value": 0
+					},
+					"windowColor": {
+						"type": "color",
+						"value": [
+							1,
+							0.81999999284744263,
+							0.44999998807907104,
+							1
+						]
+					},
+					"windowLights": {
+						"type": "float",
+						"value": 0.34999999403953552
 					}
 				},
 				"hidden": [
@@ -1209,7 +1305,7 @@
 						"value": [
 							0.18000000715255737,
 							0.20000000298023224,
-							0.3400000035762787,
+							0.34000000357627869,
 							1
 						]
 					}
@@ -1434,7 +1530,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.3499999940395355
+						"value": 0.34999999403953552
 					}
 				},
 				"hidden": [
@@ -1488,7 +1584,7 @@
 						"type": "color",
 						"value": [
 							1,
-							0.8199999928474426,
+							0.81999999284744263,
 							0.44999998807907104,
 							1
 						]
@@ -1791,8 +1887,8 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
-							0.8999999761581421,
+							0.94999998807907104,
+							0.89999997615814209,
 							0.75,
 							1
 						]
@@ -2059,9 +2155,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
-							0.9200000166893005,
-							0.800000011920929,
+							0.94999998807907104,
+							0.92000001668930054,
+							0.80000001192092896,
 							1
 						]
 					}
@@ -2111,9 +2207,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.7599999904632568,
-							0.7200000286102295,
-							0.6000000238418579,
+							0.75999999046325684,
+							0.72000002861022949,
+							0.60000002384185791,
 							1
 						]
 					}
@@ -2182,7 +2278,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.703
+						"value": 0.70300000905990601
 					}
 				},
 				"hidden": [
@@ -2254,7 +2350,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.6200000047683716
+						"value": 0.62000000476837158
 					}
 				},
 				"hidden": [
@@ -2374,366 +2470,6 @@
 				"name": "Airship Dir",
 				"thumbnail_visible": true
 			},
-			"4": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1000
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 60
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Clock",
-				"thumbnail_visible": true
-			},
-			"6": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 180
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.6000000238418579
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Parallax",
-				"thumbnail_visible": true
-			},
-			"7": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 6
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 240
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 3
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Layer Count",
-				"thumbnail_visible": true
-			},
-			"8": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 300
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.8500000238418579
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Density",
-				"thumbnail_visible": true
-			},
-			"9": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 360
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": -0.949999988079071
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Horizon",
-				"thumbnail_visible": true
-			},
 			"39": {
 				"attributes": {
 					"flow": {
@@ -2804,6 +2540,78 @@
 					"widget"
 				],
 				"name": "Moon Phase",
+				"thumbnail_visible": true
+			},
+			"4": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1000
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 60
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Clock",
 				"thumbnail_visible": true
 			},
 			"40": {
@@ -3004,7 +2812,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 2.4
+						"value": 2.40000009536743164
 					}
 				},
 				"hidden": [
@@ -3021,6 +2829,582 @@
 				],
 				"name": "Beam Length",
 				"thumbnail_visible": true
+			},
+			"43": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": -150,
+					"y": 1560
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Star Density",
+				"thumbnail_visible": true
+			},
+			"44": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 20
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": -150,
+					"y": 1640
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Star Size",
+				"thumbnail_visible": true
+			},
+			"45": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": -150,
+					"y": 1720
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.94999998807907104,
+							0.93000000715255737,
+							0.85000002384185791,
+							1
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Star Color",
+				"thumbnail_visible": true
+			},
+			"46": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "On"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": -150,
+					"y": 1800
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Star Scroll",
+				"thumbnail_visible": true
+			},
+			"6": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2
+					},
+					"min": {
+						"type": "float",
+						"value": -2
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 180
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.60000002384185791
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Parallax",
+				"thumbnail_visible": true
+			},
+			"7": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 6
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 240
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 3
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Layer Count",
+				"thumbnail_visible": true
+			},
+			"8": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.85000002384185791
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Density",
+				"thumbnail_visible": true
+			},
+			"9": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": -2
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 360
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.05000000074505806
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Horizon",
+				"thumbnail_visible": true
 			}
 		},
 		"ui": {
@@ -3030,7 +3414,7 @@
 				"zoom": 1
 			},
 			"selection": [
-				"38"
+				"46"
 			]
 		}
 	},
