@@ -8,52 +8,12 @@
 		"connections": [
 			{
 				"from": [
-					0,
-					"output"
-				],
-				"to": [
-					3,
-					"input0"
-				]
-			},
-			{
-				"from": [
-					4,
-					"output"
-				],
-				"to": [
-					3,
-					"input1"
-				]
-			},
-			{
-				"from": [
-					3,
-					"output0"
-				],
-				"to": [
-					2,
-					"input"
-				]
-			},
-			{
-				"from": [
 					2,
 					"output"
 				],
 				"to": [
 					1,
 					"input"
-				]
-			},
-			{
-				"from": [
-					5,
-					"output"
-				],
-				"to": [
-					0,
-					"columns"
 				]
 			},
 			{
@@ -94,16 +54,6 @@
 				"to": [
 					0,
 					"bigTiles"
-				]
-			},
-			{
-				"from": [
-					10,
-					"output"
-				],
-				"to": [
-					0,
-					"patternShift"
 				]
 			},
 			{
@@ -165,21 +115,54 @@
 					0,
 					"animate"
 				]
+			},
+			{
+				"from": [
+					0,
+					"output"
+				],
+				"to": [
+					2,
+					"input"
+				]
+			},
+			{
+				"from": [
+					5,
+					"output"
+				],
+				"to": [
+					0,
+					"tileAspect"
+				]
+			},
+			{
+				"from": [
+					10,
+					"output"
+				],
+				"to": [
+					0,
+					"clock"
+				]
+			},
+			{
+				"from": [
+					17,
+					"output"
+				],
+				"to": [
+					0,
+					"scale"
+				]
 			}
 		],
 		"inputOrder": {
 			"groups": {
-				"1792918053967": {
-					"children": [
-						4
-					],
-					"collapsed": false,
-					"name": "Mix"
-				},
 				"1792918053969": {
 					"children": [
-						5,
 						6,
+						5,
 						7,
 						8,
 						9
@@ -206,22 +189,24 @@
 				},
 				"1792918054215": {
 					"children": [
-						16,
-						10
+						16
 					],
 					"collapsed": false,
-					"name": "Motion"
+					"name": "Physics"
 				}
 			},
 			"roots": [
 				{
-					"group": 1792918053967
+					"node": 10
 				},
 				{
-					"group": 1792918053969
+					"node": 17
 				},
 				{
 					"group": 1792918054215
+				},
+				{
+					"group": 1792918053969
 				},
 				{
 					"group": 1792918053971
@@ -232,7 +217,7 @@
 			]
 		},
 		"meta": {
-			"author": "",
+			"author": "Stefan Mazur",
 			"category": "source",
 			"deploymentTarget": {
 				"branch": "",
@@ -243,11 +228,11 @@
 					"patch": 0
 				}
 			},
-			"description": "Geo Tiles - tile collage of flat geometric motifs in three colors, 67 motifs: rows and grids (triangles, chevrons, waves, scales, quarter- and half-circle truchets, triangle truchets, bricks, windows, dots, rings, crosses, drops, diamonds, herringbone, plaid, sunbursts, rainbow rings, concentric squares) with single accent elements; combined tiles of mini motifs; strewn quartered circles, leaves on a stem; figures (trees, flowers, tulips, birds, fish, butterflies, stars, moons, suns, houses, mushrooms, clouds, mountains, eyes, spirals, pinwheels, arches, domes, hearts, drops ...). Per tile: motif, zoom (patterns from fine texture to a few big cropped shapes; figures from small to big crops), placement, rotation, mirror and colors. Nothing moves by itself. Columns \/ Rows: tile grid, set separately. Seed: whole numbers, each value is a new layout; changes cut hard. Fill (%): share of tiles shown; fixed rank per tile, raising Fill only adds tiles (FFT friendly). Big Tiles (%): share of 2x2 blocks merged into 2x2, 2x1 or 1x2 tiles. Motion: Animate (%) = share of tiles that follow Pattern Shift (fixed rank per tile, 0 = nothing moves, 100 = all tiles). Pattern Shift 0 to 1 = one loop: patterns travel 8 elements (direction per tile), figures turn once, pulse or bob 4 times; a 0-1 loop is seamless (e.g. BPM Sync 16 beats). Figures with an up direction never rotate. Color 1-3: each tile uses all three colors as background, shape and accent. Backdrop On\/Off: empty tiles show the backdrop color or stay transparent. Drawn by the ISF shader GeoTiles.fs in the patch folder (must stay next to the patch).",
+			"description": "Geo Tiles - tile collage of flat geometric motifs in three colors, 67 motifs: rows and grids (triangles, chevrons, waves, scales, quarter- and half-circle truchets, triangle truchets, bricks, windows, dots, rings, crosses, drops, diamonds, herringbone, plaid, sunbursts, rainbow rings, concentric squares) with single accent elements; combined tiles of mini motifs; strewn quartered circles, leaves on a stem; figures (trees, flowers, tulips, birds, fish, butterflies, stars, moons, suns, houses, mushrooms, clouds, mountains, eyes, spirals, pinwheels, arches, domes, hearts, drops ...). Per tile: motif, zoom, placement, rotation, mirror and colors. Follows the surface model: height is the reference, width shows more or fewer tiles, nothing is stretched. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync); one clock unit moves patterns by one element, and the 0-1000 loop is seamless. 'Scale' multiplies all sizes and speeds: 1 for any single screen, 1\/3 for three stacked to keep the tile size. Physics: 'Animate' = share of tiles that follow Clock (fixed rank per tile, a tile crossfades when it starts or stops following). Grid: 'Rows' = tiles per output height at Scale 1, 'Tile Aspect' = tile width \/ height, 'Seed' whole numbers, each value is a new layout, changes cut hard; 'Fill' = share of tiles shown (fixed rank, raising it only adds tiles, FFT friendly); 'Big Tiles' = share of 2x2 blocks merged into 2x2, 2x1 or 1x2 tiles. Very fine patterns blend into their average color instead of shimmering. Color 1-3: each tile uses all three colors as background, shape and accent. Backdrop: empty tiles show 'Backdrop Color' or stay transparent. Drawn by the ISF shader Resource\/GeoTiles.fs.",
 			"displayName": "Geo Tiles",
 			"identifier": "1a89845f-dffa-4ac8-a147-f9e2d6630754",
 			"licenseName": "",
-			"mail": "",
+			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
 				"textColorIndex": 1,
@@ -277,10 +262,10 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 17,
+		"nextNodeId": 18,
 		"nodes": {
 			"0": {
 				"attributes": {
@@ -292,23 +277,37 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "C:\/Users\/StefanMazurCATI-Co\/OneDrive - CATI - Consilium et auxilium informaticum et technicum\/Dokumente\/Resolume Wire\/Patches\/Geo Tiles\/GeoTiles.fs",
+								"main": "Resource\/GeoTiles.fs",
 								"sub": ""
 							},
 							"value": {
 								"inputs": [
 									{
-										"defaultValue": 8,
-										"max": 32,
-										"min": 1,
-										"name": "columns",
+										"defaultValue": 0,
+										"max": 1000,
+										"min": 0,
+										"name": "clock",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
+										"name": "scale",
 										"type": "float"
 									},
 									{
 										"defaultValue": 6,
-										"max": 24,
+										"max": 200,
 										"min": 1,
 										"name": "rows",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.33299994468688965,
+										"max": 10,
+										"min": 0.10000000149011612,
+										"name": "tileAspect",
 										"type": "float"
 									},
 									{
@@ -319,31 +318,24 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 85,
-										"max": 100,
+										"defaultValue": 0.85000002384185791,
+										"max": 1,
 										"min": 0,
 										"name": "fill",
 										"type": "float"
 									},
 									{
-										"defaultValue": 25,
-										"max": 100,
+										"defaultValue": 0.25,
+										"max": 1,
 										"min": 0,
 										"name": "bigTiles",
 										"type": "float"
 									},
 									{
-										"defaultValue": 60,
-										"max": 100,
-										"min": 0,
-										"name": "animate",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
+										"defaultValue": 0.60000002384185791,
 										"max": 1,
 										"min": 0,
-										"name": "patternShift",
+										"name": "animate",
 										"type": "float"
 									},
 									{
@@ -421,7 +413,7 @@
 					}
 				},
 				"bounds": {
-					"height": 346,
+					"height": 370,
 					"width": 195,
 					"x": 0,
 					"y": 0
@@ -458,6 +450,10 @@
 						"type": "bool",
 						"value": false
 					},
+					"clock": {
+						"type": "float",
+						"value": 0
+					},
 					"color1": {
 						"type": "color",
 						"value": [
@@ -485,25 +481,25 @@
 							1
 						]
 					},
-					"columns": {
-						"type": "float",
-						"value": 8
-					},
 					"fill": {
 						"type": "float",
 						"value": 85
-					},
-					"patternShift": {
-						"type": "float",
-						"value": 0
 					},
 					"rows": {
 						"type": "float",
 						"value": 6
 					},
+					"scale": {
+						"type": "float",
+						"value": 1
+					},
 					"seed": {
 						"type": "float",
 						"value": 1
+					},
+					"tileAspect": {
+						"type": "float",
+						"value": 1.33299994468688965
 					},
 					"time": {
 						"type": "float",
@@ -572,7 +568,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1
+						"value": 1000
 					},
 					"min": {
 						"type": "float",
@@ -621,7 +617,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Pattern Shift",
+				"name": "Clock",
 				"thumbnail_visible": true
 			},
 			"11": {
@@ -944,7 +940,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 100
+						"value": 1
 					},
 					"min": {
 						"type": "float",
@@ -978,7 +974,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 60
+						"value": 0.60000002384185791
 					}
 				},
 				"hidden": [
@@ -993,7 +989,79 @@
 					"unit",
 					"widget"
 				],
-				"name": "Animate (%)",
+				"name": "Animate",
+				"thumbnail_visible": true
+			},
+			"17": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 60
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
 				"thumbnail_visible": true
 			},
 			"2": {
@@ -1032,138 +1100,6 @@
 				"name": "Premultiply Out",
 				"thumbnail_visible": true
 			},
-			"3": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"input0-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"input1-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"size": {
-						"type": "integer",
-						"value": 2
-					},
-					"type0": {
-						"type": "type",
-						"value": "texture2d"
-					},
-					"type1": {
-						"type": "type",
-						"value": "float"
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 195,
-					"x": 400,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input0": {
-						"type": "texture2d",
-						"value": null
-					},
-					"input1": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"input0-dimensions",
-					"input1-dimensions",
-					"size",
-					"type0",
-					"type1"
-				],
-				"name": "Apply Opacity",
-				"thumbnail_visible": true
-			},
-			"4": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 200,
-					"y": 200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Opacity",
-				"thumbnail_visible": true
-			},
 			"5": {
 				"attributes": {
 					"flow": {
@@ -1184,11 +1120,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 32
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 1
+						"value": 0.10000000149011612
 					},
 					"options-count": {
 						"type": "integer",
@@ -1218,7 +1154,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 8
+						"value": 1.33299994468688965
 					}
 				},
 				"hidden": [
@@ -1233,7 +1169,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Columns",
+				"name": "Tile Aspect",
 				"thumbnail_visible": true
 			},
 			"6": {
@@ -1256,7 +1192,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 24
+						"value": 200
 					},
 					"min": {
 						"type": "float",
@@ -1400,7 +1336,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 100
+						"value": 1
 					},
 					"min": {
 						"type": "float",
@@ -1434,7 +1370,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 85
+						"value": 0.85000002384185791
 					}
 				},
 				"hidden": [
@@ -1449,7 +1385,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fill (%)",
+				"name": "Fill",
 				"thumbnail_visible": true
 			},
 			"9": {
@@ -1472,7 +1408,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 100
+						"value": 1
 					},
 					"min": {
 						"type": "float",
@@ -1506,7 +1442,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 25
+						"value": 0.25
 					}
 				},
 				"hidden": [
@@ -1521,7 +1457,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Big Tiles (%)",
+				"name": "Big Tiles",
 				"thumbnail_visible": true
 			}
 		},
@@ -1532,7 +1468,7 @@
 				"zoom": 1
 			},
 			"selection": [
-				"16"
+				"17"
 			]
 		}
 	},

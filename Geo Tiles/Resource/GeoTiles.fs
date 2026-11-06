@@ -1,16 +1,17 @@
 /*{
-    "DESCRIPTION": "Geo Tiles - tile collage of flat geometric motifs in three colors (background, shape, accent per tile). Seed picks motif, rotation, mirror, placement and colors per tile. Fill reveals tiles in a fixed random order. Nothing moves by itself.",
-    "CREDIT": "Geo Tiles",
+    "DESCRIPTION": "Geo Tiles - tile collage of flat geometric motifs in three colors (background, shape, accent per tile). Seed picks motif, rotation, mirror, placement and colors per tile. Fill reveals tiles in a fixed random order. Follows the surface model: height is the reference, width shows more or fewer tiles, nothing is stretched. Nothing moves by itself: driven by clock from outside.",
+    "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
     "ISFVSN": "2",
     "CATEGORIES": ["Generator"],
     "INPUTS": [
-        {"NAME": "columns", "TYPE": "float", "DEFAULT": 8.0, "MIN": 1.0, "MAX": 32.0},
-        {"NAME": "rows", "TYPE": "float", "DEFAULT": 6.0, "MIN": 1.0, "MAX": 24.0},
+        {"NAME": "clock", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 1000.0},
+        {"NAME": "scale", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 10.0},
+        {"NAME": "rows", "TYPE": "float", "DEFAULT": 6.0, "MIN": 1.0, "MAX": 200.0},
+        {"NAME": "tileAspect", "TYPE": "float", "DEFAULT": 1.333, "MIN": 0.1, "MAX": 10.0},
         {"NAME": "seed", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 999.0},
-        {"NAME": "fill", "TYPE": "float", "DEFAULT": 85.0, "MIN": 0.0, "MAX": 100.0},
-        {"NAME": "bigTiles", "TYPE": "float", "DEFAULT": 25.0, "MIN": 0.0, "MAX": 100.0},
-        {"NAME": "animate", "TYPE": "float", "DEFAULT": 60.0, "MIN": 0.0, "MAX": 100.0},
-        {"NAME": "patternShift", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 1.0},
+        {"NAME": "fill", "TYPE": "float", "DEFAULT": 0.85, "MIN": 0.0, "MAX": 1.0},
+        {"NAME": "bigTiles", "TYPE": "float", "DEFAULT": 0.25, "MIN": 0.0, "MAX": 1.0},
+        {"NAME": "animate", "TYPE": "float", "DEFAULT": 0.6, "MIN": 0.0, "MAX": 1.0},
         {"NAME": "color1", "TYPE": "color", "DEFAULT": [0.92, 0.12, 0.20, 1.0]},
         {"NAME": "color2", "TYPE": "color", "DEFAULT": [0.10, 0.10, 0.22, 1.0]},
         {"NAME": "color3", "TYPE": "color", "DEFAULT": [0.96, 0.95, 0.92, 1.0]},
@@ -22,7 +23,8 @@
 #define SQ2 1.41421356
 #define BIG 100.0
 #define ACC 0.12          // share of accent elements in repeated patterns
-#define SHIFTN 8.0        // Pattern Shift 0..1 moves patterns by 8 elements; accents repeat every 8 elements -> seamless loop
+#define SHIFTN 8.0        // accents repeat every 8 elements; 1000 clock units = 125 repeats -> seamless at the Clock wrap
+#define ANIM_FADE 0.05    // Animate range over which a tile crossfades between still and moving
 
 float hash3(vec3 p) {
     p = fract(p * vec3(0.1031, 0.1030, 0.0973));
@@ -137,6 +139,9 @@ float sdStar5(vec2 p, float r, float rf) {
     return length(p - ba * h) * sign(p.y * ba.x - p.x * ba.y);
 }
 
+// atan(0, 0) is undefined in GLSL
+float safeAtan(float y, float x) { return (abs(x) + abs(y) > 0.0) ? atan(y, x) : 0.0; }
+
 vec2 rotA(vec2 p, float a) { float c = cos(a), s = sin(a); return vec2(c * p.x - s * p.y, s * p.x + c * p.y); }
 
 vec2 rot45(vec2 p, float sgn) { return vec2(p.x + sgn * p.y, p.y - sgn * p.x) / SQ2; }
@@ -169,10 +174,9 @@ float mini(float k, vec2 p) {
 
 // ---------- motifs ----------
 // q: tile space, shorter side spans -1..1, ext = half extent of the tile in q units
-// s: pattern shift 0..1, k: tile key. returns (shape distance, accent distance)
+// s: travel in elements (from the clock), k: tile key. returns (shape distance, accent distance)
 vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
     float P = 0.5;
-    s *= SHIFTN;
     // ===== patterns: fill the whole tile =====
     if (m < 0.5) {                       // 0 stripes, accent stripe
         float y = q.y / P + s;
@@ -180,8 +184,7 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
     }
     if (m < 1.5) {                       // 1 waves, accent row
         float y = q.y / P - 0.2 * sin((q.x / P + s) * 6.2831853);
-        float row = floor(y + 0.5);
-        return put((abs(fract(y) - 0.5) - 0.2) * P * 0.8, isAcc(vec2(row, 1.0), k));
+        return put((abs(fract(y) - 0.5) - 0.2) * P * 0.8, isAcc(vec2(floor(y), 1.0), k));
     }
     if (m < 2.5) {                       // 2 scales
         vec2 c = vec2(q.x / P + s, q.y / P);
@@ -253,10 +256,9 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
         return vec2(-1.0, abs(q.y + ext.y - 0.2) - 0.08);
     }
     if (m < 15.5) {                      // 15 big triangles along the tile
-        // triangles stay, the accent steps from triangle to triangle
-        float x = q.x;
+        float x = q.x + s;
         float d = sdTriUp(vec2(fract(x) - 0.5, q.y), -ext.y, 0.5, 2.0 * ext.y);
-        return put(d, isAcc(vec2(floor(x) - floor(s), 15.0), k));
+        return put(d, isAcc(vec2(floor(x), 15.0), k));
     }
     if (m < 16.5) {                      // 16 quartered circles strewn diagonally, shrinking
         vec2 a = ball(q - vec2(-0.55, 0.55), 0.34);
@@ -364,7 +366,7 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
         float r = length(q);
         float ring = r / 0.36 - s;
         float d = max((abs(fract(ring) - 0.5) - 0.25) * 0.36, r - 0.95);
-        return put(d, isAcc(vec2(floor(ring + 0.5), 32.0), k));
+        return put(d, isAcc(vec2(floor(ring), 32.0), k));
     }
     if (m < 33.5) {                      // 33 speech bubble
         float d = sdBox(q - vec2(0.0, 0.15), vec2(0.65, 0.4)) - 0.2;
@@ -410,7 +412,7 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
     // ===== more patterns (zoomable) =====
     if (m < 39.5) {                      // 39 concentric squares
         float t = max(abs(q.x), abs(q.y)) / P - s;
-        return put((abs(fract(t) - 0.5) - 0.25) * P, isAcc(vec2(floor(t + 0.5), 39.0), k));
+        return put((abs(fract(t) - 0.5) - 0.25) * P, isAcc(vec2(floor(t), 39.0), k));
     }
     if (m < 40.5) {                      // 40 rows of rainbow arches
         vec2 c = vec2(q.x / (2.0 * P) + s, q.y / (2.0 * P));
@@ -464,13 +466,13 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
     }
     if (m < 48.5) {                      // 48 sunburst from a corner
         vec2 p = q + ext;
-        float ang = atan(p.y, p.x) / 1.5707963 * 12.0 + s;
+        float ang = safeAtan(p.y, p.x) / 1.5707963 * 12.0 + s;
         float d = (abs(fract(ang) - 0.5) - 0.25) * length(p) * 1.5707963 / 12.0;
         return put(d, isAcc(vec2(floor(ang), 48.0), k));
     }
     if (m < 49.5) {                      // 49 rainbow rings from a corner
         float t = length(q + ext) / P - s;
-        return put((abs(fract(t) - 0.5) - 0.25) * P, isAcc(vec2(floor(t + 0.5), 49.0), k));
+        return put((abs(fract(t) - 0.5) - 0.25) * P, isAcc(vec2(floor(t), 49.0), k));
     }
     if (m < 50.5) {                      // 50 brick wall
         vec2 c = vec2(q.x / (2.0 * P) + s, q.y / P);
@@ -557,7 +559,7 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
     }
     if (m < 65.5) {                      // 65 spiral
         float r = length(q);
-        float t = r / 0.28 - atan(q.y, q.x) / 6.2831853;
+        float t = r / 0.28 - safeAtan(q.y, q.x) / 6.2831853;
         return vec2(max((abs(fract(t) - 0.5) - 0.25) * 0.28, r - 0.95), BIG);
     }
     // 66 mountains with snow cap
@@ -566,21 +568,47 @@ vec2 motif(float m, vec2 q, vec2 ext, float s, float k) {
     return vec2(min(max(big, q.y - 0.3), small), max(big, 0.3 - q.y));
 }
 
+// coverage of a tile: (shape, accent). s = travel in elements; samples = 1, or 4 for moving tiles:
+// several motifs end hard at their cell edges, and a single sample lets those edges step pixel by pixel
+vec2 tileCoverage(float m, vec2 q, vec2 ext, float sc, float s, float tk, float pw, bool figure, float ty, float samples) {
+    if (figure) {
+        // figure motion: rotate (one turn per 8 clock units), pulse or bob (4 per 8 clock units)
+        float w = 6.2831853 * s / SHIFTN;
+        if (ty < 0.5) q = rotA(q, w);
+        else if (ty < 1.5) { float ps = 1.0 + 0.12 * sin(w * 4.0); q /= ps; sc *= ps; }
+        else q.y -= 0.1 * sin(w * 4.0);
+    }
+    vec2 sum = vec2(0.0);
+    for (float i = 0.0; i < samples; i += 1.0) {
+        // rotated grid
+        vec2 o = samples < 1.5 ? vec2(0.0)
+               : i < 0.5 ? vec2(-0.125, -0.375) : i < 1.5 ? vec2(0.375, -0.125) : i < 2.5 ? vec2(-0.375, 0.125) : vec2(0.125, 0.375);
+        vec2 d = motif(m, q + o * pw / sc, ext / sc, s, tk) * sc;
+        float cS = clamp(0.5 - d.x / pw, 0.0, 1.0);
+        float cA = clamp(0.5 - d.y / pw, 0.0, 1.0);
+        // shape and accent share edges: weigh coverages so no background shows through the seam
+        sum += vec2(min(cS, 1.0 - cA), cA);
+    }
+    return sum / samples;
+}
+
 void main() {
-    vec2 res = RENDERSIZE;
+    vec2 res = max(RENDERSIZE, vec2(1.0));
     vec2 fc = isf_FragNormCoord * res;
-    float cols = floor(max(columns, 1.0));
-    float rws = floor(max(rows, 1.0));
     float sd = floor(seed);
-    vec2 cellSz = res / vec2(cols, rws);
-    vec2 cell = min(floor(fc / cellSz), vec2(cols, rws) - 1.0);
+    // surface model: Rows counts the tiles per output height at Scale 1; the width shows more or fewer tiles.
+    // Anchored at the bottom left edge; a tile keeps its motif when the surface grows.
+    float safeScale = clamp(scale, 0.001, 1000.0);
+    float tileH = res.y * safeScale / clamp(floor(rows), 1.0, 1000000.0);
+    vec2 cellSz = vec2(tileH * clamp(tileAspect, 0.01, 100.0), tileH);
+    vec2 cell = floor(fc / cellSz);
 
     // ----- big tiles: 2x2 blocks may merge into 2x2, 2x1 or 1x2 tiles -----
     vec2 org = cell;
     vec2 sz = vec2(1.0);
     vec2 blk = floor(cell / 2.0);
     vec2 o = blk * 2.0;
-    if (o.x + 1.0 < cols && o.y + 1.0 < rws && hash3(vec3(blk, sd + 101.0)) < bigTiles / 100.0) {
+    if (hash3(vec3(blk, sd + 101.0)) < bigTiles) {
         float t = floor(hash3(vec3(blk, sd + 211.0)) * 3.0);
         if (t < 0.5)      { org = o; sz = vec2(2.0, 2.0); }
         else if (t < 1.5) { org = vec2(o.x, cell.y); sz = vec2(2.0, 1.0); }
@@ -594,7 +622,7 @@ void main() {
     if (backdropOn > 0.5) { col = backdropColor.rgb; a = 1.0; }
 
     // fixed rank per tile: raising Fill only adds tiles
-    if (hash3(key + vec3(0.0, 0.0, 7.0)) < fill / 100.0) {
+    if (hash3(key + vec3(0.0, 0.0, 7.0)) < fill) {
         vec2 tsz = sz * cellSz;
         float hs = 0.5 * min(tsz.x, tsz.y);
         vec2 q = (fc - org * cellSz - 0.5 * tsz) / hs;
@@ -612,11 +640,6 @@ void main() {
         if (rot > 1.5) { q = vec2(-q.y, q.x); ext = ext.yx; }
         if (rot > 2.5) { q = vec2(-q.y, q.x); ext = ext.yx; }
 
-        // animation: fixed rank per tile, Animate (%) picks which tiles follow Pattern Shift
-        bool anim = hash3(key + vec3(0.0, 0.0, 43.0)) < animate / 100.0;
-        float dir = hash3(key + vec3(0.0, 0.0, 47.0)) < 0.5 ? 1.0 : -1.0;
-        float sA = anim ? patternShift * dir : 0.0;
-
         bool zoomable = m < 12.5 || (m > 14.5 && m < 15.5) || (m > 38.5 && m < 52.5);
         bool fixedFig = (m > 20.5 && m < 21.5) || (m > 30.5 && m < 31.5) || (m > 34.5 && m < 35.5);
         // half/solid never move; the combined tile only turns its mini motifs (a pulse would re-split its grid)
@@ -627,26 +650,16 @@ void main() {
             float hz = hash3(key + vec3(0.0, 0.0, 53.0));
             sc = hz < 0.15 ? 0.5 : hz < 0.35 ? 0.7 : hz < 0.65 ? 1.0 : hz < 0.85 ? 1.4 : 2.2;
             q /= sc;
-        } else if (!still) {
-            if (m > 18.5 && !fixedFig) {
-                // free placement: size and offset per tile, sometimes a big crop
-                float h1 = hash3(key + vec3(0.0, 0.0, 31.0));
-                sc = h1 < 0.15 ? 1.8 + 4.0 * h1 : 0.6 + 0.9 * h1;
-                vec2 off = (vec2(hash3(key + vec3(0.0, 0.0, 37.0)), hash3(key + vec3(0.0, 0.0, 41.0))) - 0.5) * 0.8;
-                q = (q - off) / sc;
-            }
-            // figure motion: rotate (one turn per loop), pulse or bob (4 per loop)
-            float ty = floor(hash3(key + vec3(0.0, 0.0, 59.0)) * 3.0);
-            if ((upright || fixedFig) && ty < 0.5) ty = 1.0;
-            float w = 6.2831853 * sA;
-            if (ty < 0.5) q = rotA(q, w);
-            else if (ty < 1.5) { float ps = 1.0 + 0.12 * sin(w * 4.0); q /= ps; sc *= ps; }
-            else q.y -= 0.1 * sin(w * 4.0);
+        } else if (!still && m > 18.5 && !fixedFig) {
+            // free placement: size and offset per tile, sometimes a big crop
+            float h1 = hash3(key + vec3(0.0, 0.0, 31.0));
+            sc = h1 < 0.15 ? 1.8 + 4.0 * h1 : 0.6 + 0.9 * h1;
+            vec2 off = (vec2(hash3(key + vec3(0.0, 0.0, 37.0)), hash3(key + vec3(0.0, 0.0, 41.0))) - 0.5) * 0.8;
+            q = (q - off) / sc;
         }
-
-        vec2 d = motif(m, q, ext / sc, sA, tk) * sc;
-        float cS = clamp(0.5 - d.x / pw, 0.0, 1.0);
-        float cA = clamp(0.5 - d.y / pw, 0.0, 1.0);
+        bool figure = !zoomable && !still;
+        float ty = floor(hash3(key + vec3(0.0, 0.0, 59.0)) * 3.0);
+        if ((upright || fixedFig) && ty < 0.5) ty = 1.0;
 
         // colors: background, shape, accent = a permutation of the three
         float pk = floor(hash3(key + vec3(0.0, 0.0, 23.0)) * 6.0);
@@ -654,10 +667,25 @@ void main() {
         vec3 bg = (pk < 2.0) ? c1 : (pk < 4.0) ? c2 : c3;
         vec3 fg = (pk < 0.5) ? c2 : (pk < 1.5) ? c3 : (pk < 2.5) ? c1 : (pk < 3.5) ? c3 : (pk < 4.5) ? c1 : c2;
         vec3 ac = c1 + c2 + c3 - bg - fg;
-        // shape and accent share edges: weigh coverages so no background shows through the seam
-        float wA = cA;
-        float wS = min(cS, 1.0 - cA);
-        col = bg * (1.0 - wS - wA) + fg * wS + ac * wA;
+
+        // elements near pixel size shimmer: blend them into their average color
+        float elemPx = hs * sc * (zoomable ? 0.5 : 1.0);
+        float detail = smoothstep(1.5, 4.0, elemPx);
+        vec2 w = vec2(0.35, 0.15);                       // rough average coverage (shape, accent)
+        if (detail > 0.0) {
+            // fixed rank per tile: Animate picks which tiles follow the clock; a tile crossfades instead of jumping
+            float rank = hash3(key + vec3(0.0, 0.0, 43.0)) * (1.0 - ANIM_FADE);
+            float moving = clamp((animate - rank) / ANIM_FADE, 0.0, 1.0);
+            vec2 cov = vec2(0.0);
+            if (moving < 1.0) cov = tileCoverage(m, q, ext, sc, 0.0, tk, pw, figure, ty, 1.0);
+            if (moving > 0.0) {
+                float dir = hash3(key + vec3(0.0, 0.0, 47.0)) < 0.5 ? 1.0 : -1.0;
+                vec2 mv = tileCoverage(m, q, ext, sc, clock * dir, tk, pw, figure, ty, 4.0);
+                cov = mix(cov, mv, moving);
+            }
+            w = mix(w, cov, detail);
+        }
+        col = bg * (1.0 - w.x - w.y) + fg * w.x + ac * w.y;
         a = 1.0;
     }
 
