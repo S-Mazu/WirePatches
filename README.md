@@ -10,7 +10,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Bass Strings](Bass%20Strings/) | source | Four double bass strings vibrate with the music, one frequency band per string. |
 | [Deco Marquee v2](Deco%20Marquee%20v2/) | source | Art Deco theatre portal: fans of rays and rings, chasing marquee bulbs, ornament border. |
 | [Fire and Smoke](Fire%20and%20Smoke/) | effect | Flames and smoke from a fluid simulation; burning edges, a fire point, or the clip as burn mask. |
-| [Flower Sax](Flower%20Sax/) | source | A Len Lye–style saxophone blows seven kinds of flowers out of its bell. |
+| [Flower Sax](Flower%20Sax/) | source | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](Geo%20Tiles/) | source | Tile collage of 67 flat geometric motifs in three colors. |
 | [Iris Diaphragm](Iris%20Diaphragm/) | source | Mechanical blade iris that closes over the layers below. |
 | [Lye Swing](Lye%20Swing/) | source | Painted big-band score after Len Lye; one shape per frequency band. |
