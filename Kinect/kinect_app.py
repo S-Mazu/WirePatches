@@ -24,6 +24,7 @@ SLIDERS = (
     ("calm", "Calm", 0, 0.95, "%.2f"),
     ("edge_softness", "Edge softness", 0, 1, "%.2f"),
     ("bone_width", "Bone width", 0.05, 20, "%.2f"),
+    ("head_size", "Head size", 0, 10, "%.2f"),
 )
 
 
@@ -97,7 +98,7 @@ def main():
         engine.set_settings(read_sliders())
 
     build_window(settings, on_change, lambda: engine.capture_room())
-    dpg.create_viewport(title="Kinect", width=1210, height=670)
+    dpg.create_viewport(title="Kinect", width=1210, height=695)
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("main", True)

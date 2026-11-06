@@ -2,9 +2,9 @@
 
 Makes projections in Arena interactive with a Kinect v2: a Python tool sends the outlines and skeletons of people to Arena and Wire via Spout.
 
-Last updated: 2026-11-05
+Last updated: 2026-11-06
 
-**Status:** masks and bones are tested with people in front of the sensor. Pulling the sensor cable while running is not tested yet.
+**Status:** masks, bones and head are tested with people in front of the sensor. Pulling the sensor cable while running is not tested yet.
 
 ## Usage
 
@@ -28,6 +28,7 @@ All three are white on transparent, so you can color them and add effects in Are
 | Calm | Steadies outlines and bones; higher values lag behind movement |
 | Edge softness | Masks: from a hard edge to a soft one |
 | Bone width | Bones: line width in percent of the picture height |
+| Head size | Bones: size of the head; 1 is about a real head, 0 turns it off |
 
 Tests (no Kinect needed): `py -3.12 -m unittest`
 
@@ -51,7 +52,7 @@ Tests (no Kinect needed): `py -3.12 -m unittest`
 - **Three pictures at the same time**, each with its own Spout sender:
   - `Kinect Body`: people detected by the Kinect (up to 6).
   - `Kinect Depth`: everything closer than the captured empty room.
-  - `Kinect Bones`: stick figures of the tracked people (up to 6), in line with the masks.
+  - `Kinect Bones`: stick figures of the tracked people (up to 6), in line with the masks. The Kinect delivers only one point for the head, so the head is an estimated disc that shrinks with the distance to the sensor.
 - **Control window:** preview, "Capture empty room" button, sliders, sensor status and FPS. No keyboard shortcuts.
 - **Smooth edges:** masks are upscaled from 512×424 to 1536×1272.
 
@@ -71,8 +72,6 @@ Depth and body data are 512×424 in the Kinect hardware. Upscaling gives smoothe
 - One mask per person
 - Depth and infrared images as Spout sources
 - Joint positions and hand states via OSC to Arena and Wire
-- A head on `Kinect Bones` ([#56](https://github.com/S-Mazu/WirePatches/issues/56)); the Kinect delivers only one point for it
-
 ## Trying alternatives
 
 To compare another library or approach, copy this folder under a name that says how it differs (e.g. `Kinect Native`) and run both side by side. Compare them with real people in front of the sensor, then keep one.

@@ -53,10 +53,10 @@ class KinectSource:
         return {body.tracking_id: self._joints(body) for body in frames.tracked_bodies}
 
     def _joints(self, body):
-        joints = np.full((JOINT_COUNT, 2), np.nan, np.float32)
+        joints = np.full((JOINT_COUNT, 3), np.nan, np.float32)
         for joint in body.joints:
             if joint.tracking_state != TrackingState.NOT_TRACKED:
                 point = joint.to_depth_space(self._sensor.mapper)
                 if point.is_valid():
-                    joints[int(joint.joint_type)] = point.x, point.y
+                    joints[int(joint.joint_type)] = point.x, point.y, joint.position.z
         return joints
