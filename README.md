@@ -20,6 +20,12 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Star Globe](Star%20Globe/) | source | Glowing stars in a snow-globe container, with gravity, bounce and collision. |
 | [Water Drops](Water%20Drops/) | source | View onto a water surface; drops send out interfering, reflecting rings. |
 
+## Examples
+
+| Example | Description |
+|---|---|
+| [Scaler](Scaler/) | Shows live how our patches handle oversized surfaces: height as the reference, `Scale`, anchors. |
+
 ## Tools
 
 | Tool | Description |
