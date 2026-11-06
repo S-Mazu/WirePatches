@@ -2505,31 +2505,115 @@
 					116,
 					"radius"
 				]
+			},
+			{
+				"from": [
+					219,
+					"aspectratio"
+				],
+				"to": [
+					190,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					219,
+					"aspectratio"
+				],
+				"to": [
+					220,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					220,
+					"output0"
+				],
+				"to": [
+					221,
+					"value"
+				]
+			},
+			{
+				"from": [
+					222,
+					"output"
+				],
+				"to": [
+					223,
+					"value"
+				]
+			},
+			{
+				"from": [
+					221,
+					"output0"
+				],
+				"to": [
+					224,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					223,
+					"output0"
+				],
+				"to": [
+					224,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					224,
+					"output0"
+				],
+				"to": [
+					225,
+					"zoom"
+				]
+			},
+			{
+				"from": [
+					225,
+					"output"
+				],
+				"to": [
+					129,
+					"camera"
+				]
+			},
+			{
+				"from": [
+					225,
+					"output"
+				],
+				"to": [
+					158,
+					"camera"
+				]
 			}
 		],
 		"inputOrder": {
 			"groups": {
-				"1793377240033": {
-					"children": [
-						160,
-						161
-					],
-					"collapsed": false,
-					"name": "Mix"
-				},
 				"1793377240035": {
 					"children": [
 						134,
 						153,
 						189,
 						157,
-						159
+						159,
+						161
 					],
 					"collapsed": false,
 					"name": "Layout"
 				},
 				"1793377240037": {
 					"children": [
+						160,
 						91,
 						183,
 						85,
@@ -2565,7 +2649,10 @@
 			},
 			"roots": [
 				{
-					"group": 1793377240033
+					"node": 222
+				},
+				{
+					"group": 1793377240039
 				},
 				{
 					"group": 1793377240035
@@ -2574,15 +2661,12 @@
 					"group": 1793377240037
 				},
 				{
-					"group": 1793377240039
-				},
-				{
 					"group": 1793377240041
 				}
 			]
 		},
 		"meta": {
-			"author": "",
+			"author": "Stefan Mazur",
 			"category": "source",
 			"deploymentTarget": {
 				"branch": "",
@@ -2593,11 +2677,11 @@
 					"patch": 0
 				}
 			},
-			"description": "Scale Colors - overlay source with alpha that shows which parts of the octave are sounding right now (no key detection). Own sound analysis: feed 'Spectrum In' with External (master out of the band\/DJ), never Composition. Expects Arena audio at 48 kHz (Arena preferences); at 44.1 kHz all tones shift by about 1.5 semitones. All octaves above 'Min Freq (Hz)' (below about 400 Hz the FFT cannot separate semitones; low notes are caught through their overtones) up to 'Max Freq (Hz)' (always kept at least one octave above Min) are folded onto the 12 tones C to B; the share common to all tones (drums, noise) is removed, the strongest tone is 1. 'Focus' makes only the main tones light up, 'Gate' keeps everything dark on quiet noise (1 = only very loud tones), 'Fade (s)' is the release time, 'Boost' the input gain. Layout: Keys (one octave), Pie, Ring, Grid 4x3, Circles (static). 'Layout Width' and 'Layout Height' set the box the layout fills as a share of the frame (1 = full width \/ full height): Keys and Grid fill it exactly, Circles spread their positions over it and stay round, Pie and Ring stay round and fit inside. Colors: at rest every cell shows exactly 'Rest Natural' (C D E F G A B) or 'Rest Accidental' (C# D# F# G# A#), including their alpha. A sounding tone replaces this completely with its own color at full opacity. Tone colors: hue from 'Hue Start (°)' spread over 'Hue Range (°)' (0 = one color for all, 360 = full color wheel), in chromatic order or, with 'Fifths Order', along the circle of fifths so the tones of one key get neighbouring colors; 'Tone Saturation' and 'Tone Brightness' set saturation and brightness of all sounding colors. Outlines: 'Line Width', 'Line Color' (width independent of layout size). Separate opacity for cells and lines. Backdrop On\/Off: On = solid Backdrop Color behind everything, Off = transparent background.",
+			"description": "Scale Colors - overlay source with alpha that shows which parts of the octave are sounding right now (no key detection). Own sound analysis: feed 'Spectrum In' with External (master out of the band\/DJ), never Composition. Expects Arena audio at 48 kHz (Arena preferences); at 44.1 kHz all tones shift by about 1.5 semitones. All octaves above 'Min Freq (Hz)' (below about 400 Hz the FFT cannot separate semitones; low notes are caught through their overtones) up to 'Max Freq (Hz)' (always kept at least one octave above Min) are folded onto the 12 tones C to B; the share common to all tones (drums, noise) is removed, the strongest tone is 1. 'Focus' makes only the main tones light up, 'Gate' keeps everything dark on quiet noise (1 = only very loud tones), 'Fade (s)' is the release time, 'Boost' the input gain. 'Scale' sizes the whole layout, lines included, relative to the output height. Layout: Keys (one octave), Pie, Ring, Grid 4x3, Circles (static). 'Layout Width' and 'Layout Height' set the box the layout fills as a share of the frame at Scale 1 (1 = full width \/ full height): Keys and Grid fill it exactly, Circles spread their positions over it and stay round, Pie and Ring stay round and fit inside. One instrument by design: on wide surfaces it does not repeat, set Layout Width per setup. Colors: at rest every cell shows exactly 'Rest Natural' (C D E F G A B) or 'Rest Accidental' (C# D# F# G# A#), including their alpha. A sounding tone replaces this completely with its own color at full opacity. Tone colors: hue from 'Hue Start (°)' spread over 'Hue Range (°)' (0 = one color for all, 360 = full color wheel), in chromatic order or, with 'Fifths Order', along the circle of fifths so the tones of one key get neighbouring colors; 'Tone Saturation' and 'Tone Brightness' set saturation and brightness of all sounding colors. 'Cells Opacity' sets the opacity of the cells. Outlines: 'Line Width', 'Line Color', 'Lines Opacity' (width independent of layout size). Backdrop On\/Off: On = solid Backdrop Color behind everything, Off = transparent background.",
 			"displayName": "Scale Colors",
 			"identifier": "7812ab9c-9b38-4fc9-a80d-e7773a07cd77",
 			"licenseName": "",
-			"mail": "",
+			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
 				"textColorIndex": 1,
@@ -2627,10 +2711,10 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 219,
+		"nextNodeId": 226,
 		"nodes": {
 			"0": {
 				"attributes": {
@@ -13924,7 +14008,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.5
+						"value": 5
 					},
 					"min": {
 						"type": "float",
@@ -14379,7 +14463,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 0.05000000074505806
+						"value": 0.5
 					},
 					"min": {
 						"type": "float",
@@ -19020,9 +19104,25 @@
 						"type": "float",
 						"value": 0
 					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "On"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
 					"options-count": {
 						"type": "integer",
-						"value": 0
+						"value": 2
 					},
 					"unit": {
 						"type": "integer",
@@ -19059,6 +19159,10 @@
 					"instances",
 					"max",
 					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
 					"options-count",
 					"unit",
 					"widget"
@@ -26871,7 +26975,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.5
+						"value": 5
 					},
 					"min": {
 						"type": "float",
@@ -47433,6 +47537,25 @@
 				"name": "Hole R",
 				"thumbnail_visible": true
 			},
+			"219": {
+				"attributes": {},
+				"bounds": {
+					"height": 130,
+					"width": 195,
+					"x": 400,
+					"y": 3600
+				},
+				"class": {
+					"id": "77697265-ec64-44f7-b446-de2a0220c5b8",
+					"version": 0
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {},
+				"hidden": [],
+				"name": "Patch Info",
+				"thumbnail_visible": true
+			},
 			"22": {
 				"attributes": {
 					"flow": {
@@ -53655,6 +53778,352 @@
 					"value-type"
 				],
 				"name": "Weight 1",
+				"thumbnail_visible": true
+			},
+			"220": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input0-type": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 30,
+					"width": 195,
+					"x": 620,
+					"y": 3600
+				},
+				"class": {
+					"id": "77697265-8061-467F-B375-DB03FFF5ED40",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input0-type"
+				],
+				"name": "Inverse Aspect",
+				"thumbnail_visible": true
+			},
+			"221": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"max-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"max-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"min-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"min-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"value-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"value-type": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 840,
+					"y": 3600
+				},
+				"class": {
+					"id": "77697265-7557-4053-ABEC-73E2A9786804",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"max": {
+						"type": "float",
+						"value": 1000000
+					},
+					"min": {
+						"type": "float",
+						"value": 1
+					},
+					"value": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"max-dimensions",
+					"max-type",
+					"min-dimensions",
+					"min-type",
+					"value-dimensions",
+					"value-type"
+				],
+				"name": "Portrait Zoom",
+				"thumbnail_visible": true
+			},
+			"222": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 400,
+					"y": 3760
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"223": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"max-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"max-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"min-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"min-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"value-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"value-type": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 620,
+					"y": 3760
+				},
+				"class": {
+					"id": "77697265-7557-4053-ABEC-73E2A9786804",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"max": {
+						"type": "float",
+						"value": 1000
+					},
+					"min": {
+						"type": "float",
+						"value": 0.00100000004749745
+					},
+					"value": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"max-dimensions",
+					"max-type",
+					"min-dimensions",
+					"min-type",
+					"value-dimensions",
+					"value-type"
+				],
+				"name": "Safe Scale",
+				"thumbnail_visible": true
+			},
+			"224": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 2
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 1060,
+					"y": 3680
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 1
+					},
+					"input1": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"size",
+					"type0",
+					"type1"
+				],
+				"name": "Camera Zoom",
+				"thumbnail_visible": true
+			},
+			"225": {
+				"attributes": {
+					"mode": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 1280,
+					"y": 3680
+				},
+				"class": {
+					"id": "77697265-8E76-4D11-8420-0A3F4CF72566",
+					"version": 0
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"transform": {
+						"type": "transformation2d",
+						"value": null
+					},
+					"zoom": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"mode"
+				],
+				"name": "Camera 2D",
 				"thumbnail_visible": true
 			},
 			"23": {
@@ -183558,7 +184027,7 @@
 				"zoom": 1
 			},
 			"selection": [
-				"218"
+				"225"
 			]
 		}
 	},
