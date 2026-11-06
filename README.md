@@ -10,10 +10,11 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Bass Strings](Bass%20Strings/) | source | Four double bass strings vibrate with the music, one frequency band per string. |
 | [Deco Marquee v2](Deco%20Marquee%20v2/) | source | Art Deco theatre portal: fans of rays and rings, chasing marquee bulbs, ornament border. |
 | [Fire and Smoke](Fire%20and%20Smoke/) | effect | Flames and smoke from a fluid simulation; burning edges, a fire point, or the clip as burn mask. |
-| [Flower Sax](Flower%20Sax/) | source | A Len Lye–style saxophone blows seven kinds of flowers out of its bell. |
+| [Flower Sax](Flower%20Sax/) | source | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](Geo%20Tiles/) | source | Tile collage of 67 flat geometric motifs in three colors. |
 | [Iris Diaphragm](Iris%20Diaphragm/) | source | Mechanical blade iris that closes over the layers below. |
 | [Lye Swing](Lye%20Swing/) | source | Painted big-band score after Len Lye; one shape per frequency band. |
+| [Pride Flag](Pride%20Flag/) | source | A flag moves lightly in the wind: Rainbow, Straight Ally or Progress. |
 | [Rolling Landscape](Rolling%20Landscape/) | source | Art Deco night skyline of the 1930s as scrolling parallax silhouettes. |
 | [Scale Colors](Scale%20Colors/) | source | Shows which of the 12 tones of the octave are sounding right now. |
 | [Star Globe](Star%20Globe/) | source | Glowing stars in a snow-globe container, with gravity, bounce and collision. |
