@@ -1,5 +1,5 @@
 /*{
-    "DESCRIPTION": "Rolling Landscape - Art Deco night skyline as parallax silhouettes (up to 6 layers, back to front), lit windows, moon, searchlights, airships. Works on any output size (one projector, several side by side or stacked, LED walls): sizes in scene units (scale), positions relative to the frame edges, searchlights and airships as densities. Nothing moves by itself: driven by clock from outside.",
+    "DESCRIPTION": "Rolling Landscape - Art Deco night skyline as parallax silhouettes (up to 6 layers, back to front), lit windows, stars, moon, searchlights, airships. Follows the surface model: height is the reference, everything scales with the output height and scale, width shows more or less scene, nothing is stretched. Nothing moves by itself: driven by clock from outside.",
     "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
     "ISFVSN": "2",
     "CATEGORIES": ["Generator"],
@@ -9,7 +9,7 @@
         {"NAME": "parallax",    "TYPE": "float", "DEFAULT": 0.6,  "MIN": -2.0, "MAX": 2.0},
         {"NAME": "layerCount",  "TYPE": "float", "DEFAULT": 3.0,  "MIN": 0.0,  "MAX": 6.0},
         {"NAME": "density",     "TYPE": "float", "DEFAULT": 0.85, "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "horizon",     "TYPE": "float", "DEFAULT": -0.95,"MIN": -2.0, "MAX": 2.0},
+        {"NAME": "horizon",     "TYPE": "float", "DEFAULT": 0.05, "MIN": -2.0, "MAX": 10.0},
         {"NAME": "seed",        "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1000.0},
         {"NAME": "color1", "TYPE": "color", "DEFAULT": [0.30, 0.33, 0.50, 1.0]},
         {"NAME": "color2", "TYPE": "color", "DEFAULT": [0.24, 0.26, 0.42, 1.0]},
@@ -19,6 +19,10 @@
         {"NAME": "color6", "TYPE": "color", "DEFAULT": [0.04, 0.04, 0.10, 1.0]},
         {"NAME": "windowLights","TYPE": "float", "DEFAULT": 0.35, "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "windowColor", "TYPE": "color", "DEFAULT": [1.0, 0.82, 0.45, 1.0]},
+        {"NAME": "starDensity", "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1.0},
+        {"NAME": "starSize",    "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 20.0},
+        {"NAME": "starColor",   "TYPE": "color", "DEFAULT": [0.95, 0.93, 0.85, 1.0]},
+        {"NAME": "starScroll",  "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1.0},
         {"NAME": "moonX",       "TYPE": "float", "DEFAULT": 0.703,"MIN": -3.0, "MAX": 3.0},
         {"NAME": "moonY",       "TYPE": "float", "DEFAULT": 0.62, "MIN": -3.0, "MAX": 3.0},
         {"NAME": "moon",        "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
@@ -59,6 +63,10 @@ float triU(vec2 q, float cx, float y0, float hw, float h) {
     return max(dot(p - vec2(hw, 0.0), n), -p.y);
 }
 float circ(vec2 q, vec2 c, float r) { return length(q - c) - r; }
+// 1 inside, 0 outside, soft over +-w (smoothstep with reversed edges is undefined in GLSL)
+float aa(float d, float w) { return 1.0 - smoothstep(-w, w, d); }
+// atan(0, 0) is undefined in GLSL
+float safeAtan(float y, float x) { return (abs(x) + abs(y) > 0.0) ? atan(y, x) : 0.0; }
 
 // "over" for straight alpha
 void over(inout vec3 col, inout float a, vec3 c, float ca) {
@@ -77,9 +85,11 @@ vec3 layerColor(int i) {
 }
 
 const float HALF_CELL = 0.15;   // half cell width in item units
-const float PX_PER_UNIT = 540.0;   // scene unit at Scale 1: 1080 px = 2 units (one HD projector high)
-const float BEAM_CELL = 0.62;      // searchlight spacing along the ground (scene units)
-const int   BEAM_REACH = 16;       // neighbour cells checked per side; covers Beam Length up to 20
+const float BEAM_CELL = 0.155;     // searchlight spacing along the ground at Beam Density 1 (scene units)
+const int   BEAM_REACH = 56;       // neighbour cells checked per side; covers Beam Length up to 20
+const float STAR_CELL = 0.06;      // star spacing at Star Density 1 (scene units)
+const float STAR_RADIUS = 0.006;   // largest star at Star Size 1 (scene units)
+const int   STAR_REACH = 3;        // neighbour cells checked per side; covers Star Size up to 20
 const float SHIP_CELL = 1.2;       // airship cell length along a row (scene units)
 const float SHIP_ROW = 0.24;       // airship row height (scene units)
 const float SHIP_MIN_ALT = 1.1;    // airships fly at least this high above the horizon
@@ -201,19 +211,49 @@ vec3 motif(int m, vec2 q, float W, float H, float h3) {
 
 void main() {
     vec2 res = RENDERSIZE;
-    // sizes: scene units, independent of the output size; positions: relative to the frame edges
-    float ppu = PX_PER_UNIT * max(scale, 1e-3);        // pixels per scene unit (Scale 0 guarded)
+    // surface model: height is the reference. The visible area is y +-1/scale, x +-aspect/scale.
+    float safeScale = clamp(scale, 0.001, 1000.0);
+    float ppu = 0.5 * max(res.y, 1.0) * safeScale;     // pixels per scene unit
     vec2 p = (gl_FragCoord.xy - 0.5 * res) / ppu;      // scene coordinates, origin in the frame centre
     vec2 halfExt = 0.5 * res / ppu;                    // half width / half height of the frame in scene units
     float pix = 1.0 / ppu;                             // one pixel in scene units
-    float hz = horizon * halfExt.y;                    // Horizon: -1 = bottom edge, 1 = top edge
-    const float dir = 1.0;   // direction comes from the clock (play it backwards in Arena)
+    float hz = horizon - halfExt.y;                    // Horizon: distance above the bottom edge, in scene units
 
     vec3 col = vec3(0.0);
     float a = 0.0;
 
     // ---------- backdrop ----------
     if (backdropOn > 0.5) { col = backdropColor.rgb; a = 1.0; }
+
+    // ---------- stars (behind the moon): one possible star per cell, density 0-1 ----------
+    // positions do not depend on density or size, so both can follow FFT without the stars jumping
+    if (starDensity > 0.0 && starSize > 0.0) {
+        float sr = STAR_RADIUS * starSize;
+        // the moon disc hides the stars, also on its dark side
+        float moonMask = 1.0;
+        if (moon > 0.0 && moonSize > 0.0) {
+            moonMask = 1.0 - moon * aa(length(p - vec2(moonX * halfExt.x, moonY * halfExt.y)) - moonSize, pix);
+        }
+        // Star Scroll: stars move like one more layer behind Layer 1
+        vec2 sp = p;
+        if (starScroll > 0.5) sp.x += clock * 0.25 * (1.0 - parallax);
+        vec2 c0 = floor(sp / STAR_CELL);
+        int reach = int(min(ceil(sr / STAR_CELL + 0.9), float(STAR_REACH)));
+        for (int j = -reach; j <= reach; j++) {
+            for (int i = -reach; i <= reach; i++) {
+                vec2 c = c0 + vec2(float(i), float(j));
+                float h = hash3(vec3(c, seed + 151.0)) * 0.95;
+                float on = smoothstep(h, h + 0.05, starDensity);   // fades in smoothly as density rises
+                if (on <= 0.0) continue;
+                vec2 jit = vec2(hash3(vec3(c, seed + 157.0)), hash3(vec3(c, seed + 163.0))) - 0.5;
+                vec2 q = sp - (c + 0.5 + jit * 0.8) * STAR_CELL;
+                float size = mix(0.4, 1.0, hash3(vec3(c, seed + 167.0)));
+                float k = sqrt(abs(q.x)) + sqrt(abs(q.y));          // four-pointed star
+                float bright = mix(0.5, 1.0, hash3(vec3(c, seed + 173.0)));
+                over(col, a, starColor.rgb, aa(k * k - sr * size, pix) * on * bright * moonMask);
+            }
+        }
+    }
 
     // ---------- moon with ray fan ----------
     // moonPhase: 0 = new moon, 0.25 = first quarter (right half lit), 0.5 = full, 0.75 = last quarter, 1 = new
@@ -226,7 +266,7 @@ void main() {
         float ph = fract(moonPhase) * 6.2831853;
         float litFrac = 0.5 - 0.5 * cos(ph);             // 0 at new moon, 1 at full moon
         if (moonRays > 0.0) {
-            float ang = atan(v.y, v.x);
+            float ang = safeAtan(v.y, v.x);
             float ray = step(0.5, fract(ang * 16.0 / 6.2831853));
             float rIn  = 1.3 * ms;
             float rOut = rIn + 2.5 * ms * moonRays;      // classic look: 3.8 * ms at moonRays = 1
@@ -237,20 +277,21 @@ void main() {
         vec2 u = v / ms;
         float w = sqrt(max(0.0, 1.0 - u.y * u.y));       // half width of the disc in this row (NaN guard)
         float e = max(0.02, pix / ms);                   // soft edge, at least one pixel
-        float xt = (max(w, abs(u.x)) + 2.0 * e) * cos(ph);   // max: also covers the anti-aliased rim outside the disc             // 2e: no stray rim at new / full moon
+        float xt = (max(w, abs(u.x)) + 2.0 * e) * cos(ph);   // max: also covers the anti-aliased rim outside the disc; 2e: no stray rim at new / full moon
         float lit = sin(ph) >= 0.0 ? smoothstep(xt - e, xt + e, u.x)          // waxing: right side lit
                                    : 1.0 - smoothstep(-xt - e, -xt + e, u.x); // waning: left side lit
-        float disc = smoothstep(pix, -pix, r - ms) * lit;
+        float disc = aa(r - ms, pix) * lit;
         over(col, a, moonColor.rgb, disc * moon);
     }
 
     // ---------- searchlights (behind the skyline): one possible light per ground cell, density 0-1 ----------
-    // endless along x like the skyline; each pixel only checks the cells a beam can reach
-    if (beamDensity > 0.0 && beamLength > 0.0) {
+    // endless along x like the skyline; each pixel only checks the cells a beam can reach at its height
+    float beamY = p.y - (hz + 0.1);
+    if (beamDensity > 0.0 && beamLength > 0.0 && beamY > 0.0) {
         float c0 = floor(p.x / BEAM_CELL);
-        int reach = int(ceil(beamLength * 0.42 / BEAM_CELL)) + 1;   // sin(max beam angle ~0.4 rad) ~ 0.42
-        for (int k = -BEAM_REACH; k <= BEAM_REACH; k++) {
-            if (k < -reach || k > reach) continue;
+        // tan(max beam angle ~0.4 rad) ~ 0.42; the beam ends at beamLength
+        int reach = int(min(ceil(min(beamY, beamLength) * 0.43 / BEAM_CELL) + 1.0, float(BEAM_REACH)));
+        for (int k = -reach; k <= reach; k++) {
             float c = c0 + float(k);
             float h = hash3(vec3(c, 61.0, seed)) * 0.95;
             float on = smoothstep(h, h + 0.05, beamDensity);      // fades in smoothly as density rises
@@ -259,8 +300,8 @@ void main() {
             vec2 base = vec2((c + 0.5 + jx * 0.6) * BEAM_CELL, hz + 0.1);
             float aim = 0.35 * sin(clock * (0.12 + 0.02 * mod(c, 6.0)) + c * 2.1);
             vec2 v = p - base;
-            float ang = atan(v.x, v.y);
-            float beam = smoothstep(0.045, 0.0, abs(ang - aim));
+            float ang = safeAtan(v.x, v.y);
+            float beam = 1.0 - smoothstep(0.0, 0.045, abs(ang - aim));
             beam *= smoothstep(0.0, 0.3, v.y) * (1.0 - smoothstep(0.25 * beamLength, beamLength, length(v)));
             over(col, a, beamColor.rgb, beam * 0.35 * on);
         }
@@ -293,7 +334,7 @@ void main() {
                 d = min(d, sdBox(q, vec2(0.02, -0.07), vec2(0.04, 0.012)));
                 float tail = ad > 0.0 ? 0.22 : -0.22;
                 d = min(d, sdBox(q, vec2(tail, 0.0), vec2(0.025, 0.07)));
-                over(col, a, airshipColor.rgb, smoothstep(pix, -pix, d * sz) * on);
+                over(col, a, airshipColor.rgb, aa(d * sz, pix) * on);
             }
         }
     }
@@ -307,7 +348,7 @@ void main() {
         float s = mix(0.60, 1.15, t);                  // item scale
         float speed = 1.0 - parallax * (1.0 - t) * 0.9;
         float yb = hz + (1.0 - t) * 0.12;               // baseline
-        float wx = p.x / s + clock * 0.25 * speed * dir / s + fi * 7.31;
+        float wx = p.x / s + clock * 0.25 * speed / s + fi * 7.31;
         float cellW = 2.0 * HALF_CELL;
         float c = floor(wx / cellW);
         vec2 q = vec2((fract(wx / cellW) - 0.5) * cellW, (p.y - yb) / s);
@@ -338,15 +379,15 @@ void main() {
                 vec2 g = vec2(0.025, 0.035);
                 vec2 cell = floor(q / g);
                 vec2 f = (fract(q / g) - 0.5) * g;
-                float win = smoothstep(px, -px, sdBox(f, vec2(0.0), vec2(0.007, 0.010)));
+                float win = aa(sdBox(f, vec2(0.0), vec2(0.007, 0.010)), px);
                 float lit = step(hash3(vec3(cell + vec2(c * 13.0, 0.0), fi + 51.0 + seed)), windowLights);
-                float inside = smoothstep(px, -px, d);
+                float inside = aa(d, px);
                 over(col, a, layerColor(i), inside * vis);
                 over(col, a, windowColor.rgb, win * lit * vis);
                 continue;
             }
         }
-        over(col, a, layerColor(i), smoothstep(px, -px, d) * vis);
+        over(col, a, layerColor(i), aa(d, px) * vis);
     }
 
     gl_FragColor = vec4(col, a);
