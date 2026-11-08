@@ -30,7 +30,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 
 | Tool | Description |
 |---|---|
-| [Kinect](Kinect/) | Sends the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. |
+| [Kinect - Discontinued](Kinect%20-%20Discontinued/) | **Discontinued, no longer developed.** Sent the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. We will rebuild this with a LIDAR. |
 
 ## Installation
 

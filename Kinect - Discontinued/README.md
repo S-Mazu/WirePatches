@@ -1,10 +1,14 @@
-# Kinect
+# Kinect (Discontinued)
 
-Makes projections in Arena interactive with a Kinect v2: a Python tool sends the outlines and skeletons of people to Arena and Wire via Spout.
+> **Discontinued since 2026-11-08.** This tool is no longer developed. We will rebuild the idea with a LIDAR.
 
-Last updated: 2026-11-06
+Made projections in Arena interactive with a Kinect v2: a Python tool sends the outlines and skeletons of people to Arena and Wire via Spout.
 
-**Status:** masks, bones and head are tested with people in front of the sensor. Pulling the sensor cable while running is not tested yet.
+Last updated: 2026-11-08
+
+**Status:** masks, bones and head were tested with people in front of the sensor. Pulling the sensor cable while running was not tested.
+
+**Last known problem:** on 2026-11-06 the tool showed the shapes correctly, but nothing arrived in Arena. On 2026-11-08 the tool's own Spout senders, sending a test mask without a Kinect, arrived correctly in Arena on the show machine. No bug was found in the code and the cause is unknown. The machine has an Intel and an NVIDIA graphics adapter, so a different adapter for the tool and Arena is possible, but this was not confirmed.
 
 ## Usage
 
