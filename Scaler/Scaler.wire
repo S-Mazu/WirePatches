@@ -718,7 +718,37 @@
 			},
 			{
 				"from": [
+					37,
+					"output0"
+				],
+				"to": [
+					54,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					54,
+					"output0"
+				],
+				"to": [
+					55,
+					"value"
+				]
+			},
+			{
+				"from": [
 					53,
+					"output0"
+				],
+				"to": [
+					55,
+					"max"
+				]
+			},
+			{
+				"from": [
+					55,
 					"output0"
 				],
 				"to": [
@@ -747,7 +777,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Scaler - example patch: how our patches handle oversized surfaces. Load it in Arena, then change the composition or clip size and the Scale control, and watch the picture. Open it in Wire to see the node chain, with notes on the canvas. Height is the reference: everything scales with the output height, the width only decides how much of the scene is visible, nothing is stretched. Patch Info gives the aspect ratio at runtime; one Camera 2D with zoom = clamp(1\/aspect, 1, 1000000) x clamp(Scale, 0.001, 1000) feeds every render node. The visible area is then y +-1\/Scale and x +-aspect\/Scale. White circle: radius 1, touches top and bottom at Scale 1. Gray squares: one reference height each. Red markers: anchored to the corners. Yellow line: anchored to the bottom edge with a fixed offset. The text shows the live values.",
+			"description": "Scaler - example patch: how our patches handle oversized surfaces. Load it in Arena, then change the clip size and the Scale control, and watch the picture; the picture explains each element in its own text. Open it in Wire to see the node chain, with notes on the canvas. Height is the reference: everything scales with the output height, the width only decides how much of the scene is visible, nothing is stretched. Patch Info gives the aspect ratio at runtime; one Camera 2D with zoom = clamp(1\/aspect, 1, 1000000) x clamp(Scale, 0.001, 1000) feeds every render node. The visible area is then y +-1\/Scale and x +-aspect\/Scale. White circle: radius 1, touches top and bottom at Scale 1. Gray squares: one reference height each. Red markers: anchored to the corners. Yellow line: anchored to the bottom edge with a fixed offset. The text explains the elements and shows the live values.",
 			"displayName": "Scaler",
 			"identifier": "4da874db-660a-401d-b6c2-adce5cbf46fe",
 			"licenseName": "",
@@ -784,7 +814,7 @@
 			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 54,
+		"nextNodeId": 56,
 		"nodes": {
 			"0": {
 				"attributes": {},
@@ -1660,7 +1690,7 @@
 					}
 				},
 				"bounds": {
-					"height": 106,
+					"height": 154,
 					"width": 195,
 					"x": 1060,
 					"y": 1000
@@ -2519,7 +2549,7 @@
 					}
 				},
 				"bounds": {
-					"height": 130,
+					"height": 322,
 					"width": 195,
 					"x": 1700,
 					"y": 800
@@ -2700,7 +2730,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 106,
 					"width": 195,
 					"x": 1540,
 					"y": -340
@@ -2759,7 +2789,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 106,
 					"width": 195,
 					"x": 1540,
 					"y": -270
@@ -2887,7 +2917,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 106,
 					"width": 195,
 					"x": 1540,
 					"y": -200
@@ -2946,7 +2976,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 106,
 					"width": 195,
 					"x": 1540,
 					"y": -130
@@ -3005,7 +3035,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 106,
 					"width": 195,
 					"x": 1540,
 					"y": -60
@@ -3092,7 +3122,7 @@
 					}
 				},
 				"bounds": {
-					"height": 106,
+					"height": 298,
 					"width": 195,
 					"x": 1780,
 					"y": -200
@@ -3312,7 +3342,7 @@
 					"outlinecolor": {
 						"type": "color",
 						"value": [
-							1,
+							0,
 							0,
 							0,
 							1
@@ -3320,7 +3350,7 @@
 					},
 					"outlinewidth": {
 						"type": "float",
-						"value": 0
+						"value": 0.20000000298023224
 					},
 					"position": {
 						"type": "float2",
@@ -3538,7 +3568,7 @@
 				"constants": {
 					"input0": {
 						"type": "string",
-						"value": "Size "
+						"value": "HOW THIS PATCH ADAPTS TO ANY SURFACE\nMove Scale, or change Width \/ Height on the clip.\n\nWHITE CIRCLE: stays round, never stretched.\nAt Scale 1 it touches top and bottom.\nGRAY SQUARES: each is one screen height at Scale 1.\nA wider surface shows more squares.\nRED MARKERS: always on the corners of the frame.\nYELLOW LINE: fixed distance above the bottom edge.\n\nSize "
 					}
 				},
 				"hidden": [
@@ -3861,7 +3891,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 0.00039999998989515
+						"value": 0.00026000000070781
 					}
 				},
 				"hidden": [
@@ -3873,6 +3903,135 @@
 					"type1"
 				],
 				"name": "Text Size",
+				"thumbnail_visible": true
+			},
+			"54": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 2
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 1780,
+					"y": 20
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 1
+					},
+					"input1": {
+						"type": "float",
+						"value": 0.00026999998954125
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"size",
+					"type0",
+					"type1"
+				],
+				"name": "Text Width Limit",
+				"thumbnail_visible": true
+			},
+			"55": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"max-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"max-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"min-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"min-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"value-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"value-type": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 2020,
+					"y": -40
+				},
+				"class": {
+					"id": "77697265-7557-4053-ABEC-73E2A9786804",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"value": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"max-dimensions",
+					"max-type",
+					"min-dimensions",
+					"min-type",
+					"value-dimensions",
+					"value-type"
+				],
+				"name": "Text Size Limit",
 				"thumbnail_visible": true
 			},
 			"6": {
@@ -4050,7 +4209,7 @@
 				"zoom": 1
 			},
 			"selection": [
-				"53"
+				"55"
 			]
 		}
 	},

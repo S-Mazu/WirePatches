@@ -2,7 +2,7 @@
 
 An example source patch: it shows how our patches handle oversized surfaces, such as several projectors or LED walls. Load it, change the surface and `Scale`, and watch what happens. It is a reference to learn from and copy, not show content.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-08
 
 ## Vision
 
@@ -44,7 +44,7 @@ Everyone on the team should be able to see the rule at work and take it into the
 | Gray squares | One reference height each. A wider surface shows more of them |
 | Red markers | Anchored to the corners of the frame |
 | Yellow line | Anchored to the bottom edge with a fixed offset |
-| Text | Live values: size, aspect, `Scale`, camera zoom |
+| Text | Explains each element and shows the live values: size, aspect, `Scale`, camera zoom |
 
 Try this: at 1920×3240 and `Scale` ⅓ the circle has the size it has on one 1080 px projector, and the surface shows three squares on top of each other. The yellow line stays at the bottom.
 
@@ -80,7 +80,7 @@ The full rules are in the section "Surface model" in [CLAUDE.md](../CLAUDE.md).
 
 - Follows the surface model. This patch demonstrates it.
 - `Scale`: 1 for any single screen, also 4K; ⅓ for three stacked to keep the size of one screen.
-- Exceptions: the text uses a fixed share of the output height and ignores `Scale`, so it stays readable.
+- Exceptions: the text follows the output size and ignores `Scale`, so it stays readable on any surface.
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip.
 - Size-dependent parameters: all shapes scale with the output height and `Scale`.
 
@@ -102,6 +102,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-08: The picture now explains each element and how to try it.
 - 2026-11-06: First version.
 
 ---
