@@ -37,20 +37,20 @@ All ranges are deliberately wide; the extremes are safe. There is no `Clock`: th
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
 
 **Physics**
-- `Speed` (0 to 10, default 1): tempo of the fire and smoke. 0 freezes the image.
+- `Speed` (0 to 10, default 1): 0 freezes the image, below 1 is slow motion (a lava lamp at low values). Above 1 the flow gets stronger; the fluid does not break up.
 - `Rise` (0 to 5, default 1): how strongly hot gas climbs. 0 lets the smoke hang in the air.
 - `Wind Direction (°)` (0 to 360, default 0): where the wind blows to; 0 = right, 90 = up.
 - `Wind Strength` (0 to 10, default 0): carries all flames and all smoke along together.
-- `Swirl` (0 to 5, default 1): the rolling eddies in flames and smoke.
+- `Swirl` (0 to 5, default 1): the large rolling eddies in flames and smoke. The fine eddies stay the same at every value.
 
 **Fire**
-- `Fire Amount` (0 to 10, default 1): how much burns. 0 = no flames. Above 1 flames take over more and more of the frame; at 10 the screen is an inferno.
-- `Flame Length` (0 to 10, default 1): how far flames reach before they burn out.
+- `Fire Strength` (0 to 10, default 1): how strongly the source burns. 0 = no flames. Above 1 the flames feed themselves and spread from the source; at 10 the screen is an inferno. Nothing ignites in clean air.
+- `Flame Reach` (0 to 10, default 1): how far flames reach before they burn out.
 - `Fire Burst` (0 to 1, default 0): a short flare-up while it is high, good for FFT or a button.
 - `Flame Core`, `Flame Mid`, `Flame Tip`: colors from the hottest to the coolest part.
 
 **Smoke**
-- `Smoke Amount` (0 to 10, default 0.5): how much smoke rises. Above 2 a fog builds over the whole frame; at 10 with a long `Smoke Life (s)` it is a dense fog.
+- `Smoke Amount` (0 to 10, default 0.5): how much smoke rises. Above 2 it stays longer and collects under the top of the frame; at 10 the source fills the frame with a dense fog.
 - `Smoke Life (s)` (0.1 to 120, default 4): seconds until smoke dissolves.
 - `Smoke Color`.
 
@@ -82,6 +82,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-08: Speed and Swirl no longer tear the fluid apart. Fire and fog now only grow from the source. Smoke gets depth at high density. Renamed `Fire Amount` to `Fire Strength` and `Flame Length` to `Flame Reach`.
 - 2026-11-08: First version. Split from Fire and Smoke, with a new fluid simulation (#43, #26, #27).
 
 ---

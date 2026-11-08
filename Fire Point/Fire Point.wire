@@ -389,7 +389,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed sets its tempo. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the rolling eddies). Fire: Fire Amount (above 1 flames take over more and more of the frame, at 10 an inferno), Flame Length (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core \/ Mid \/ Tip from hottest to coolest. Smoke: Smoke Amount (above 2 a fog builds over the whole frame), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Burn X \/ Y (0 = centre, in height units), Burn Z (depth: larger is further away and smaller), Burn Size, Burn Rotation, Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource\/FirePoint.fs.",
+			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Burn X / Y (0 = centre, in height units), Burn Z (depth: larger is further away and smaller), Burn Size, Burn Rotation, Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource/FirePoint.fs.",
 			"displayName": "Fire Point",
 			"identifier": "828fc781-55ca-44bd-92b1-cbd418b4bce6",
 			"licenseName": "",
@@ -423,7 +423,7 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
+			"url": "https://github.com/S-Mazu/WirePatches",
 			"vendor": ""
 		},
 		"nextNodeId": 38,
@@ -475,7 +475,7 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "Resource\/FirePoint.fs",
+								"main": "Resource/FirePoint.fs",
 								"sub": ""
 							},
 							"value": {
@@ -578,8 +578,8 @@
 									{
 										"defaultValue": [
 											1,
-											0.93000000715255737,
-											0.68000000715255737,
+											0.9300000071525574,
+											0.6800000071525574,
 											1
 										],
 										"name": "flameCore",
@@ -597,7 +597,7 @@
 									},
 									{
 										"defaultValue": [
-											0.62000000476837158,
+											0.6200000047683716,
 											0.07000000029802322,
 											0.01999999955296516,
 											1
@@ -622,8 +622,8 @@
 									{
 										"defaultValue": [
 											0.41999998688697815,
-											0.40999999642372131,
-											0.40000000596046448,
+											0.4099999964237213,
+											0.4000000059604645,
 											1
 										],
 										"name": "smokeColor",
@@ -658,7 +658,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.15999999642372131,
+										"defaultValue": 0.1599999964237213,
 										"max": 10,
 										"min": 0,
 										"name": "burnSize",
@@ -731,7 +731,7 @@
 					},
 					"burnSize": {
 						"type": "float",
-						"value": 0.15999999642372131
+						"value": 0.1599999964237213
 					},
 					"burnX": {
 						"type": "float",
@@ -777,8 +777,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.93000000715255737,
-							0.68000000715255737,
+							0.9300000071525574,
+							0.6800000071525574,
 							1
 						]
 					},
@@ -798,7 +798,7 @@
 					"flameTip": {
 						"type": "color",
 						"value": [
-							0.62000000476837158,
+							0.6200000047683716,
 							0.07000000029802322,
 							0.01999999955296516,
 							1
@@ -836,8 +836,8 @@
 						"type": "color",
 						"value": [
 							0.41999998688697815,
-							0.40999999642372131,
-							0.40000000596046448,
+							0.4099999964237213,
+							0.4000000059604645,
 							1
 						]
 					},
@@ -1162,7 +1162,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fire Amount",
+				"name": "Fire Strength",
 				"thumbnail_visible": true
 			},
 			"14": {
@@ -1234,7 +1234,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Flame Length",
+				"name": "Flame Reach",
 				"thumbnail_visible": true
 			},
 			"15": {
@@ -1345,8 +1345,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.93000000715255737,
-							0.68000000715255737,
+							0.9300000071525574,
+							0.6800000071525574,
 							1
 						]
 					}
@@ -1448,7 +1448,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.62000000476837158,
+							0.6200000047683716,
 							0.07000000029802322,
 							0.01999999955296516,
 							1
@@ -1681,8 +1681,8 @@
 						"type": "color",
 						"value": [
 							0.41999998688697815,
-							0.40999999642372131,
-							0.40000000596046448,
+							0.4099999964237213,
+							0.4000000059604645,
 							1
 						]
 					}
@@ -2100,7 +2100,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.15999999642372131
+						"value": 0.1599999964237213
 					}
 				},
 				"hidden": [

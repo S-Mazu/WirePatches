@@ -309,7 +309,7 @@
 						41
 					],
 					"collapsed": false,
-					"name": "Burn"
+					"name": "Burn By Brightness"
 				}
 			},
 			"roots": [
@@ -345,7 +345,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Fire Mask - the brightness of the clip below decides what burns. A real-time fluid simulation. Burns as soon as it is loaded; Speed sets its tempo. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the rolling eddies). Fire: Fire Amount (above 1 flames take over more and more of the frame, at 10 an inferno), Flame Length (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core \/ Mid \/ Tip from hottest to coolest. Smoke: Smoke Amount (above 2 a fog builds over the whole frame), Smoke Life (seconds until it dissolves), Smoke Color. Burn: Burn Level picks the brightness that burns (0 = black, 1 = white), Burn Range is the width of the burning band around that brightness, Burn Softness its soft edge, Show Input keeps the clip visible under the fire. Shader: Resource\/FireMask.fs.",
+			"description": "Fire Mask - the brightness of the clip below decides what burns. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Burn By Brightness: Burn Brightness picks the brightness that burns (0 = black, 1 = white), Brightness Range is the width of the burning band around that brightness, Range Softness its soft edge, Show Input keeps the clip visible under the fire. Shader: Resource/FireMask.fs.",
 			"displayName": "Fire Mask",
 			"identifier": "b3845495-479d-45ad-809f-315931b93a3a",
 			"licenseName": "",
@@ -379,7 +379,7 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
+			"url": "https://github.com/S-Mazu/WirePatches",
 			"vendor": ""
 		},
 		"nextNodeId": 42,
@@ -431,7 +431,7 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "Resource\/FireMask.fs",
+								"main": "Resource/FireMask.fs",
 								"sub": ""
 							},
 							"value": {
@@ -534,8 +534,8 @@
 									{
 										"defaultValue": [
 											1,
-											0.93000000715255737,
-											0.68000000715255737,
+											0.9300000071525574,
+											0.6800000071525574,
 											1
 										],
 										"name": "flameCore",
@@ -553,7 +553,7 @@
 									},
 									{
 										"defaultValue": [
-											0.62000000476837158,
+											0.6200000047683716,
 											0.07000000029802322,
 											0.01999999955296516,
 											1
@@ -578,8 +578,8 @@
 									{
 										"defaultValue": [
 											0.41999998688697815,
-											0.40999999642372131,
-											0.40000000596046448,
+											0.4099999964237213,
+											0.4000000059604645,
 											1
 										],
 										"name": "smokeColor",
@@ -697,8 +697,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.93000000715255737,
-							0.68000000715255737,
+							0.9300000071525574,
+							0.6800000071525574,
 							1
 						]
 					},
@@ -718,7 +718,7 @@
 					"flameTip": {
 						"type": "color",
 						"value": [
-							0.62000000476837158,
+							0.6200000047683716,
 							0.07000000029802322,
 							0.01999999955296516,
 							1
@@ -748,8 +748,8 @@
 						"type": "color",
 						"value": [
 							0.41999998688697815,
-							0.40999999642372131,
-							0.40000000596046448,
+							0.4099999964237213,
+							0.4000000059604645,
 							1
 						]
 					},
@@ -1074,7 +1074,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fire Amount",
+				"name": "Fire Strength",
 				"thumbnail_visible": true
 			},
 			"14": {
@@ -1146,7 +1146,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Flame Length",
+				"name": "Flame Reach",
 				"thumbnail_visible": true
 			},
 			"15": {
@@ -1257,8 +1257,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.93000000715255737,
-							0.68000000715255737,
+							0.9300000071525574,
+							0.6800000071525574,
 							1
 						]
 					}
@@ -1360,7 +1360,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.62000000476837158,
+							0.6200000047683716,
 							0.07000000029802322,
 							0.01999999955296516,
 							1
@@ -1593,8 +1593,8 @@
 						"type": "color",
 						"value": [
 							0.41999998688697815,
-							0.40999999642372131,
-							0.40000000596046448,
+							0.4099999964237213,
+							0.4000000059604645,
 							1
 						]
 					}
@@ -1709,7 +1709,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Level",
+				"name": "Burn Brightness",
 				"thumbnail_visible": true
 			},
 			"39": {
@@ -1781,7 +1781,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Range",
+				"name": "Brightness Range",
 				"thumbnail_visible": true
 			},
 			"4": {
@@ -1879,7 +1879,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Softness",
+				"name": "Range Softness",
 				"thumbnail_visible": true
 			},
 			"41": {

@@ -285,26 +285,6 @@
 					1,
 					"edgeTo"
 				]
-			},
-			{
-				"from": [
-					28,
-					"output"
-				],
-				"to": [
-					1,
-					"gaps"
-				]
-			},
-			{
-				"from": [
-					29,
-					"output"
-				],
-				"to": [
-					1,
-					"gapPattern"
-				]
 			}
 		],
 		"inputOrder": {
@@ -348,9 +328,7 @@
 						24,
 						25,
 						26,
-						27,
-						28,
-						29
+						27
 					],
 					"collapsed": false,
 					"name": "Edges"
@@ -389,7 +367,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Fire Edges - flames and smoke grow from the edges of the frame, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed sets its tempo. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the rolling eddies). Fire: Fire Amount (above 1 flames take over more and more of the frame, at 10 an inferno), Flame Length (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core \/ Mid \/ Tip from hottest to coolest. Smoke: Smoke Amount (above 2 a fog builds over the whole frame), Smoke Life (seconds until it dissolves), Smoke Color. Edges: Bottom \/ Top \/ Left \/ Right On, Edge From \/ To (the part of each edge that burns), Gaps (share of the edge left unburnt), Gap Pattern (another irregular arrangement of the gaps). Shader: Resource\/FireEdges.fs.",
+			"description": "Fire Edges - flames and smoke grow from the edges of the frame, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core \/ Mid \/ Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Edges: Bottom \/ Top \/ Left \/ Right On, Edge From \/ To (the part of each edge that burns). Shader: Resource\/FireEdges.fs.",
 			"displayName": "Fire Edges",
 			"identifier": "185b3781-f2a7-43de-b84f-c11431ac51a7",
 			"licenseName": "",
@@ -475,7 +453,7 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "Resource\/FireEdges.fs",
+								"main": "Resource/FireEdges.fs",
 								"sub": ""
 							},
 							"value": {
@@ -670,20 +648,6 @@
 										"min": 0,
 										"name": "edgeTo",
 										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 1,
-										"min": 0,
-										"name": "gaps",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1,
-										"max": 999,
-										"min": 0,
-										"name": "gapPattern",
-										"type": "float"
 									}
 								]
 							}
@@ -713,7 +677,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 682,
 					"width": 195,
 					"x": 800,
 					"y": 400
@@ -795,14 +759,6 @@
 							0.01999999955296516,
 							1
 						]
-					},
-					"gapPattern": {
-						"type": "float",
-						"value": 1
-					},
-					"gaps": {
-						"type": "float",
-						"value": 0.30000001192092896
 					},
 					"inputImage": {
 						"type": "texture2d",
@@ -1162,7 +1118,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fire Amount",
+				"name": "Fire Strength",
 				"thumbnail_visible": true
 			},
 			"14": {
@@ -1234,7 +1190,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Flame Length",
+				"name": "Flame Reach",
 				"thumbnail_visible": true
 			},
 			"15": {
@@ -2207,150 +2163,6 @@
 					"widget"
 				],
 				"name": "Edge To",
-				"thumbnail_visible": true
-			},
-			"28": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 400,
-					"y": 780
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.20000000298023224
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Gaps",
-				"thumbnail_visible": true
-			},
-			"29": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 999
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 400,
-					"y": 860
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Gap Pattern",
 				"thumbnail_visible": true
 			},
 			"3": {
