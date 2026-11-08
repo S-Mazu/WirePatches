@@ -3568,7 +3568,7 @@
 				"constants": {
 					"input0": {
 						"type": "string",
-						"value": "HOW THIS PATCH ADAPTS TO ANY SURFACE\nMove Scale, or change Width \/ Height on the clip.\n\nWHITE CIRCLE: stays round, never stretched.\nAt Scale 1 it touches top and bottom.\nGRAY SQUARES: each is one screen height at Scale 1.\nA wider surface shows more squares.\nRED MARKERS: always on the corners of the frame.\nYELLOW LINE: fixed distance above the bottom edge.\n\nSize "
+						"value": "HOW THIS PATCH ADAPTS TO ANY SURFACE\nMove Scale, or change Width \/ Height on the clip.\nNew composition size? Reload the clip.\n\nWHITE CIRCLE: stays round, never stretched.\nAt Scale 1 it touches top and bottom.\nGRAY SQUARES: each is one screen height at Scale 1.\nA wider surface shows more squares.\nRED MARKERS: always on the corners of the frame.\nYELLOW LINE: fixed distance above the bottom edge.\n\nSize "
 					}
 				},
 				"hidden": [
