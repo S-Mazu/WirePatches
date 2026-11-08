@@ -508,9 +508,15 @@ void main() {
         float reach = clamp(length(here.ba) * dt * cellsPerUnit * 0.35, 1.0, 10.0);
         vec2 vSoft = 0.2 * (here.ba + stateAt(ij + vec2(reach, 0.0), sz).ba + stateAt(ij - vec2(reach, 0.0), sz).ba
                                     + stateAt(ij + vec2(0.0, reach), sz).ba + stateAt(ij - vec2(0.0, reach), sz).ba);
+        // eddies are often faster than the wind: nothing may be carried against it
+        float ws = length(wind);
+        vec2 wd = ws > 0.0001 ? wind / ws : vec2(1.0, 0.0);
+        float hold = smoothstep(0.0, 0.5, ws);
+        vSoft += wd * hold * max(-0.7 * ws - dot(vSoft, wd), 0.0);
         vec2 mid = px - (vSoft + wind) * dt * cellsPerUnit * 0.5;
         vec2 vMid = vSoft;
         if (mid.x >= 0.0 && mid.y >= 0.0 && mid.x < sz.x && mid.y < sz.y) vMid = mix(vSoft, IMG_NORM_PIXEL(state, mid / tex).ba, 0.7);
+        vMid += wd * hold * max(-0.7 * ws - dot(vMid, wd), 0.0);
         vec2 back = px - (vMid + wind) * dt * cellsPerUnit;
         vec4 s = cubicState(back, sz);
         float heat = max(s.r, 0.0), smk = max(s.g, 0.0);

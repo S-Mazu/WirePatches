@@ -82,7 +82,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
-- 2026-11-08: Wind now carries all of the smoke, none stays behind. Flames stay smooth at a `Scale` above 1. The controls `Burn X`, `Burn Y`, `Burn Z`, `Burn Size` and `Burn Rotation (°)` are now named `Shape …`.
+- 2026-11-08: Wind now carries all of the smoke: none stays behind or moves against it. Flames stay smooth at a `Scale` above 1. The controls `Burn X`, `Burn Y`, `Burn Z`, `Burn Size` and `Burn Rotation (°)` are now named `Shape …`.
 - 2026-11-08: Speed and Swirl no longer tear the fluid apart. Fire and fog now only grow from the source. Smoke gets depth at high density. Renamed `Fire Amount` to `Fire Strength` and `Flame Length` to `Flame Reach`.
 - 2026-11-08: First version. Split from Fire and Smoke, with a new fluid simulation (#43, #26, #27).
 
