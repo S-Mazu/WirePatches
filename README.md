@@ -9,7 +9,9 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Autumn Wind](Autumn%20Wind/) | source | 15 kinds of items (leaves, feathers, paper planes, …) drift across the frame with depth, gusts and tumble. |
 | [Bass Strings](Bass%20Strings/) | source | Four double bass strings vibrate with the music, one frequency band per string. |
 | [Deco Marquee v2](Deco%20Marquee%20v2/) | source | Art Deco theatre portal: fans of rays and rings, chasing marquee bulbs, ornament border. |
-| [Fire and Smoke](Fire%20and%20Smoke/) | effect | Flames and smoke from a fluid simulation; burning edges, a fire point, or the clip as burn mask. |
+| [Fire Edges](Fire%20Edges/) | effect | Flames and smoke grow from the edges of the frame, from a glow to an inferno. |
+| [Fire Mask](Fire%20Mask/) | effect | The brightness of the clip decides what burns: logos, text, silhouettes. |
+| [Fire Point](Fire%20Point/) | effect | Flames and smoke rise from one burning shape: point, square or heart. |
 | [Flower Sax](Flower%20Sax/) | source | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](Geo%20Tiles/) | source | Tile collage of 67 flat geometric motifs in three colors. |
 | [Iris Diaphragm](Iris%20Diaphragm/) | source | Mechanical blade iris that closes over the layers below. |
