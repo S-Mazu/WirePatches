@@ -383,29 +383,25 @@ float safe(float x, float lo, float hi) { return (x == x) ? clamp(x, lo, hi) : 0
 // the simulation fades to nothing outside the frame, so wind brings in clean air
 vec4 stateAt(vec2 ij, vec2 sz) {
     if (ij.x < 0.0 || ij.y < 0.0 || ij.x >= sz.x || ij.y >= sz.y) return vec4(0.0);
-    return IMG_NORM_PIXEL(state, (ij + 0.5) / sz);
+    return IMG_NORM_PIXEL(state, (ij + 0.5) / IMG_SIZE(state));
 }
 vec4 advectedAt(vec2 ij, vec2 sz) {
     if (ij.x < 0.0 || ij.y < 0.0 || ij.x >= sz.x || ij.y >= sz.y) return vec4(0.0);
-    return IMG_NORM_PIXEL(advected, (ij + 0.5) / sz);
+    return IMG_NORM_PIXEL(advected, (ij + 0.5) / IMG_SIZE(state));
 }
 float smokeLog(vec2 ij, vec2 sz) {
     ij = clamp(ij, vec2(0.0), sz - 1.0);
-    return log(1.0 + max(IMG_NORM_PIXEL(state, (ij + 0.5) / sz).g, 0.0));
-}
-float smokeNear(vec2 ij, vec2 sz) {
-    ij = clamp(ij, vec2(0.0), sz - 1.0);
-    return IMG_NORM_PIXEL(state, (ij + 0.5) / sz).g;
+    return log(1.0 + max(IMG_NORM_PIXEL(state, (ij + 0.5) / IMG_SIZE(state)).g, 0.0));
 }
 float curlAt(vec2 ij, vec2 sz) {
     ij = clamp(ij, vec2(0.0), sz - 1.0);
-    return IMG_NORM_PIXEL(curlBuf, (ij + 0.5) / sz).r;
+    return IMG_NORM_PIXEL(curlBuf, (ij + 0.5) / IMG_SIZE(state)).r;
 }
-float divAt(vec2 ij, vec2 sz) { return IMG_NORM_PIXEL(divBuf, (ij + 0.5) / sz).r; }
+float divAt(vec2 ij, vec2 sz) { return IMG_NORM_PIXEL(divBuf, (ij + 0.5) / IMG_SIZE(state)).r; }
 float pAt(int source, vec2 ij, vec2 sz) {
     // open boundary: pressure 0 outside, so gas can leave the frame
     if (ij.x < 0.0 || ij.y < 0.0 || ij.x >= sz.x || ij.y >= sz.y) return 0.0;
-    return source == 0 ? IMG_NORM_PIXEL(pA, (ij + 0.5) / sz).r : IMG_NORM_PIXEL(pB, (ij + 0.5) / sz).r;
+    return source == 0 ? IMG_NORM_PIXEL(pA, (ij + 0.5) / IMG_SIZE(state)).r : IMG_NORM_PIXEL(pB, (ij + 0.5) / IMG_SIZE(state)).r;
 }
 
 // Catmull-Rom sampling keeps smoke and flames sharp while they move
@@ -479,12 +475,21 @@ void main() {
     vec2 windOffset = tB.rg;
     float safeScale = clamp(scale, 0.001, 1000.0);
     vec2 res = max(RENDERSIZE, vec2(1.0));
-    vec2 sz = IMG_SIZE(state);
+    // a larger Scale shows less scene: the simulation uses a smaller part of its buffers,
+    // so a flame always has the same number of cells and the fluid behaves the same at every Scale
+    vec2 tex = IMG_SIZE(state);
+    vec2 sz = min(max(floor(tex / max(safeScale, 1.0)), vec2(24.0)), tex);
     float cellsPerUnit = 0.5 * sz.y * safeScale;
+    vec2 cell = floor(uv * tex);
+    if (PASSINDEX >= PASS_CURL && PASSINDEX <= PASS_PROJECT && (cell.x >= sz.x || cell.y >= sz.y)) {
+        gl_FragColor = vec4(0.0);
+        return;
+    }
+    vec2 luv = (cell + 0.5) / sz;
 
     // ----- rotation of the flow, for the small eddies -----
     if (PASSINDEX == PASS_CURL) {
-        vec2 ij = floor(uv * sz);
+        vec2 ij = cell;
         vec2 l = stateAt(ij - vec2(1, 0), sz).ba, r = stateAt(ij + vec2(1, 0), sz).ba;
         vec2 d = stateAt(ij - vec2(0, 1), sz).ba, u = stateAt(ij + vec2(0, 1), sz).ba;
         float w = 0.5 * ((r.y - l.y) - (u.x - d.x)) * cellsPerUnit;
@@ -494,21 +499,32 @@ void main() {
 
     // ----- move everything, apply forces, burn -----
     if (PASSINDEX == PASS_ADVECT) {
-        vec2 px = (floor(uv * sz) + 0.5);
+        vec2 px = cell + 0.5;
         vec2 ij = floor(px);
         float wa = radians(windAngle);
         vec2 wind = vec2(cos(wa), sin(wa)) * max(windStrength, 0.0);
         vec4 here = stateAt(ij, sz);
         // wind is carried in the transport: it moves all smoke and flames together, not one stream of it
-        vec2 back = px - (here.ba + wind) * dt * cellsPerUnit;
+        float reach = clamp(length(here.ba) * dt * cellsPerUnit * 0.35, 1.0, 10.0);
+        vec2 vSoft = 0.2 * (here.ba + stateAt(ij + vec2(reach, 0.0), sz).ba + stateAt(ij - vec2(reach, 0.0), sz).ba
+                                    + stateAt(ij + vec2(0.0, reach), sz).ba + stateAt(ij - vec2(0.0, reach), sz).ba);
+        vec2 mid = px - (vSoft + wind) * dt * cellsPerUnit * 0.5;
+        vec2 vMid = vSoft;
+        if (mid.x >= 0.0 && mid.y >= 0.0 && mid.x < sz.x && mid.y < sz.y) vMid = mix(vSoft, IMG_NORM_PIXEL(state, mid / tex).ba, 0.7);
+        vec2 back = px - (vMid + wind) * dt * cellsPerUnit;
         vec4 s = cubicState(back, sz);
         float heat = max(s.r, 0.0), smk = max(s.g, 0.0);
         vec2 v = s.ba;
         // smoke spreads softly into the air around it
-        float around = 0.25 * (smokeNear(ij + vec2(1, 0), sz) + smokeNear(ij - vec2(1, 0), sz) + smokeNear(ij + vec2(0, 1), sz) + smokeNear(ij - vec2(0, 1), sz));
+        float around = smk;
+        if (back.x >= 0.0 && back.y >= 0.0 && back.x < sz.x && back.y < sz.y) {
+            vec2 bu = back / tex, tx = vec2(1.0) / tex;
+            around = 0.25 * (IMG_NORM_PIXEL(state, bu + vec2(tx.x, 0.0)).g + IMG_NORM_PIXEL(state, bu - vec2(tx.x, 0.0)).g
+                           + IMG_NORM_PIXEL(state, bu + vec2(0.0, tx.y)).g + IMG_NORM_PIXEL(state, bu - vec2(0.0, tx.y)).g);
+        }
         smk = mix(smk, around, clamp(dt * 9.0, 0.0, 0.4));
 
-        vec2 p = (uv - 0.5) * res / (0.5 * res.y * safeScale);   // scene units, origin in the frame centre
+        vec2 p = (luv - 0.5) * res / (0.5 * res.y * safeScale);   // scene units, origin in the frame centre
         vec2 halfExt = 0.5 * res / (0.5 * res.y * safeScale);
 
         // buoyancy: hot gas rises; smoke carries a little warmth
@@ -555,7 +571,7 @@ void main() {
         // sources: each patch has its own burning area
         float cover = 0.0;
         vec2 push = vec2(0.0);
-        burnArea(p, uv, halfExt, simT, cover, push);
+        burnArea(p, luv, halfExt, simT, cover, push);
 
         float fire = max(fireAmount, 0.0);
         float amp = 1.0 + 2.0 * clamp(burst, 0.0, 1.0);
@@ -589,14 +605,14 @@ void main() {
 
     // ----- pressure: makes the gas flow around and push itself, like a real fluid -----
     if (PASSINDEX == PASS_DIV) {
-        vec2 ij = floor(uv * sz);
+        vec2 ij = cell;
         float d = 0.5 * (advectedAt(ij + vec2(1, 0), sz).b - advectedAt(ij - vec2(1, 0), sz).b
                        + advectedAt(ij + vec2(0, 1), sz).a - advectedAt(ij - vec2(0, 1), sz).a);
         gl_FragColor = vec4(safe(d, -500.0, 500.0), 0.0, 0.0, 1.0);
         return;
     }
     if (PASSINDEX >= PASS_P0 && PASSINDEX < PASS_PROJECT) {
-        vec2 ij = floor(uv * sz);
+        vec2 ij = cell;
         int src = mod(float(PASSINDEX - PASS_P0), 2.0) < 0.5 ? 1 : 0;
         float p = 0.25 * (pAt(src, ij + vec2(1, 0), sz) + pAt(src, ij - vec2(1, 0), sz)
                         + pAt(src, ij + vec2(0, 1), sz) + pAt(src, ij - vec2(0, 1), sz) - divAt(ij, sz));
@@ -604,7 +620,7 @@ void main() {
         return;
     }
     if (PASSINDEX == PASS_PROJECT) {
-        vec2 ij = floor(uv * sz);
+        vec2 ij = cell;
         vec4 a = advectedAt(ij, sz);
         vec2 g = 0.5 * vec2(pAt(1, ij + vec2(1, 0), sz) - pAt(1, ij - vec2(1, 0), sz),
                             pAt(1, ij + vec2(0, 1), sz) - pAt(1, ij - vec2(0, 1), sz));
@@ -615,7 +631,7 @@ void main() {
 
     // ----- soft copies of the smoke, in log density, used only for its shading -----
     if (PASSINDEX == PASS_BLUR_A) {
-        vec2 c = uv * sz;
+        vec2 c = uv * tex;
         float sum = smokeLog(floor(c), sz);
         for (int i = 0; i < 12; i++) {
             float a = float(i) * 0.5236;
@@ -638,7 +654,7 @@ void main() {
     }
 
     // ----- picture -----
-    vec2 q = uv * sz;
+    vec2 q = clamp(uv * sz, vec2(1.5), sz - 1.5);   // no fade in the last cells at the frame edge
     vec4 st = cubicState(q, sz);
     float scenePerPixel = 1.0 / (0.5 * res.y * safeScale);
 
@@ -664,13 +680,13 @@ void main() {
 
     // smoke: soft body, shaded by where the light comes from. Uses the log of the density so dense smoke keeps its form.
     float sa = 1.0 - exp(-smk * 1.15);
-    float kc = sz.y / 540.0;
+    float kc = sz.y * max(safeScale, 1.0) / 540.0;
     vec2 ld = normalize(vec2(0.35, 1.0));
-    vec2 tc = 1.0 / sz;
+    vec2 tc = 1.0 / tex, rr = sz / tex, uvB = uv * rr;
     vec2 d1 = ld * 12.0 * kc * tc, d2 = ld * 45.0 * kc * tc;
-    float relief = (IMG_NORM_PIXEL(blurA, clamp(uv - d1, vec2(0.0), vec2(1.0))).r - IMG_NORM_PIXEL(blurA, clamp(uv + d1, vec2(0.0), vec2(1.0))).r) * 0.8
-                 + (IMG_NORM_PIXEL(blurB, clamp(uv - d2, vec2(0.0), vec2(1.0))).r - IMG_NORM_PIXEL(blurB, clamp(uv + d2, vec2(0.0), vec2(1.0))).r) * 0.7;
-    float occl = IMG_NORM_PIXEL(blurA, clamp(uv + ld * 28.0 * kc * tc, vec2(0.0), vec2(1.0))).r + 1.5 * IMG_NORM_PIXEL(blurB, clamp(uv + ld * 90.0 * kc * tc, vec2(0.0), vec2(1.0))).r;
+    float relief = (IMG_NORM_PIXEL(blurA, clamp(uvB - d1, vec2(0.0), rr)).r - IMG_NORM_PIXEL(blurA, clamp(uvB + d1, vec2(0.0), rr)).r) * 0.8
+                 + (IMG_NORM_PIXEL(blurB, clamp(uvB - d2, vec2(0.0), rr)).r - IMG_NORM_PIXEL(blurB, clamp(uvB + d2, vec2(0.0), rr)).r) * 0.7;
+    float occl = IMG_NORM_PIXEL(blurA, clamp(uvB + ld * 28.0 * kc * tc, vec2(0.0), rr)).r + 1.5 * IMG_NORM_PIXEL(blurB, clamp(uvB + ld * 90.0 * kc * tc, vec2(0.0), rr)).r;
     float shade = exp(-occl * 0.3);
     float lit = clamp((0.62 + 0.5 * shade) * (1.0 + clamp(relief, -1.0, 1.0) * 0.5), 0.34, 1.35);
     vec3 sc = smokeColor.rgb * lit + flameMid.rgb * (glow * 0.55 + min(heat, 1.0) * 0.2);

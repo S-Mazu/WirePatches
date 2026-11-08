@@ -56,10 +56,10 @@ All ranges are deliberately wide; the extremes are safe. There is no `Clock`: th
 
 **Shape**
 - `Shape` (Point / Square / Heart, default Point).
-- `Burn X`, `Burn Y` (-20 to 20, defaults 0, -0.45): position, 0 = centre of the frame, in height units.
-- `Burn Z` (-2 to 20, default 0): depth. Higher values are further away and smaller.
-- `Burn Size` (0 to 10, default 0.16).
-- `Burn Rotation (°)` (-360 to 360, default 0).
+- `Shape X`, `Shape Y` (-20 to 20, defaults 0, -0.45): position, 0 = centre of the frame, in height units.
+- `Shape Z` (-2 to 20, default 0): depth. Higher values are further away and smaller.
+- `Shape Size` (0 to 10, default 0.16).
+- `Shape Rotation (°)` (-360 to 360, default 0).
 - `Shape Outline` (Off / On, default Off): only the edge of the shape burns.
 - `Outline Width` (0 to 2, default 0.03).
 
@@ -67,7 +67,7 @@ All ranges are deliberately wide; the extremes are safe. There is no `Clock`: th
 
 - Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched.
 - `Scale`: 1 for any single screen, also 4K; ⅓ for three stacked to keep the size of one screen.
-- The simulation grid depends on the output height, up to 540 rows, so large surfaces do not cost more per row.
+- The simulation grid depends on the output height, up to 540 rows, so large surfaces do not cost more per row. A `Scale` above 1 uses a smaller part of the grid, so the flames stay smooth at any `Scale`.
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip.
 
 Tested sizes (in Wire):
@@ -82,6 +82,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-08: Wind now carries all of the smoke, none stays behind. Flames stay smooth at a `Scale` above 1. The controls `Burn X`, `Burn Y`, `Burn Z`, `Burn Size` and `Burn Rotation (°)` are now named `Shape …`.
 - 2026-11-08: Speed and Swirl no longer tear the fluid apart. Fire and fog now only grow from the source. Smoke gets depth at high density. Renamed `Fire Amount` to `Fire Strength` and `Flame Length` to `Flame Reach`.
 - 2026-11-08: First version. Split from Fire and Smoke, with a new fluid simulation (#43, #26, #27).
 

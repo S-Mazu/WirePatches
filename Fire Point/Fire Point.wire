@@ -389,7 +389,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Burn X / Y (0 = centre, in height units), Burn Z (depth: larger is further away and smaller), Burn Size, Burn Rotation, Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource/FirePoint.fs.",
+			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Shape X / Y (0 = centre, in height units), Shape Z (depth: larger is further away and smaller), Shape Size, Shape Rotation, Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource/FirePoint.fs.",
 			"displayName": "Fire Point",
 			"identifier": "828fc781-55ca-44bd-92b1-cbd418b4bce6",
 			"licenseName": "",
@@ -1899,7 +1899,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn X",
+				"name": "Shape X",
 				"thumbnail_visible": true
 			},
 			"32": {
@@ -1971,7 +1971,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Y",
+				"name": "Shape Y",
 				"thumbnail_visible": true
 			},
 			"33": {
@@ -2043,7 +2043,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Z",
+				"name": "Shape Z",
 				"thumbnail_visible": true
 			},
 			"34": {
@@ -2115,7 +2115,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Size",
+				"name": "Shape Size",
 				"thumbnail_visible": true
 			},
 			"35": {
@@ -2187,7 +2187,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Burn Rotation (°)",
+				"name": "Shape Rotation (°)",
 				"thumbnail_visible": true
 			},
 			"36": {
