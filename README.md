@@ -15,7 +15,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Flower Sax](Flower%20Sax/) | source | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](Geo%20Tiles/) | source | Tile collage of 67 flat geometric motifs in three colors. |
 | [Iris Diaphragm](Iris%20Diaphragm/) | source | Mechanical blade iris that closes over the layers below. |
-| [Lye Swing](Lye%20Swing/) | source | Painted big-band score after Len Lye; one shape per frequency band. |
+| [Lye Swing](Lye%20Swing/) | source | Painted big-band score after Len Lye; five shapes follow the music, one per sound band. |
 | [Pride Flag](Pride%20Flag/) | source | A flag moves lightly in the wind: Rainbow, Straight Ally or Progress. |
 | [Rolling Landscape](Rolling%20Landscape/) | source | Art Deco night skyline of the 1930s as scrolling parallax silhouettes. |
 | [Scale Colors](Scale%20Colors/) | source | Shows which of the 12 tones of the octave are sounding right now. |
