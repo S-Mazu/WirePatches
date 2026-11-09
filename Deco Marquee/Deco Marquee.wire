@@ -1,0 +1,2006 @@
+{
+	"formatVersion": {
+		"major": 1,
+		"minor": 1,
+		"patch": 0
+	},
+	"patch": {
+		"connections": [
+			{
+				"from": [
+					0,
+					"output"
+				],
+				"to": [
+					1,
+					"inputImage"
+				]
+			},
+			{
+				"from": [
+					1,
+					"output"
+				],
+				"to": [
+					2,
+					"input"
+				]
+			},
+			{
+				"from": [
+					2,
+					"output"
+				],
+				"to": [
+					3,
+					"input"
+				]
+			},
+			{
+				"from": [
+					10,
+					"output"
+				],
+				"to": [
+					1,
+					"clock"
+				]
+			},
+			{
+				"from": [
+					11,
+					"output"
+				],
+				"to": [
+					1,
+					"scale"
+				]
+			},
+			{
+				"from": [
+					12,
+					"output"
+				],
+				"to": [
+					1,
+					"borderStyle"
+				]
+			},
+			{
+				"from": [
+					13,
+					"output"
+				],
+				"to": [
+					1,
+					"borderWidth"
+				]
+			},
+			{
+				"from": [
+					14,
+					"output"
+				],
+				"to": [
+					1,
+					"borderColor"
+				]
+			},
+			{
+				"from": [
+					15,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbLayout"
+				]
+			},
+			{
+				"from": [
+					16,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbSpacing"
+				]
+			},
+			{
+				"from": [
+					17,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbSize"
+				]
+			},
+			{
+				"from": [
+					18,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbInset"
+				]
+			},
+			{
+				"from": [
+					19,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbGlow"
+				]
+			},
+			{
+				"from": [
+					20,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbOnColor"
+				]
+			},
+			{
+				"from": [
+					21,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbOffColor"
+				]
+			},
+			{
+				"from": [
+					22,
+					"output"
+				],
+				"to": [
+					1,
+					"chaseMode"
+				]
+			},
+			{
+				"from": [
+					23,
+					"output"
+				],
+				"to": [
+					1,
+					"chaseGroup"
+				]
+			},
+			{
+				"from": [
+					24,
+					"output"
+				],
+				"to": [
+					1,
+					"chaseDuty"
+				]
+			},
+			{
+				"from": [
+					25,
+					"output"
+				],
+				"to": [
+					1,
+					"filament"
+				]
+			}
+		],
+		"inputOrder": {
+			"groups": {
+				"1794300000000": {
+					"children": [
+						12,
+						13,
+						14
+					],
+					"collapsed": false,
+					"name": "Border"
+				},
+				"1794300000002": {
+					"children": [
+						15,
+						16,
+						17,
+						18,
+						19,
+						20,
+						21
+					],
+					"collapsed": false,
+					"name": "Bulbs"
+				},
+				"1794300000004": {
+					"children": [
+						22,
+						23,
+						24,
+						25
+					],
+					"collapsed": false,
+					"name": "Chase"
+				}
+			},
+			"roots": [
+				{
+					"node": 10
+				},
+				{
+					"node": 11
+				},
+				{
+					"node": 0
+				},
+				{
+					"group": 1794300000000
+				},
+				{
+					"group": 1794300000002
+				},
+				{
+					"group": 1794300000004
+				}
+			]
+		},
+		"meta": {
+			"author": "Stefan Mazur",
+			"category": "effect",
+			"deploymentTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 23,
+					"patch": 0
+				}
+			},
+			"description": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst), Border Width (0 = no border), Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (how much of each step is lit), Filament (lit lamps leave a fading trail). Shader: Resource/DecoMarquee.fs.",
+			"displayName": "Deco Marquee",
+			"identifier": "5514b9ad-0479-4aaf-9acd-79d1e7000fb8",
+			"licenseName": "",
+			"mail": "S.Mazur@cati-co.de",
+			"note": {
+				"text": "",
+				"textColorIndex": 1,
+				"textSizeMultiplier": 3
+			},
+			"originalTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 28,
+					"patch": 1
+				}
+			},
+			"quality": 32856,
+			"resolution": {
+				"height": 1080,
+				"width": 1920
+			},
+			"saveTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 28,
+					"patch": 1
+				}
+			},
+			"thumbnail": "",
+			"url": "https://github.com/S-Mazu/WirePatches",
+			"vendor": ""
+		},
+		"nextNodeId": 26,
+		"nodes": {
+			"0": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-B2A2-4C1C-8C4C-2915D78CC8E9",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances"
+				],
+				"name": "Texture In",
+				"thumbnail_visible": true
+			},
+			"1": {
+				"attributes": {
+					"bitdepth": {
+						"type": "integer",
+						"value": 0
+					},
+					"fragment-shader": {
+						"type": "resourceIsf",
+						"value": {
+							"path": {
+								"main": "Resource/DecoMarquee.fs",
+								"sub": ""
+							},
+							"value": {
+								"inputs": [
+									{
+										"name": "inputImage",
+										"type": "image"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "clock",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "scale",
+										"type": "float"
+									},
+									{
+										"defaultValue": 2.0,
+										"max": 7.0,
+										"min": 0.0,
+										"name": "borderStyle",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.06,
+										"max": 2.0,
+										"min": 0.0,
+										"name": "borderWidth",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											0.83,
+											0.66,
+											0.25,
+											1.0
+										],
+										"name": "borderColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 2.0,
+										"min": 0.0,
+										"name": "bulbLayout",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.25,
+										"max": 5.0,
+										"min": 0.02,
+										"name": "bulbSpacing",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.022,
+										"max": 2.0,
+										"min": 0.0,
+										"name": "bulbSize",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.1,
+										"max": 2.0,
+										"min": 0.0,
+										"name": "bulbInset",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.3,
+										"max": 5.0,
+										"min": 0.0,
+										"name": "bulbGlow",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											1.0,
+											0.88,
+											0.6,
+											1.0
+										],
+										"name": "bulbOnColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": [
+											0.18,
+											0.13,
+											0.06,
+											1.0
+										],
+										"name": "bulbOffColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 6.0,
+										"min": 0.0,
+										"name": "chaseMode",
+										"type": "float"
+									},
+									{
+										"defaultValue": 3.0,
+										"max": 64.0,
+										"min": 1.0,
+										"name": "chaseGroup",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.3,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "chaseDuty",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.3,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "filament",
+										"type": "float"
+									}
+								]
+							}
+						}
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"resolution-absolute": {
+						"type": "float2",
+						"value": [
+							1920,
+							1080
+						]
+					},
+					"resolution-mode": {
+						"type": "integer",
+						"value": 0
+					},
+					"resolution-relative": {
+						"type": "float2",
+						"value": [
+							1,
+							1
+						]
+					}
+				},
+				"bounds": {
+					"height": 58,
+					"width": 195,
+					"x": 700,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-4576-4C11-899B-6F11F3275D36",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"inputImage": {
+						"type": "texture2d",
+						"value": null
+					},
+					"time": {
+						"type": "float",
+						"value": 0
+					},
+					"clock": {
+						"type": "float",
+						"value": 0.0
+					},
+					"scale": {
+						"type": "float",
+						"value": 1.0
+					},
+					"borderStyle": {
+						"type": "float",
+						"value": 2.0
+					},
+					"borderWidth": {
+						"type": "float",
+						"value": 0.06
+					},
+					"borderColor": {
+						"type": "color",
+						"value": [
+							0.83,
+							0.66,
+							0.25,
+							1.0
+						]
+					},
+					"bulbLayout": {
+						"type": "float",
+						"value": 1.0
+					},
+					"bulbSpacing": {
+						"type": "float",
+						"value": 0.25
+					},
+					"bulbSize": {
+						"type": "float",
+						"value": 0.022
+					},
+					"bulbInset": {
+						"type": "float",
+						"value": 0.1
+					},
+					"bulbGlow": {
+						"type": "float",
+						"value": 0.3
+					},
+					"bulbOnColor": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.88,
+							0.6,
+							1.0
+						]
+					},
+					"bulbOffColor": {
+						"type": "color",
+						"value": [
+							0.18,
+							0.13,
+							0.06,
+							1.0
+						]
+					},
+					"chaseMode": {
+						"type": "float",
+						"value": 0.0
+					},
+					"chaseGroup": {
+						"type": "float",
+						"value": 3.0
+					},
+					"chaseDuty": {
+						"type": "float",
+						"value": 0.3
+					},
+					"filament": {
+						"type": "float",
+						"value": 0.3
+					}
+				},
+				"hidden": [
+					"bitdepth",
+					"bypass",
+					"instances",
+					"resolution-absolute",
+					"resolution-mode",
+					"resolution-relative"
+				],
+				"name": "Deco Marquee (ISF)",
+				"thumbnail_visible": true
+			},
+			"2": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 30,
+					"width": 195,
+					"x": 1100,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-F1A4-4AFC-B3F6-5635DC6FE964",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"bypass",
+					"instances"
+				],
+				"name": "Premultiply Alpha",
+				"thumbnail_visible": true
+			},
+			"3": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 132,
+					"x": 1350,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances"
+				],
+				"name": "Texture Out",
+				"thumbnail_visible": true
+			},
+			"10": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Clock",
+				"thumbnail_visible": true
+			},
+			"11": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"12": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 7.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Zigzag"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Chevron"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Steps"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"option3-label": {
+						"type": "string",
+						"value": "Greek Key"
+					},
+					"option3-value": {
+						"type": "float",
+						"value": 3.0
+					},
+					"option4-label": {
+						"type": "string",
+						"value": "Diamonds"
+					},
+					"option4-value": {
+						"type": "float",
+						"value": 4.0
+					},
+					"option5-label": {
+						"type": "string",
+						"value": "Scallop"
+					},
+					"option5-value": {
+						"type": "float",
+						"value": 5.0
+					},
+					"option6-label": {
+						"type": "string",
+						"value": "Beads"
+					},
+					"option6-value": {
+						"type": "float",
+						"value": 6.0
+					},
+					"option7-label": {
+						"type": "string",
+						"value": "Sunburst"
+					},
+					"option7-value": {
+						"type": "float",
+						"value": 7.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 8
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 2.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"option2-label",
+					"option2-value",
+					"option3-label",
+					"option3-value",
+					"option4-label",
+					"option4-value",
+					"option5-label",
+					"option5-value",
+					"option6-label",
+					"option6-value",
+					"option7-label",
+					"option7-value"
+				],
+				"name": "Border Style",
+				"thumbnail_visible": true
+			},
+			"13": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.06
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Border Width",
+				"thumbnail_visible": true
+			},
+			"14": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 600
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.83,
+							0.66,
+							0.25,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Border Color",
+				"thumbnail_visible": true
+			},
+			"15": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Rows"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Frame"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 3
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 700
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"option2-label",
+					"option2-value"
+				],
+				"name": "Bulb Layout",
+				"thumbnail_visible": true
+			},
+			"16": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.02
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 800
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.25
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Bulb Spacing",
+				"thumbnail_visible": true
+			},
+			"17": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 900
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.022
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Bulb Size",
+				"thumbnail_visible": true
+			},
+			"18": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1000
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Bulb Inset",
+				"thumbnail_visible": true
+			},
+			"19": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1100
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.3
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Bulb Glow",
+				"thumbnail_visible": true
+			},
+			"20": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1200
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.88,
+							0.6,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Bulb On Color",
+				"thumbnail_visible": true
+			},
+			"21": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1300
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.18,
+							0.13,
+							0.06,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Bulb Off Color",
+				"thumbnail_visible": true
+			},
+			"22": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 6.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Run"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Alternate"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Fill"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"option3-label": {
+						"type": "string",
+						"value": "Bounce"
+					},
+					"option3-value": {
+						"type": "float",
+						"value": 3.0
+					},
+					"option4-label": {
+						"type": "string",
+						"value": "Mirror"
+					},
+					"option4-value": {
+						"type": "float",
+						"value": 4.0
+					},
+					"option5-label": {
+						"type": "string",
+						"value": "Twinkle"
+					},
+					"option5-value": {
+						"type": "float",
+						"value": 5.0
+					},
+					"option6-label": {
+						"type": "string",
+						"value": "Wave"
+					},
+					"option6-value": {
+						"type": "float",
+						"value": 6.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 7
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"option2-label",
+					"option2-value",
+					"option3-label",
+					"option3-value",
+					"option4-label",
+					"option4-value",
+					"option5-label",
+					"option5-value",
+					"option6-label",
+					"option6-value"
+				],
+				"name": "Chase Mode",
+				"thumbnail_visible": true
+			},
+			"23": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 64.0
+					},
+					"min": {
+						"type": "float",
+						"value": 1.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 3.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Chase Group",
+				"thumbnail_visible": true
+			},
+			"24": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.3
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Chase Duty",
+				"thumbnail_visible": true
+			},
+			"25": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1700
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.3
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Filament",
+				"thumbnail_visible": true
+			}
+		},
+		"ui": {
+			"camera": {
+				"x": 0,
+				"y": 0,
+				"zoom": 1
+			},
+			"selection": []
+		}
+	},
+	"ui": {
+		"audio": {
+			"routing": {
+				"in": {},
+				"out": []
+			}
+		},
+		"deviceConnections": {
+			"input": {
+				"0": "Test Card"
+			}
+		},
+		"transport": {
+			"bpm": 120,
+			"time-signature": [
+				4,
+				4
+			]
+		},
+		"video": {
+			"routing": {
+				"out": {
+					"Display 1": null,
+					"Display 2": null,
+					"Display 3": null,
+					"virtualOutputs": []
+				}
+			}
+		}
+	}
+}
