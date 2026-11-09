@@ -12,478 +12,28 @@
 					"output"
 				],
 				"to": [
-					3,
-					"input0"
-				]
-			},
-			{
-				"from": [
-					3,
-					"output0"
-				],
-				"to": [
-					2,
-					"input"
-				]
-			},
-			{
-				"from": [
-					2,
-					"output"
-				],
-				"to": [
 					1,
+					"inputImage"
+				]
+			},
+			{
+				"from": [
+					1,
+					"output"
+				],
+				"to": [
+					2,
 					"input"
 				]
 			},
 			{
 				"from": [
-					4,
+					2,
 					"output"
 				],
 				"to": [
 					3,
-					"input1"
-				]
-			},
-			{
-				"from": [
-					22,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbsOn"
-				]
-			},
-			{
-				"from": [
-					23,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbLayout"
-				]
-			},
-			{
-				"from": [
-					24,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbCount"
-				]
-			},
-			{
-				"from": [
-					25,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbSize"
-				]
-			},
-			{
-				"from": [
-					26,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbInset"
-				]
-			},
-			{
-				"from": [
-					27,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbGlow"
-				]
-			},
-			{
-				"from": [
-					28,
-					"output"
-				],
-				"to": [
-					0,
-					"chase"
-				]
-			},
-			{
-				"from": [
-					29,
-					"output"
-				],
-				"to": [
-					0,
-					"chaseMode"
-				]
-			},
-			{
-				"from": [
-					30,
-					"output"
-				],
-				"to": [
-					0,
-					"chaseGroup"
-				]
-			},
-			{
-				"from": [
-					31,
-					"output"
-				],
-				"to": [
-					0,
-					"chaseDuty"
-				]
-			},
-			{
-				"from": [
-					32,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbOnColor"
-				]
-			},
-			{
-				"from": [
-					33,
-					"output"
-				],
-				"to": [
-					0,
-					"bulbOffColor"
-				]
-			},
-			{
-				"from": [
-					34,
-					"output"
-				],
-				"to": [
-					0,
-					"borderOn"
-				]
-			},
-			{
-				"from": [
-					35,
-					"output"
-				],
-				"to": [
-					0,
-					"borderStyle"
-				]
-			},
-			{
-				"from": [
-					36,
-					"output"
-				],
-				"to": [
-					0,
-					"borderWidth"
-				]
-			},
-			{
-				"from": [
-					37,
-					"output"
-				],
-				"to": [
-					0,
-					"borderColor"
-				]
-			},
-			{
-				"from": [
-					38,
-					"output"
-				],
-				"to": [
-					0,
-					"backdropOn"
-				]
-			},
-			{
-				"from": [
-					39,
-					"output"
-				],
-				"to": [
-					0,
-					"backdropColor"
-				]
-			},
-			{
-				"from": [
-					6,
-					"output"
-				],
-				"to": [
-					0,
-					"fan1X"
-				]
-			},
-			{
-				"from": [
-					7,
-					"output"
-				],
-				"to": [
-					0,
-					"fan1Y"
-				]
-			},
-			{
-				"from": [
-					40,
-					"output"
-				],
-				"to": [
-					0,
-					"fan1Z"
-				]
-			},
-			{
-				"from": [
-					9,
-					"output"
-				],
-				"to": [
-					0,
-					"fan1Fill"
-				]
-			},
-			{
-				"from": [
-					12,
-					"output"
-				],
-				"to": [
-					0,
-					"fan1Rot"
-				]
-			},
-			{
-				"from": [
-					41,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2X"
-				]
-			},
-			{
-				"from": [
-					42,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2Y"
-				]
-			},
-			{
-				"from": [
-					43,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2Z"
-				]
-			},
-			{
-				"from": [
-					44,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2Fill"
-				]
-			},
-			{
-				"from": [
-					45,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2Rot"
-				]
-			},
-			{
-				"from": [
-					46,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3X"
-				]
-			},
-			{
-				"from": [
-					47,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3Y"
-				]
-			},
-			{
-				"from": [
-					48,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3Z"
-				]
-			},
-			{
-				"from": [
-					49,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3Fill"
-				]
-			},
-			{
-				"from": [
-					50,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3Rot"
-				]
-			},
-			{
-				"from": [
-					51,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4X"
-				]
-			},
-			{
-				"from": [
-					52,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4Y"
-				]
-			},
-			{
-				"from": [
-					53,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4Z"
-				]
-			},
-			{
-				"from": [
-					54,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4Fill"
-				]
-			},
-			{
-				"from": [
-					55,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4Rot"
-				]
-			},
-			{
-				"from": [
-					56,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5X"
-				]
-			},
-			{
-				"from": [
-					57,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5Y"
-				]
-			},
-			{
-				"from": [
-					58,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5Z"
-				]
-			},
-			{
-				"from": [
-					59,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5Fill"
-				]
-			},
-			{
-				"from": [
-					60,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5Rot"
-				]
-			},
-			{
-				"from": [
-					8,
-					"output"
-				],
-				"to": [
-					0,
-					"fan1RayCount"
+					"input"
 				]
 			},
 			{
@@ -492,8 +42,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RayLength"
+					1,
+					"clock"
 				]
 			},
 			{
@@ -502,8 +52,18 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RayWidth"
+					1,
+					"scale"
+				]
+			},
+			{
+				"from": [
+					12,
+					"output"
+				],
+				"to": [
+					1,
+					"borderStyle"
 				]
 			},
 			{
@@ -512,8 +72,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RayStyle"
+					1,
+					"borderWidth"
 				]
 			},
 			{
@@ -522,8 +82,18 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RayColor"
+					1,
+					"borderColor"
+				]
+			},
+			{
+				"from": [
+					15,
+					"output"
+				],
+				"to": [
+					1,
+					"bulbLayout"
 				]
 			},
 			{
@@ -532,8 +102,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RingCount"
+					1,
+					"bulbSpacing"
 				]
 			},
 			{
@@ -542,8 +112,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RingStart"
+					1,
+					"bulbSize"
 				]
 			},
 			{
@@ -552,8 +122,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RingGap"
+					1,
+					"bulbInset"
 				]
 			},
 			{
@@ -562,8 +132,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RingWidth"
+					1,
+					"bulbGlow"
 				]
 			},
 			{
@@ -572,8 +142,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RingStyle"
+					1,
+					"bulbOnColor"
 				]
 			},
 			{
@@ -582,508 +152,65 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fan1RingColor"
+					1,
+					"bulbOffColor"
 				]
 			},
 			{
 				"from": [
-					61,
+					22,
 					"output"
 				],
 				"to": [
-					0,
-					"fan2RayCount"
+					1,
+					"chaseMode"
 				]
 			},
 			{
 				"from": [
-					62,
+					23,
 					"output"
 				],
 				"to": [
-					0,
-					"fan2RayLength"
+					1,
+					"chaseGroup"
 				]
 			},
 			{
 				"from": [
-					63,
+					24,
 					"output"
 				],
 				"to": [
-					0,
-					"fan2RayWidth"
+					1,
+					"chaseDuty"
 				]
 			},
 			{
 				"from": [
-					64,
+					25,
 					"output"
 				],
 				"to": [
-					0,
-					"fan2RayStyle"
-				]
-			},
-			{
-				"from": [
-					65,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RayColor"
-				]
-			},
-			{
-				"from": [
-					66,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RingCount"
-				]
-			},
-			{
-				"from": [
-					67,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RingStart"
-				]
-			},
-			{
-				"from": [
-					68,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RingGap"
-				]
-			},
-			{
-				"from": [
-					69,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RingWidth"
-				]
-			},
-			{
-				"from": [
-					70,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RingStyle"
-				]
-			},
-			{
-				"from": [
-					71,
-					"output"
-				],
-				"to": [
-					0,
-					"fan2RingColor"
-				]
-			},
-			{
-				"from": [
-					72,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RayCount"
-				]
-			},
-			{
-				"from": [
-					73,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RayLength"
-				]
-			},
-			{
-				"from": [
-					74,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RayWidth"
-				]
-			},
-			{
-				"from": [
-					75,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RayStyle"
-				]
-			},
-			{
-				"from": [
-					76,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RayColor"
-				]
-			},
-			{
-				"from": [
-					77,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RingCount"
-				]
-			},
-			{
-				"from": [
-					78,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RingStart"
-				]
-			},
-			{
-				"from": [
-					79,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RingGap"
-				]
-			},
-			{
-				"from": [
-					80,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RingWidth"
-				]
-			},
-			{
-				"from": [
-					81,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RingStyle"
-				]
-			},
-			{
-				"from": [
-					82,
-					"output"
-				],
-				"to": [
-					0,
-					"fan3RingColor"
-				]
-			},
-			{
-				"from": [
-					83,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RayCount"
-				]
-			},
-			{
-				"from": [
-					84,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RayLength"
-				]
-			},
-			{
-				"from": [
-					85,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RayWidth"
-				]
-			},
-			{
-				"from": [
-					86,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RayStyle"
-				]
-			},
-			{
-				"from": [
-					87,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RayColor"
-				]
-			},
-			{
-				"from": [
-					88,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RingCount"
-				]
-			},
-			{
-				"from": [
-					89,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RingStart"
-				]
-			},
-			{
-				"from": [
-					90,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RingGap"
-				]
-			},
-			{
-				"from": [
-					91,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RingWidth"
-				]
-			},
-			{
-				"from": [
-					92,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RingStyle"
-				]
-			},
-			{
-				"from": [
-					93,
-					"output"
-				],
-				"to": [
-					0,
-					"fan4RingColor"
-				]
-			},
-			{
-				"from": [
-					94,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RayCount"
-				]
-			},
-			{
-				"from": [
-					95,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RayLength"
-				]
-			},
-			{
-				"from": [
-					96,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RayWidth"
-				]
-			},
-			{
-				"from": [
-					97,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RayStyle"
-				]
-			},
-			{
-				"from": [
-					98,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RayColor"
-				]
-			},
-			{
-				"from": [
-					99,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RingCount"
-				]
-			},
-			{
-				"from": [
-					100,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RingStart"
-				]
-			},
-			{
-				"from": [
-					101,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RingGap"
-				]
-			},
-			{
-				"from": [
-					102,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RingWidth"
-				]
-			},
-			{
-				"from": [
-					103,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RingStyle"
-				]
-			},
-			{
-				"from": [
-					104,
-					"output"
-				],
-				"to": [
-					0,
-					"fan5RingColor"
+					1,
+					"filament"
 				]
 			}
 		],
 		"inputOrder": {
 			"groups": {
-				"1792918038112": {
+				"1794300000000": {
 					"children": [
-						4
-					],
-					"collapsed": false,
-					"name": "Mix"
-				},
-				"1792918038118": {
-					"children": [
-						22,
-						23,
-						24,
-						25,
-						26,
-						27,
-						28,
-						29,
-						30,
-						31,
-						32,
-						33
-					],
-					"collapsed": false,
-					"name": "Bulbs"
-				},
-				"1792918038120": {
-					"children": [
-						34,
-						35,
-						36,
-						37
+						12,
+						13,
+						14
 					],
 					"collapsed": false,
 					"name": "Border"
 				},
-				"1792918038122": {
+				"1794300000002": {
 					"children": [
-						38,
-						39
-					],
-					"collapsed": false,
-					"name": "Backdrop"
-				},
-				"1792918041020": {
-					"children": [
-						6,
-						7,
-						40,
-						9,
-						12,
-						8,
-						10,
-						11,
-						13,
-						14,
+						15,
 						16,
 						17,
 						18,
@@ -1092,130 +219,43 @@
 						21
 					],
 					"collapsed": false,
-					"name": "Fan 1"
+					"name": "Bulbs"
 				},
-				"1792918041022": {
+				"1794300000004": {
 					"children": [
-						41,
-						42,
-						43,
-						44,
-						45,
-						61,
-						62,
-						63,
-						64,
-						65,
-						66,
-						67,
-						68,
-						69,
-						70,
-						71
+						22,
+						23,
+						24,
+						25
 					],
 					"collapsed": false,
-					"name": "Fan 2"
-				},
-				"1792918041024": {
-					"children": [
-						46,
-						47,
-						48,
-						49,
-						50,
-						72,
-						73,
-						74,
-						75,
-						76,
-						77,
-						78,
-						79,
-						80,
-						81,
-						82
-					],
-					"collapsed": false,
-					"name": "Fan 3"
-				},
-				"1792918041026": {
-					"children": [
-						51,
-						52,
-						53,
-						54,
-						55,
-						83,
-						84,
-						85,
-						86,
-						87,
-						88,
-						89,
-						90,
-						91,
-						92,
-						93
-					],
-					"collapsed": false,
-					"name": "Fan 4"
-				},
-				"1792918041028": {
-					"children": [
-						56,
-						57,
-						58,
-						59,
-						60,
-						94,
-						95,
-						96,
-						97,
-						98,
-						99,
-						100,
-						101,
-						102,
-						103,
-						104
-					],
-					"collapsed": false,
-					"name": "Fan 5"
+					"name": "Chase"
 				}
 			},
 			"roots": [
 				{
-					"group": 1792918038112
+					"node": 10
 				},
 				{
-					"group": 1792918041020
+					"node": 11
 				},
 				{
-					"group": 1792918041022
+					"node": 0
 				},
 				{
-					"group": 1792918041024
+					"group": 1794300000000
 				},
 				{
-					"group": 1792918041026
+					"group": 1794300000002
 				},
 				{
-					"group": 1792918041028
-				},
-				{
-					"group": 1792918038118
-				},
-				{
-					"group": 1792918038120
-				},
-				{
-					"group": 1792918038122
+					"group": 1794300000004
 				}
 			]
 		},
 		"meta": {
-			"author": "",
-			"category": "source",
+			"author": "Stefan Mazur",
+			"category": "effect",
 			"deploymentTarget": {
 				"branch": "",
 				"name": "Wire",
@@ -1225,11 +265,11 @@
 					"patch": 0
 				}
 			},
-			"description": "Deco Marquee v2 - Art Deco theatre portal: up to 5 fans (rays + rings), marquee bulbs and a closed ornament border, each element with its own color. Nothing moves by itself: drive Chase (0-1 = one step of the pattern, BPM Sync loops seamlessly), fan positions, fill, rotation or look from Arena. Each fan group (Fan 1-5) holds position and look of that fan. X \/ Y: 0 = screen center, -1 \/ 1 = fan center exactly on the screen edge (X left\/right, Y bottom\/top), -2 \/ 2 = fully outside. Z: 0 = normal size, higher = further away and smaller, also drawn behind nearer fans. Fill (deg) = how far the fan is open around its direction: 0 = fan off, 180 = half circle, 360 = full circle. Rotate (deg) = direction the fan opens to (0 = up). Ray Count = rays in a full circle (Fill reveals them), 0 = no rays; Ray Style Straight \/ Wedge (widening) \/ Long-Short. Ring Count 0 = no rings, fractional values fade the next ring in (FFT friendly); Ring Style Arch \/ Stepped \/ Chevron. Bulbs: Layout Rows \/ Frame \/ Arch (along the outer ring of fan 1); Bulb Inset = distance from the edge; Bulb Glow = halo of lit bulbs; Chase Mode Run (Chase Group bulbs per step, Chase Duty = lit share) \/ Alternate \/ Fill. Border: closed ornament band at the screen edge, Zigzag \/ Chevron \/ Steps. Backdrop On\/Off: colored background or transparent overlay. Drawn by the ISF shader DecoMarquee.fs in the patch folder (must stay next to the patch).",
-			"displayName": "Deco Marquee v2",
+			"description": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Off, Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst Corners), Border Width, Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (lit share), Filament (lamps glow on after the current is gone). Shader: Resource/DecoMarquee.fs.",
+			"displayName": "Deco Marquee",
 			"identifier": "5514b9ad-0479-4aaf-9acd-79d1e7000fb8",
 			"licenseName": "",
-			"mail": "",
+			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
 				"textColorIndex": 1,
@@ -1259,12 +299,49 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "",
+			"url": "https://github.com/S-Mazu/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 105,
+		"nextNodeId": 26,
 		"nodes": {
 			"0": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-B2A2-4C1C-8C4C-2915D78CC8E9",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances"
+				],
+				"name": "Texture In",
+				"thumbnail_visible": true
+			},
+			"1": {
 				"attributes": {
 					"bitdepth": {
 						"type": "integer",
@@ -1274,738 +351,135 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "C:\/Users\/StefanMazurCATI-Co\/OneDrive - CATI - Consilium et auxilium informaticum et technicum\/Dokumente\/Resolume Wire\/Patches\/Deco Marquee v2\/DecoMarquee.fs",
+								"main": "Resource/DecoMarquee.fs",
 								"sub": ""
 							},
 							"value": {
 								"inputs": [
 									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": -2,
-										"name": "fan1X",
+										"name": "inputImage",
+										"type": "image"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "clock",
 										"type": "float"
 									},
 									{
-										"defaultValue": -1,
-										"max": 2,
-										"min": -2,
-										"name": "fan1Y",
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "scale",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 5,
-										"min": -0.5,
-										"name": "fan1Z",
+										"defaultValue": 3.0,
+										"max": 8.0,
+										"min": 0.0,
+										"name": "borderStyle",
 										"type": "float"
 									},
 									{
-										"defaultValue": 180,
-										"max": 360,
-										"min": 0,
-										"name": "fan1Fill",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 180,
-										"min": -180,
-										"name": "fan1Rot",
-										"type": "float"
-									},
-									{
-										"defaultValue": 40,
-										"max": 96,
-										"min": 0,
-										"name": "fan1RayCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1.14999997615814209,
-										"max": 3,
-										"min": 0,
-										"name": "fan1RayLength",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.02999999932944775,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan1RayWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan1RayStyle",
+										"defaultValue": 0.06,
+										"max": 2.0,
+										"min": 0.0,
+										"name": "borderWidth",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											0.82999998331069946,
-											0.6600000262260437,
+											0.83,
+											0.66,
 											0.25,
-											1
+											1.0
 										],
-										"name": "fan1RayColor",
+										"name": "borderColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 4,
-										"max": 8,
-										"min": 0,
-										"name": "fan1RingCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 2,
-										"min": 0,
-										"name": "fan1RingStart",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.20000000298023224,
-										"max": 1,
-										"min": 0.01999999955296516,
-										"name": "fan1RingGap",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan1RingWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan1RingStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.94999998807907104,
-											0.87999999523162842,
-											0.69999998807907104,
-											1
-										],
-										"name": "fan1RingColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": -0.67000001668930054,
-										"max": 2,
-										"min": -2,
-										"name": "fan2X",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": -2,
-										"name": "fan2Y",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1,
-										"max": 5,
-										"min": -0.5,
-										"name": "fan2Z",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 360,
-										"min": 0,
-										"name": "fan2Fill",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 180,
-										"min": -180,
-										"name": "fan2Rot",
-										"type": "float"
-									},
-									{
-										"defaultValue": 40,
-										"max": 96,
-										"min": 0,
-										"name": "fan2RayCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1.14999997615814209,
-										"max": 3,
-										"min": 0,
-										"name": "fan2RayLength",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.02999999932944775,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan2RayWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan2RayStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.82999998331069946,
-											0.6600000262260437,
-											0.25,
-											1
-										],
-										"name": "fan2RayColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 4,
-										"max": 8,
-										"min": 0,
-										"name": "fan2RingCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 2,
-										"min": 0,
-										"name": "fan2RingStart",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.20000000298023224,
-										"max": 1,
-										"min": 0.01999999955296516,
-										"name": "fan2RingGap",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan2RingWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan2RingStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.94999998807907104,
-											0.87999999523162842,
-											0.69999998807907104,
-											1
-										],
-										"name": "fan2RingColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 0.67000001668930054,
-										"max": 2,
-										"min": -2,
-										"name": "fan3X",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": -2,
-										"name": "fan3Y",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1,
-										"max": 5,
-										"min": -0.5,
-										"name": "fan3Z",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 360,
-										"min": 0,
-										"name": "fan3Fill",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 180,
-										"min": -180,
-										"name": "fan3Rot",
-										"type": "float"
-									},
-									{
-										"defaultValue": 40,
-										"max": 96,
-										"min": 0,
-										"name": "fan3RayCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1.14999997615814209,
-										"max": 3,
-										"min": 0,
-										"name": "fan3RayLength",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.02999999932944775,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan3RayWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan3RayStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.82999998331069946,
-											0.6600000262260437,
-											0.25,
-											1
-										],
-										"name": "fan3RayColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 4,
-										"max": 8,
-										"min": 0,
-										"name": "fan3RingCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 2,
-										"min": 0,
-										"name": "fan3RingStart",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.20000000298023224,
-										"max": 1,
-										"min": 0.01999999955296516,
-										"name": "fan3RingGap",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan3RingWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan3RingStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.94999998807907104,
-											0.87999999523162842,
-											0.69999998807907104,
-											1
-										],
-										"name": "fan3RingColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": -0.67000001668930054,
-										"max": 2,
-										"min": -2,
-										"name": "fan4X",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1,
-										"max": 2,
-										"min": -2,
-										"name": "fan4Y",
-										"type": "float"
-									},
-									{
-										"defaultValue": 2,
-										"max": 5,
-										"min": -0.5,
-										"name": "fan4Z",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 360,
-										"min": 0,
-										"name": "fan4Fill",
-										"type": "float"
-									},
-									{
-										"defaultValue": 180,
-										"max": 180,
-										"min": -180,
-										"name": "fan4Rot",
-										"type": "float"
-									},
-									{
-										"defaultValue": 40,
-										"max": 96,
-										"min": 0,
-										"name": "fan4RayCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1.14999997615814209,
-										"max": 3,
-										"min": 0,
-										"name": "fan4RayLength",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.02999999932944775,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan4RayWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan4RayStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.82999998331069946,
-											0.6600000262260437,
-											0.25,
-											1
-										],
-										"name": "fan4RayColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 4,
-										"max": 8,
-										"min": 0,
-										"name": "fan4RingCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 2,
-										"min": 0,
-										"name": "fan4RingStart",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.20000000298023224,
-										"max": 1,
-										"min": 0.01999999955296516,
-										"name": "fan4RingGap",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan4RingWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan4RingStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.94999998807907104,
-											0.87999999523162842,
-											0.69999998807907104,
-											1
-										],
-										"name": "fan4RingColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 0.67000001668930054,
-										"max": 2,
-										"min": -2,
-										"name": "fan5X",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1,
-										"max": 2,
-										"min": -2,
-										"name": "fan5Y",
-										"type": "float"
-									},
-									{
-										"defaultValue": 2,
-										"max": 5,
-										"min": -0.5,
-										"name": "fan5Z",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 360,
-										"min": 0,
-										"name": "fan5Fill",
-										"type": "float"
-									},
-									{
-										"defaultValue": 180,
-										"max": 180,
-										"min": -180,
-										"name": "fan5Rot",
-										"type": "float"
-									},
-									{
-										"defaultValue": 40,
-										"max": 96,
-										"min": 0,
-										"name": "fan5RayCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1.14999997615814209,
-										"max": 3,
-										"min": 0,
-										"name": "fan5RayLength",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.02999999932944775,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan5RayWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan5RayStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.82999998331069946,
-											0.6600000262260437,
-											0.25,
-											1
-										],
-										"name": "fan5RayColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 4,
-										"max": 8,
-										"min": 0,
-										"name": "fan5RingCount",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 2,
-										"min": 0,
-										"name": "fan5RingStart",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.20000000298023224,
-										"max": 1,
-										"min": 0.01999999955296516,
-										"name": "fan5RingGap",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.20000000298023224,
-										"min": 0,
-										"name": "fan5RingWidth",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "fan5RingStyle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.94999998807907104,
-											0.87999999523162842,
-											0.69999998807907104,
-											1
-										],
-										"name": "fan5RingColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 1,
-										"max": 1,
-										"min": 0,
-										"name": "bulbsOn",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
+										"defaultValue": 1.0,
+										"max": 2.0,
+										"min": 0.0,
 										"name": "bulbLayout",
 										"type": "float"
 									},
 									{
-										"defaultValue": 28,
-										"max": 120,
-										"min": 2,
-										"name": "bulbCount",
+										"defaultValue": 0.25,
+										"max": 5.0,
+										"min": 0.02,
+										"name": "bulbSpacing",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.02199999988079071,
-										"max": 0.10000000149011612,
-										"min": 0.0020000000949949,
+										"defaultValue": 0.022,
+										"max": 2.0,
+										"min": 0.0,
 										"name": "bulbSize",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.10000000149011612,
-										"max": 0.80000001192092896,
-										"min": 0,
+										"defaultValue": 0.1,
+										"max": 2.0,
+										"min": 0.0,
 										"name": "bulbInset",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.30000001192092896,
-										"max": 1,
-										"min": 0,
+										"defaultValue": 0.3,
+										"max": 5.0,
+										"min": 0.0,
 										"name": "bulbGlow",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": 0,
-										"name": "chase",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "chaseMode",
-										"type": "float"
-									},
-									{
-										"defaultValue": 3,
-										"max": 12,
-										"min": 1,
-										"name": "chaseGroup",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.30000001192092896,
-										"max": 1,
-										"min": 0,
-										"name": "chaseDuty",
-										"type": "float"
-									},
-									{
 										"defaultValue": [
-											1,
-											0.87999999523162842,
-											0.60000002384185791,
-											1
+											1.0,
+											0.88,
+											0.6,
+											1.0
 										],
 										"name": "bulbOnColor",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.18000000715255737,
-											0.12999999523162842,
-											0.05999999865889549,
-											1
+											0.18,
+											0.13,
+											0.06,
+											1.0
 										],
 										"name": "bulbOffColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": 0,
-										"name": "borderOn",
+										"defaultValue": 0.0,
+										"max": 6.0,
+										"min": 0.0,
+										"name": "chaseMode",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 2,
-										"min": 0,
-										"name": "borderStyle",
+										"defaultValue": 3.0,
+										"max": 64.0,
+										"min": 1.0,
+										"name": "chaseGroup",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.05999999865889549,
-										"max": 0.30000001192092896,
-										"min": 0,
-										"name": "borderWidth",
+										"defaultValue": 0.3,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "chaseDuty",
 										"type": "float"
 									},
 									{
-										"defaultValue": [
-											0.82999998331069946,
-											0.6600000262260437,
-											0.25,
-											1
-										],
-										"name": "borderColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 1,
-										"max": 1,
-										"min": 0,
-										"name": "backdropOn",
+										"defaultValue": 0.3,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "filament",
 										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.02999999932944775,
-											0.03999999910593033,
-											0.04500000178813934,
-											1
-										],
-										"name": "backdropColor",
-										"type": "color"
 									}
 								]
 							}
@@ -2035,10 +509,10 @@
 					}
 				},
 				"bounds": {
-					"height": 2410,
+					"height": 58,
 					"width": 195,
 					"x": 700,
-					"y": 400
+					"y": 40
 				},
 				"class": {
 					"id": "77697265-4576-4C11-899B-6F11F3275D36",
@@ -2047,475 +521,96 @@
 				"clock": "video",
 				"color": "ffff6a00",
 				"constants": {
-					"backdropColor": {
-						"type": "color",
-						"value": [
-							0.02999999932944775,
-							0.03999999910593033,
-							0.04500000178813934,
-							1
-						]
-					},
-					"backdropOn": {
-						"type": "float",
-						"value": 1
-					},
-					"borderColor": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					},
-					"borderOn": {
-						"type": "float",
-						"value": 1
-					},
-					"borderStyle": {
-						"type": "float",
-						"value": 1
-					},
-					"borderWidth": {
-						"type": "float",
-						"value": 0.05999999865889549
-					},
-					"bulbCount": {
-						"type": "float",
-						"value": 24
-					},
-					"bulbGlow": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"bulbInset": {
-						"type": "float",
-						"value": 0.15000000596046448
-					},
-					"bulbLayout": {
-						"type": "float",
-						"value": 2
-					},
-					"bulbOffColor": {
-						"type": "color",
-						"value": [
-							0.18000000715255737,
-							0.12999999523162842,
-							0.05999999865889549,
-							1
-						]
-					},
-					"bulbOnColor": {
-						"type": "color",
-						"value": [
-							1,
-							0.87999999523162842,
-							0.60000002384185791,
-							1
-						]
-					},
-					"bulbSize": {
-						"type": "float",
-						"value": 0.02199999988079071
-					},
-					"bulbsOn": {
-						"type": "float",
-						"value": 1
-					},
 					"bypass": {
 						"type": "bool",
 						"value": false
 					},
-					"chase": {
-						"type": "float",
-						"value": 0
-					},
-					"chaseDuty": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"chaseGroup": {
-						"type": "float",
-						"value": 3
-					},
-					"chaseMode": {
-						"type": "float",
-						"value": 0
-					},
-					"fan1Fill": {
-						"type": "float",
-						"value": 180
-					},
-					"fan1RayColor": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					},
-					"fan1RayCount": {
-						"type": "float",
-						"value": 40
-					},
-					"fan1RayLength": {
-						"type": "float",
-						"value": 1.14999997615814209
-					},
-					"fan1RayStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan1RayWidth": {
-						"type": "float",
-						"value": 0.02999999932944775
-					},
-					"fan1RingColor": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					},
-					"fan1RingCount": {
-						"type": "float",
-						"value": 4
-					},
-					"fan1RingGap": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"fan1RingStart": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"fan1RingStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan1RingWidth": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"fan1Rot": {
-						"type": "float",
-						"value": 0
-					},
-					"fan1X": {
-						"type": "float",
-						"value": 0
-					},
-					"fan1Y": {
-						"type": "float",
-						"value": -1
-					},
-					"fan1Z": {
-						"type": "float",
-						"value": -0.5
-					},
-					"fan2Fill": {
-						"type": "float",
-						"value": 0
-					},
-					"fan2RayColor": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					},
-					"fan2RayCount": {
-						"type": "float",
-						"value": 40
-					},
-					"fan2RayLength": {
-						"type": "float",
-						"value": 1.14999997615814209
-					},
-					"fan2RayStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan2RayWidth": {
-						"type": "float",
-						"value": 0.02999999932944775
-					},
-					"fan2RingColor": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					},
-					"fan2RingCount": {
-						"type": "float",
-						"value": 4
-					},
-					"fan2RingGap": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"fan2RingStart": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"fan2RingStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan2RingWidth": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"fan2Rot": {
-						"type": "float",
-						"value": 0
-					},
-					"fan2X": {
-						"type": "float",
-						"value": -1.20000004768371582
-					},
-					"fan2Y": {
-						"type": "float",
-						"value": 0
-					},
-					"fan2Z": {
-						"type": "float",
-						"value": 1
-					},
-					"fan3Fill": {
-						"type": "float",
-						"value": 0
-					},
-					"fan3RayColor": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					},
-					"fan3RayCount": {
-						"type": "float",
-						"value": 40
-					},
-					"fan3RayLength": {
-						"type": "float",
-						"value": 1.14999997615814209
-					},
-					"fan3RayStyle": {
-						"type": "float",
-						"value": 2
-					},
-					"fan3RayWidth": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"fan3RingColor": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					},
-					"fan3RingCount": {
-						"type": "float",
-						"value": 4
-					},
-					"fan3RingGap": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"fan3RingStart": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"fan3RingStyle": {
-						"type": "float",
-						"value": 2
-					},
-					"fan3RingWidth": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"fan3Rot": {
-						"type": "float",
-						"value": 0
-					},
-					"fan3X": {
-						"type": "float",
-						"value": 1.20000004768371582
-					},
-					"fan3Y": {
-						"type": "float",
-						"value": 1.5
-					},
-					"fan3Z": {
-						"type": "float",
-						"value": 1
-					},
-					"fan4Fill": {
-						"type": "float",
-						"value": 0
-					},
-					"fan4RayColor": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					},
-					"fan4RayCount": {
-						"type": "float",
-						"value": 40
-					},
-					"fan4RayLength": {
-						"type": "float",
-						"value": 1.14999997615814209
-					},
-					"fan4RayStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan4RayWidth": {
-						"type": "float",
-						"value": 0.02999999932944775
-					},
-					"fan4RingColor": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					},
-					"fan4RingCount": {
-						"type": "float",
-						"value": 4
-					},
-					"fan4RingGap": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"fan4RingStart": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"fan4RingStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan4RingWidth": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"fan4Rot": {
-						"type": "float",
-						"value": 180
-					},
-					"fan4X": {
-						"type": "float",
-						"value": -1.20000004768371582
-					},
-					"fan4Y": {
-						"type": "float",
-						"value": 1
-					},
-					"fan4Z": {
-						"type": "float",
-						"value": 2
-					},
-					"fan5Fill": {
-						"type": "float",
-						"value": 0
-					},
-					"fan5RayColor": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					},
-					"fan5RayCount": {
-						"type": "float",
-						"value": 40
-					},
-					"fan5RayLength": {
-						"type": "float",
-						"value": 1.14999997615814209
-					},
-					"fan5RayStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan5RayWidth": {
-						"type": "float",
-						"value": 0.02999999932944775
-					},
-					"fan5RingColor": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					},
-					"fan5RingCount": {
-						"type": "float",
-						"value": 4
-					},
-					"fan5RingGap": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"fan5RingStart": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"fan5RingStyle": {
-						"type": "float",
-						"value": 0
-					},
-					"fan5RingWidth": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"fan5Rot": {
-						"type": "float",
-						"value": 180
-					},
-					"fan5X": {
-						"type": "float",
-						"value": 1.20000004768371582
-					},
-					"fan5Y": {
-						"type": "float",
-						"value": 1
-					},
-					"fan5Z": {
-						"type": "float",
-						"value": 2
+					"inputImage": {
+						"type": "texture2d",
+						"value": null
 					},
 					"time": {
 						"type": "float",
 						"value": 0
+					},
+					"clock": {
+						"type": "float",
+						"value": 0.0
+					},
+					"scale": {
+						"type": "float",
+						"value": 1.0
+					},
+					"borderStyle": {
+						"type": "float",
+						"value": 3.0
+					},
+					"borderWidth": {
+						"type": "float",
+						"value": 0.06
+					},
+					"borderColor": {
+						"type": "color",
+						"value": [
+							0.83,
+							0.66,
+							0.25,
+							1.0
+						]
+					},
+					"bulbLayout": {
+						"type": "float",
+						"value": 1.0
+					},
+					"bulbSpacing": {
+						"type": "float",
+						"value": 0.25
+					},
+					"bulbSize": {
+						"type": "float",
+						"value": 0.022
+					},
+					"bulbInset": {
+						"type": "float",
+						"value": 0.1
+					},
+					"bulbGlow": {
+						"type": "float",
+						"value": 0.3
+					},
+					"bulbOnColor": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.88,
+							0.6,
+							1.0
+						]
+					},
+					"bulbOffColor": {
+						"type": "color",
+						"value": [
+							0.18,
+							0.13,
+							0.06,
+							1.0
+						]
+					},
+					"chaseMode": {
+						"type": "float",
+						"value": 0.0
+					},
+					"chaseGroup": {
+						"type": "float",
+						"value": 3.0
+					},
+					"chaseDuty": {
+						"type": "float",
+						"value": 0.3
+					},
+					"filament": {
+						"type": "float",
+						"value": 0.3
 					}
 				},
 				"hidden": [
@@ -2526,10 +621,46 @@
 					"resolution-mode",
 					"resolution-relative"
 				],
-				"name": "Marquee (ISF)",
+				"name": "Deco Marquee (ISF)",
 				"thumbnail_visible": true
 			},
-			"1": {
+			"2": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 30,
+					"width": 195,
+					"x": 1100,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-F1A4-4AFC-B3F6-5635DC6FE964",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"bypass",
+					"instances"
+				],
+				"name": "Premultiply Alpha",
+				"thumbnail_visible": true
+			},
+			"3": {
 				"attributes": {
 					"instances": {
 						"type": "integer",
@@ -2539,8 +670,8 @@
 				"bounds": {
 					"height": 82,
 					"width": 132,
-					"x": 1300,
-					"y": 400
+					"x": 1350,
+					"y": 40
 				},
 				"class": {
 					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
@@ -2580,15 +711,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 3
+						"value": 1.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -2597,13 +724,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 240
+					"x": 300,
+					"y": 200
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -2614,7 +745,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.14999997615814209
+						"value": 0.0
 					}
 				},
 				"hidden": [
@@ -2629,377 +760,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ray Length",
-				"thumbnail_visible": true
-			},
-			"100": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1560
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ring Start",
-				"thumbnail_visible": true
-			},
-			"101": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1600
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.20000000298023224
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ring Gap",
-				"thumbnail_visible": true
-			},
-			"102": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1640
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.01999999955296516
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ring Width",
-				"thumbnail_visible": true
-			},
-			"103": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Arch"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Stepped"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Chevron"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1680
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ring Style",
-				"thumbnail_visible": true
-			},
-			"104": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1720
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 5 Ring Color",
+				"name": "Clock",
 				"thumbnail_visible": true
 			},
 			"11": {
@@ -3022,15 +783,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 0.20000000298023224
+						"value": 10.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3039,13 +796,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 280
+					"x": 300,
+					"y": 300
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3056,7 +817,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.02999999932944775
+						"value": 1.0
 					}
 				},
 				"hidden": [
@@ -3071,7 +832,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ray Width",
+				"name": "Scale",
 				"thumbnail_visible": true
 			},
 			"12": {
@@ -3094,15 +855,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 180
+						"value": 8.0
 					},
 					"min": {
 						"type": "float",
-						"value": -180
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3111,13 +868,89 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Zigzag"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Chevron"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"option3-label": {
+						"type": "string",
+						"value": "Steps"
+					},
+					"option3-value": {
+						"type": "float",
+						"value": 3.0
+					},
+					"option4-label": {
+						"type": "string",
+						"value": "Greek Key"
+					},
+					"option4-value": {
+						"type": "float",
+						"value": 4.0
+					},
+					"option5-label": {
+						"type": "string",
+						"value": "Diamonds"
+					},
+					"option5-value": {
+						"type": "float",
+						"value": 5.0
+					},
+					"option6-label": {
+						"type": "string",
+						"value": "Scallop"
+					},
+					"option6-value": {
+						"type": "float",
+						"value": 6.0
+					},
+					"option7-label": {
+						"type": "string",
+						"value": "Beads"
+					},
+					"option7-value": {
+						"type": "float",
+						"value": 7.0
+					},
+					"option8-label": {
+						"type": "string",
+						"value": "Sunburst Corners"
+					},
+					"option8-value": {
+						"type": "float",
+						"value": 8.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 9
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 320
+					"x": 300,
+					"y": 400
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3128,7 +961,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0
+						"value": 3.0
 					}
 				},
 				"hidden": [
@@ -3141,9 +974,27 @@
 					"min",
 					"options-count",
 					"unit",
-					"widget"
+					"widget",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"option2-label",
+					"option2-value",
+					"option3-label",
+					"option3-value",
+					"option4-label",
+					"option4-value",
+					"option5-label",
+					"option5-value",
+					"option6-label",
+					"option6-value",
+					"option7-label",
+					"option7-value",
+					"option8-label",
+					"option8-value"
 				],
-				"name": "Fan 1 Rotate (°)",
+				"name": "Border Style",
 				"thumbnail_visible": true
 			},
 			"13": {
@@ -3166,39 +1017,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 2
+						"value": 2.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Straight"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Wedge"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Long-Short"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3207,13 +1030,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 360
+					"x": 300,
+					"y": 500
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3224,7 +1051,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0
+						"value": 0.06
 					}
 				},
 				"hidden": [
@@ -3235,17 +1062,11 @@
 					"instances",
 					"max",
 					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
 					"options-count",
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ray Style",
+				"name": "Border Width",
 				"thumbnail_visible": true
 			},
 			"14": {
@@ -3270,8 +1091,8 @@
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 400
+					"x": 300,
+					"y": 600
 				},
 				"class": {
 					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
@@ -3283,10 +1104,10 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
+							0.83,
+							0.66,
 							0.25,
-							1
+							1.0
 						]
 					}
 				},
@@ -3297,7 +1118,109 @@
 					"options-count",
 					"widget"
 				],
-				"name": "Fan 1 Ray Color",
+				"name": "Border Color",
+				"thumbnail_visible": true
+			},
+			"15": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Rows"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Frame"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 3
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 700
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"option2-label",
+					"option2-value"
+				],
+				"name": "Bulb Layout",
 				"thumbnail_visible": true
 			},
 			"16": {
@@ -3320,15 +1243,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 8
+						"value": 5.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.02
 					},
 					"unit": {
 						"type": "integer",
@@ -3337,13 +1256,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 480
+					"x": 300,
+					"y": 800
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3354,7 +1277,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 4
+						"value": 0.25
 					}
 				},
 				"hidden": [
@@ -3369,7 +1292,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ring Count",
+				"name": "Bulb Spacing",
 				"thumbnail_visible": true
 			},
 			"17": {
@@ -3392,15 +1315,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 2
+						"value": 2.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3409,13 +1328,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 520
+					"x": 300,
+					"y": 900
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3426,7 +1349,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.30000001192092896
+						"value": 0.022
 					}
 				},
 				"hidden": [
@@ -3441,7 +1364,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ring Start",
+				"name": "Bulb Size",
 				"thumbnail_visible": true
 			},
 			"18": {
@@ -3464,15 +1387,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1
+						"value": 2.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3481,13 +1400,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 560
+					"x": 300,
+					"y": 1000
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3498,7 +1421,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.20000000298023224
+						"value": 0.1
 					}
 				},
 				"hidden": [
@@ -3513,7 +1436,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ring Gap",
+				"name": "Bulb Inset",
 				"thumbnail_visible": true
 			},
 			"19": {
@@ -3536,15 +1459,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 0.20000000298023224
+						"value": 5.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3553,13 +1472,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 600
+					"x": 300,
+					"y": 1100
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3570,7 +1493,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.01999999955296516
+						"value": 0.3
 					}
 				},
 				"hidden": [
@@ -3585,43 +1508,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ring Width",
-				"thumbnail_visible": true
-			},
-			"2": {
-				"attributes": {
-					"instances": {
-						"type": "integer",
-						"value": 1
-					}
-				},
-				"bounds": {
-					"height": 30,
-					"width": 195,
-					"x": 1100,
-					"y": 400
-				},
-				"class": {
-					"id": "77697265-F1A4-4AFC-B3F6-5635DC6FE964",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"bypass": {
-						"type": "bool",
-						"value": false
-					},
-					"input": {
-						"type": "texture2d",
-						"value": null
-					}
-				},
-				"hidden": [
-					"bypass",
-					"instances"
-				],
-				"name": "Premultiply Out",
+				"name": "Bulb Glow",
 				"thumbnail_visible": true
 			},
 			"20": {
@@ -3630,55 +1517,11 @@
 						"type": "flow",
 						"value": "signal"
 					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
 					"instances": {
 						"type": "integer",
 						"value": 1
 					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Arch"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Stepped"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Chevron"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
 					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
 						"type": "integer",
 						"value": 0
 					},
@@ -3690,40 +1533,34 @@
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 640
+					"x": 300,
+					"y": 1200
 				},
 				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
 					"version": 4
 				},
 				"clock": "video",
 				"color": "ffff6a00",
 				"constants": {
 					"input": {
-						"type": "float",
-						"value": 0
+						"type": "color",
+						"value": [
+							1.0,
+							0.88,
+							0.6,
+							1.0
+						]
 					}
 				},
 				"hidden": [
 					"flow",
-					"has-max",
-					"has-min",
 					"input",
 					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
 					"options-count",
-					"unit",
 					"widget"
 				],
-				"name": "Fan 1 Ring Style",
+				"name": "Bulb On Color",
 				"thumbnail_visible": true
 			},
 			"21": {
@@ -3748,8 +1585,8 @@
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 680
+					"x": 300,
+					"y": 1300
 				},
 				"class": {
 					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
@@ -3761,10 +1598,10 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
+							0.18,
+							0.13,
+							0.06,
+							1.0
 						]
 					}
 				},
@@ -3775,7 +1612,7 @@
 					"options-count",
 					"widget"
 				],
-				"name": "Fan 1 Ring Color",
+				"name": "Bulb Off Color",
 				"thumbnail_visible": true
 			},
 			"22": {
@@ -3798,31 +1635,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1
+						"value": 6.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Off"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "On"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 2
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3831,13 +1648,73 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Run"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Alternate"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Fill"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"option3-label": {
+						"type": "string",
+						"value": "Bounce"
+					},
+					"option3-value": {
+						"type": "float",
+						"value": 3.0
+					},
+					"option4-label": {
+						"type": "string",
+						"value": "Mirror"
+					},
+					"option4-value": {
+						"type": "float",
+						"value": 4.0
+					},
+					"option5-label": {
+						"type": "string",
+						"value": "Twinkle"
+					},
+					"option5-value": {
+						"type": "float",
+						"value": 5.0
+					},
+					"option6-label": {
+						"type": "string",
+						"value": "Wave"
+					},
+					"option6-value": {
+						"type": "float",
+						"value": 6.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 7
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 720
+					"x": 300,
+					"y": 1400
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3848,7 +1725,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1
+						"value": 0.0
 					}
 				},
 				"hidden": [
@@ -3859,15 +1736,25 @@
 					"instances",
 					"max",
 					"min",
+					"options-count",
+					"unit",
+					"widget",
 					"option0-label",
 					"option0-value",
 					"option1-label",
 					"option1-value",
-					"options-count",
-					"unit",
-					"widget"
+					"option2-label",
+					"option2-value",
+					"option3-label",
+					"option3-value",
+					"option4-label",
+					"option4-value",
+					"option5-label",
+					"option5-value",
+					"option6-label",
+					"option6-value"
 				],
-				"name": "Bulbs On",
+				"name": "Chase Mode",
 				"thumbnail_visible": true
 			},
 			"23": {
@@ -3890,39 +1777,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 2
+						"value": 64.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Rows"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Frame"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Arch"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
+						"value": 1.0
 					},
 					"unit": {
 						"type": "integer",
@@ -3931,13 +1790,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 760
+					"x": 300,
+					"y": 1500
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -3948,7 +1811,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0
+						"value": 3.0
 					}
 				},
 				"hidden": [
@@ -3959,17 +1822,11 @@
 					"instances",
 					"max",
 					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
 					"options-count",
 					"unit",
 					"widget"
 				],
-				"name": "Bulb Layout",
+				"name": "Chase Group",
 				"thumbnail_visible": true
 			},
 			"24": {
@@ -3992,15 +1849,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 120
+						"value": 1.0
 					},
 					"min": {
 						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -4009,13 +1862,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 100,
-					"y": 800
+					"x": 300,
+					"y": 1600
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -4026,7 +1883,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 28
+						"value": 0.3
 					}
 				},
 				"hidden": [
@@ -4041,7 +1898,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Bulb Count",
+				"name": "Chase Duty",
 				"thumbnail_visible": true
 			},
 			"25": {
@@ -4064,5859 +1921,21 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 0.10000000149011612
+						"value": 1.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0020000000949949
+						"value": 0.0
 					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 840
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.02199999988079071
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Bulb Size",
-				"thumbnail_visible": true
-			},
-			"26": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.80000001192092896
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 880
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.10000000149011612
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Bulb Inset",
-				"thumbnail_visible": true
-			},
-			"27": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 920
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Bulb Glow",
-				"thumbnail_visible": true
-			},
-			"28": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 960
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Chase",
-				"thumbnail_visible": true
-			},
-			"29": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Run"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Alternate"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Fill"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1000
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Chase Mode",
-				"thumbnail_visible": true
-			},
-			"3": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"input0-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"input1-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"size": {
-						"type": "integer",
-						"value": 2
-					},
-					"type0": {
-						"type": "type",
-						"value": "texture2d"
-					},
-					"type1": {
-						"type": "type",
-						"value": "float"
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 195,
-					"x": 900,
-					"y": 400
-				},
-				"class": {
-					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input0": {
-						"type": "texture2d",
-						"value": null
-					},
-					"input1": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"input0-dimensions",
-					"input1-dimensions",
-					"size",
-					"type0",
-					"type1"
-				],
-				"name": "Apply Opacity",
-				"thumbnail_visible": true
-			},
-			"30": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 12
-					},
-					"min": {
-						"type": "float",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1040
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 3
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Chase Group",
-				"thumbnail_visible": true
-			},
-			"31": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1080
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Chase Duty",
-				"thumbnail_visible": true
-			},
-			"32": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1120
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							1,
-							0.87999999523162842,
-							0.60000002384185791,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Bulb On Color",
-				"thumbnail_visible": true
-			},
-			"33": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1160
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.18000000715255737,
-							0.12999999523162842,
-							0.05999999865889549,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Bulb Off Color",
-				"thumbnail_visible": true
-			},
-			"34": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Off"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "On"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 2
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Border On",
-				"thumbnail_visible": true
-			},
-			"35": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Zigzag"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Chevron"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Steps"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1240
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Border Style",
-				"thumbnail_visible": true
-			},
-			"36": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.30000001192092896
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1280
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.05999999865889549
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Border Width",
-				"thumbnail_visible": true
-			},
-			"37": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1320
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Border Color",
-				"thumbnail_visible": true
-			},
-			"38": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Off"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "On"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 2
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1360
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Backdrop On",
-				"thumbnail_visible": true
-			},
-			"39": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 1400
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.02999999932944775,
-							0.03999999910593033,
-							0.04500000178813934,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Backdrop Color",
-				"thumbnail_visible": true
-			},
-			"4": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Opacity",
-				"thumbnail_visible": true
-			},
-			"40": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 5
-					},
-					"min": {
-						"type": "float",
-						"value": -0.5
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 1 Z",
-				"thumbnail_visible": true
-			},
-			"41": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 40
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": -0.67000001668930054
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 X",
-				"thumbnail_visible": true
-			},
-			"42": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 80
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Y",
-				"thumbnail_visible": true
-			},
-			"43": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 5
-					},
-					"min": {
-						"type": "float",
-						"value": -0.5
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 120
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Z",
-				"thumbnail_visible": true
-			},
-			"44": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 360
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 160
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Fill (°)",
-				"thumbnail_visible": true
-			},
-			"45": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 180
-					},
-					"min": {
-						"type": "float",
-						"value": -180
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Rotate (°)",
-				"thumbnail_visible": true
-			},
-			"46": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 240
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.67000001668930054
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 X",
-				"thumbnail_visible": true
-			},
-			"47": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 280
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Y",
-				"thumbnail_visible": true
-			},
-			"48": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 5
-					},
-					"min": {
-						"type": "float",
-						"value": -0.5
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 320
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Z",
-				"thumbnail_visible": true
-			},
-			"49": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 360
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 360
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Fill (°)",
-				"thumbnail_visible": true
-			},
-			"50": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 180
-					},
-					"min": {
-						"type": "float",
-						"value": -180
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 400
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Rotate (°)",
-				"thumbnail_visible": true
-			},
-			"51": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 440
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": -0.67000001668930054
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 X",
-				"thumbnail_visible": true
-			},
-			"52": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 480
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Y",
-				"thumbnail_visible": true
-			},
-			"53": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 5
-					},
-					"min": {
-						"type": "float",
-						"value": -0.5
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 520
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 2
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Z",
-				"thumbnail_visible": true
-			},
-			"54": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 360
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 560
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Fill (°)",
-				"thumbnail_visible": true
-			},
-			"55": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 180
-					},
-					"min": {
-						"type": "float",
-						"value": -180
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 600
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 180
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Rotate (°)",
-				"thumbnail_visible": true
-			},
-			"56": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 640
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.67000001668930054
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 X",
-				"thumbnail_visible": true
-			},
-			"57": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 680
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Y",
-				"thumbnail_visible": true
-			},
-			"58": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 5
-					},
-					"min": {
-						"type": "float",
-						"value": -0.5
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 720
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 2
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Z",
-				"thumbnail_visible": true
-			},
-			"59": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 360
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 760
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Fill (°)",
-				"thumbnail_visible": true
-			},
-			"6": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 80
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 1 X",
-				"thumbnail_visible": true
-			},
-			"60": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 180
-					},
-					"min": {
-						"type": "float",
-						"value": -180
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -200,
-					"y": 800
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 180
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Rotate (°)",
-				"thumbnail_visible": true
-			},
-			"61": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 96
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 40
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ray Count",
-				"thumbnail_visible": true
-			},
-			"62": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 3
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 40
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1.14999997615814209
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ray Length",
-				"thumbnail_visible": true
-			},
-			"63": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 80
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.02999999932944775
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ray Width",
-				"thumbnail_visible": true
-			},
-			"64": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Straight"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Wedge"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Long-Short"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 120
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ray Style",
-				"thumbnail_visible": true
-			},
-			"65": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 160
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 2 Ray Color",
-				"thumbnail_visible": true
-			},
-			"66": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 8
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 4
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ring Count",
-				"thumbnail_visible": true
-			},
-			"67": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 240
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ring Start",
-				"thumbnail_visible": true
-			},
-			"68": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 280
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.20000000298023224
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ring Gap",
-				"thumbnail_visible": true
-			},
-			"69": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 320
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.01999999955296516
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ring Width",
-				"thumbnail_visible": true
-			},
-			"7": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 120
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": -1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 1 Y",
-				"thumbnail_visible": true
-			},
-			"70": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Arch"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Stepped"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Chevron"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 360
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 2 Ring Style",
-				"thumbnail_visible": true
-			},
-			"71": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -450,
-					"y": 400
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 2 Ring Color",
-				"thumbnail_visible": true
-			},
-			"72": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 96
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 440
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 40
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ray Count",
-				"thumbnail_visible": true
-			},
-			"73": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 3
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 480
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1.14999997615814209
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ray Length",
-				"thumbnail_visible": true
-			},
-			"74": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 520
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.02999999932944775
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ray Width",
-				"thumbnail_visible": true
-			},
-			"75": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Straight"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Wedge"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Long-Short"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 560
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ray Style",
-				"thumbnail_visible": true
-			},
-			"76": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 600
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 3 Ray Color",
-				"thumbnail_visible": true
-			},
-			"77": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 8
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 640
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 4
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ring Count",
-				"thumbnail_visible": true
-			},
-			"78": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 680
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ring Start",
-				"thumbnail_visible": true
-			},
-			"79": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 720
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.20000000298023224
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ring Gap",
-				"thumbnail_visible": true
-			},
-			"8": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 96
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 160
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 40
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 1 Ray Count",
-				"thumbnail_visible": true
-			},
-			"80": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 760
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.01999999955296516
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ring Width",
-				"thumbnail_visible": true
-			},
-			"81": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Arch"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Stepped"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Chevron"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 800
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 3 Ring Style",
-				"thumbnail_visible": true
-			},
-			"82": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -600,
-					"y": 840
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 3 Ring Color",
-				"thumbnail_visible": true
-			},
-			"83": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 96
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 880
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 40
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ray Count",
-				"thumbnail_visible": true
-			},
-			"84": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 3
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 920
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1.14999997615814209
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ray Length",
-				"thumbnail_visible": true
-			},
-			"85": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 960
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.02999999932944775
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ray Width",
-				"thumbnail_visible": true
-			},
-			"86": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Straight"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Wedge"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Long-Short"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1000
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ray Style",
-				"thumbnail_visible": true
-			},
-			"87": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1040
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 4 Ray Color",
-				"thumbnail_visible": true
-			},
-			"88": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 8
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1080
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 4
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ring Count",
-				"thumbnail_visible": true
-			},
-			"89": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1120
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ring Start",
-				"thumbnail_visible": true
-			},
-			"9": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 360
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 180
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 1 Fill (°)",
-				"thumbnail_visible": true
-			},
-			"90": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1160
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.20000000298023224
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ring Gap",
-				"thumbnail_visible": true
-			},
-			"91": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.01999999955296516
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ring Width",
-				"thumbnail_visible": true
-			},
-			"92": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Arch"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Stepped"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Chevron"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1240
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 4 Ring Style",
-				"thumbnail_visible": true
-			},
-			"93": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -750,
-					"y": 1280
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.94999998807907104,
-							0.87999999523162842,
-							0.69999998807907104,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 4 Ring Color",
-				"thumbnail_visible": true
-			},
-			"94": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 96
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1320
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 40
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ray Count",
-				"thumbnail_visible": true
-			},
-			"95": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 3
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1360
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1.14999997615814209
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ray Length",
-				"thumbnail_visible": true
-			},
-			"96": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.20000000298023224
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1400
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.02999999932944775
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ray Width",
-				"thumbnail_visible": true
-			},
-			"97": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Straight"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Wedge"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"option2-label": {
-						"type": "string",
-						"value": "Long-Short"
-					},
-					"option2-value": {
-						"type": "float",
-						"value": 2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 3
-					},
 					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1440
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"option2-label",
-					"option2-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fan 5 Ray Style",
-				"thumbnail_visible": true
-			},
-			"98": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
 						"type": "integer",
 						"value": 0
 					},
 					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -900,
-					"y": 1480
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.82999998331069946,
-							0.6600000262260437,
-							0.25,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Fan 5 Ray Color",
-				"thumbnail_visible": true
-			},
-			"99": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
 						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 8
-					},
-					"min": {
-						"type": "float",
 						"value": 0
 					},
 					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
 						"type": "integer",
 						"value": 0
 					}
@@ -9924,8 +1943,8 @@
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": -900,
-					"y": 1520
+					"x": 300,
+					"y": 1700
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -9936,7 +1955,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 4
+						"value": 0.3
 					}
 				},
 				"hidden": [
@@ -9951,7 +1970,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fan 5 Ring Count",
+				"name": "Filament",
 				"thumbnail_visible": true
 			}
 		},
@@ -9961,9 +1980,7 @@
 				"y": 0,
 				"zoom": 1
 			},
-			"selection": [
-				"104"
-			]
+			"selection": []
 		}
 	},
 	"ui": {
@@ -9974,7 +1991,9 @@
 			}
 		},
 		"deviceConnections": {
-			"input": {}
+			"input": {
+				"0": "Test Card"
+			}
 		},
 		"transport": {
 			"bpm": 120,

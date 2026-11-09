@@ -8,7 +8,8 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 |---|---|---|
 | [Autumn Wind](Autumn%20Wind/) | source | 15 kinds of items (leaves, feathers, paper planes, …) drift across the frame with depth, gusts and tumble. |
 | [Bass Strings](Bass%20Strings/) | source | Four double bass strings vibrate with the music, one frequency band per string. |
-| [Deco Marquee v2](Deco%20Marquee%20v2/) | source | Art Deco theatre portal: fans of rays and rings, chasing marquee bulbs, ornament border. |
+| [Deco Fan](Deco%20Fan/) | effect | One Art Deco fan of rays and rings; add it several times for several fans. |
+| [Deco Marquee](Deco%20Marquee/) | effect | Art Deco theatre frame with chasing marquee lamps. |
 | [Fire Edges](Fire%20Edges/) | effect | Flames and smoke grow from the edges of the frame, from a glow to an inferno. |
 | [Fire Mask](Fire%20Mask/) | effect | The brightness of the clip decides what burns: logos, text, silhouettes. |
 | [Fire Point](Fire%20Point/) | effect | Flames and smoke rise from one burning shape: point, square or heart. |

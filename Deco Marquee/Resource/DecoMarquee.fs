@@ -1,405 +1,325 @@
 /*{
-    "DESCRIPTION": "Deco Marquee v2 - Art Deco theatre portal: up to 5 fans (rays + rings, each with its own look) with X/Y/Z and fill angle, marquee bulbs with chase, closed ornament border. Nothing moves by itself.",
-    "CREDIT": "Deco Marquee v2",
-    "ISFVSN": "2",
-    "CATEGORIES": ["Generator"],
-    "INPUTS": [
-        {"NAME": "fan1X", "TYPE": "float", "DEFAULT": 0, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan1Y", "TYPE": "float", "DEFAULT": -1, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan1Z", "TYPE": "float", "DEFAULT": 0, "MIN": -0.5, "MAX": 5.0},
-        {"NAME": "fan1Fill", "TYPE": "float", "DEFAULT": 180, "MIN": 0.0, "MAX": 360.0},
-        {"NAME": "fan1Rot", "TYPE": "float", "DEFAULT": 0, "MIN": -180.0, "MAX": 180.0},
-        {"NAME": "fan1RayCount", "TYPE": "float", "DEFAULT": 40.0, "MIN": 0.0, "MAX": 96.0},
-        {"NAME": "fan1RayLength", "TYPE": "float", "DEFAULT": 1.15, "MIN": 0.0, "MAX": 3.0},
-        {"NAME": "fan1RayWidth", "TYPE": "float", "DEFAULT": 0.03, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan1RayStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan1RayColor", "TYPE": "color", "DEFAULT": [0.83, 0.66, 0.25, 1.0]},
-        {"NAME": "fan1RingCount", "TYPE": "float", "DEFAULT": 4.0, "MIN": 0.0, "MAX": 8.0},
-        {"NAME": "fan1RingStart", "TYPE": "float", "DEFAULT": 0.3, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan1RingGap", "TYPE": "float", "DEFAULT": 0.2, "MIN": 0.02, "MAX": 1.0},
-        {"NAME": "fan1RingWidth", "TYPE": "float", "DEFAULT": 0.02, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan1RingStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan1RingColor", "TYPE": "color", "DEFAULT": [0.95, 0.88, 0.70, 1.0]},
-        {"NAME": "fan2X", "TYPE": "float", "DEFAULT": -0.67, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan2Y", "TYPE": "float", "DEFAULT": 0, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan2Z", "TYPE": "float", "DEFAULT": 1, "MIN": -0.5, "MAX": 5.0},
-        {"NAME": "fan2Fill", "TYPE": "float", "DEFAULT": 0, "MIN": 0.0, "MAX": 360.0},
-        {"NAME": "fan2Rot", "TYPE": "float", "DEFAULT": 0, "MIN": -180.0, "MAX": 180.0},
-        {"NAME": "fan2RayCount", "TYPE": "float", "DEFAULT": 40.0, "MIN": 0.0, "MAX": 96.0},
-        {"NAME": "fan2RayLength", "TYPE": "float", "DEFAULT": 1.15, "MIN": 0.0, "MAX": 3.0},
-        {"NAME": "fan2RayWidth", "TYPE": "float", "DEFAULT": 0.03, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan2RayStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan2RayColor", "TYPE": "color", "DEFAULT": [0.83, 0.66, 0.25, 1.0]},
-        {"NAME": "fan2RingCount", "TYPE": "float", "DEFAULT": 4.0, "MIN": 0.0, "MAX": 8.0},
-        {"NAME": "fan2RingStart", "TYPE": "float", "DEFAULT": 0.3, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan2RingGap", "TYPE": "float", "DEFAULT": 0.2, "MIN": 0.02, "MAX": 1.0},
-        {"NAME": "fan2RingWidth", "TYPE": "float", "DEFAULT": 0.02, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan2RingStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan2RingColor", "TYPE": "color", "DEFAULT": [0.95, 0.88, 0.70, 1.0]},
-        {"NAME": "fan3X", "TYPE": "float", "DEFAULT": 0.67, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan3Y", "TYPE": "float", "DEFAULT": 0, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan3Z", "TYPE": "float", "DEFAULT": 1, "MIN": -0.5, "MAX": 5.0},
-        {"NAME": "fan3Fill", "TYPE": "float", "DEFAULT": 0, "MIN": 0.0, "MAX": 360.0},
-        {"NAME": "fan3Rot", "TYPE": "float", "DEFAULT": 0, "MIN": -180.0, "MAX": 180.0},
-        {"NAME": "fan3RayCount", "TYPE": "float", "DEFAULT": 40.0, "MIN": 0.0, "MAX": 96.0},
-        {"NAME": "fan3RayLength", "TYPE": "float", "DEFAULT": 1.15, "MIN": 0.0, "MAX": 3.0},
-        {"NAME": "fan3RayWidth", "TYPE": "float", "DEFAULT": 0.03, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan3RayStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan3RayColor", "TYPE": "color", "DEFAULT": [0.83, 0.66, 0.25, 1.0]},
-        {"NAME": "fan3RingCount", "TYPE": "float", "DEFAULT": 4.0, "MIN": 0.0, "MAX": 8.0},
-        {"NAME": "fan3RingStart", "TYPE": "float", "DEFAULT": 0.3, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan3RingGap", "TYPE": "float", "DEFAULT": 0.2, "MIN": 0.02, "MAX": 1.0},
-        {"NAME": "fan3RingWidth", "TYPE": "float", "DEFAULT": 0.02, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan3RingStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan3RingColor", "TYPE": "color", "DEFAULT": [0.95, 0.88, 0.70, 1.0]},
-        {"NAME": "fan4X", "TYPE": "float", "DEFAULT": -0.67, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan4Y", "TYPE": "float", "DEFAULT": 1, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan4Z", "TYPE": "float", "DEFAULT": 2, "MIN": -0.5, "MAX": 5.0},
-        {"NAME": "fan4Fill", "TYPE": "float", "DEFAULT": 0, "MIN": 0.0, "MAX": 360.0},
-        {"NAME": "fan4Rot", "TYPE": "float", "DEFAULT": 180, "MIN": -180.0, "MAX": 180.0},
-        {"NAME": "fan4RayCount", "TYPE": "float", "DEFAULT": 40.0, "MIN": 0.0, "MAX": 96.0},
-        {"NAME": "fan4RayLength", "TYPE": "float", "DEFAULT": 1.15, "MIN": 0.0, "MAX": 3.0},
-        {"NAME": "fan4RayWidth", "TYPE": "float", "DEFAULT": 0.03, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan4RayStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan4RayColor", "TYPE": "color", "DEFAULT": [0.83, 0.66, 0.25, 1.0]},
-        {"NAME": "fan4RingCount", "TYPE": "float", "DEFAULT": 4.0, "MIN": 0.0, "MAX": 8.0},
-        {"NAME": "fan4RingStart", "TYPE": "float", "DEFAULT": 0.3, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan4RingGap", "TYPE": "float", "DEFAULT": 0.2, "MIN": 0.02, "MAX": 1.0},
-        {"NAME": "fan4RingWidth", "TYPE": "float", "DEFAULT": 0.02, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan4RingStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan4RingColor", "TYPE": "color", "DEFAULT": [0.95, 0.88, 0.70, 1.0]},
-        {"NAME": "fan5X", "TYPE": "float", "DEFAULT": 0.67, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan5Y", "TYPE": "float", "DEFAULT": 1, "MIN": -2.0, "MAX": 2.0},
-        {"NAME": "fan5Z", "TYPE": "float", "DEFAULT": 2, "MIN": -0.5, "MAX": 5.0},
-        {"NAME": "fan5Fill", "TYPE": "float", "DEFAULT": 0, "MIN": 0.0, "MAX": 360.0},
-        {"NAME": "fan5Rot", "TYPE": "float", "DEFAULT": 180, "MIN": -180.0, "MAX": 180.0},
-        {"NAME": "fan5RayCount", "TYPE": "float", "DEFAULT": 40.0, "MIN": 0.0, "MAX": 96.0},
-        {"NAME": "fan5RayLength", "TYPE": "float", "DEFAULT": 1.15, "MIN": 0.0, "MAX": 3.0},
-        {"NAME": "fan5RayWidth", "TYPE": "float", "DEFAULT": 0.03, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan5RayStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan5RayColor", "TYPE": "color", "DEFAULT": [0.83, 0.66, 0.25, 1.0]},
-        {"NAME": "fan5RingCount", "TYPE": "float", "DEFAULT": 4.0, "MIN": 0.0, "MAX": 8.0},
-        {"NAME": "fan5RingStart", "TYPE": "float", "DEFAULT": 0.3, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan5RingGap", "TYPE": "float", "DEFAULT": 0.2, "MIN": 0.02, "MAX": 1.0},
-        {"NAME": "fan5RingWidth", "TYPE": "float", "DEFAULT": 0.02, "MIN": 0.0, "MAX": 0.2},
-        {"NAME": "fan5RingStyle", "TYPE": "float", "DEFAULT": 0.0, "MIN": 0.0, "MAX": 2.0},
-        {"NAME": "fan5RingColor", "TYPE": "color", "DEFAULT": [0.95, 0.88, 0.70, 1.0]},
-
-        {"NAME": "bulbsOn",     "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "bulbLayout",  "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 2.0},
-        {"NAME": "bulbCount",   "TYPE": "float", "DEFAULT": 28.0, "MIN": 2.0,  "MAX": 120.0},
-        {"NAME": "bulbSize",    "TYPE": "float", "DEFAULT": 0.022,"MIN": 0.002,"MAX": 0.1},
-        {"NAME": "bulbInset",   "TYPE": "float", "DEFAULT": 0.1,  "MIN": 0.0,  "MAX": 0.8},
-        {"NAME": "bulbGlow",    "TYPE": "float", "DEFAULT": 0.3,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "chase",       "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "chaseMode",   "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 2.0},
-        {"NAME": "chaseGroup",  "TYPE": "float", "DEFAULT": 3.0,  "MIN": 1.0,  "MAX": 12.0},
-        {"NAME": "chaseDuty",   "TYPE": "float", "DEFAULT": 0.3,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "bulbOnColor", "TYPE": "color", "DEFAULT": [1.0, 0.88, 0.60, 1.0]},
-        {"NAME": "bulbOffColor","TYPE": "color", "DEFAULT": [0.18, 0.13, 0.06, 1.0]},
-
-        {"NAME": "borderOn",    "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "borderStyle", "TYPE": "float", "DEFAULT": 0.0,  "MIN": 0.0,  "MAX": 2.0},
-        {"NAME": "borderWidth", "TYPE": "float", "DEFAULT": 0.06, "MIN": 0.0,  "MAX": 0.3},
-        {"NAME": "borderColor", "TYPE": "color", "DEFAULT": [0.83, 0.66, 0.25, 1.0]},
-
-        {"NAME": "backdropOn",  "TYPE": "float", "DEFAULT": 1.0,  "MIN": 0.0,  "MAX": 1.0},
-        {"NAME": "backdropColor","TYPE": "color","DEFAULT": [0.03, 0.04, 0.045, 1.0]}
-    ]
+  "DESCRIPTION": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Off, Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst Corners), Border Width, Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (lit share), Filament (lamps glow on after the current is gone). Shader: Resource/DecoMarquee.fs.",
+  "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
+  "ISFVSN": "2",
+  "CATEGORIES": [
+    "Effect"
+  ],
+  "INPUTS": [
+    {
+      "NAME": "inputImage",
+      "TYPE": "image"
+    },
+    {
+      "NAME": "clock",
+      "TYPE": "float",
+      "DEFAULT": 0.0,
+      "MIN": 0.0,
+      "MAX": 1.0
+    },
+    {
+      "NAME": "scale",
+      "TYPE": "float",
+      "DEFAULT": 1.0,
+      "MIN": 0.0,
+      "MAX": 10.0
+    },
+    {
+      "NAME": "borderStyle",
+      "TYPE": "float",
+      "DEFAULT": 3.0,
+      "MIN": 0.0,
+      "MAX": 8.0
+    },
+    {
+      "NAME": "borderWidth",
+      "TYPE": "float",
+      "DEFAULT": 0.06,
+      "MIN": 0.0,
+      "MAX": 2.0
+    },
+    {
+      "NAME": "borderColor",
+      "TYPE": "color",
+      "DEFAULT": [
+        0.83,
+        0.66,
+        0.25,
+        1.0
+      ]
+    },
+    {
+      "NAME": "bulbLayout",
+      "TYPE": "float",
+      "DEFAULT": 1.0,
+      "MIN": 0.0,
+      "MAX": 2.0
+    },
+    {
+      "NAME": "bulbSpacing",
+      "TYPE": "float",
+      "DEFAULT": 0.25,
+      "MIN": 0.02,
+      "MAX": 5.0
+    },
+    {
+      "NAME": "bulbSize",
+      "TYPE": "float",
+      "DEFAULT": 0.022,
+      "MIN": 0.0,
+      "MAX": 2.0
+    },
+    {
+      "NAME": "bulbInset",
+      "TYPE": "float",
+      "DEFAULT": 0.1,
+      "MIN": 0.0,
+      "MAX": 2.0
+    },
+    {
+      "NAME": "bulbGlow",
+      "TYPE": "float",
+      "DEFAULT": 0.3,
+      "MIN": 0.0,
+      "MAX": 5.0
+    },
+    {
+      "NAME": "bulbOnColor",
+      "TYPE": "color",
+      "DEFAULT": [
+        1.0,
+        0.88,
+        0.6,
+        1.0
+      ]
+    },
+    {
+      "NAME": "bulbOffColor",
+      "TYPE": "color",
+      "DEFAULT": [
+        0.18,
+        0.13,
+        0.06,
+        1.0
+      ]
+    },
+    {
+      "NAME": "chaseMode",
+      "TYPE": "float",
+      "DEFAULT": 0.0,
+      "MIN": 0.0,
+      "MAX": 6.0
+    },
+    {
+      "NAME": "chaseGroup",
+      "TYPE": "float",
+      "DEFAULT": 3.0,
+      "MIN": 1.0,
+      "MAX": 64.0
+    },
+    {
+      "NAME": "chaseDuty",
+      "TYPE": "float",
+      "DEFAULT": 0.3,
+      "MIN": 0.0,
+      "MAX": 1.0
+    },
+    {
+      "NAME": "filament",
+      "TYPE": "float",
+      "DEFAULT": 0.3,
+      "MIN": 0.0,
+      "MAX": 1.0
+    }
+  ]
 }*/
 
-#define ASPECT (RENDERSIZE.x / RENDERSIZE.y)   // half width of the screen
-
+float safe(float x, float lo, float hi) { return (x == x) ? clamp(x, lo, hi) : lo; }
+float cover(float d, float px) { return smoothstep(px, -px, d); }      // d < 0 inside
+float tri(float x) { return abs(fract(x) - 0.5) * 2.0; }               // 1 .. 0 .. 1
+float boxD(vec2 p, vec2 c, vec2 h) { vec2 d = abs(p - c) - h; return length(max(d, vec2(0.0))) + min(max(d.x, d.y), 0.0); }
 void over(inout vec3 col, inout float a, vec3 c, float ca) {
     float na = ca + a * (1.0 - ca);
-    if (na > 0.0) col = (c * ca + col * a * (1.0 - ca)) / na;
+    if (na > 0.0001) col = (c * ca + col * a * (1.0 - ca)) / na;
     a = na;
 }
-float triWave(float x) { return abs(fract(x) - 0.5) * 2.0; }     // 1 .. 0 .. 1
-float cover(float d, float px) { return smoothstep(px, -px, d); } // d < 0 inside
 
-// angle from +y axis in degrees (clockwise positive), relative to rot, wrapped to -180..180
-float relAngle(vec2 v, float rot) {
-    float ang = degrees(atan(v.x, v.y)) - rot;
-    return mod(ang + 180.0, 360.0) - 180.0;
-}
+float hash(float a, float b) { return fract(sin(a * 12.9898 + b * 78.233) * 43758.5453); }
 
-// fan parameters; X/Y: -1 = centre on the screen edge, 0 = middle, +-2 = well outside
-vec4 fanP(int i) {
-    if (i == 0) return vec4(fan1X * ASPECT, fan1Y, fan1Z, fan1Fill);
-    if (i == 1) return vec4(fan2X * ASPECT, fan2Y, fan2Z, fan2Fill);
-    if (i == 2) return vec4(fan3X * ASPECT, fan3Y, fan3Z, fan3Fill);
-    if (i == 3) return vec4(fan4X * ASPECT, fan4Y, fan4Z, fan4Fill);
-    return vec4(fan5X * ASPECT, fan5Y, fan5Z, fan5Fill);
-}
-float fanRot(int i) {
-    if (i == 0) return fan1Rot;
-    if (i == 1) return fan2Rot;
-    if (i == 2) return fan3Rot;
-    if (i == 3) return fan4Rot;
-    return fan5Rot;
-}
-vec4 rayP(int i) {
-    if (i == 0) return vec4(fan1RayCount, fan1RayLength, fan1RayWidth, fan1RayStyle);
-    if (i == 1) return vec4(fan2RayCount, fan2RayLength, fan2RayWidth, fan2RayStyle);
-    if (i == 2) return vec4(fan3RayCount, fan3RayLength, fan3RayWidth, fan3RayStyle);
-    if (i == 3) return vec4(fan4RayCount, fan4RayLength, fan4RayWidth, fan4RayStyle);
-    return vec4(fan5RayCount, fan5RayLength, fan5RayWidth, fan5RayStyle);
-}
-vec4 rayC(int i) {
-    if (i == 0) return fan1RayColor;
-    if (i == 1) return fan2RayColor;
-    if (i == 2) return fan3RayColor;
-    if (i == 3) return fan4RayColor;
-    return fan5RayColor;
-}
-vec4 ringP(int i) {
-    if (i == 0) return vec4(fan1RingCount, fan1RingStart, fan1RingGap, fan1RingWidth);
-    if (i == 1) return vec4(fan2RingCount, fan2RingStart, fan2RingGap, fan2RingWidth);
-    if (i == 2) return vec4(fan3RingCount, fan3RingStart, fan3RingGap, fan3RingWidth);
-    if (i == 3) return vec4(fan4RingCount, fan4RingStart, fan4RingGap, fan4RingWidth);
-    return vec4(fan5RingCount, fan5RingStart, fan5RingGap, fan5RingWidth);
-}
-float ringSt(int i) {
-    if (i == 0) return fan1RingStyle;
-    if (i == 1) return fan2RingStyle;
-    if (i == 2) return fan3RingStyle;
-    if (i == 3) return fan4RingStyle;
-    return fan5RingStyle;
-}
-vec4 ringC(int i) {
-    if (i == 0) return fan1RingColor;
-    if (i == 1) return fan2RingColor;
-    if (i == 2) return fan3RingColor;
-    if (i == 3) return fan4RingColor;
-    return fan5RingColor;
-}
-float zScale(float z) { return 1.0 / (1.0 + max(z, -0.5)); }   // Z 0 = normal, higher = further away
+// ---------- border. Every edge holds a whole number of pattern periods, counted from its corners, so all four corners close the same way ----------
+float borderCover(vec2 p, float px, int st, float bw, float A, float H) {
+    vec2 q = vec2(A - abs(p.x), H - abs(p.y));          // distance to the nearest vertical / horizontal edge
+    bool horiz = q.y <= q.x;
+    float w = horiz ? q.y : q.x;                        // distance from the outer edge
+    float s = horiz ? q.x : q.y;                        // distance from the nearest corner, along the edge
+    float halfLen = horiz ? A : H;
+    float rules = min(abs(w - 0.06 * bw) - 0.05 * bw, abs(w - 0.94 * bw) - 0.05 * bw);
+    float cov = 0.0;
+    float inBand = step(min(q.x, q.y), bw);
 
-// draws one fan (rays, then rings) over col/a
-void drawFan(inout vec3 col, inout float a, vec2 p, float pxs, int i) {
-    vec4 f = fanP(i);
-    float fill = f.w;
-    if (fill <= 0.0) return;
-    float s = zScale(f.z);
-    vec2 q = (p - f.xy) / s;                 // fan space
-    float px = pxs / s;
-    float r = length(q);
-    float ra = relAngle(q, fanRot(i));
-    // angular mask: open from the rotation direction to both sides
-    float halfFill = fill * 0.5;
-    float inFill = fill >= 359.9 ? 1.0 : cover(radians(abs(ra) - halfFill) * max(r, 1e-3), px);
-
-    // rays: fixed pitch (Ray Count = rays in a full circle), fill reveals them
-    vec4 rp = rayP(i);
-    vec4 rcol = rayC(i);
-    float rayLength = rp.y, rayWidth = rp.z;
-    float n = floor(rp.x + 0.5);
-    if (n >= 1.0) {
-        float pitch = 360.0 / n;
-        float t = ra / pitch;
-        float k = floor(t + 0.5);
-        float dAng = radians((t - k) * pitch);
-        float across = abs(sin(dAng)) * r;
-        int st = int(floor(rp.w + 0.5));
-        float len = rayLength;
-        float w = rayWidth * 0.5;
-        if (st == 1) w = rayWidth * clamp(r / max(rayLength, 1e-3), 0.0, 1.0);          // wedge
-        if (st == 2 && mod(k, 2.0) > 0.5) len = rayLength * 0.62;                       // long-short
-        float d = max(across - w, r - len);
-        if (abs(dAng) > 1.4) d = 1.0;                                                     // far side of a wide pitch
-        over(col, a, rcol.rgb, cover(d, px) * inFill * rcol.a);
-    }
-
-    // rings
-    vec4 gp = ringP(i);
-    vec4 gcol = ringC(i);
-    float ringCount = gp.x, ringStart = gp.y, ringSpacing = gp.z, ringWidth = gp.w;
-    if (ringCount > 0.0) {
-        int st = int(floor(ringSt(i) + 0.5));
-        for (int j = 0; j < 8; j++) {
-            float fj = float(j);
-            float vis = clamp(ringCount - fj, 0.0, 1.0);
-            if (vis <= 0.0) break;
-            float R = ringStart + fj * ringSpacing;
-            float hw = ringWidth * 0.5;
-            float d;
-            if (st == 0) {
-                d = abs(r - R) - hw;
-            } else if (st == 1) {                         // stepped: steps inward to the sides, joined by risers
-                float stepAng = 18.0;
-                float sIdx = floor(abs(ra) / stepAng);
-                float Rs = R * (1.0 - 0.06 * sIdx);
-                d = abs(r - Rs) - hw;
-                float edge = (sIdx + 1.0) * stepAng;
-                float Rn = R * (1.0 - 0.06 * (sIdx + 1.0));
-                float sideDist = abs(sin(radians(abs(ra) - edge))) * r;
-                float riser = max(sideDist - hw, max(r - Rs - hw, Rn - hw - r));
-                d = min(d, riser);
-            } else {                                      // chevron: zigzag ring
-                float amp = ringSpacing * 0.22;
-                float Rz = R + amp * (triWave(ra / 10.0) * 2.0 - 1.0);
-                d = abs(r - Rz) - hw * 1.3;
-            }
-            over(col, a, gcol.rgb, cover(d, px) * inFill * vis * gcol.a);
+    if (st == 3) {                                      // steps: two rules that end in ziggurat corners
+        cov = max(cover(abs(w - 0.15 * bw) - 0.06 * bw, px), cover(abs(w - 0.55 * bw) - 0.04 * bw, px)) * inBand;
+        for (int i = 0; i < 4; i++) {
+            float fi = float(i);
+            cov = max(cov, cover(max(q.x - bw * (fi + 1.0) * 1.2, q.y - bw * (4.0 - fi) * 1.2), px));
         }
+        return cov;
     }
+    if (st == 8) {                                      // sunburst corners: a quarter sun closes each corner, rules run between them
+        float R = bw * 5.0;
+        float r = length(q);
+        if (r >= R) cov = cover(rules, px) * inBand;
+        if (r < R + px * 2.0) {
+            float ang = atan(q.y, max(q.x, 1e-6));
+            float t = ang / 1.5707963 * 9.0;
+            float ray = cover((abs(fract(t) - 0.5) - 0.25) * 0.1745 * max(r, 1e-4), px);
+            cov = max(cov, ray * cover(r - R, px));
+            cov = max(cov, cover(r - R * 0.28, px));
+            cov = max(cov, cover(abs(r - R) - 0.06 * bw, px));
+        }
+        return cov;
+    }
+
+    // all other styles: a solid corner piece, then the pattern from corner piece to corner piece
+    if (q.x < bw && q.y < bw) return cover(max(q.x - bw, q.y - bw), px);
+    if (inBand < 0.5) return cover(max(q.x - bw, q.y - bw), px);
+    float u = s - bw;
+    float len = max(halfLen - bw, bw * 0.5);
+
+    if (st == 1) {                                      // zigzag
+        float P = len / max(floor(len / (bw * 1.5) + 0.5), 1.0);
+        float z = 0.2 + 0.6 * tri(u / P);
+        cov = cover(abs(w / bw - z) * bw - 0.07 * bw, px);
+    } else if (st == 2) {                               // chevron
+        float P = len / max(floor(len / (bw * 1.2) + 0.5), 1.0);
+        float f = fract(u / P + abs(w / bw - 0.5) * 0.8);
+        cov = cover((abs(f - 0.5) - 0.25) * bw, px);
+    } else if (st == 4) {                               // greek key
+        float P = len / max(floor(len / (bw * 1.6) + 0.5), 1.0);
+        vec2 c = vec2(fract(u / P) * 5.0, w / bw * 5.0);
+        float t = 0.32;
+        float d = boxD(c, vec2(1.0, 2.5), vec2(t, 2.0 + t));
+        d = min(d, boxD(c, vec2(2.75, 4.5), vec2(1.75 + t, t)));
+        d = min(d, boxD(c, vec2(4.5, 3.0), vec2(t, 1.5 + t)));
+        d = min(d, boxD(c, vec2(3.5, 1.5), vec2(1.0 + t, t)));
+        d = min(d, boxD(c, vec2(2.5, 2.35), vec2(t, 0.85 + t)));
+        cov = cover(d * bw / 5.0, px);
+    } else if (st == 5) {                               // diamonds
+        float P = len / max(floor(len / (bw * 1.15) + 0.5), 1.0);
+        vec2 c = vec2((fract(u / P) - 0.5) * P, w - 0.5 * bw);
+        cov = cover(abs(c.x) + abs(c.y) * 0.9 - 0.38 * min(P, bw), px);
+    } else if (st == 6) {                               // scallops: arches standing on the outer rule
+        float P = len / max(floor(len / (bw * 1.2) + 0.5), 1.0);
+        vec2 c = vec2((fract(u / P) - 0.5) * P, w - 0.1 * bw);
+        float r = length(c) - P * 0.48;
+        cov = cover(max(abs(r) - 0.07 * bw, -c.y), px);
+    } else {                                            // beads
+        float P = len / max(floor(len / (bw * 0.95) + 0.5), 1.0);
+        vec2 c = vec2((fract(u / P) - 0.5) * P, w - 0.5 * bw);
+        cov = cover(length(c) - 0.3 * bw, px);
+    }
+    return max(cov, cover(rules, px));
 }
 
-// ---------- bulbs ----------
-float perimeterLen(float ins) { return 4.0 * (ASPECT - ins) + 4.0 * (1.0 - ins); }
-vec2 framePos(float s, float ins) {      // s along perimeter, clockwise from top-left
-    float w = 2.0 * (ASPECT - ins), h = 2.0 * (1.0 - ins);
-    s = mod(s, 2.0 * (w + h));
-    if (s < w) return vec2(-ASPECT + ins + s, 1.0 - ins);
-    s -= w;
-    if (s < h) return vec2(ASPECT - ins, 1.0 - ins - s);
-    s -= h;
-    if (s < w) return vec2(ASPECT - ins - s, -1.0 + ins);
-    s -= w;
-    return vec2(-ASPECT + ins, -1.0 + ins + s);
+// how far the corner element reaches along an edge: bulbs stay clear of it
+float cornerExtent(int st, float bw) {
+    if (st <= 0) return 0.0;
+    if (st == 3) return bw * 4.9;
+    if (st == 8) return bw * 5.2;
+    return bw * 1.1;
 }
-float archFill() { return fan1Fill > 0.0 ? fan1Fill : 180.0; }
-float outerRingR() {
-    float n = max(ceil(fan1RingCount), 1.0);
-    return fan1RingStart + (n - 1.0) * fan1RingGap + fan1RingGap * 0.5;
+
+// ---------- chase ----------
+float litAt(float k, float n, float phase, int mode, float group, float duty) {
+    float g = n / max(floor(n / group + 0.5), 1.0);     // a whole number of groups around the loop: no seam
+    if (mode == 0) return step(fract(k / g - phase), duty - 0.0001);                 // run
+    if (mode == 1) return 1.0 - abs(mod(k, 2.0) - floor(mod(phase * 2.0, 2.0)));     // alternate
+    if (mode == 2) return step(k + 0.5, (1.0 - tri(phase)) * n);                     // fill
+    if (mode == 3) return step(abs(k - (1.0 - tri(phase)) * (n - 1.0)), group * 0.5);// bounce
+    if (mode == 4) return step(fract(min(k, n - 1.0 - k) / g - phase), duty - 0.0001);// mirror
+    if (mode == 5) return step(hash(k, floor(fract(phase) * 16.0)), duty);           // twinkle
+    return 0.5 + 0.5 * cos(6.2831853 * (k / g - phase));                             // wave
 }
-vec2 bulbPos(float k, float n, int lay) {
-    if (lay == 0) {                              // rows: top left->right, bottom right->left
-        float per = ceil(n * 0.5);
-        float y = 1.0 - bulbInset;
-        if (k < per) return vec2(-ASPECT + (k + 0.5) / per * 2.0 * ASPECT, y);
-        float j = k - per;
-        return vec2(ASPECT - (j + 0.5) / per * 2.0 * ASPECT, -y);
-    } else if (lay == 1) {                       // frame
-        return framePos((k + 0.5) / n * perimeterLen(bulbInset), bulbInset);
-    } else {                                     // arch along the outermost ring of fan 1
-        float sp = archFill();
-        float ang = radians(fan1Rot - sp * 0.5 + (k + 0.5) / n * sp);
-        return vec2(fan1X * ASPECT, fan1Y) + zScale(fan1Z) * outerRingR() * vec2(sin(ang), cos(ang));
+
+// filament: a lamp glows on after the current is gone, so it follows the last moments of the chase
+float bulbLit(float k, float n, float phase, int mode, float group, float duty, float fil) {
+    if (fil <= 0.0) return litAt(k, n, phase, mode, group, duty);
+    float sum = 0.0, weight = 0.0, w = 1.0;
+    for (int j = 0; j < 6; j++) {
+        sum += w * litAt(k, n, phase - float(j) / 5.0 * fil * 0.25, mode, group, duty);
+        weight += w;
+        w *= 0.6;
     }
-}
-float nearestBulb(vec2 p, float n, int lay) {
-    if (lay == 0) {
-        float per = ceil(n * 0.5);
-        float i = clamp(floor((p.x + ASPECT) / (2.0 * ASPECT) * per), 0.0, per - 1.0);
-        return p.y >= 0.0 ? i : per + (per - 1.0 - i);
-    } else if (lay == 1) {
-        float ins = bulbInset;
-        float w = 2.0 * (ASPECT - ins), h = 2.0 * (1.0 - ins);
-        vec2 q = clamp(p, vec2(-ASPECT + ins, -1.0 + ins), vec2(ASPECT - ins, 1.0 - ins));
-        float dl = q.x + ASPECT - ins, dr = ASPECT - ins - q.x, dt = 1.0 - ins - q.y, db = q.y + 1.0 - ins;
-        float m = min(min(dl, dr), min(dt, db));
-        float s = 0.0;
-        if (m == dt) s = dl;
-        else if (m == dr) s = w + dt;
-        else if (m == db) s = w + h + dr;
-        else s = 2.0 * w + h + db;
-        return floor(s / perimeterLen(ins) * n);
-    } else {
-        float sp = archFill();
-        float aR = relAngle(p - vec2(fan1X * ASPECT, fan1Y), fan1Rot);
-        return clamp(floor((aR + sp * 0.5) / sp * n), 0.0, n - 1.0);
-    }
-}
-float bulbLit(float k, float n) {
-    int m = int(floor(chaseMode + 0.5));
-    if (m == 0) {                                // run
-        float g = max(floor(chaseGroup + 0.5), 1.0);
-        return step(fract((k - chase * g) / g), chaseDuty - 1e-4);
-    } else if (m == 1) {                         // alternate
-        float phase = floor(mod(chase * 2.0, 2.0));
-        return 1.0 - abs(mod(k, 2.0) - phase);
-    } else {                                     // fill and empty once per cycle
-        float level = 1.0 - triWave(chase);
-        return step(k + 0.5, level * n);
-    }
+    return sum / weight;
 }
 
 void main() {
-    vec2 res = RENDERSIZE;
-    vec2 p = (gl_FragCoord.xy - 0.5 * res) / res.y * 2.0;
-    float px = 2.0 / res.y;
+    vec2 uv = isf_FragNormCoord;
+    vec4 src = IMG_NORM_PIXEL(inputImage, uv);
+    vec3 col = src.rgb;
+    float a = src.a;
 
-    vec3 col = vec3(0.0);
-    float a = 0.0;
-    if (backdropOn > 0.5) { col = backdropColor.rgb; a = 1.0; }
+    float safeScale = clamp(scale, 0.001, 1000.0);
+    vec2 res = max(RENDERSIZE, vec2(1.0));
+    float aspect = res.x / res.y;
+    float A = aspect / safeScale, H = 1.0 / safeScale;   // half width and half height of the frame in scene units
+    vec2 p = (uv - 0.5) * vec2(A, H) * 2.0;
+    float px = 2.0 / (res.y * safeScale);
 
-    // ---------- fans, drawn far (high Z) to near ----------
-    float done0 = 0.0, done1 = 0.0, done2 = 0.0, done3 = 0.0, done4 = 0.0;
-    for (int pass = 0; pass < 5; pass++) {
-        int pick = -1;
-        float best = -1e9;
-        for (int i = 0; i < 5; i++) {
-            float dn = (i == 0) ? done0 : (i == 1) ? done1 : (i == 2) ? done2 : (i == 3) ? done3 : done4;
-            float z = fanP(i).z;
-            if (dn < 0.5 && z > best) { best = z; pick = i; }
-        }
-        if (pick < 0) break;
-        if (pick == 0) done0 = 1.0; else if (pick == 1) done1 = 1.0; else if (pick == 2) done2 = 1.0;
-        else if (pick == 3) done3 = 1.0; else done4 = 1.0;
-        drawFan(col, a, p, px, pick);
-    }
+    int style = int(floor(safe(borderStyle, 0.0, 8.0) + 0.5));
+    float bw = safe(borderWidth, 0.0, 100.0);
+    if (style > 0 && bw > 0.0) over(col, a, borderColor.rgb, borderCover(p, px, style, bw, A, H) * borderColor.a);
 
-    // ---------- border (closed: every edge holds a whole number of pattern periods) ----------
-    if (borderOn > 0.5 && borderWidth > 0.0) {
-        float bw = borderWidth;
-        float dx = ASPECT - abs(p.x), dy = 1.0 - abs(p.y);
-        float vEdge = min(dx, dy);
-        bool horiz = dy <= dx;
-        float L = horiz ? 2.0 * ASPECT : 2.0;                  // edge length
-        float s = horiz ? p.x + ASPECT : p.y + 1.0;            // 0 at a corner
-        int st = int(floor(borderStyle + 0.5));
-        float cov = 0.0;
-        if (vEdge < bw) {
-            float vb = vEdge / bw;
-            if (st == 0) {                                     // zigzag between two rules
-                float P = L / max(floor(L / (bw * 1.5) + 0.5), 1.0);
-                float z = 0.2 + 0.6 * triWave(s / P);
-                cov = max(cover(abs(vb - z) * bw - bw * 0.07, px),
-                      max(cover(abs(vb - 0.06) * bw - bw * 0.05, px), cover(abs(vb - 0.94) * bw - bw * 0.05, px)));
-            } else if (st == 1) {                              // chevron stripes
-                float P = L / max(floor(L / (bw * 1.2) + 0.5), 1.0);
-                float f = fract(s / P + abs(vb - 0.5) * 0.8);
-                cov = cover((abs(f - 0.5) - 0.25) * bw, px);
-            } else {                                           // two rules
-                cov = max(cover(abs(vb - 0.15) * bw - bw * 0.06, px), cover(abs(vb - 0.55) * bw - bw * 0.04, px));
+    int lay = int(floor(safe(bulbLayout, 0.0, 2.0) + 0.5));
+    float size = safe(bulbSize, 0.0, 100.0);
+    if (lay > 0 && size > 0.0) {
+        float spacing = max(safe(bulbSpacing, 0.02, 100.0), size * 0.5);
+        float inset = safe(bulbInset, 0.0, 100.0);
+        float glowAmt = safe(bulbGlow, 0.0, 100.0);
+        float phase = (clock == clock) ? clock : 0.0;
+        int mode = int(floor(safe(chaseMode, 0.0, 6.0) + 0.5));
+        float group = max(floor(safe(chaseGroup, 1.0, 1000.0) + 0.5), 1.0);
+        float duty = safe(chaseDuty, 0.0, 1.0);
+        float fil = safe(filament, 0.0, 1.0);
+
+        float ext = style > 0 && bw > 0.0 ? cornerExtent(style, bw) : 0.0;
+        float clear = inset < ext ? ext + size * 1.6 : size * 1.5;
+        float y0 = max(H - inset, 0.0), x0 = max(A - inset, 0.0);
+        float xs = max(inset < ext ? A - clear : (lay == 2 ? x0 : A - clear), 0.0);
+        float ys = max(inset < ext ? H - clear : y0 - spacing, 0.0);
+        if (lay == 1) ys = 0.0;
+
+        float nH = floor(2.0 * xs / spacing + 0.5) + 1.0;
+        float stepH = nH > 1.0 ? 2.0 * xs / (nH - 1.0) : 1.0;
+        bool sides = lay == 2 && ys > 0.0;
+        float nV = sides ? floor(2.0 * ys / spacing + 0.5) + 1.0 : 0.0;
+        float stepV = nV > 1.0 ? 2.0 * ys / (nV - 1.0) : 1.0;
+        float total = max(2.0 * nH + 2.0 * nV, 1.0);
+        float reach = size * 12.0 + stepH;
+
+        float glow = 0.0, discLit = 0.0, bestD = 1e5;
+        for (int e = 0; e < 4; e++) {
+            if ((e == 1 || e == 3) && !sides) continue;
+            bool vertical = e == 1 || e == 3;
+            float n = vertical ? nV : nH;
+            float st = vertical ? stepV : stepH;
+            float along = e == 0 ? p.x + xs : e == 1 ? ys - p.y : e == 2 ? xs - p.x : p.y + ys;
+            float base = e == 0 ? 0.0 : e == 1 ? nH : e == 2 ? nH + nV : 2.0 * nH + nV;
+            float i0 = clamp(floor(along / st + 0.5), 0.0, n - 1.0);
+            for (int o = -1; o <= 1; o++) {
+                float i = i0 + float(o);
+                if (i < 0.0 || i > n - 1.0) continue;
+                vec2 bp = e == 0 ? vec2(-xs + i * st, y0) : e == 1 ? vec2(x0, ys - i * st) : e == 2 ? vec2(xs - i * st, -y0) : vec2(-x0, -ys + i * st);
+                float d = length(p - bp);
+                if (d > reach) continue;
+                float lit = bulbLit(base + i, total, phase, mode, group, duty, fil);
+                glow = max(glow, lit * exp(-max(d - size, 0.0) / max(size * 2.5, 1e-5)));
+                if (d < bestD) { bestD = d; discLit = lit; }
             }
         }
-        if (st == 2) {                                         // ziggurat corners
-            vec2 q = vec2(ASPECT - abs(p.x), 1.0 - abs(p.y));
-            for (int i = 0; i < 4; i++) {
-                float fi = float(i);
-                float dd = max(q.x - bw * (fi + 1.0) * 1.2, q.y - bw * (4.0 - fi) * 1.2);
-                cov = max(cov, cover(dd, px));
-            }
-        }
-        over(col, a, borderColor.rgb, cov * borderColor.a);
+        over(col, a, bulbOnColor.rgb, clamp(glow * glowAmt * 0.8, 0.0, 1.0) * bulbOnColor.a);
+        over(col, a, mix(bulbOffColor.rgb, bulbOnColor.rgb, discLit), cover(bestD - size, px) * mix(bulbOffColor.a, bulbOnColor.a, discLit));
     }
 
-    // ---------- bulbs ----------
-    if (bulbsOn > 0.5) {
-        float nb = floor(bulbCount + 0.5);
-        int lay = int(floor(bulbLayout + 0.5));
-        float k0 = nearestBulb(p, nb, lay);
-        float glow = 0.0;
-        float discLit = 0.0;
-        float bestD = 1e5;
-        for (int o = -2; o <= 2; o++) {
-            float k = k0 + float(o);
-            if (lay == 2 && (k < 0.0 || k >= nb)) continue;
-            k = mod(k, nb);
-            vec2 bp = bulbPos(k, nb, lay);
-            float d = length(p - bp);
-            float lit = bulbLit(k, nb);
-            glow = max(glow, lit * exp(-max(d - bulbSize, 0.0) / (bulbSize * 2.5)));
-            if (d < bestD) { bestD = d; discLit = lit; }
-        }
-        over(col, a, bulbOnColor.rgb, glow * bulbGlow * 0.8 * bulbOnColor.a);
-        vec3 bc = discLit > 0.5 ? bulbOnColor.rgb : bulbOffColor.rgb;
-        float bca = discLit > 0.5 ? bulbOnColor.a : bulbOffColor.a;
-        over(col, a, bc, cover(bestD - bulbSize, px) * bca);
-    }
-
-    gl_FragColor = vec4(col, a);
+    gl_FragColor = a > 0.0001 ? vec4(col, clamp(a, 0.0, 1.0)) : vec4(0.0);
 }
