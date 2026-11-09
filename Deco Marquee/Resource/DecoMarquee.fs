@@ -1,5 +1,5 @@
 /*{
-  "DESCRIPTION": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Off, Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst Corners), Border Width, Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (lit share), Filament (lamps glow on after the current is gone). Shader: Resource/DecoMarquee.fs.",
+  "DESCRIPTION": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst), Border Width (0 = no border), Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (how much of each step is lit), Filament (lit lamps leave a fading trail). Shader: Resource/DecoMarquee.fs.",
   "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
   "ISFVSN": "2",
   "CATEGORIES": [
@@ -27,9 +27,9 @@
     {
       "NAME": "borderStyle",
       "TYPE": "float",
-      "DEFAULT": 3.0,
+      "DEFAULT": 2.0,
       "MIN": 0.0,
-      "MAX": 8.0
+      "MAX": 7.0
     },
     {
       "NAME": "borderWidth",
@@ -232,25 +232,30 @@ float cornerExtent(int st, float bw) {
 // ---------- chase ----------
 float litAt(float k, float n, float phase, int mode, float group, float duty) {
     float g = n / max(floor(n / group + 0.5), 1.0);     // a whole number of groups around the loop: no seam
-    if (mode == 0) return step(fract(k / g - phase), duty - 0.0001);                 // run
-    if (mode == 1) return 1.0 - abs(mod(k, 2.0) - floor(mod(phase * 2.0, 2.0)));     // alternate
+    float count = duty * g;                             // lamps lit per group; the last one may burn partly
+    if (mode == 0) return clamp(count - floor(fract(k / g - phase) * g), 0.0, 1.0);  // run
+    if (mode == 1) {                                                                 // alternate: Duty is the lit share of a step
+        float pattern = 1.0 - abs(mod(k, 2.0) - floor(mod(phase * 2.0, 2.0)));
+        return pattern * step(fract(phase * 2.0), min(duty * 2.0, 1.0) - 0.0001);
+    }
     if (mode == 2) return step(k + 0.5, (1.0 - tri(phase)) * n);                     // fill
-    if (mode == 3) return step(abs(k - (1.0 - tri(phase)) * (n - 1.0)), group * 0.5);// bounce
-    if (mode == 4) return step(fract(min(k, n - 1.0 - k) / g - phase), duty - 0.0001);// mirror
+    if (mode == 3) return step(abs(k - (1.0 - tri(phase)) * (n - 1.0)), max(count * 0.5, 0.5)); // bounce: Duty is its width
+    if (mode == 4) return clamp(count - floor(fract(min(k, n - 1.0 - k) / g - phase) * g), 0.0, 1.0); // mirror
     if (mode == 5) return step(hash(k, floor(fract(phase) * 16.0)), duty);           // twinkle
-    return 0.5 + 0.5 * cos(6.2831853 * (k / g - phase));                             // wave
+    float v = 0.5 + 0.5 * cos(6.2831853 * (k / g - phase));                          // wave: Duty is the width of the crest
+    return smoothstep(1.0 - duty - 0.15, 1.0 - duty + 0.15, v);
 }
 
-// filament: a lamp glows on after the current is gone, so it follows the last moments of the chase
+// filament: a lit lamp leaves a fading trail behind the chase. At 1 the trail lasts one whole Clock cycle.
 float bulbLit(float k, float n, float phase, int mode, float group, float duty, float fil) {
-    if (fil <= 0.0) return litAt(k, n, phase, mode, group, duty);
-    float sum = 0.0, weight = 0.0, w = 1.0;
-    for (int j = 0; j < 6; j++) {
-        sum += w * litAt(k, n, phase - float(j) / 5.0 * fil * 0.25, mode, group, duty);
-        weight += w;
-        w *= 0.6;
+    float lit = litAt(k, n, phase, mode, group, duty);
+    if (fil <= 0.0) return lit;
+    for (int j = 1; j < 10; j++) {
+        float t = float(j) / 9.0;
+        float back = litAt(k, n, phase - t * fil, mode, group, duty);
+        lit = max(lit, back * (1.0 - t) * (1.0 - t));
     }
-    return sum / weight;
+    return lit;
 }
 
 void main() {
@@ -266,7 +271,7 @@ void main() {
     vec2 p = (uv - 0.5) * vec2(A, H) * 2.0;
     float px = 2.0 / (res.y * safeScale);
 
-    int style = int(floor(safe(borderStyle, 0.0, 8.0) + 0.5));
+    int style = int(floor(safe(borderStyle, 0.0, 7.0) + 0.5)) + 1;
     float bw = safe(borderWidth, 0.0, 100.0);
     if (style > 0 && bw > 0.0) over(col, a, borderColor.rgb, borderCover(p, px, style, bw, A, H) * borderColor.a);
 

@@ -38,8 +38,8 @@ All ranges are deliberately wide; the extremes are safe.
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
 
 **Border**
-- `Border Style` (default Steps): Off, Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst Corners.
-- `Border Width` (0 to 2, default 0.06).
+- `Border Style` (default Steps): Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst.
+- `Border Width` (0 to 2, default 0.06): 0 = no border.
 - `Border Color`.
 
 **Bulbs**
@@ -55,8 +55,8 @@ Lamps always stay clear of the corner elements of the border.
 **Chase**
 - `Chase Mode` (default Run): Run, Alternate, Fill, Bounce, Mirror (from the middle outward), Twinkle, Wave.
 - `Chase Group` (1 to 64, default 3): lamps per step.
-- `Chase Duty` (0 to 1, default 0.3): lit share of a step.
-- `Filament` (0 to 1, default 0.3): lamps glow on after the current is gone.
+- `Chase Duty` (0 to 1, default 0.3): how much of each step is lit. In Run and Mirror the number of lit lamps, in Alternate the lit time, in Bounce and Wave the width, in Twinkle how many lamps sparkle. No effect in Fill.
+- `Filament` (0 to 1, default 0.3): lit lamps leave a fading trail; at 1 it lasts one whole `Clock` cycle.
 
 ## Any surface
 

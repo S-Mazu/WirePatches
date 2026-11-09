@@ -265,7 +265,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Off, Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst Corners), Border Width, Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (lit share), Filament (lamps glow on after the current is gone). Shader: Resource/DecoMarquee.fs.",
+			"description": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst), Border Width (0 = no border), Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (how much of each step is lit), Filament (lit lamps leave a fading trail). Shader: Resource/DecoMarquee.fs.",
 			"displayName": "Deco Marquee",
 			"identifier": "5514b9ad-0479-4aaf-9acd-79d1e7000fb8",
 			"licenseName": "",
@@ -375,8 +375,8 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 3.0,
-										"max": 8.0,
+										"defaultValue": 2.0,
+										"max": 7.0,
 										"min": 0.0,
 										"name": "borderStyle",
 										"type": "float"
@@ -543,7 +543,7 @@
 					},
 					"borderStyle": {
 						"type": "float",
-						"value": 3.0
+						"value": 2.0
 					},
 					"borderWidth": {
 						"type": "float",
@@ -855,7 +855,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 8.0
+						"value": 7.0
 					},
 					"min": {
 						"type": "float",
@@ -871,7 +871,7 @@
 					},
 					"option0-label": {
 						"type": "string",
-						"value": "Off"
+						"value": "Zigzag"
 					},
 					"option0-value": {
 						"type": "float",
@@ -879,7 +879,7 @@
 					},
 					"option1-label": {
 						"type": "string",
-						"value": "Zigzag"
+						"value": "Chevron"
 					},
 					"option1-value": {
 						"type": "float",
@@ -887,7 +887,7 @@
 					},
 					"option2-label": {
 						"type": "string",
-						"value": "Chevron"
+						"value": "Steps"
 					},
 					"option2-value": {
 						"type": "float",
@@ -895,7 +895,7 @@
 					},
 					"option3-label": {
 						"type": "string",
-						"value": "Steps"
+						"value": "Greek Key"
 					},
 					"option3-value": {
 						"type": "float",
@@ -903,7 +903,7 @@
 					},
 					"option4-label": {
 						"type": "string",
-						"value": "Greek Key"
+						"value": "Diamonds"
 					},
 					"option4-value": {
 						"type": "float",
@@ -911,7 +911,7 @@
 					},
 					"option5-label": {
 						"type": "string",
-						"value": "Diamonds"
+						"value": "Scallop"
 					},
 					"option5-value": {
 						"type": "float",
@@ -919,7 +919,7 @@
 					},
 					"option6-label": {
 						"type": "string",
-						"value": "Scallop"
+						"value": "Beads"
 					},
 					"option6-value": {
 						"type": "float",
@@ -927,23 +927,15 @@
 					},
 					"option7-label": {
 						"type": "string",
-						"value": "Beads"
+						"value": "Sunburst"
 					},
 					"option7-value": {
 						"type": "float",
 						"value": 7.0
 					},
-					"option8-label": {
-						"type": "string",
-						"value": "Sunburst Corners"
-					},
-					"option8-value": {
-						"type": "float",
-						"value": 8.0
-					},
 					"options-count": {
 						"type": "integer",
-						"value": 9
+						"value": 8
 					}
 				},
 				"bounds": {
@@ -961,7 +953,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 3.0
+						"value": 2.0
 					}
 				},
 				"hidden": [
@@ -990,9 +982,7 @@
 					"option6-label",
 					"option6-value",
 					"option7-label",
-					"option7-value",
-					"option8-label",
-					"option8-value"
+					"option7-value"
 				],
 				"name": "Border Style",
 				"thumbnail_visible": true
