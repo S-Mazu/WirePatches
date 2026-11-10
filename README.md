@@ -15,7 +15,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Fire Point](Fire%20Point/) | effect | Flames and smoke rise from one burning shape: point, square or heart. |
 | [Flower Sax](Flower%20Sax/) | source | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](Geo%20Tiles/) | source | Tile collage of 67 flat geometric motifs in three colors. |
-| [Iris Diaphragm](Iris%20Diaphragm/) | source | Mechanical blade iris that closes over the layers below. |
+| [Iris Diaphragm](Iris%20Diaphragm/) | effect | Mechanical blade iris with overlapping blades that closes over the clip. |
 | [Lye Swing](Lye%20Swing/) | source | Painted big-band score after Len Lye; five shapes follow the music, one per sound band. |
 | [Pride Flag](Pride%20Flag/) | source | A flag moves lightly in the wind: Rainbow, Straight Ally or Progress. |
 | [Rolling Landscape](Rolling%20Landscape/) | source | Art Deco night skyline of the 1930s as scrolling parallax silhouettes. |
