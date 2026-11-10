@@ -140,7 +140,7 @@ void main() {
 
     float n = floor(safe(bladeCount, 3.0, 32.0) + 0.5);
     float sector = 6.2831853 / n;
-    float span = sector * 1.7;                                 // every blade overlaps the next one
+    float span = min(sector * 1.7, 2.83);                      // every blade overlaps the next one, but never wraps half way round
     float open = length(vec2(aspect, 1.0)) + length(c) + 0.1;  // fully open: the aperture is larger than the frame
     float r = (1.0 - closed) * open;
     float rc = max(r, 0.0005) * 2.4;                           // radius of the curved inner edge of each blade
@@ -150,19 +150,20 @@ void main() {
     float soft = px + safe(edgeSoftness, 0.0, 100.0) * 0.08;
     float shade = safe(shading, 0.0, 1.0);
 
-    // find the blade on top: the one whose leading edge passed this point most recently
-    float best = 1e9, bestDist = 0.0, bestCover = 0.0;
+    // the opening: inside every blade's curved inner edge (a rounded polygon). Outside it, the frame is always covered.
+    // which blade lies on top: the one whose leading edge passed this point most recently
+    float aperture = -1e9, best = 1e9;
     for (int i = 0; i < 32; i++) {
         if (float(i) >= n) break;
         float phi = rot + float(i) * sector;
-        float t = mod(ang - phi - bend * (rho - r), 6.2831853);
-        if (t >= span) continue;
-        vec2 dir = vec2(cos(phi + span * 0.5), sin(phi + span * 0.5));
-        float d = length(q + dir * (rc - r)) - rc;           // > 0: outside the aperture disk of this blade, on the blade
-        float cover = smoothstep(-soft, soft, d);
-        if (cover <= 0.0) continue;
-        if (t < best) { best = t; bestDist = d; bestCover = cover; }
+        vec2 dir = vec2(cos(phi + sector * 0.5), sin(phi + sector * 0.5));
+        aperture = max(aperture, length(q + dir * (rc - r)) - rc);
+        float t = mod(ang - phi - bend * (rho - r), 6.2831853);   // the blade bends: further out it lies further round
+        if (t < span) best = min(best, t);
     }
+    float bestCover = smoothstep(-soft, soft, aperture);
+    float bestDist = aperture;
+    if (best > 1e8) best = span;
 
     if (bestCover > 0.0) {
         float along = best / span;                            // 0 at the leading edge, 1 where the blade disappears under the next

@@ -74,6 +74,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-10: The frame is always closed outside the opening, also with few, strongly bent blades.
 - 2026-11-10: Rebuilt as an effect with real, overlapping blades (#46, #30). `Iris Phase (0-100)` is now `Clock`; new `Blade Curve`, `Shading`, `Scale`. The iris covers any surface. `Iris Opacity` and `Backdrop` removed.
 
 ---
