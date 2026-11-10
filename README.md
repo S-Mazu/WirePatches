@@ -6,7 +6,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 
 | Patch | Type | Description |
 |---|---|---|
-| [Autumn Wind](Autumn%20Wind/) | source | 15 kinds of items (leaves, feathers, paper planes, …) drift across the frame with depth, gusts and tumble. |
+| [Autumn Wind](Autumn%20Wind/) | effect | 16 kinds of items (leaves, hats, newspapers, …) drift across the clip with depth, gusts, tumble and eddies. |
 | [Bass Strings](Bass%20Strings/) | source | Four double bass strings vibrate with the music, one frequency band per string. |
 | [Deco Fan](Deco%20Fan/) | effect | One Art Deco fan of rays and rings; add it several times for several fans. |
 | [Deco Marquee](Deco%20Marquee/) | effect | Art Deco theatre frame with chasing marquee lamps. |
