@@ -20,7 +20,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Pride Flag](Pride%20Flag/) | source | A flag moves lightly in the wind: Rainbow, Straight Ally or Progress. |
 | [Rolling Landscape](Rolling%20Landscape/) | source | Art Deco night skyline of the 1930s as scrolling parallax silhouettes. |
 | [Scale Colors](Scale%20Colors/) | source | Shows which of the 12 tones of the octave are sounding right now. |
-| [Star Globe](Star%20Globe/) | source | Glowing stars in a snow-globe container, with gravity, bounce and collision. |
+| [Star Globe](Star%20Globe/) | effect | Glowing points over the clip: fireflies across the frame, or stars in a vessel that fall, collide and simmer. |
 | [Water Drops](Water%20Drops/) | effect | View onto water over the clip: drops, stones or hearts fall in and send out rings that bend the picture. |
 
 ## Examples
@@ -38,11 +38,6 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 ## Installation
 
 Copy a patch folder into your Wire patches folder (`Documents/Resolume Wire/Patches/`). Keep all files of the folder together.
-
-## Known limitations
-
-- Patches with ISF shaders (`.fs`) still reference them by absolute path and may not find them on your machine ([#1](https://github.com/S-Mazu/WirePatches/issues/1)).
-- Not all patches have their own README yet.
 
 ## Bugs and ideas
 
