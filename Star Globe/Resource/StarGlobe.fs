@@ -403,12 +403,13 @@ void main() {
             // each point steers towards its own slowly turning direction; near the wall it turns away
             float wa = 6.2831853 * 2.0 * noise1(simTime * 0.35 + seed * 0.37, seed);
             vec2 dir = vec2(cos(wa), sin(wa));
-            float look = 0.1 * k.half_.y + length(v) * 0.35;         // look further ahead when fast
+            float look = 0.04 * k.half_.y + length(v) * 0.15;        // look a little further ahead when fast
             vec2 ahead = pos + dir * look;
             float sdw = sdContainer(ahead, k);
-            float near = smoothstep(-look, 0.0, sdw + r);
+            float near = smoothstep(-look, -0.5 * look, sdw + r);   // fully mirrored well before the wall: no sliding along it
             vec2 nw = wallNormal(ahead, k);                          // in a corner this points diagonally out of it
-            dir = normalize(dir - nw * near * 2.0 + 1e-6);
+            float out_ = dot(dir, nw);
+            if (out_ > 0.0) dir = normalize(dir - nw * out_ * 2.0 * near + 1e-6);   // mirror only the part that heads into the wall
             v += (dir * wnd * 0.25 - v) * (1.0 - exp(-1.5 * sdt)) * min(wnd, 1.0);
         }
         float ka = 6.2831853 * hash3(vec3(seed, simTime * 977.0, float(stepIdx)));
