@@ -322,12 +322,19 @@ vec2 wallNormal(vec2 p, Box k) {
     return l > 1e-8 ? g / l : vec2(0.0, 1.0);
 }
 
-vec4 part(int src, int j) {                         // row 0: position and velocity; row 1: signature
+vec4 part(int src, int j) {                         // row 0: position and velocity; row 1: signature, heading
     vec2 t = vec2((float(j) + 0.5) / float(N), 0.25);
     vec2 t2 = vec2(t.x, 0.75);
     vec4 sg = src == 0 ? IMG_NORM_PIXEL(partsA, t2) : IMG_NORM_PIXEL(partsB, t2);
     if (!(abs(sg.r - SIG) < 0.01)) return vec4(OFF, OFF, 0.0, 0.0);   // a fresh buffer (zeros or garbage): no point yet
     return src == 0 ? IMG_NORM_PIXEL(partsA, t) : IMG_NORM_PIXEL(partsB, t);
+}
+float heading(int src, int j) {                     // the direction a point wants to fly, kept from step to step
+    vec2 t2 = vec2((float(j) + 0.5) / float(N), 0.75);
+    vec4 sg = src == 0 ? IMG_NORM_PIXEL(partsA, t2) : IMG_NORM_PIXEL(partsB, t2);
+    float h = sg.g;
+    if (!(abs(sg.r - SIG) < 0.01) || !(h == h) || abs(h) > 100.0) h = hash3(vec3(float(j), 3.3, 9.1)) * 6.2831853;
+    return h;
 }
 bool valid(vec4 s) {
     return s.x == s.x && s.y == s.y && s.z == s.z && s.w == s.w && abs(s.x) <= OFF && abs(s.y) <= OFF && abs(s.z) <= 1e4 && abs(s.w) <= 1e4;
@@ -374,11 +381,11 @@ void main() {
         int stepIdx = PASSINDEX - PASS_SIM0;
         int src = int(mod(float(stepIdx), 2.0)) == 0 ? 0 : 1;
         int i = int(floor(uv.x * float(N)));
-        if (uv.y > 0.5) { gl_FragColor = vec4(SIG, 0.0, 0.0, 1.0); return; }
+        bool rowH = uv.y > 0.5;                                  // row 1 keeps the signature and the heading
         float sdt = dt / float(NSUB);
         vec4 s = part(src, i);
         bool was = valid(s) && abs(s.x) < OFF * 0.5;
-        if (i >= count) { gl_FragColor = vec4(OFF, OFF, 0.0, 0.0); return; }
+        if (i >= count) { gl_FragColor = rowH ? vec4(SIG, 0.0, 0.0, 1.0) : vec4(OFF, OFF, 0.0, 0.0); return; }
         float seed = float(i);
         if (!was) {
             // a new point appears somewhere inside the container, at rest
@@ -389,7 +396,7 @@ void main() {
                 vec2 cand = mix(lo, hi, vec2(hash3(vec3(seed, float(t), simTime)), hash3(vec3(seed, float(t) + 50.0, simTime + 3.1))));
                 if (sdContainer(cand, k) < -r) { pos = cand; break; }
             }
-            gl_FragColor = vec4(pos, 0.0, 0.0);
+            gl_FragColor = rowH ? vec4(SIG, hash3(vec3(seed, 7.7, simTime)) * 6.2831853, 0.0, 1.0) : vec4(pos, 0.0, 0.0);
             return;
         }
         vec2 pos = s.xy, v = s.zw;
@@ -399,18 +406,17 @@ void main() {
         float ga = radians(safe(gravityDir, -1e5, 1e5));
         v += vec2(cos(ga), sin(ga)) * max(safe(gravity, 0.0, 1000.0), 0.0) * sdt;
         float wnd = max(safe(wander, 0.0, 1000.0), 0.0);
+        float hd = heading(src, i);
         if (wnd > 0.0) {
-            // each point steers towards its own slowly turning direction; near the wall it turns away
-            float wa = 6.2831853 * 2.0 * noise1(simTime * 0.35 + seed * 0.37, seed);
-            vec2 dir = vec2(cos(wa), sin(wa));
-            float look = 0.04 * k.half_.y + length(v) * 0.15;        // look a little further ahead when fast
-            vec2 ahead = pos + dir * look;
-            float sdw = sdContainer(ahead, k);
-            float near = smoothstep(-look, -0.5 * look, sdw + r);   // fully mirrored well before the wall: no sliding along it
-            vec2 nw = wallNormal(ahead, k);                          // in a corner this points diagonally out of it
-            float out_ = dot(dir, nw);
-            if (out_ > 0.0) dir = normalize(dir - nw * out_ * 2.0 * near + 1e-6);   // mirror only the part that heads into the wall
-            v += (dir * wnd * 0.25 - v) * (1.0 - exp(-1.5 * sdt)) * min(wnd, 1.0);
+            // each point keeps its own heading, which turns at random per distance flown (not per time):
+            // it meanders the same way at any speed, and turns about once per quarter of the output height
+            float wspeed = wnd * 0.25;
+            float dist = max(length(v), wspeed) * sdt;
+            float g1 = hash3(vec3(seed + 0.25, simTime * 389.0, float(stepIdx) + 3.0));
+            float g2 = hash3(vec3(seed + 0.75, simTime * 211.0, float(stepIdx) + 5.0));
+            float gauss = sqrt(-2.0 * log(max(g1, 1e-6))) * cos(6.2831853 * g2);
+            hd += gauss * sqrt(2.0 * dist / (0.5 * k.half_.y));
+            v += (vec2(cos(hd), sin(hd)) * wspeed - v) * (1.0 - exp(-1.5 * sdt)) * min(wnd, 1.0);
         }
         float ka = 6.2831853 * hash3(vec3(seed, simTime * 977.0, float(stepIdx)));
         float kr = sqrt(-2.0 * log(max(hash3(vec3(seed + 0.5, simTime * 613.0, float(stepIdx) + 9.0)), 1e-6)));
@@ -461,16 +467,20 @@ void main() {
                 vec2 n = wallNormal(pos, k);
                 pos -= n * (sd + r);
                 float vn = dot(v, n);
+                float sa = (hash3(vec3(seed, simTime * 131.0, float(stepIdx * 2 + t))) - 0.5) * 0.5;   // a rough wall: up to ±14° scatter
                 if (vn > 0.0) {
                     v -= n * vn * (1.0 + bnc);
-                    float sa = (hash3(vec3(seed, simTime * 131.0, float(stepIdx * 2 + t))) - 0.5) * 0.5;   // a rough wall: up to ±14° scatter
                     v = rot2(v, sa);
                 }
+                // the heading bounces off the wall too: afterwards the point wants to fly back inside
+                vec2 hv = vec2(cos(hd), sin(hd));
+                if (dot(hv, n) > 0.0) { hv = rot2(reflect(hv, n), sa); hd = atan(hv.y, hv.x); }
             }
         }
         if (!(pos.x == pos.x && pos.y == pos.y && v.x == v.x && v.y == v.y)) { pos = k.shape == 0 ? vec2(0.0) : k.c; v = vec2(0.0); }
         pos = clamp(pos, vec2(-OFF * 0.4), vec2(OFF * 0.4));
-        gl_FragColor = vec4(pos, v);
+        hd = mod(safe(hd, -1e4, 1e4), 6.2831853);
+        gl_FragColor = rowH ? vec4(SIG, hd, 0.0, 1.0) : vec4(pos, v);
         return;
     }
 
