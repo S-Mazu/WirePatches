@@ -23,7 +23,7 @@
 				],
 				"to": [
 					2,
-					"inputImage"
+					"input"
 				]
 			},
 			{
@@ -33,77 +33,7 @@
 				],
 				"to": [
 					3,
-					"input0"
-				]
-			},
-			{
-				"from": [
-					6,
-					"output"
-				],
-				"to": [
-					3,
-					"input1"
-				]
-			},
-			{
-				"from": [
-					3,
-					"output0"
-				],
-				"to": [
-					4,
 					"input"
-				]
-			},
-			{
-				"from": [
-					4,
-					"output"
-				],
-				"to": [
-					5,
-					"input"
-				]
-			},
-			{
-				"from": [
-					1,
-					"output"
-				],
-				"to": [
-					7,
-					"input0"
-				]
-			},
-			{
-				"from": [
-					7,
-					"output0"
-				],
-				"to": [
-					0,
-					"inputImage"
-				]
-			},
-			{
-				"from": [
-					8,
-					"output"
-				],
-				"to": [
-					0,
-					"drop"
-				]
-			},
-			{
-				"from": [
-					9,
-					"output"
-				],
-				"to": [
-					0,
-					"dropX"
 				]
 			},
 			{
@@ -112,8 +42,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"dropY"
+					1,
+					"scale"
 				]
 			},
 			{
@@ -122,8 +52,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"spread"
+					1,
+					"drop"
 				]
 			},
 			{
@@ -132,18 +62,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"dropSize"
-				]
-			},
-			{
-				"from": [
-					12,
-					"output"
-				],
-				"to": [
-					2,
-					"dropSize"
+					1,
+					"object"
 				]
 			},
 			{
@@ -152,8 +72,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"dropStrength"
+					1,
+					"dropX"
 				]
 			},
 			{
@@ -162,28 +82,8 @@
 					"output"
 				],
 				"to": [
-					0,
-					"fallFrames"
-				]
-			},
-			{
-				"from": [
-					14,
-					"output"
-				],
-				"to": [
-					2,
-					"fallFrames"
-				]
-			},
-			{
-				"from": [
-					15,
-					"output"
-				],
-				"to": [
-					0,
-					"damping"
+					1,
+					"dropY"
 				]
 			},
 			{
@@ -193,7 +93,7 @@
 				],
 				"to": [
 					1,
-					"damping"
+					"spread"
 				]
 			},
 			{
@@ -202,8 +102,8 @@
 					"output"
 				],
 				"to": [
-					2,
-					"relief"
+					1,
+					"dropSize"
 				]
 			},
 			{
@@ -212,8 +112,8 @@
 					"output"
 				],
 				"to": [
-					2,
-					"shine"
+					1,
+					"dropStrength"
 				]
 			},
 			{
@@ -222,18 +122,8 @@
 					"output"
 				],
 				"to": [
-					2,
-					"lightAngle"
-				]
-			},
-			{
-				"from": [
-					20,
-					"output"
-				],
-				"to": [
-					2,
-					"waveColor"
+					1,
+					"fallTime"
 				]
 			},
 			{
@@ -242,8 +132,18 @@
 					"output"
 				],
 				"to": [
-					2,
-					"backdropColor"
+					1,
+					"heartColor"
+				]
+			},
+			{
+				"from": [
+					20,
+					"output"
+				],
+				"to": [
+					1,
+					"waveSpeed"
 				]
 			},
 			{
@@ -252,71 +152,159 @@
 					"output"
 				],
 				"to": [
-					2,
-					"backdropOn"
+					1,
+					"waveLife"
+				]
+			},
+			{
+				"from": [
+					22,
+					"output"
+				],
+				"to": [
+					1,
+					"refraction"
+				]
+			},
+			{
+				"from": [
+					23,
+					"output"
+				],
+				"to": [
+					1,
+					"shading"
+				]
+			},
+			{
+				"from": [
+					24,
+					"output"
+				],
+				"to": [
+					1,
+					"glints"
+				]
+			},
+			{
+				"from": [
+					25,
+					"output"
+				],
+				"to": [
+					1,
+					"lightColor"
+				]
+			},
+			{
+				"from": [
+					26,
+					"output"
+				],
+				"to": [
+					1,
+					"lightAngle"
+				]
+			},
+			{
+				"from": [
+					27,
+					"hours"
+				],
+				"to": [
+					1,
+					"clockH"
+				]
+			},
+			{
+				"from": [
+					27,
+					"minutes"
+				],
+				"to": [
+					1,
+					"clockM"
+				]
+			},
+			{
+				"from": [
+					27,
+					"seconds"
+				],
+				"to": [
+					1,
+					"clockS"
+				]
+			},
+			{
+				"from": [
+					27,
+					"milliseconds"
+				],
+				"to": [
+					1,
+					"clockMs"
 				]
 			}
 		],
 		"inputOrder": {
 			"groups": {
-				"1792918054877": {
+				"1794300000000": {
 					"children": [
-						6
-					],
-					"collapsed": false,
-					"name": "Mix"
-				},
-				"1792918054879": {
-					"children": [
-						8,
-						9,
-						10,
 						11,
 						12,
 						13,
-						14
-					],
-					"collapsed": false,
-					"name": "Drop"
-				},
-				"1792918054881": {
-					"children": [
+						14,
 						15,
 						16,
 						17,
 						18,
-						20
-					],
-					"collapsed": false,
-					"name": "Water"
-				},
-				"1793051837181": {
-					"children": [
-						21,
 						19
 					],
 					"collapsed": false,
-					"name": "Backdrop"
+					"name": "Drop"
+				},
+				"1794300000002": {
+					"children": [
+						20,
+						21
+					],
+					"collapsed": false,
+					"name": "Physics"
+				},
+				"1794300000004": {
+					"children": [
+						22,
+						23,
+						24,
+						25,
+						26
+					],
+					"collapsed": false,
+					"name": "Water"
 				}
 			},
 			"roots": [
 				{
-					"group": 1792918054877
+					"node": 10
 				},
 				{
-					"group": 1792918054879
+					"node": 0
 				},
 				{
-					"group": 1792918054881
+					"group": 1794300000000
 				},
 				{
-					"group": 1793051837181
+					"group": 1794300000002
+				},
+				{
+					"group": 1794300000004
 				}
 			]
 		},
 		"meta": {
-			"author": "",
-			"category": "source",
+			"author": "Stefan Mazur",
+			"category": "effect",
 			"deploymentTarget": {
 				"branch": "",
 				"name": "Wire",
@@ -326,11 +314,11 @@
 					"patch": 0
 				}
 			},
-			"description": "Water Drops - view straight down onto a water surface. A real wave simulation (wave equation via feedback, two steps per frame, half resolution, 32-bit float): every drop falls away from the viewer (shrinks), hits the surface and sends out a train of rings that interfere with each other and reflect at the screen edges. No drop = the water calms down and stands still. Drop: every rising edge over 0.5 releases one drop (map a button, MIDI note, FFT kick or BPM ramp). Drop X \/ Y: impact point, 0 = centre, -1 \/ 1 = screen edge. Spread: random scatter around X \/ Y per drop (0 = always the same point). Drop Size: size of the drop and its crater. Drop Strength: height of the waves. Fall Frames: frames the drop falls before impact (0 = instant). Damping: how long the waves last (0.999 = very long). Relief: how steep the waves look. Shine: sun glints on the crests. Light Angle: direction of the light. Wave Color: sky reflection and light on the waves. Backdrop On\/Off: On = the water surface in Backdrop Color (deep water, shaded by the waves); Off = only the waves are drawn, flat water is transparent. Note: wave speed follows the frame rate. Shaders WaterSim.fs and WaterRender.fs must stay next to the patch.",
+			"description": "Water Drops - a view straight down onto water over the clip below: objects fall in, rings spread, interfere and reflect at the edges of the frame. A real wave simulation in real time, independent of the frame rate. No drop = the water calms down. Put a black clip below for drops on black. Scale sizes everything relative to the output height. Drop: every rising edge over 0.5 releases one object (a button, MIDI note, FFT kick or BPM ramp); up to 8 can be in the air at once. Object (Drop, Stone, Heart, Mixed), Drop X and Drop Y (0 = centre, -1 and 1 = frame edges), Spread (random scatter around X / Y; points beyond an edge fold back into the frame), Drop Size, Drop Strength (height of the waves), Fall Time (seconds from release to impact, 0 = instant), Heart Color. Physics: Wave Speed, Wave Life (seconds until the rings have faded). Water: Refraction (how much the waves bend the clip below), Shading (how plastic the waves look), Glints (sun glints on the crests), Light Color, Light Angle. Shader: Resource/WaterDrops.fs.",
 			"displayName": "Water Drops",
 			"identifier": "1f37ad36-c772-4709-ba6c-92ecd71b03f4",
 			"licenseName": "",
-			"mail": "",
+			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
 				"textColorIndex": 1,
@@ -360,215 +348,59 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "",
+			"url": "https://github.com/S-Mazu/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 22,
+		"nextNodeId": 28,
 		"nodes": {
 			"0": {
 				"attributes": {
-					"bitdepth": {
-						"type": "integer",
-						"value": 4
-					},
-					"fragment-shader": {
-						"type": "resourceIsf",
-						"value": {
-							"path": {
-								"main": "C:\/Users\/StefanMazurCATI-Co\/OneDrive - CATI - Consilium et auxilium informaticum et technicum\/Dokumente\/Resolume Wire\/Patches\/Water Drops\/WaterSim.fs",
-								"sub": ""
-							},
-							"value": {
-								"inputs": [
-									{
-										"name": "inputImage",
-										"type": "image"
-									},
-									{
-										"defaultValue": 1,
-										"max": 1,
-										"min": 0,
-										"name": "inject",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": 0,
-										"name": "drop",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": -1,
-										"name": "dropX",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": -1,
-										"name": "dropY",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": 0,
-										"name": "spread",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.10000000149011612,
-										"min": 0.00300000002607703,
-										"name": "dropSize",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.5,
-										"max": 1,
-										"min": 0,
-										"name": "dropStrength",
-										"type": "float"
-									},
-									{
-										"defaultValue": 12,
-										"max": 60,
-										"min": 0,
-										"name": "fallFrames",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.99599999189376831,
-										"max": 0.99900001287460327,
-										"min": 0.94999998807907104,
-										"name": "damping",
-										"type": "float"
-									},
-									{
-										"defaultValue": 1,
-										"max": 999,
-										"min": 0,
-										"name": "seed",
-										"type": "float"
-									}
-								]
-							}
-						}
+					"flow": {
+						"type": "flow",
+						"value": "signal"
 					},
 					"instances": {
 						"type": "integer",
 						"value": 1
-					},
-					"resolution-absolute": {
-						"type": "float2",
-						"value": [
-							1920,
-							1080
-						]
-					},
-					"resolution-mode": {
-						"type": "integer",
-						"value": 0
-					},
-					"resolution-relative": {
-						"type": "float2",
-						"value": [
-							0.5,
-							0.5
-						]
 					}
 				},
 				"bounds": {
-					"height": 322,
-					"width": 195,
-					"x": 0,
-					"y": 0
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 40
 				},
 				"class": {
-					"id": "77697265-4576-4C11-899B-6F11F3275D36",
-					"version": 4
+					"id": "77697265-B2A2-4C1C-8C4C-2915D78CC8E9",
+					"version": 1
 				},
 				"clock": "video",
 				"color": "ffff6a00",
 				"constants": {
-					"bypass": {
-						"type": "bool",
-						"value": false
-					},
-					"damping": {
-						"type": "float",
-						"value": 0.99599999189376831
-					},
-					"drop": {
-						"type": "float",
-						"value": 0
-					},
-					"dropSize": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"dropStrength": {
-						"type": "float",
-						"value": 0.5
-					},
-					"dropX": {
-						"type": "float",
-						"value": 0
-					},
-					"dropY": {
-						"type": "float",
-						"value": 0
-					},
-					"fallFrames": {
-						"type": "float",
-						"value": 12
-					},
-					"inject": {
-						"type": "float",
-						"value": 1
-					},
-					"inputImage": {
+					"input": {
 						"type": "texture2d",
 						"value": null
-					},
-					"seed": {
-						"type": "float",
-						"value": 1
-					},
-					"spread": {
-						"type": "float",
-						"value": 0
-					},
-					"time": {
-						"type": "float",
-						"value": 0
 					}
 				},
 				"hidden": [
-					"bitdepth",
-					"bypass",
-					"instances",
-					"resolution-absolute",
-					"resolution-mode",
-					"resolution-relative"
+					"flow",
+					"input",
+					"instances"
 				],
-				"name": "Sim Step A (ISF)",
+				"name": "Texture In",
 				"thumbnail_visible": true
 			},
 			"1": {
 				"attributes": {
 					"bitdepth": {
 						"type": "integer",
-						"value": 4
+						"value": 0
 					},
 					"fragment-shader": {
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "C:\/Users\/StefanMazurCATI-Co\/OneDrive - CATI - Consilium et auxilium informaticum et technicum\/Dokumente\/Resolume Wire\/Patches\/Water Drops\/WaterSim.fs",
+								"main": "Resource/WaterDrops.fs",
 								"sub": ""
 							},
 							"value": {
@@ -578,958 +410,156 @@
 										"type": "image"
 									},
 									{
-										"defaultValue": 1,
-										"max": 1,
+										"defaultValue": 0,
+										"max": 24.0,
 										"min": 0,
-										"name": "inject",
+										"name": "clockH",
 										"type": "float"
 									},
 									{
 										"defaultValue": 0,
-										"max": 1,
+										"max": 60.0,
 										"min": 0,
+										"name": "clockM",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 60.0,
+										"min": 0,
+										"name": "clockS",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 1000.0,
+										"min": 0,
+										"name": "clockMs",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "scale",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1.0,
+										"min": 0.0,
 										"name": "drop",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": -1,
+										"defaultValue": 0.0,
+										"max": 3.0,
+										"min": 0.0,
+										"name": "object",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 2.0,
+										"min": -2.0,
 										"name": "dropX",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": -1,
+										"defaultValue": 0.0,
+										"max": 2.0,
+										"min": -2.0,
 										"name": "dropY",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 1,
-										"min": 0,
+										"defaultValue": 0.3,
+										"max": 5.0,
+										"min": 0.0,
 										"name": "spread",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.10000000149011612,
-										"min": 0.00300000002607703,
+										"defaultValue": 0.03,
+										"max": 0.5,
+										"min": 0.0,
 										"name": "dropSize",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.5,
-										"max": 1,
-										"min": 0,
+										"defaultValue": 1.0,
+										"max": 5.0,
+										"min": 0.0,
 										"name": "dropStrength",
 										"type": "float"
 									},
 									{
-										"defaultValue": 12,
-										"max": 60,
-										"min": 0,
-										"name": "fallFrames",
+										"defaultValue": 0.4,
+										"max": 5.0,
+										"min": 0.0,
+										"name": "fallTime",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.99599999189376831,
-										"max": 0.99900001287460327,
-										"min": 0.94999998807907104,
-										"name": "damping",
+										"defaultValue": [
+											0.84,
+											0.16,
+											0.22,
+											1.0
+										],
+										"name": "heartColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0.4,
+										"max": 5.0,
+										"min": 0.0,
+										"name": "waveSpeed",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1,
-										"max": 999,
-										"min": 0,
-										"name": "seed",
-										"type": "float"
-									}
-								]
-							}
-						}
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"resolution-absolute": {
-						"type": "float2",
-						"value": [
-							1920,
-							1080
-						]
-					},
-					"resolution-mode": {
-						"type": "integer",
-						"value": 0
-					},
-					"resolution-relative": {
-						"type": "float2",
-						"value": [
-							0.5,
-							0.5
-						]
-					}
-				},
-				"bounds": {
-					"height": 322,
-					"width": 195,
-					"x": 300,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-4576-4C11-899B-6F11F3275D36",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"bypass": {
-						"type": "bool",
-						"value": false
-					},
-					"damping": {
-						"type": "float",
-						"value": 0.99599999189376831
-					},
-					"drop": {
-						"type": "float",
-						"value": 0
-					},
-					"dropSize": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"dropStrength": {
-						"type": "float",
-						"value": 0.5
-					},
-					"dropX": {
-						"type": "float",
-						"value": 0
-					},
-					"dropY": {
-						"type": "float",
-						"value": 0
-					},
-					"fallFrames": {
-						"type": "float",
-						"value": 12
-					},
-					"inject": {
-						"type": "float",
-						"value": 0
-					},
-					"inputImage": {
-						"type": "texture2d",
-						"value": null
-					},
-					"seed": {
-						"type": "float",
-						"value": 1
-					},
-					"spread": {
-						"type": "float",
-						"value": 0
-					},
-					"time": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"bitdepth",
-					"bypass",
-					"instances",
-					"resolution-absolute",
-					"resolution-mode",
-					"resolution-relative"
-				],
-				"name": "Sim Step B (ISF)",
-				"thumbnail_visible": true
-			},
-			"10": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": -1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 160
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Drop Y",
-				"thumbnail_visible": true
-			},
-			"11": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 240
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.30000001192092896
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Spread",
-				"thumbnail_visible": true
-			},
-			"12": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.10000000149011612
-					},
-					"min": {
-						"type": "float",
-						"value": 0.00300000002607703
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 320
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.01999999955296516
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Drop Size",
-				"thumbnail_visible": true
-			},
-			"13": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 400
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.5
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Drop Strength",
-				"thumbnail_visible": true
-			},
-			"14": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 60
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 480
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 12
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Fall Frames",
-				"thumbnail_visible": true
-			},
-			"15": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.99900001287460327
-					},
-					"min": {
-						"type": "float",
-						"value": 0.94999998807907104
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 560
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.99599999189376831
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Damping",
-				"thumbnail_visible": true
-			},
-			"16": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 20
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 640
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 8
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Relief",
-				"thumbnail_visible": true
-			},
-			"17": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 2
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 720
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Shine",
-				"thumbnail_visible": true
-			},
-			"18": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 360
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 800
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 135
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Light Angle (°)",
-				"thumbnail_visible": true
-			},
-			"19": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 880
-				},
-				"class": {
-					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "color",
-						"value": [
-							0.01999999955296516,
-							0.10000000149011612,
-							0.14000000059604645,
-							1
-						]
-					}
-				},
-				"hidden": [
-					"flow",
-					"input",
-					"instances",
-					"options-count",
-					"widget"
-				],
-				"name": "Backdrop Color",
-				"thumbnail_visible": true
-			},
-			"2": {
-				"attributes": {
-					"bitdepth": {
-						"type": "integer",
-						"value": 0
-					},
-					"fragment-shader": {
-						"type": "resourceIsf",
-						"value": {
-							"path": {
-								"main": "C:\/Users\/StefanMazurCATI-Co\/OneDrive - CATI - Consilium et auxilium informaticum et technicum\/Dokumente\/Resolume Wire\/Patches\/Water Drops\/WaterRender.fs",
-								"sub": ""
-							},
-							"value": {
-								"inputs": [
-									{
-										"name": "inputImage",
-										"type": "image"
-									},
-									{
-										"defaultValue": 12,
-										"max": 60,
-										"min": 0,
-										"name": "fallFrames",
+										"defaultValue": 6.0,
+										"max": 60.0,
+										"min": 0.05,
+										"name": "waveLife",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.01999999955296516,
-										"max": 0.10000000149011612,
-										"min": 0.00300000002607703,
-										"name": "dropSize",
+										"defaultValue": 0.4,
+										"max": 5.0,
+										"min": 0.0,
+										"name": "refraction",
 										"type": "float"
 									},
 									{
-										"defaultValue": 8,
-										"max": 20,
-										"min": 0,
-										"name": "relief",
+										"defaultValue": 1.0,
+										"max": 5.0,
+										"min": 0.0,
+										"name": "shading",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1,
-										"max": 2,
-										"min": 0,
-										"name": "shine",
+										"defaultValue": 1.0,
+										"max": 5.0,
+										"min": 0.0,
+										"name": "glints",
 										"type": "float"
 									},
 									{
-										"defaultValue": 135,
-										"max": 360,
-										"min": 0,
+										"defaultValue": [
+											0.75,
+											0.88,
+											1.0,
+											1.0
+										],
+										"name": "lightColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 135.0,
+										"max": 360.0,
+										"min": 0.0,
 										"name": "lightAngle",
-										"type": "float"
-									},
-									{
-										"defaultValue": [
-											0.01999999955296516,
-											0.10000000149011612,
-											0.14000000059604645,
-											1
-										],
-										"name": "backdropColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": [
-											0.64999997615814209,
-											0.85000002384185791,
-											0.94999998807907104,
-											1
-										],
-										"name": "waveColor",
-										"type": "color"
-									},
-									{
-										"defaultValue": 1,
-										"max": 1,
-										"min": 0,
-										"name": "backdropOn",
 										"type": "float"
 									}
 								]
@@ -1560,10 +590,10 @@
 					}
 				},
 				"bounds": {
-					"height": 274,
+					"height": 58,
 					"width": 195,
-					"x": 600,
-					"y": 0
+					"x": 700,
+					"y": 40
 				},
 				"class": {
 					"id": "77697265-4576-4C11-899B-6F11F3275D36",
@@ -1572,59 +602,111 @@
 				"clock": "video",
 				"color": "ffff6a00",
 				"constants": {
-					"backdropColor": {
-						"type": "color",
-						"value": [
-							0.01999999955296516,
-							0.10000000149011612,
-							0.14000000059604645,
-							1
-						]
-					},
-					"backdropOn": {
-						"type": "float",
-						"value": 1
-					},
 					"bypass": {
 						"type": "bool",
 						"value": false
-					},
-					"dropSize": {
-						"type": "float",
-						"value": 0.01999999955296516
-					},
-					"fallFrames": {
-						"type": "float",
-						"value": 12
 					},
 					"inputImage": {
 						"type": "texture2d",
 						"value": null
 					},
-					"lightAngle": {
-						"type": "float",
-						"value": 135
-					},
-					"relief": {
-						"type": "float",
-						"value": 8
-					},
-					"shine": {
-						"type": "float",
-						"value": 1
-					},
 					"time": {
 						"type": "float",
 						"value": 0
 					},
-					"waveColor": {
+					"scale": {
+						"type": "float",
+						"value": 1.0
+					},
+					"drop": {
+						"type": "float",
+						"value": 0.0
+					},
+					"object": {
+						"type": "float",
+						"value": 0.0
+					},
+					"dropX": {
+						"type": "float",
+						"value": 0.0
+					},
+					"dropY": {
+						"type": "float",
+						"value": 0.0
+					},
+					"spread": {
+						"type": "float",
+						"value": 0.3
+					},
+					"dropSize": {
+						"type": "float",
+						"value": 0.03
+					},
+					"dropStrength": {
+						"type": "float",
+						"value": 1.0
+					},
+					"fallTime": {
+						"type": "float",
+						"value": 0.4
+					},
+					"heartColor": {
 						"type": "color",
 						"value": [
-							0.64999997615814209,
-							0.85000002384185791,
-							0.94999998807907104,
-							1
+							0.84,
+							0.16,
+							0.22,
+							1.0
 						]
+					},
+					"waveSpeed": {
+						"type": "float",
+						"value": 0.4
+					},
+					"waveLife": {
+						"type": "float",
+						"value": 6.0
+					},
+					"refraction": {
+						"type": "float",
+						"value": 0.4
+					},
+					"shading": {
+						"type": "float",
+						"value": 1.0
+					},
+					"glints": {
+						"type": "float",
+						"value": 1.0
+					},
+					"lightColor": {
+						"type": "color",
+						"value": [
+							0.75,
+							0.88,
+							1.0,
+							1.0
+						]
+					},
+					"lightAngle": {
+						"type": "float",
+						"value": 135.0
+					},
+					"clockH": {
+						"type": "float",
+						"value": 0
+					},
+					"clockM": {
+						"type": "float",
+						"value": 0
+					},
+					"clockS": {
+						"type": "float",
+						"value": 0
+					},
+					"clockMs": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -1635,10 +717,765 @@
 					"resolution-mode",
 					"resolution-relative"
 				],
-				"name": "Render (ISF)",
+				"name": "Water Drops (ISF)",
 				"thumbnail_visible": true
 			},
-			"20": {
+			"2": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 30,
+					"width": 195,
+					"x": 1100,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-F1A4-4AFC-B3F6-5635DC6FE964",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"bypass",
+					"instances"
+				],
+				"name": "Premultiply Alpha",
+				"thumbnail_visible": true
+			},
+			"3": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 132,
+					"x": 1350,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances"
+				],
+				"name": "Texture Out",
+				"thumbnail_visible": true
+			},
+			"10": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"11": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Drop",
+				"thumbnail_visible": true
+			},
+			"12": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 3.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Drop"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Stone"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1.0
+					},
+					"option2-label": {
+						"type": "string",
+						"value": "Heart"
+					},
+					"option2-value": {
+						"type": "float",
+						"value": 2.0
+					},
+					"option3-label": {
+						"type": "string",
+						"value": "Mixed"
+					},
+					"option3-value": {
+						"type": "float",
+						"value": 3.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 4
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"option2-label",
+					"option2-value",
+					"option3-label",
+					"option3-value"
+				],
+				"name": "Object",
+				"thumbnail_visible": true
+			},
+			"13": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": -2.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Drop X",
+				"thumbnail_visible": true
+			},
+			"14": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 2.0
+					},
+					"min": {
+						"type": "float",
+						"value": -2.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Drop Y",
+				"thumbnail_visible": true
+			},
+			"15": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 700
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.3
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Spread",
+				"thumbnail_visible": true
+			},
+			"16": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 0.5
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 800
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.03
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Drop Size",
+				"thumbnail_visible": true
+			},
+			"17": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 900
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Drop Strength",
+				"thumbnail_visible": true
+			},
+			"18": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 2
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1000
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.4
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Fall Time (s)",
+				"thumbnail_visible": true
+			},
+			"19": {
 				"attributes": {
 					"flow": {
 						"type": "flow",
@@ -1660,8 +1497,8 @@
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": -400,
-					"y": 960
+					"x": 300,
+					"y": 1100
 				},
 				"class": {
 					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
@@ -1673,10 +1510,10 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.64999997615814209,
-							0.85000002384185791,
-							0.94999998807907104,
-							1
+							0.84,
+							0.16,
+							0.22,
+							1.0
 						]
 					}
 				},
@@ -1687,7 +1524,79 @@
 					"options-count",
 					"widget"
 				],
-				"name": "Wave Color",
+				"name": "Heart Color",
+				"thumbnail_visible": true
+			},
+			"20": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.4
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Wave Speed",
 				"thumbnail_visible": true
 			},
 			"21": {
@@ -1710,37 +1619,21 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1
+						"value": 60.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
+						"value": 0.05
 					},
-					"option0-label": {
-						"type": "string",
-						"value": "Off"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "On"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"options-count": {
+					"unit": {
 						"type": "integer",
 						"value": 2
 					},
-					"unit": {
+					"widget": {
 						"type": "integer",
 						"value": 0
 					},
-					"widget": {
+					"options-count": {
 						"type": "integer",
 						"value": 0
 					}
@@ -1748,8 +1641,8 @@
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": -400,
-					"y": 1040
+					"x": 300,
+					"y": 1300
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -1760,7 +1653,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1
+						"value": 6.0
 					}
 				},
 				"hidden": [
@@ -1771,145 +1664,14 @@
 					"instances",
 					"max",
 					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
 					"options-count",
 					"unit",
 					"widget"
 				],
-				"name": "Backdrop On",
+				"name": "Wave Life (s)",
 				"thumbnail_visible": true
 			},
-			"3": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"input0-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"input1-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"size": {
-						"type": "integer",
-						"value": 2
-					},
-					"type0": {
-						"type": "type",
-						"value": "texture2d"
-					},
-					"type1": {
-						"type": "type",
-						"value": "float"
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 195,
-					"x": 900,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input0": {
-						"type": "texture2d",
-						"value": null
-					},
-					"input1": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"input0-dimensions",
-					"input1-dimensions",
-					"size",
-					"type0",
-					"type1"
-				],
-				"name": "Apply Opacity",
-				"thumbnail_visible": true
-			},
-			"4": {
-				"attributes": {
-					"instances": {
-						"type": "integer",
-						"value": 1
-					}
-				},
-				"bounds": {
-					"height": 30,
-					"width": 195,
-					"x": 1150,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-F1A4-4AFC-B3F6-5635DC6FE964",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"bypass": {
-						"type": "bool",
-						"value": false
-					},
-					"input": {
-						"type": "texture2d",
-						"value": null
-					}
-				},
-				"hidden": [
-					"bypass",
-					"instances"
-				],
-				"name": "Premultiply Out",
-				"thumbnail_visible": true
-			},
-			"5": {
-				"attributes": {
-					"instances": {
-						"type": "integer",
-						"value": 1
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 132,
-					"x": 1400,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "texture2d",
-						"value": null
-					}
-				},
-				"hidden": [
-					"instances"
-				],
-				"name": "Texture Out",
-				"thumbnail_visible": true
-			},
-			"6": {
+			"22": {
 				"attributes": {
 					"flow": {
 						"type": "flow",
@@ -1929,15 +1691,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1
+						"value": 5.0
 					},
 					"min": {
 						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
+						"value": 0.0
 					},
 					"unit": {
 						"type": "integer",
@@ -1946,13 +1704,17 @@
 					"widget": {
 						"type": "integer",
 						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
 					"height": 82,
 					"width": 130,
-					"x": 700,
-					"y": 300
+					"x": 300,
+					"y": 1400
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -1963,7 +1725,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1
+						"value": 0.4
 					}
 				},
 				"hidden": [
@@ -1978,206 +1740,301 @@
 					"unit",
 					"widget"
 				],
-				"name": "Opacity",
+				"name": "Refraction",
 				"thumbnail_visible": true
 			},
-			"7": {
+			"23": {
 				"attributes": {
-					"input0-flow": {
+					"flow": {
 						"type": "flow",
 						"value": "signal"
 					},
-					"input0-type": {
-						"type": "type",
-						"value": "texture2d"
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
 					},
 					"instances": {
 						"type": "integer",
 						"value": 1
 					},
-					"interpolation": {
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
 						"type": "integer",
 						"value": 0
 					},
-					"time-type": {
-						"type": "type",
-						"value": "null"
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Shading",
+				"thumbnail_visible": true
+			},
+			"24": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Glints",
+				"thumbnail_visible": true
+			},
+			"25": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1700
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.75,
+							0.88,
+							1.0,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Light Color",
+				"thumbnail_visible": true
+			},
+			"26": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 360.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 5
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 1800
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 135.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Light Angle (°)",
+				"thumbnail_visible": true
+			},
+			"27": {
+				"attributes": {
+					"type": {
+						"type": "type",
+						"value": "integer"
+					}
+				},
+				"bounds": {
+					"height": 130,
 					"width": 195,
-					"x": -212,
-					"y": -17
+					"x": 300,
+					"y": 40
 				},
 				"class": {
-					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"id": "77697265-1493-477D-981B-735FE719A4DB",
+					"version": 1
 				},
 				"clock": "video",
 				"color": "ffff6a00",
-				"constants": {
-					"input0": {
-						"type": "texture2d",
-						"value": null
-					},
-					"reset": {
-						"type": "trigger",
-						"value": null
-					}
-				},
+				"constants": {},
 				"hidden": [
-					"input0-flow",
-					"input0-type",
-					"instances",
-					"interpolation",
-					"time-type"
+					"type"
 				],
-				"name": "Delay",
-				"thumbnail_visible": true
-			},
-			"8": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 0
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Drop",
-				"thumbnail_visible": true
-			},
-			"9": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": -1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": -400,
-					"y": 80
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Drop X",
+				"name": "System Time",
 				"thumbnail_visible": true
 			}
 		},
@@ -2187,9 +2044,7 @@
 				"y": 0,
 				"zoom": 1
 			},
-			"selection": [
-				"21"
-			]
+			"selection": []
 		}
 	},
 	"ui": {
@@ -2200,7 +2055,9 @@
 			}
 		},
 		"deviceConnections": {
-			"input": {}
+			"input": {
+				"0": "Test Card"
+			}
 		},
 		"transport": {
 			"bpm": 120,
