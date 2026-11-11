@@ -38,10 +38,10 @@ All ranges are deliberately wide; the extremes are safe.
 
 **Physics**
 - `Gravity` (0 to 20, default 1.5), `Gravity Dir (°)` (0 to 360, default 270 = down).
-- `Bounce` (0 to 2, default 0.4): how much speed a point keeps when it hits the wall or another point. Above 1 the wall adds speed.
+- `Bounce` (0 to 2, default 0.4): how much speed a point keeps when it hits the wall or another point. Above 1 the wall adds speed. The wall is a little rough, so every bounce scatters slightly and no patterns form.
 - `Air Drag` (0 to 10, default 0.3).
-- `Simmer` (0 to 10, default 0.3): random kicks. A pile starts to boil.
-- `Wander` (0 to 10, default 0): every point flies about on its own and turns away from the wall, like a firefly.
+- `Simmer` (0 to 10, default 0.3): random kicks. A pile starts to boil, more and more with higher values.
+- `Wander` (0 to 10, default 0): every point flies about on its own, like a firefly, and turns away from the wall and out of corners in good time.
 - `Collide` (0 to 2, default 1): points push each other apart. 0 = they pass through each other.
 
 **Container**

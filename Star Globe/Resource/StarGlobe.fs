@@ -254,7 +254,7 @@ const int NSUB = 4;
 const int PASS_TIME = 0, PASS_SIM0 = 1, PASS_RENDER = 1 + NSUB;
 const float SIG = 0.5;              // marks buffer contents written by this shader
 const float OFF = 10000.0;          // position of a point that is not in use
-const float VMAX = 30.0;            // safety limit for the speed, scene units per second
+const float VMAX = 6.0;             // speed limit, in half output heights per second
 
 float safe(float x, float lo, float hi) { return (x == x) ? clamp(x, lo, hi) : clamp(0.0, lo, hi); }
 float hash3(vec3 p) {
@@ -403,10 +403,12 @@ void main() {
             // each point steers towards its own slowly turning direction; near the wall it turns away
             float wa = 6.2831853 * 2.0 * noise1(simTime * 0.35 + seed * 0.37, seed);
             vec2 dir = vec2(cos(wa), sin(wa));
-            float sdw = sdContainer(pos, k);
-            vec2 nw = wallNormal(pos, k);
-            float near = smoothstep(-0.25 * k.half_.y, 0.0, sdw + r);
-            if (dot(dir, nw) > 0.0) dir = normalize(mix(dir, reflect(dir, nw), near) + 1e-6);
+            float look = 0.1 * k.half_.y + length(v) * 0.35;         // look further ahead when fast
+            vec2 ahead = pos + dir * look;
+            float sdw = sdContainer(ahead, k);
+            float near = smoothstep(-look, 0.0, sdw + r);
+            vec2 nw = wallNormal(ahead, k);                          // in a corner this points diagonally out of it
+            dir = normalize(dir - nw * near * 2.0 + 1e-6);
             v += (dir * wnd * 0.25 - v) * (1.0 - exp(-1.5 * sdt)) * min(wnd, 1.0);
         }
         float ka = 6.2831853 * hash3(vec3(seed, simTime * 977.0, float(stepIdx)));
@@ -418,6 +420,7 @@ void main() {
         float coll = max(safe(collide, 0.0, 100.0), 0.0);
         if (coll > 0.0 && r > 0.0) {
             vec2 corr = vec2(0.0), dv = vec2(0.0);
+            float contacts = 0.0;
             float minD = 2.0 * r;
             for (int j = 0; j < N; j++) {
                 if (j >= count) break;
@@ -434,17 +437,20 @@ void main() {
                     n = vec2(cos(a2), sin(a2)) * (i < j ? 1.0 : -1.0);
                 }
                 corr += n * (minD - dist) * 0.5;
+                contacts += 1.0;
                 float vrel = dot(v - o.zw, n);
                 if (vrel < 0.0) dv -= n * vrel * (1.0 + min(bnc, 1.0)) * 0.5;
             }
+            corr /= max(1.0, contacts * 0.5);                   // averaged over the contacts: a dense pile cannot build up energy
+            dv /= max(1.0, contacts);
             float cl = length(corr);
             if (cl > r) corr *= r / cl;                         // a crowded point moves at most one radius per step
             pos += corr * min(coll, 2.0) * 0.8;
             v += dv * min(coll, 1.0);
         }
 
-        float sp = length(v);
-        if (sp > VMAX) v *= VMAX / sp;
+        float sp = length(v), vmax = VMAX * k.half_.y;          // at most a few output heights per second
+        if (sp > vmax) v *= vmax / sp;
         pos += v * sdt;
 
         // wall: back inside, and bounce off it
@@ -454,7 +460,11 @@ void main() {
                 vec2 n = wallNormal(pos, k);
                 pos -= n * (sd + r);
                 float vn = dot(v, n);
-                if (vn > 0.0) v -= n * vn * (1.0 + bnc);
+                if (vn > 0.0) {
+                    v -= n * vn * (1.0 + bnc);
+                    float sa = (hash3(vec3(seed, simTime * 131.0, float(stepIdx * 2 + t))) - 0.5) * 0.5;   // a rough wall: up to ±14° scatter
+                    v = rot2(v, sa);
+                }
             }
         }
         if (!(pos.x == pos.x && pos.y == pos.y && v.x == v.x && v.y == v.y)) { pos = k.shape == 0 ? vec2(0.0) : k.c; v = vec2(0.0); }
