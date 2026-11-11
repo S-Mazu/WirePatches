@@ -21,7 +21,7 @@ A collection of [Resolume Wire](https://resolume.com/software/wire) patches for 
 | [Rolling Landscape](Rolling%20Landscape/) | source | Art Deco night skyline of the 1930s as scrolling parallax silhouettes. |
 | [Scale Colors](Scale%20Colors/) | source | Shows which of the 12 tones of the octave are sounding right now. |
 | [Star Globe](Star%20Globe/) | source | Glowing stars in a snow-globe container, with gravity, bounce and collision. |
-| [Water Drops](Water%20Drops/) | source | View onto a water surface; drops send out interfering, reflecting rings. |
+| [Water Drops](Water%20Drops/) | effect | View onto water over the clip: drops, stones or hearts fall in and send out rings that bend the picture. |
 
 ## Examples
 
