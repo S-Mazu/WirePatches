@@ -1,5 +1,5 @@
 /*{
-  "DESCRIPTION": "Water Drops - a view straight down onto water over the clip below: objects fall in, rings spread, interfere and reflect at the edges of the frame. A real wave simulation in real time, independent of the frame rate. No drop = the water calms down. Put a black clip below for drops on black. Scale sizes everything relative to the output height. Drop: every rising edge over 0.5 releases one object (a button, MIDI note, FFT kick or BPM ramp); up to 8 can be in the air at once. Object (Drop, Stone, Heart, Mixed), Drop X and Drop Y (0 = centre, -1 and 1 = frame edges), Spread (random scatter around X / Y), Drop Size, Drop Strength (height of the waves), Fall Time (seconds from release to impact, 0 = instant), Heart Color. Physics: Wave Speed, Wave Life (seconds until the rings have faded). Water: Refraction (how much the waves bend the clip below), Shading (how plastic the waves look), Glints (sun glints on the crests), Light Color, Light Angle. Shader: Resource/WaterDrops.fs.",
+  "DESCRIPTION": "Water Drops - a view straight down onto water over the clip below: objects fall in, rings spread, interfere and reflect at the edges of the frame. A real wave simulation in real time, independent of the frame rate. No drop = the water calms down. Put a black clip below for drops on black. Scale sizes everything relative to the output height. Drop: every rising edge over 0.5 releases one object (a button, MIDI note, FFT kick or BPM ramp); up to 8 can be in the air at once. Object (Drop, Stone, Heart, Mixed), Drop X and Drop Y (0 = centre, -1 and 1 = frame edges), Spread (random scatter around X / Y; points beyond an edge fold back into the frame), Drop Size, Drop Strength (height of the waves), Fall Time (seconds from release to impact, 0 = instant), Heart Color. Physics: Wave Speed, Wave Life (seconds until the rings have faded). Water: Refraction (how much the waves bend the clip below), Shading (how plastic the waves look), Glints (sun glints on the crests), Light Color, Light Angle. Shader: Resource/WaterDrops.fs.",
   "CREDIT": "Stefan Mazur - https://github.com/S-Mazu/WirePatches",
   "ISFVSN": "2",
   "CATEGORIES": [
@@ -335,6 +335,11 @@ float shapeSD(int type, vec2 p, float seed) {
     if (type == 2) return sdHeart(p);
     return length(p) - 1.0;
 }
+vec2 mirrorUV(vec2 t) {                       // beyond an edge the picture is mirrored, half a pixel inside: no dark border
+    t = 1.0 - abs(1.0 - mod(t, 2.0));
+    vec2 inset = 0.5 / max(RENDERSIZE, vec2(1.0));
+    return clamp(t, inset, 1.0 - inset);
+}
 vec2 rot2(vec2 p, float a) { float c = cos(a), s = sin(a); return vec2(c * p.x - s * p.y, s * p.x + c * p.y); }
 
 // ---------- buffers ----------
@@ -389,6 +394,7 @@ void main() {
             float ang = hash3(vec3(count, 1.3, 3.1)) * 6.2831853;
             float rad = sqrt(hash3(vec3(count, 2.9, 7.7))) * max(spread, 0.0);
             vec2 p = vec2(safe(dropX, -1000.0, 1000.0), safe(dropY, -1000.0, 1000.0)) + vec2(cos(ang), sin(ang)) * rad;
+            p = abs(mod(p - 1.0, 4.0) - 2.0) - 1.0;    // the water exists only inside the frame: points beyond an edge fold back in
             float fall = max(safe(fallTime, 0.0, 60.0), 0.0001);
             int obj = int(floor(safe(object, 0.0, 3.0) + 0.5));
             if (obj == 3) obj = int(floor(hash3(vec3(count, 5.5, 1.1)) * 2.999));
@@ -464,7 +470,7 @@ void main() {
 
     // the clip below, refracted by the waves
     vec2 off = -gs * max(safe(refraction, 0.0, 100.0), 0.0) * 0.5;
-    vec4 src = IMG_NORM_PIXEL(inputImage, clamp(uv + off / (half_ * 2.0), vec2(0.0), vec2(1.0)));
+    vec4 src = IMG_NORM_PIXEL(inputImage, mirrorUV(uv + off / (half_ * 2.0)));
     vec3 col = src.rgb;
     float a = src.a;
 
@@ -523,7 +529,7 @@ void main() {
                 if (type == 0) {
                     // water: a small lens that shows the picture below upside down, with a bright rim and a glint
                     vec2 lensP = target - (p - target) * 0.7;
-                    vec3 seen = IMG_NORM_PIXEL(inputImage, clamp(lensP / (half_ * 2.0) + 0.5, vec2(0.0), vec2(1.0))).rgb;
+                    vec3 seen = IMG_NORM_PIXEL(inputImage, mirrorUV(lensP / (half_ * 2.0) + 0.5)).rgb;
                     float rim = smoothstep(0.55, 1.0, length(d));
                     oc = mix(seen * 0.85, lc, rim * 0.35) + vec3(hi * 1.2);
                     oa *= mix(0.75, 1.0, rim);

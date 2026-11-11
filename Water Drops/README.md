@@ -39,8 +39,8 @@ All ranges are deliberately wide; the extremes are safe.
 **Drop**
 - `Drop` (0 to 1): every rising edge over 0.5 releases one object. Map it to a button, a MIDI note, the FFT kick or a BPM ramp. Up to 8 objects can be in the air at once.
 - `Object`: Drop, Stone, Heart or Mixed (each object picks one at random).
-- `Drop X`, `Drop Y` (-2 to 2, default 0): impact point. 0 = centre, -1 and 1 = edges of the frame.
-- `Spread` (0 to 5, default 0.3): random scatter around `Drop X` / `Drop Y`, relative to the frame. 0 = always the same point.
+- `Drop X`, `Drop Y` (-2 to 2, default 0): impact point. 0 = centre, -1 and 1 = edges of the frame. The water exists only inside the frame, so points beyond an edge fold back in, as in a mirror.
+- `Spread` (0 to 5, default 0.3): random scatter around `Drop X` / `Drop Y`, relative to the frame. 0 = always the same point; from about 1 on, the drops land all over the frame.
 - `Drop Size` (0 to 0.5, default 0.03): size of the object and its crater.
 - `Drop Strength` (0 to 5, default 1): how hard it hits: height of the waves and of the splash.
 - `Fall Time (s)` (0 to 5, default 0.4): seconds from release to impact. 0 = instant.
@@ -53,7 +53,7 @@ A drop is a small lens that shows the picture below upside down. Stones and hear
 - `Wave Life (s)` (0.05 to 60, default 6): seconds until the rings have faded.
 
 **Water**
-- `Refraction` (0 to 5, default 0.4): how much the waves bend the clip below.
+- `Refraction` (0 to 5, default 0.4): how much the waves bend the clip below. Where the waves bend beyond an edge, the clip is mirrored.
 - `Shading` (0 to 5, default 1): how plastic the waves look.
 - `Glints` (0 to 5, default 1): sun glints on the crests.
 - `Light Color`: sky reflection and light on the waves.
