@@ -170,6 +170,9 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 - One patch per commit where possible.
 - Reference issues (`Fixes #<n>`).
 - Keep `README.md` (root) in sync when adding, renaming or removing a patch.
+- One branch per task (issue or instruction), named `claude/<topic>`. In a cloud session, use the branch the session assigns.
+- One commit per patch; one PR per branch with `Fixes #<n>`.
+- Claude merges only when the user explicitly says so.
 
 ## Reference documentation
 
