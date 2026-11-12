@@ -101,6 +101,7 @@ Fixed terms. Every revision uses only these.
 | `Backdrop` | Background behind the source | Group `Backdrop` containing `Backdrop On` and `Backdrop Color`. |
 | `Physics` | All physics and motion settings of a patch | One group `Physics` holding all of them. |
 | `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. Second parameter, directly after `Clock`, not in any group. |
+| `Sound Input` | Audio input and its conditioning | Group `Sound Input`. `Spectrum In` is its first entry, followed by `Boost`, `Gate`, `Fade (s)`, then patch-specific controls. |
 
 ### Metadata
 Every `.wire` file has these fields filled in `patch.meta`:
