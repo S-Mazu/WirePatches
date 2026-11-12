@@ -27,6 +27,7 @@ The repo serves three goals:
 
 Rules:
 - In the cloud session, mark every change to a `.wire` or `.fs` file as **untested** (commit message and issue) until it has been verified on the show machine.
+- Every patch commit states `Tested in <Wire/Arena> (<sizes>)` or `Untested`.
 - Never claim that a patch works without testing it in Wire or Arena.
 
 ## Repository layout
@@ -97,10 +98,10 @@ Fixed terms. Every revision uses only these.
 
 | Term | Meaning | Rule |
 |---|---|---|
-| `Clock` | Controls the speed of the patch | Label exactly `Clock`. First parameter of the patch, not in any group. |
+| `Clock` | Controls the speed of the patch | Label exactly `Clock`. Directly after `Scale`, not in any group. Only for patches with a sequence (e.g. Rolling Landscape). Physical effects whose look breaks when slowed down or sped up (e.g. fire) have no `Clock`. Decide case by case for effects where slow motion just shows less action (e.g. Autumn Wind). |
 | `Backdrop` | Background behind the source | Group `Backdrop` containing `Backdrop On` and `Backdrop Color`. |
 | `Physics` | All physics and motion settings of a patch | One group `Physics` holding all of them. |
-| `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. Second parameter, directly after `Clock`, not in any group. |
+| `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. First parameter of every patch, not in any group. |
 | `Sound Input` | Audio input and its conditioning | Group `Sound Input`. `Spectrum In` is its first entry, followed by `Boost`, `Gate`, `Fade (s)`, then patch-specific controls. |
 
 ### Metadata
