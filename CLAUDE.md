@@ -93,6 +93,10 @@ Rules:
 - **Wide ranges**: ranges are always wider than needed, to allow creative use.
 - **NaN-safe**: invalid values (NaN, Inf, division by zero, `log`/`sqrt`/`pow` of invalid input, `normalize` of a zero vector) are caught inside the patch, never by narrowing a slider range. Every patch must stay stable at all slider extremes.
 
+### Source and effect
+- Source: renders its own image.
+- Effect: processes the clip below. `Texture In` directly after `Scale` and `Clock`. No `Backdrop`.
+
 ### Glossary
 Fixed terms. Every revision uses only these.
 
