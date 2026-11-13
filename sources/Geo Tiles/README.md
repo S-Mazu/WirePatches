@@ -44,7 +44,7 @@ All ranges are deliberately wide; the extremes are safe.
 - `Animate` (0 to 1, default 0.6): share of tiles that follow `Clock`. Each tile has a fixed rank, and it crossfades when it starts or stops following.
 
 **Grid**
-- `Rows` (1 to 200, default 6): tiles per output height at `Scale` 1.
+- `Row Count` (1 to 200, default 6): tiles per output height at `Scale` 1.
 - `Tile Aspect` (0.1 to 10, default 1.333): tile width / height. The number of columns follows from the surface width.
 - `Seed` (0 to 999, default 1): whole numbers, each value is a new layout. Changes cut hard.
 - `Fill` (0 to 1, default 0.85): share of tiles shown. Each tile has a fixed rank, so raising `Fill` only adds tiles (FFT friendly).
@@ -84,6 +84,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Rows` → `Row Count` (#105).
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#45). `Clock` replaces `Pattern Shift`, with a seamless loop. `Scale` and `Tile Aspect` are new, `Columns` and `Opacity` are gone, and `Rows` now reaches 200 and counts tiles per output height. `Fill`, `Big Tiles` and `Animate` run from 0 to 1. Motion rework (#29): `Animate` crossfades instead of jumping, moving tiles are sampled four times to soften hard cell edges, very fine patterns no longer shimmer, the accent of motifs 1, 15, 32, 39 and 49 no longer steps or splits a band. Shader moves to `Resource/` with a relative path (#5). Metadata filled in.
 
