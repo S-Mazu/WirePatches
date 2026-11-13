@@ -317,7 +317,7 @@
 			"description": "Water Drops - a view straight down onto water over the clip below: objects fall in, rings spread, interfere and reflect at the edges of the frame. A real wave simulation in real time, independent of the frame rate. No drop = the water calms down. Put a black clip below for drops on black. Scale sizes everything relative to the output height. Drop: every rising edge over 0.5 releases one object (a button, MIDI note, FFT kick or BPM ramp); up to 8 can be in the air at once. Object (Drop, Stone, Heart, Mixed), Drop X and Drop Y (0 = centre, -1 and 1 = frame edges), Spread (random scatter around X / Y; points beyond an edge fold back into the frame), Drop Size, Drop Strength (height of the waves), Fall Time (seconds from release to impact, 0 = instant), Heart Color. Physics: Wave Speed, Wave Life (seconds until the rings have faded). Water: Refraction (how much the waves bend the clip below), Shading (how plastic the waves look), Glints (sun glints on the crests), Light Color, Light Angle. Shader: Resource/WaterDrops.fs.",
 			"displayName": "Water Drops",
 			"identifier": "1f37ad36-c772-4709-ba6c-92ecd71b03f4",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

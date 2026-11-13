@@ -2,7 +2,7 @@
 
 An effect: a view straight down onto water over the clip below. Objects fall in, rings spread, interfere and reflect at the edges of the frame.
 
-Last updated: 2026-11-11
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,7 +26,7 @@ A still pond that the picture lies under. A drop, a stone or a heart falls in, i
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required. For drops on black, put a black clip (e.g. Solid Color) below.
 
-## Time
+## Timing
 
 The water runs in real time and does not depend on the frame rate; there is no `Clock`. Without new drops the water calms down and stands still.
 
@@ -81,6 +81,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Section `Time` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-11: Rebuilt as an effect (#51). The waves bend the clip below (`Refraction`, #81). Real time instead of frames, several objects in the air, objects Drop, Stone, Heart and Mixed with shadow, splash crown and rebound, a softer, more realistic impact. Controls renamed (`Wave Life (s)`, `Wave Speed`, `Shading`, `Glints`, `Light Color`, `Light Angle (°)`), new `Scale`. One shader in `Resource/` with a relative path (#9). `Backdrop` removed.
 
 ---
