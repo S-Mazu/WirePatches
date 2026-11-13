@@ -48,7 +48,7 @@ All ranges are deliberately wide; the extremes are safe.
 
 **Skyline**
 - `Layer Count` (0 to 6, default 3): adds layers from back to front; fractional values fade the next layer in.
-- `Density` (0 to 1, default 0.85): share of filled plots.
+- `Building Density` (0 to 1, default 0.85): share of filled plots.
 - `Horizon` (-2 to 10, default 0.05): distance of the base line above the bottom edge.
 - `Seed` (0 to 1000, default 0): a different value gives a different city, sky and traffic.
 - `Layer 1 Color` to `Layer 6 Color`: one color per layer, 1 = back.
@@ -106,6 +106,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Density` → `Building Density` (#106).
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#48). Add stars with `Star Density`, `Star Size`, `Star Color`, `Star Scroll`; group `Moon` becomes `Sky`. `Beam Density` reaches four times as many lights. `Scale` and `Horizon` follow the surface model: 4K now uses `Scale` 1, and `Horizon` is the distance above the bottom edge (old -0.95 = new 0.05). `Airship Dir` moves to `Physics`. Shader moves to `Resource/` with a relative path (#6). Undefined `smoothstep` and `atan` calls replaced.
 
