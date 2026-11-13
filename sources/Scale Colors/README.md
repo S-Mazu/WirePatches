@@ -28,7 +28,7 @@ Makes harmony visible during a show: the tones of the music light up in their ow
 
 ## Timing
 
-There is no `Clock`: the display follows the sound in real time. `Fade (s)` sets how fast a tone fades after it stops sounding.
+There is no `Clock`: the display follows the sound in real time. `Fade` sets how fast a tone fades after it stops sounding.
 
 ## Parameters
 
@@ -40,8 +40,8 @@ All ranges are deliberately wide; the extremes are safe.
 - `Spectrum In`: the audio source, see above.
 - `Boost` (0 to 20, default 1): input gain.
 - `Gate` (0 to 1, default 0.05): keeps everything dark on quiet noise; 1 = only very loud tones.
+- `Fade` (0.01 to 3, default 0.4): release time.
 - `Focus` (0.5 to 8, default 2): higher values let only the main tones light up.
-- `Fade (s)` (0.01 to 3, default 0.4): release time.
 - `Min Freq (Hz)` (100 to 2000, default 400): lower limit of the analysis. Below about 400 Hz the FFT cannot separate semitones; low notes are caught through their overtones.
 - `Max Freq (Hz)` (1000 to 12000, default 5000): upper limit, always kept at least one octave above `Min Freq (Hz)`.
 
@@ -90,6 +90,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Fade (s)` → `Fade`; `Fade` moved before `Focus` in `Sound Input` (#94).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#49). The layout box reads the aspect ratio at runtime instead of a fixed 16:9; `Scale` and a camera follow the surface model. `Backdrop On` becomes Off / On, `Line Width` and `Layout Width`/`Layout Height` get wider ranges, the group `Mix` is dissolved into `Colors` and `Layout`, and `Sound Input` comes first. Metadata filled in, README added.
 
