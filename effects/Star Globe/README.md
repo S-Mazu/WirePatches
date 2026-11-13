@@ -2,7 +2,7 @@
 
 An effect: glowing points over the clip below. Fireflies that roam the whole frame, or stars caught in a vessel that fall, bounce, collide and simmer.
 
-Last updated: 2026-11-11
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,7 +26,7 @@ A snow globe of light. Stars lie in a glass, boil up and settle again; or they f
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required. For points on black, put a black clip (e.g. Solid Color) below.
 
-## Time
+## Timing
 
 The points move in real time and do not depend on the frame rate; there is no `Clock`. The motion never repeats.
 
@@ -88,6 +88,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Section `Time` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-11: Rebuilt as an effect with one shader (#50, #35). Real time instead of `Physics Clock`; the motion no longer repeats. Shapes Frame, Circle, Polygon and Heart instead of a stepless morph; Trapezoid removed. New `Simmer`, `Wander`, `Twinkle`, `Scale`. Physics in one group; `Jolt` and `Jitter` removed (Simmer replaces Jitter). `Line Width` in output heights instead of pixels. `Opacity` and `Backdrop` removed. Shader in `Resource/` with a relative path (#8).
 
 ---

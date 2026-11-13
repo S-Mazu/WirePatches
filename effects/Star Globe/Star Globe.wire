@@ -383,7 +383,7 @@
 			"description": "Star Globe - glowing points over the clip below: fireflies that roam the whole frame, or stars caught in a vessel that fall, bounce, collide and simmer. Runs in real time, independent of the frame rate. Put a black clip below for points on black. Scale sizes everything relative to the output height. Physics: Gravity and Gravity Dir (270 = down), Bounce (how much speed a point keeps at the wall and at other points), Air Drag, Simmer (random kicks, makes a pile boil), Wander (points fly about on their own, like fireflies), Collide (points push each other apart; 0 = they pass through each other). Container: Shape (Frame = the edges of the output, Circle, Polygon, Heart), Corners (for Polygon), Container X and Container Y (0 = centre, -1 and 1 = frame edges), Size (radius in output heights), Width (1 = round, larger = wider), Rotation, Line Width (0 hides the line; the points alone then show the shape), Line Color. Stars: Amount (up to 512; a new point appears inside the container), Star Size (radius of the solid core, also the collision size), Glow Size, Star Color, Glow Color, Twinkle (each point flickers on its own). Shader: Resource/StarGlobe.fs.",
 			"displayName": "Star Globe",
 			"identifier": "411754f4-84ed-4d7a-873a-c9ea523f6660",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
