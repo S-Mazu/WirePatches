@@ -37,7 +37,7 @@ Rules:
 ├── CLAUDE.md          this file
 ├── README.md          overview of all patches (one line each, link to patch folder)
 ├── LICENSE
-├── _template/         README template and checklist for new patches
+├── _template/         README templates and checklists: Source.md, Effect.md
 └── <Patch Name>/      one folder per patch, self-contained
     ├── <Patch Name>.wire
     ├── README.md
@@ -157,7 +157,9 @@ Every `.wire` file has these fields filled in `patch.meta`:
 
 ## Patch README
 
-Every patch folder has a `README.md` based on [`_template/README.md`](_template/README.md). The template defines the sections and the pre-commit checklist.
+Every patch folder has a `README.md` based on [`_template/Source.md`](_template/Source.md) or [`_template/Effect.md`](_template/Effect.md). The templates define the sections and the pre-commit checklist.
+
+Changes to one of the two templates are applied to the other in the same commit.
 
 **Whenever a patch is changed, update its README in the same commit**, including `Last updated` and the changelog.
 
