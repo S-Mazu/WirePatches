@@ -169,10 +169,10 @@
 			},
 			"roots": [
 				{
-					"node": 3
+					"node": 4
 				},
 				{
-					"node": 4
+					"node": 3
 				},
 				{
 					"group": 1793950277630
@@ -200,7 +200,7 @@
 			"description": "Pride Flag - a flag that moves lightly in the wind, as an overlay source with alpha. 'Flag' selects Rainbow, Straight Ally or Progress. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync); the 0-1000 loop is seamless. 'Scale' sizes everything relative to the output height. Physics: 'Wind Strength' sets how far the flag swings (the left edge stays fixed, the free end swings most), 'Waves' how many waves run along it, 'Fold Shading' the light and shadow in the folds. Flag: 'Flag X' \/ 'Flag Y' place it, 0 = center of the frame, in height units; 'Flag Size' is its height at Scale 1, 2 = full height. Colors are fixed, as they define the flag. Backdrop On\/Off: On = solid Backdrop Color behind everything, Off = transparent background. Drawn by the ISF shader Resource\/PrideFlag.fs.",
 			"displayName": "Pride Flag",
 			"identifier": "76f26b3b-f867-47d8-9f79-830d340c8909",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

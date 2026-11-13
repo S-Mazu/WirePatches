@@ -2,7 +2,7 @@
 
 A source patch with alpha: a flag that moves lightly in the wind, as a Rainbow, Straight Ally or Progress flag. Freely placed and sized.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,9 +26,9 @@ A simple, dignified overlay for pride events and CSD shows: the flag waves calml
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
-The patch has no internal motion. The wind is driven by the first parameter, `Clock` (0 to 1000, default 0). If the clock stops, the flag stops.
+The patch has no internal motion. The wind is driven by the parameter `Clock` (0 to 1000, default 0). If the clock stops, the flag stops.
 
 - Start value: in Arena set the phase source of `Clock` to `Timeline` with `Duration` = 1000 s for a calm wave. A shorter duration blows faster.
 - The loop from 1000 back to 0 is seamless. BPM Sync works as well.
@@ -37,8 +37,8 @@ The patch has no internal motion. The wind is driven by the first parameter, `Cl
 
 All ranges are deliberately wide; the extremes are safe. High `Wind Strength` with high `Waves` gives an abstract, strongly distorted image.
 
-- `Clock` (0 to 1000, default 0): see above.
 - `Scale` (0 to 10, default 1): size of the flag relative to the output height.
+- `Clock` (0 to 1000, default 0): see above.
 
 **Physics**
 - `Wind Strength` (0 to 5, default 0.5): how far the flag swings. 0 = still. The left edge stays fixed, the free end swings most.
@@ -83,6 +83,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: First version, with Rainbow, Straight Ally and Progress flags.
 
 ---
