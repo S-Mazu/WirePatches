@@ -780,7 +780,7 @@
 			"description": "Scaler - example patch: how our patches handle oversized surfaces. Load it in Arena, then change the clip size and the Scale control, and watch the picture; the picture explains each element in its own text. Open it in Wire to see the node chain, with notes on the canvas. Height is the reference: everything scales with the output height, the width only decides how much of the scene is visible, nothing is stretched. Patch Info gives the aspect ratio at runtime; one Camera 2D with zoom = clamp(1\/aspect, 1, 1000000) x clamp(Scale, 0.001, 1000) feeds every render node. The visible area is then y +-1\/Scale and x +-aspect\/Scale. White circle: radius 1, touches top and bottom at Scale 1. Gray squares: one reference height each. Red markers: anchored to the corners. Yellow line: anchored to the bottom edge with a fixed offset. The text explains the elements and shows the live values.",
 			"displayName": "Scaler",
 			"identifier": "4da874db-660a-401d-b6c2-adce5cbf46fe",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

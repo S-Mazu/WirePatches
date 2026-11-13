@@ -247,6 +247,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `licenseName` set to Unlicense (#91).
 - 2026-11-13: Moved to `examples/Scaler/`; the surface model rules moved to `docs/PATCH_RULES.md`; label `example:scaler` (#88).
 - 2026-11-08: The picture now explains each element and how to try it. The README explains the logic and how to use it in your own patch.
 - 2026-11-06: First version.
