@@ -59,9 +59,8 @@ Last updated: <YYYY-MM-DD>
 - Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched.
 - `Scale`: <recommended values, e.g. 1 for one projector, ⅓ for three stacked to keep element sizes>
 - Exceptions: <anything that does not follow the model, and why>
-- Notes: <e.g. "set the clip size to the full surface; reload the clip after changing the composition size">
 - Size-dependent parameters: <how line widths, blur, density etc. scale with the output size>
-- Notes: <e.g. "set the composition to the full surface size before loading; reload the clip after changing it">
+- Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip.
 
 Tested sizes:
 
@@ -73,7 +72,6 @@ Tested sizes:
 | 1080×1920 | 9:16 | |
 | 4096×512 | 8:1 | |
 | 512×512 | 1:1 | |
-<!-- Test matrix to be finalized in #11. -->
 
 ## Known issues
 
