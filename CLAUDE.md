@@ -27,6 +27,7 @@ The repo serves three goals:
 
 Rules:
 - In the cloud session, mark every change to a `.wire` or `.fs` file as **untested** (commit message and issue) until it has been verified on the show machine.
+- Every patch commit states `Tested in <Wire/Arena> (<sizes>)` or `Untested`.
 - Never claim that a patch works without testing it in Wire or Arena.
 
 ## Repository layout
@@ -36,7 +37,7 @@ Rules:
 ├── CLAUDE.md          this file
 ├── README.md          overview of all patches (one line each, link to patch folder)
 ├── LICENSE
-├── _template/         README template and checklist for new patches
+├── _template/         README templates and checklists: Source.md, Effect.md, Tool.md
 └── <Patch Name>/      one folder per patch, self-contained
     ├── <Patch Name>.wire
     ├── README.md
@@ -92,15 +93,48 @@ Rules:
 - **Wide ranges**: ranges are always wider than needed, to allow creative use.
 - **NaN-safe**: invalid values (NaN, Inf, division by zero, `log`/`sqrt`/`pow` of invalid input, `normalize` of a zero vector) are caught inside the patch, never by narrowing a slider range. Every patch must stay stable at all slider extremes.
 
+### Source and effect
+- Source: renders its own image.
+- Effect: processes the clip below. `Texture In` directly after `Scale` and `Clock`. No `Backdrop`.
+
 ### Glossary
 Fixed terms. Every revision uses only these.
 
 | Term | Meaning | Rule |
 |---|---|---|
-| `Clock` | Controls the speed of the patch | Label exactly `Clock`. First parameter of the patch, not in any group. |
+| `Clock` | Controls the speed of the patch | Label exactly `Clock`. Directly after `Scale`, not in any group. Only for patches with a sequence (e.g. Rolling Landscape). Physical effects whose look breaks when slowed down or sped up (e.g. fire) have no `Clock`. Decide case by case for effects where slow motion just shows less action (e.g. Autumn Wind). |
 | `Backdrop` | Background behind the source | Group `Backdrop` containing `Backdrop On` and `Backdrop Color`. |
 | `Physics` | All physics and motion settings of a patch | One group `Physics` holding all of them. |
-| `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. Second parameter, directly after `Clock`, not in any group. |
+| `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. First parameter of every patch, not in any group. |
+| `Sound Input` | Audio input and its conditioning | Group `Sound Input`. `Spectrum In` is its first entry, followed by `Boost`, `Gate`, `Fade`, then patch-specific controls. |
+| `Performance Cap` | Upper limit of simultaneous items, for performance only | Default high. The README states that on very large surfaces it can limit the density. |
+| `Seed` | Random start value | |
+
+#### Naming patterns
+`<Element>` is the thing the control acts on (e.g. `Fan`, `Leaf`, `Ring`). If the prefixed label exceeds 20 characters, drop the prefix; the group name identifies the element.
+
+| Pattern | Meaning | Rule |
+|---|---|---|
+| `<Element> X`, `<Element> Y` | Position of an element | |
+| `<Element> Z` | Depth | Only for depth in a scene with parallax. |
+| `<Element> Size` | Size of an element | Relative to the output height, multiplied by `Scale`. |
+| `<Element> Count` | Explicit number of parts of one object (rays, blades, layers, copies) | Does not grow with the surface. |
+| `<Element> Density` | Population: amount per reference area (output height × output height at `Scale` 1) | Grows with the surface. |
+| `<Element> Width` | Thickness of a line (line, edge, outline, border, ray, ring) | Relative to the output height, multiplied by `Scale`; never pixels. |
+| `<Element> Aspect` | Proportions of a shape | |
+| `<Element> Spacing` | Distance between copies | Relative to the output height, multiplied by `Scale`; never pixels. |
+| `<Element> Opacity` | Opacity of an element | Plural for several elements (`Strings Opacity`), singular for one (`Moon Opacity`). |
+| `<Element> Color` | Color of an element | |
+| `<Element> Life` | Lifetime of emitted elements | |
+| `<Element> On` | Switches an element on or off | |
+| `Show <X>` | Helper view or overlay (`Show Input`, `Show Meter`) | |
+| `Scatter` | Random offset per copy | Stable over time, in reference units multiplied by `Scale`. |
+| `Spread` | Random range around a point or direction | |
+| `<Property> Variation` | Random deviation per item | Stable over the item's life, as a share of the base value. Hue in degrees. |
+
+#### Units
+- Time is in seconds; labels carry no unit for it.
+- Other units are named in the label: `(°)`, `(Hz)`.
 
 ### Metadata
 Every `.wire` file has these fields filled in `patch.meta`:
@@ -123,7 +157,9 @@ Every `.wire` file has these fields filled in `patch.meta`:
 
 ## Patch README
 
-Every patch folder has a `README.md` based on [`_template/README.md`](_template/README.md). The template defines the sections and the pre-commit checklist.
+Every patch folder has a `README.md` based on [`_template/Source.md`](_template/Source.md) or [`_template/Effect.md`](_template/Effect.md). The templates define the sections and the pre-commit checklist.
+
+Changes to one of the two templates are applied to the other in the same commit.
 
 **Whenever a patch is changed, update its README in the same commit**, including `Last updated` and the changelog.
 
@@ -164,6 +200,9 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 - One patch per commit where possible.
 - Reference issues (`Fixes #<n>`).
 - Keep `README.md` (root) in sync when adding, renaming or removing a patch.
+- One branch per task (issue or instruction), named `claude/<topic>`. In a cloud session, use the branch the session assigns.
+- One commit per patch; one PR per branch with `Fixes #<n>`.
+- Claude merges only when the user explicitly says so.
 
 ## Reference documentation
 
