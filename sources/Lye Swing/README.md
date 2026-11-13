@@ -35,11 +35,11 @@ There is no `Clock`: the patch has no motion of its own besides the music. Autom
 All ranges are deliberately wide; the extremes are safe.
 
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
-- `Spectrum In` (Composition / External): where the sound comes from.
 
-**Sound**
-- `Sensitivity` (0 to 10, default 1): how readily the shapes appear.
-- `Fade (s)` (0 to 5, default 0.3): how long a shape takes to fall back.
+**Sound Input**
+- `Spectrum In` (Composition / External): where the sound comes from.
+- `Boost` (0 to 20, default 1): input gain; higher values let the shapes appear more readily.
+- `Fade` (0 to 5, default 0.3): how long a shape takes to fall back.
 - `Show Meter` (Off / On, default Off): level bars and range readout, for setting up.
 
 Each shape measures its own part of the music against its own peaks of the last seconds, so there is nothing to adjust per shape. A shape reacts to what stands out from its own average; Wave most selectively, Zigzag most readily.
@@ -57,12 +57,12 @@ Each shape measures its own part of the music against its own peaks of the last 
 Every group has the same controls, named after its shape, for example `Strokes X`:
 - `X`, `Y` (-2 to 2): position. -1 and 1 are the edges of the frame.
 - `Size` (0 to 5).
-- `Rotation (°)` (-360 to 360).
+- `Rotation` (-180 to 180): positive values turn counter-clockwise.
 - `Count` (0 to 8): copies in a row; values in between fade the last copy in.
 - `Spacing` (0 to 5): distance between the copies.
 - `Scatter` (0 to 1): fixed random offset per copy.
 - `Color`.
-- One control for the form: `Ring Fill`, `Strokes Thickness`, `Wave Height`, `Cross Arm Width`, `Zigzag Height` (0 to 1).
+- One control for the form: `Ring Fill`, `Strokes Width`, `Wave Height`, `Cross Arm Width`, `Zigzag Height` (0 to 1).
 
 ## Any surface
 
@@ -88,6 +88,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary (#93, #89): group `Sound Input` with `Spectrum In` first; `Sensitivity` → `Boost` (same role as in Bass Strings and Scale Colors, range 0 to 20); `Fade (s)` → `Fade`; `Strokes Thickness` → `Strokes Width`; rotations -180 to 180 without degree unit.
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-09: Revised to the current rules (#47). Automatic level per shape replaces 23 sound controls. Controls are named after the shapes. New `Scale`, `Boil` and `Punch`. Removed `Z`.
 

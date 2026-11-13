@@ -4961,12 +4961,13 @@
 			"groups": {
 				"1792750432239": {
 					"children": [
+						0,
 						17,
 						28,
 						219
 					],
 					"collapsed": false,
-					"name": "Sound"
+					"name": "Sound Input"
 				},
 				"1792750433507": {
 					"children": [
@@ -5065,9 +5066,6 @@
 					"node": 409
 				},
 				{
-					"node": 0
-				},
-				{
 					"group": 1792750432239
 				},
 				{
@@ -5105,7 +5103,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Lye Swing - painted big-band score after Len Lye (Swinging the Lambeth Walk, Free Radicals). Five shapes, one per sound band: Ring = low, Strokes = low-mid, Wave = mid, Cross = mid-high, Zigzag = high. Each shape measures its band against its own recent peaks, so every shape answers the music by itself. Scale sizes everything relative to the output height. Spectrum In: Composition or External. Sound: Sensitivity (how readily shapes appear), Fade (seconds to fall back), Show Meter (level bars and range readout). Physics: Boil (redraws the shapes 12 times per second, like paint on film), Punch (a short size push on the attack of a note). Backdrop: Backdrop On, Backdrop Color (off = transparent). Per shape: X, Y (-1..1 = frame edges), Size, Rotation, Count (0-8 copies in a row), Spacing, Scatter, Color, and one form control (Ring Fill, Strokes Thickness, Wave Height, Cross Arm Width, Zigzag Height). Automate position, size and rotation in Arena for movement.",
+			"description": "Lye Swing - painted big-band score after Len Lye (Swinging the Lambeth Walk, Free Radicals). Five shapes, one per sound band: Ring = low, Strokes = low-mid, Wave = mid, Cross = mid-high, Zigzag = high. Each shape measures its band against its own recent peaks, so every shape answers the music by itself. Scale sizes everything relative to the output height. Sound Input: Spectrum In (Composition or External), Boost (how readily shapes appear), Fade (seconds to fall back), Show Meter (level bars and range readout). Physics: Boil (redraws the shapes 12 times per second, like paint on film), Punch (a short size push on the attack of a note). Backdrop: Backdrop On, Backdrop Color (off = transparent). Per shape: X, Y (-1..1 = frame edges), Size, Rotation (counter-clockwise), Count (0-8 copies in a row), Spacing, Scatter, Color, and one form control (Ring Fill, Strokes Width, Wave Height, Cross Arm Width, Zigzag Height). Automate position, size and rotation in Arena for movement.",
 			"displayName": "Lye Swing",
 			"identifier": "2f1845e9-e174-47e2-b495-33e44dff23b9",
 			"licenseName": "Unlicense",
@@ -129037,7 +129035,7 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10
+						"value": 20
 					},
 					"min": {
 						"type": "float",
@@ -129086,7 +129084,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Sensitivity",
+				"name": "Boost",
 				"thumbnail_visible": true
 			},
 			"170": {
@@ -129463,11 +129461,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -360
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -129512,7 +129510,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Ring Rotation (°)",
+				"name": "Ring Rotation",
 				"thumbnail_visible": true
 			},
 			"177": {
@@ -132995,11 +132993,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -360
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -133044,7 +133042,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Strokes Rotation (°)",
+				"name": "Strokes Rotation",
 				"thumbnail_visible": true
 			},
 			"227": {
@@ -133384,7 +133382,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Strokes Thickness",
+				"name": "Strokes Width",
 				"thumbnail_visible": true
 			},
 			"232": {
@@ -136023,11 +136021,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -360
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -136072,7 +136070,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Wave Rotation (°)",
+				"name": "Wave Rotation",
 				"thumbnail_visible": true
 			},
 			"266": {
@@ -137075,7 +137073,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fade (s)",
+				"name": "Fade",
 				"thumbnail_visible": true
 			},
 			"280": {
@@ -140247,11 +140245,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -360
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -140296,7 +140294,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Cross Rotation (°)",
+				"name": "Cross Rotation",
 				"thumbnail_visible": true
 			},
 			"318": {
@@ -143669,11 +143667,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -360
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -143718,7 +143716,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Zigzag Rotation (°)",
+				"name": "Zigzag Rotation",
 				"thumbnail_visible": true
 			},
 			"361": {
