@@ -2,7 +2,7 @@
 
 An effect that makes flames and smoke rise from one burning shape, on top of the clip below.
 
-Last updated: 2026-11-08
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -30,9 +30,13 @@ A single, freely placed fire: a point, a square or a heart. Built on a real-time
 
 Add it as an effect to a clip, a layer or a group. On a layer or group the fire stays when you switch clips, and you need no extra layer.
 
+## Timing
+
+There is no `Clock`: the fire burns as soon as it is loaded, in real time and independent of the frame rate.
+
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe. There is no `Clock`: the fire burns as soon as it is loaded, in real time and independent of the frame rate.
+All ranges are deliberately wide; the extremes are safe.
 
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
 
@@ -82,6 +86,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-08: Wind now carries all of the smoke: none stays behind or moves against it. Flames stay smooth at a `Scale` above 1. The controls `Burn X`, `Burn Y`, `Burn Z`, `Burn Size` and `Burn Rotation (°)` are now named `Shape …`.
 - 2026-11-08: Speed and Swirl no longer tear the fluid apart. Fire and fog now only grow from the source. Smoke gets depth at high density. Renamed `Fire Amount` to `Fire Strength` and `Flame Length` to `Flame Reach`.
 - 2026-11-08: First version. Split from Fire and Smoke, with a new fluid simulation (#43, #26, #27).

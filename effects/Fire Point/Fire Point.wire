@@ -392,7 +392,7 @@
 			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Shape X / Y (0 = centre, in height units), Shape Z (depth: larger is further away and smaller), Shape Size, Shape Rotation, Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource/FirePoint.fs.",
 			"displayName": "Fire Point",
 			"identifier": "828fc781-55ca-44bd-92b1-cbd418b4bce6",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
