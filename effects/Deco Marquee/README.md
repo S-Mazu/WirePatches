@@ -2,7 +2,7 @@
 
 An effect: an Art Deco theatre frame with chasing marquee lamps, on top of the clip below.
 
-Last updated: 2026-11-09
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,7 +26,7 @@ The front of a 1930s picture palace: an ornament band around the screen and rows
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
 `Clock` drives the chase: 0 to 1 is one step of the pattern and loops seamlessly. Start with BPM Sync over 1 beat, or 4 beats for a slower chase. Twinkle changes 16 times per cycle.
 
@@ -34,8 +34,8 @@ The front of a 1930s picture palace: an ornament band around the screen and rows
 
 All ranges are deliberately wide; the extremes are safe.
 
-- `Clock` (0 to 1, default 0).
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
+- `Clock` (0 to 1, default 0).
 
 **Border**
 - `Border Style` (default Steps): Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst.
@@ -80,6 +80,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-09: Split from Deco Marquee v2 and rebuilt as an effect with the frame and the lamps; the fan moved to Deco Fan (#42, #25). New border styles and chase modes, `Filament`, `Scale`. Lamps stay clear of the corners.
 
 ---

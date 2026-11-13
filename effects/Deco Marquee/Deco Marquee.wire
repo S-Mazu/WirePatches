@@ -234,10 +234,10 @@
 			},
 			"roots": [
 				{
-					"node": 10
+					"node": 11
 				},
 				{
-					"node": 11
+					"node": 10
 				},
 				{
 					"node": 0
@@ -268,7 +268,7 @@
 			"description": "Deco Marquee - an Art Deco theatre frame with chasing marquee lamps, on top of the clip below. Clock drives the chase: 0 to 1 is one step of the pattern, BPM Sync loops seamlessly. Scale sizes everything relative to the output height. Border: Border Style (Zigzag, Chevron, Steps, Greek Key, Diamonds, Scallop, Beads, Sunburst), Border Width (0 = no border), Border Color. Bulbs: Bulb Layout (Off, Rows, Frame), Bulb Spacing (a wider surface gets more lamps), Bulb Size, Bulb Inset (distance from the edge), Bulb Glow, Bulb On Color, Bulb Off Color. Lamps always stay clear of the corner elements. Chase: Chase Mode (Run, Alternate, Fill, Bounce, Mirror, Twinkle, Wave), Chase Group (lamps per step), Chase Duty (how much of each step is lit), Filament (lit lamps leave a fading trail). Shader: Resource/DecoMarquee.fs.",
 			"displayName": "Deco Marquee",
 			"identifier": "5514b9ad-0479-4aaf-9acd-79d1e7000fb8",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
