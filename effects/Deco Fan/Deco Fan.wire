@@ -277,7 +277,7 @@
 			"description": "Deco Fan - one Art Deco fan of rays and rings, on top of the clip below. Add the effect several times for several fans; the order of the effects decides which lies in front. Nothing moves by itself: automate position, Fill or Rotation in Arena. Scale sizes everything relative to the output height. Fan: Fan X and Fan Y (0 = centre, -1 and 1 = frame edges), Fan Size, Fan Rotation (the direction the fan opens to, 0 = up), Fan Fill (how far it is open: 180 = half circle, 360 = full circle). Rays: Ray Count (rays in a full circle), Ray Length, Ray Width, Ray Style (Straight, Wedge, Long-Short, Tapered, Skyscraper, Beaded, Feather), Ray Color. Rings: Ring Count (fractional values fade the next ring in), Ring Start, Ring Gap, Ring Width, Ring Style (Arch, Stepped, Chevron, Scallop, Beads, Double, Key), Ring Color. Shader: Resource/DecoFan.fs.",
 			"displayName": "Deco Fan",
 			"identifier": "22ecc357-cb47-4e77-90ac-a89d97a1bd9e",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

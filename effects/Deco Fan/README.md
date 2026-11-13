@@ -2,7 +2,7 @@
 
 An effect: one Art Deco fan of rays and rings, on top of the clip below.
 
-Last updated: 2026-11-09
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,9 +26,13 @@ The sunburst of a 1930s cinema: a fan of rays and rings, drawn clean and geometr
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
+## Timing
+
+There is no `Clock`: nothing moves by itself. Automate position, `Fan Fill (°)` or `Fan Rotation (°)` in Arena.
+
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe. There is no `Clock`: nothing moves by itself. Automate position, `Fan Fill (°)` or `Fan Rotation (°)` in Arena.
+All ranges are deliberately wide; the extremes are safe.
 
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
 
@@ -74,6 +78,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-09: First version, split from Deco Marquee v2 (#42, #25). One fan per effect, new ray and ring styles, `Scale`.
 
 ---
