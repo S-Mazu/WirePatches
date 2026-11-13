@@ -370,7 +370,7 @@
 			"description": "Fire Edges - flames and smoke grow from the edges of the frame, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core \/ Mid \/ Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Edges: Bottom \/ Top \/ Left \/ Right On, Edge From \/ To (the part of each edge that burns). Shader: Resource\/FireEdges.fs.",
 			"displayName": "Fire Edges",
 			"identifier": "185b3781-f2a7-43de-b84f-c11431ac51a7",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
