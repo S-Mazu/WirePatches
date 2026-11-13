@@ -2,7 +2,7 @@
 
 A source patch with alpha: an Art Deco night skyline of the 1930s scrolls past as up to six parallax silhouette layers, with lit windows, stars, a moon, searchlights and airships.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,9 +26,9 @@ A calm backdrop in the style of the 1930s: the city rolls by like a stage set. E
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
-The patch has no internal motion. Everything moves with the first parameter, `Clock` (0 to 1000, default 0). Its rate is the scroll speed; if the clock stops, the city stops.
+The patch has no internal motion. Everything moves with the parameter `Clock` (0 to 1000, default 0). Its rate is the scroll speed; if the clock stops, the city stops.
 
 - Start value: in Arena set the phase source of `Clock` to `Timeline` with `Duration` = 1000 s (about 1 clock unit per second).
 - Play the timeline backwards to scroll the other way. BPM Sync works as well.
@@ -38,8 +38,8 @@ The patch has no internal motion. Everything moves with the first parameter, `Cl
 
 All ranges are deliberately wide; the extremes are safe.
 
-- `Clock` (0 to 1000, default 0): see above.
 - `Scale` (0 to 10, default 1): size of all elements relative to the output height.
+- `Clock` (0 to 1000, default 0): see above.
 
 **Physics**
 - `Parallax` (-2 to 2, default 0.6): 0 = all layers equal, positive = back layers slower, negative = back layers faster.
@@ -106,6 +106,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#48). Add stars with `Star Density`, `Star Size`, `Star Color`, `Star Scroll`; group `Moon` becomes `Sky`. `Beam Density` reaches four times as many lights. `Scale` and `Horizon` follow the surface model: 4K now uses `Scale` 1, and `Horizon` is the distance above the bottom edge (old -0.95 = new 0.05). `Airship Dir` moves to `Physics`. Shader moves to `Resource/` with a relative path (#6). Undefined `smoothstep` and `atan` calls replaced.
 
 ---
