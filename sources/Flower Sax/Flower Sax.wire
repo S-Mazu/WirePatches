@@ -6134,10 +6134,10 @@
 			},
 			"roots": [
 				{
-					"node": 1
+					"node": 533
 				},
 				{
-					"node": 533
+					"node": 1
 				},
 				{
 					"group": 1792567852839
@@ -6168,7 +6168,7 @@
 			"description": "Flower Sax - overlay source with alpha: a flat, contour-drawn instrument (Len Lye style) blows flowers out into the room. 'Instrument' selects Saxophone, Trumpet, Snare Drum, Bass Drum, Double Bass or Piano; each has its own starting point and direction. Seven flower kinds (rose, daisy, tulip, blossom, poppy, lily, violet) leave the instrument within a cone of 'Spread (°)' around its direction (360° = in all directions), grow to full size over 'Grow Distance', then fly on independently: moving or turning the instrument only changes where new flowers start. Nothing moves by itself: drive 'Clock' from Arena (Timeline, BPM Sync or FFT +); its rate is the flight speed. If the clock stops, everything stops. 'Scale' sizes everything relative to the output height. Physics: 'Reach' is the flight distance before they fade; 'Fall Strength' with 'Fall Direction (°)' bends the path (270° = down); 'Tumble' spins the flowers; 'Speed Variation' gives each flower its own speed; 'Depth Spread' spreads them in depth. Flowers: 'Max Items' scales all amounts down; '<Flower> Amount' is a spawn maximum (flowers in flight finish their way, raising it sends new ones out); '<Flower> Color' sets the color of each kind; 'Color Variation' gives every flower a fixed random hue offset of +\/- that many degrees; 'Hue Shift (°)' turns all flower colors; 'Flower Size' scales the flowers; 'Flowers Opacity' fades them. Instrument: 'Instrument X' \/ 'Instrument Y' move it, 'Instrument Size' scales only the instrument (0 hides it; flowers then start from a single point), 'Instrument Z' pushes instrument and new flowers back (smaller, toward the centre; negative values bring them closer), 'Rotation (°)' turns it, 'Instrument Color', 'Line Color', 'Instrument Opacity'. Typical: Rose Amount <- Kick, Color Variation <- Beat, Hue Shift <- Mids. Backdrop On\/Off: On = solid Backdrop Color behind everything, Off = transparent background.",
 			"displayName": "Flower Sax",
 			"identifier": "4521f53b-bf4b-43ea-a0f0-c59b251b3557",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

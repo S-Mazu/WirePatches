@@ -2,7 +2,7 @@
 
 A source patch with alpha: a flat, contour-drawn instrument in the style of Len Lye blows seven kinds of flowers (rose, daisy, tulip, blossom, poppy, lily, violet) into the room. The flowers grow, then fly on by themselves and fade.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -25,9 +25,9 @@ A calm, playful overlay for music visuals: the instrument is the source, the flo
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
-The patch has no internal motion. Everything is driven by the first parameter, `Clock` (0 to 1000, default 0). Its rate is the flight speed; if the clock stops, all flowers stop.
+The patch has no internal motion. Everything is driven by the parameter `Clock` (0 to 1000, default 0). Its rate is the flight speed; if the clock stops, all flowers stop.
 
 - Start value: in Arena set the phase source of `Clock` to `Timeline` with `Duration` = 1000 s (about 1 clock unit per second). A shorter duration flies faster.
 - The wrap from 1000 back to 0 does not move any flower. BPM Sync or FFT work as well, to let the music push the flowers.
@@ -36,8 +36,8 @@ The patch has no internal motion. Everything is driven by the first parameter, `
 
 All ranges are deliberately wide; the extremes are safe (for example `Reach` 0, `Grow Distance` 0, `Flower Size` 0 or `Instrument Z` -3).
 
-- `Clock` (0 to 1000, default 0): see above.
 - `Scale` (0 to 10, default 1): size of the whole scene relative to the output height.
+- `Clock` (0 to 1000, default 0): see above.
 
 **Flowers**
 - `Max Items` (0 to 960, default 960): scales all amounts down.
@@ -107,6 +107,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#44, #28). New `Instrument` selector with Trumpet, Snare Drum, Bass Drum, Double Bass and Piano; each has its own starting point and direction. The group `Saxophone` becomes `Instrument`, with its controls renamed. `Scale` is new; a camera and `Patch Info` follow the surface model, and flowers are no longer distorted outside 16:9. `Color Var (°)`, `Fall` and `Fall Angle (°)` become `Color Variation`, `Fall Strength` and `Fall Direction (°)`, matching Autumn Wind. Wider ranges for `Instrument X`, `Instrument Y`, `Reach` and `Flower Size`.
 
 ---
