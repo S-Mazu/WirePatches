@@ -121,6 +121,7 @@ Fixed terms. Every revision uses only these.
 | `<Element> Count` | Explicit number of parts of one object (rays, blades, layers, copies) | Does not grow with the surface. |
 | `<Element> Density` | Population: amount per reference area (output height × output height at `Scale` 1) | Grows with the surface. |
 | `<Element> Width` | Thickness of a line (line, edge, outline, border, ray, ring) | Relative to the output height, multiplied by `Scale`; never pixels. |
+| `<Element> Width`, `<Element> Height` | Dimensions of an element, used as a pair | Relative to the output height, multiplied by `Scale`; never pixels. |
 | `<Element> Aspect` | Proportions of a shape | |
 | `<Element> Spacing` | Distance between copies | Relative to the output height, multiplied by `Scale`; never pixels. |
 | `<Element> Opacity` | Opacity of an element | Plural for several elements (`Strings Opacity`), singular for one (`Moon Opacity`). |
@@ -197,11 +198,10 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 ## Commits
 
 - English, imperative mood, prefixed with the patch name where applicable: `Twirl: fix aspect handling`.
-- One patch per commit where possible.
-- Reference issues (`Fixes #<n>`).
 - Keep `README.md` (root) in sync when adding, renaming or removing a patch.
 - One branch per task (issue or instruction), named `claude/<topic>`. In a cloud session, use the branch the session assigns.
-- One commit per patch; one PR per branch with `Fixes #<n>`.
+- One commit per patch, referencing its issue with `Refs #<n>`.
+- One PR per branch, closing its issues with `Fixes #<n>`.
 - Claude merges only when the user explicitly says so.
 
 ## Reference documentation
