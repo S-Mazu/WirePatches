@@ -358,16 +358,6 @@
 			},
 			{
 				"from": [
-					55,
-					"output"
-				],
-				"to": [
-					56,
-					"input0"
-				]
-			},
-			{
-				"from": [
 					56,
 					"output0"
 				],
@@ -404,16 +394,6 @@
 				"to": [
 					66,
 					"value"
-				]
-			},
-			{
-				"from": [
-					55,
-					"output"
-				],
-				"to": [
-					60,
-					"input0"
 				]
 			},
 			{
@@ -4545,6 +4525,56 @@
 					345,
 					"input1"
 				]
+			},
+			{
+				"from": [
+					55,
+					"output"
+				],
+				"to": [
+					391,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					333,
+					"output0"
+				],
+				"to": [
+					391,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					332,
+					"output0"
+				],
+				"to": [
+					391,
+					"input2"
+				]
+			},
+			{
+				"from": [
+					391,
+					"output0"
+				],
+				"to": [
+					56,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					391,
+					"output0"
+				],
+				"to": [
+					60,
+					"input0"
+				]
 			}
 		],
 		"inputOrder": {
@@ -4672,11 +4702,11 @@
 				"name": "Wire",
 				"version": {
 					"major": 7,
-					"minor": 27,
+					"minor": 29,
 					"patch": 0
 				}
 			},
-			"description": "Autumn Wind - an effect: 16 kinds of items drift across the clip below with depth, gusts, tumble and eddies. Nothing moves by itself: drive Clock from Arena (Timeline, BPM Sync or FFT). If the clock stops, everything stops. Scale sizes everything relative to the output height; wide surfaces get items across the whole width. Physics: Wind and Fall as strength + direction (0 = right, 90 = up), Gust Sway, Tumble, Speed Variation, Eddies (how often and how strongly eddies whirl the items, 0 = off), Eddy Size. Every kind has its own weight: chestnuts drop, feathers drift, bubbles rise, planes and raindrops point along their path. Items: Max Items (scales all amounts down), Object Size, Depth Spread, Depth Haze (distant items fade), Color Variation, Variation Color. Themes, each with Amount and Color per item: Autumn (Leaf, Maple Seed, Chestnut, Twig, Feather), Street (Bowler, Cap, Paper Plane, Newspaper), Party (Confetti, Bubble, Heart, Note), Sky (Raindrop, Snowflake, Star, Star Twinkle). An Amount is a spawn maximum: items in flight stay until they leave the frame.",
+			"description": "Autumn Wind - an effect: 16 kinds of items drift across the clip below with depth, gusts, tumble and eddies. Nothing moves by itself: drive Clock from Arena (Timeline, BPM Sync or FFT). If the clock stops, everything stops. Scale sizes everything relative to the output height; wide surfaces get items across the whole width. Physics: Wind and Fall as strength + direction (where they go: 0 = right, 90 = up), Gust Sway, Tumble, Speed Variation, Eddies (how often and how strongly eddies whirl the items, 0 = off), Eddy Size. Every kind has its own weight: chestnuts drop, feathers drift, bubbles rise, planes and raindrops point along their path. Items: Performance Cap (upper limit of items in flight, for performance only; on very large surfaces it can limit the density), Item Size, Depth Spread, Depth Haze (distant items fade), Color Variation, Variation Color. Themes, each with Density and Color per item: Autumn (Leaf, Maple Seed, Chestnut, Twig, Feather), Street (Bowler, Cap, Paper Plane, Newspaper), Party (Confetti, Bubble, Heart, Note), Sky (Raindrop, Snowflake, Star, Star Twinkle). A Density is the number of items per reference area (output height x output height at Scale 1), so wider surfaces and smaller Scale values get more items; items in flight stay until they leave the frame.",
 			"displayName": "Autumn Wind",
 			"identifier": "5c5509b5-6d07-4616-82b0-ba3475bcf9fe",
 			"licenseName": "Unlicense",
@@ -4705,15 +4735,15 @@
 				"name": "Wire",
 				"version": {
 					"major": 7,
-					"minor": 28,
-					"patch": 1
+					"minor": 29,
+					"patch": 0
 				}
 			},
 			"thumbnail": "",
-			"url": "https://github.com/S-Mazu/WirePatches",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 391,
+		"nextNodeId": 392,
 		"nodes": {
 			"1": {
 				"attributes": {
@@ -4856,7 +4886,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Object Size",
+				"name": "Item Size",
 				"thumbnail_visible": true
 			},
 			"100": {
@@ -61877,7 +61907,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Max Items",
+				"name": "Performance Cap",
 				"thumbnail_visible": true
 			},
 			"110": {
@@ -101420,7 +101450,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 12
+						"value": 6.75
 					}
 				},
 				"hidden": [
@@ -101435,7 +101465,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Leaf Amount",
+				"name": "Leaf Density",
 				"thumbnail_visible": true
 			},
 			"120": {
@@ -120546,7 +120576,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Bowler Amount",
+				"name": "Bowler Density",
 				"thumbnail_visible": true
 			},
 			"130": {
@@ -131159,6 +131189,22 @@
 							1
 						]
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"reset-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"time-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"time-type": {
 						"type": "type",
 						"value": "float"
@@ -131172,7 +131218,7 @@
 				},
 				"class": {
 					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -137342,6 +137388,10 @@
 					"input0-type",
 					"instances",
 					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"reset-flow",
+					"time-flow",
 					"time-type"
 				],
 				"name": "Delay",
@@ -138390,6 +138440,22 @@
 							1
 						]
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"reset-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"time-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"time-type": {
 						"type": "type",
 						"value": "float"
@@ -138403,7 +138469,7 @@
 				},
 				"class": {
 					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -141501,6 +141567,10 @@
 					"input0-type",
 					"instances",
 					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"reset-flow",
+					"time-flow",
 					"time-type"
 				],
 				"name": "Delay",
@@ -142549,6 +142619,22 @@
 							1
 						]
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"reset-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"time-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"time-type": {
 						"type": "type",
 						"value": "float"
@@ -142562,7 +142648,7 @@
 				},
 				"class": {
 					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -145660,6 +145746,10 @@
 					"input0-type",
 					"instances",
 					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"reset-flow",
+					"time-flow",
 					"time-type"
 				],
 				"name": "Delay",
@@ -146708,6 +146798,22 @@
 							1
 						]
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"reset-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"time-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"time-type": {
 						"type": "type",
 						"value": "float"
@@ -146721,7 +146827,7 @@
 				},
 				"class": {
 					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -149819,6 +149925,10 @@
 					"input0-type",
 					"instances",
 					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"reset-flow",
+					"time-flow",
 					"time-type"
 				],
 				"name": "Delay",
@@ -149911,7 +150021,7 @@
 				},
 				"class": {
 					"id": "77697265-3732-42da-653e-b641d4a49224",
-					"version": 2
+					"version": 3
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -150154,7 +150264,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Star Amount",
+				"name": "Star Density",
 				"thumbnail_visible": true
 			},
 			"140": {
@@ -150168,6 +150278,14 @@
 						"value": "signal"
 					},
 					"collection-type": {
+						"type": "type",
+						"value": "color"
+					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
 						"type": "type",
 						"value": "color"
 					},
@@ -150187,20 +150305,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 1440
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -150304,6 +150434,15 @@
 								0,
 								1
 							]
+						]
+					},
+					"default": {
+						"type": "color",
+						"value": [
+							0,
+							0,
+							0,
+							1
 						]
 					},
 					"index": {
@@ -151340,11 +151479,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Slot Color",
 				"thumbnail_visible": true
@@ -188809,7 +188953,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.4000000059604645
+						"value": 0.40000000596046448
 					}
 				},
 				"hidden": [
@@ -201562,7 +201706,7 @@
 					"type2",
 					"type3"
 				],
-				"name": "Item Size",
+				"name": "Item Size Scaled",
 				"thumbnail_visible": true
 			},
 			"157": {
@@ -218051,13 +218195,37 @@
 			},
 			"159": {
 				"attributes": {
+					"corner_radius-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"corner_resolution": {
 						"type": "integer",
 						"value": 3
 					},
+					"corner_resolution-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"height-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"instances": {
 						"type": "integer",
 						"value": 1
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"uvs-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"width-flow": {
+						"type": "flow",
+						"value": "signal"
 					}
 				},
 				"bounds": {
@@ -218068,7 +218236,7 @@
 				},
 				"class": {
 					"id": "77697265-E9C4-924B-BE62-F4FB3F2F3CE9",
-					"version": 3
+					"version": 4
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -218101,14 +218269,20 @@
 					},
 					"width": {
 						"type": "float",
-						"value": 1.7777999639511108
+						"value": 1.77779996395111084
 					}
 				},
 				"hidden": [
 					"corner_radius",
+					"corner_radius-flow",
 					"corner_resolution",
+					"corner_resolution-flow",
+					"height-flow",
 					"instances",
-					"uvs"
+					"output-flow",
+					"uvs",
+					"uvs-flow",
+					"width-flow"
 				],
 				"name": "Item Quad",
 				"thumbnail_visible": true
@@ -218209,14 +218383,14 @@
 						"type": "float2",
 						"value": [
 							0,
-							-0.6000000238418579
+							-0.60000002384185791
 						]
 					},
 					"end": {
 						"type": "float2",
 						"value": [
 							0,
-							0.6200000047683716
+							0.62000000476837158
 						]
 					},
 					"thickness": {
@@ -218413,7 +218587,7 @@
 				},
 				"class": {
 					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
-					"version": 1
+					"version": 2
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -218451,7 +218625,7 @@
 				"constants": {
 					"radius": {
 						"type": "float",
-						"value": 0.8999999761581421
+						"value": 0.89999997615814209
 					}
 				},
 				"hidden": [
@@ -218499,7 +218673,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							0.550000011920929,
+							0.55000001192092896,
 							0
 						]
 					}
@@ -218591,7 +218765,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							-0.550000011920929,
+							-0.55000001192092896,
 							0
 						]
 					}
@@ -218629,14 +218803,14 @@
 						"type": "float2",
 						"value": [
 							0,
-							-0.6000000238418579
+							-0.60000002384185791
 						]
 					},
 					"end": {
 						"type": "float2",
 						"value": [
 							0.03999999910593033,
-							-0.949999988079071
+							-0.94999998807907104
 						]
 					},
 					"thickness": {
@@ -218685,7 +218859,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.8500000238418579,
+							0.85000002384185791,
 							0.44999998807907104,
 							0.11999999731779099,
 							1
@@ -218778,7 +218952,7 @@
 				"constants": {
 					"height": {
 						"type": "float",
-						"value": 0.6000000238418579
+						"value": 0.60000002384185791
 					},
 					"round": {
 						"type": "float4",
@@ -218959,7 +219133,7 @@
 				"constants": {
 					"height": {
 						"type": "float",
-						"value": 0.1599999964237213
+						"value": 0.15999999642372131
 					},
 					"round": {
 						"type": "float4",
@@ -219021,7 +219195,7 @@
 						"type": "float2",
 						"value": [
 							0,
-							-0.3799999952316284
+							-0.37999999523162842
 						]
 					}
 				},
@@ -219238,7 +219412,7 @@
 				"constants": {
 					"radius": {
 						"type": "float",
-						"value": 0.800000011920929
+						"value": 0.80000001192092896
 					}
 				},
 				"hidden": [
@@ -219393,10 +219567,10 @@
 					"material": {
 						"type": "color",
 						"value": [
-							0.6000000238418579,
-							0.6000000238418579,
-							0.6000000238418579,
-							0.6000000238418579
+							0.60000002384185791,
+							0.60000002384185791,
+							0.60000002384185791,
+							0.60000002384185791
 						]
 					},
 					"shape": {
@@ -219659,7 +219833,7 @@
 				},
 				"class": {
 					"id": "77697265-3732-42da-653e-b641d4a49224",
-					"version": 2
+					"version": 3
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -219854,7 +220028,7 @@
 				},
 				"class": {
 					"id": "77697265-3732-42da-653e-b641d4a49224",
-					"version": 2
+					"version": 3
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -219962,6 +220136,14 @@
 						"type": "type",
 						"value": "texture2d"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "texture2d"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -219978,20 +220160,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 4100,
 					"y": 3400
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -220016,6 +220210,10 @@
 							null,
 							null
 						]
+					},
+					"default": {
+						"type": "texture2d",
+						"value": null
 					},
 					"index": {
 						"type": "integer",
@@ -221051,11 +221249,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Slot Glyph",
 				"thumbnail_visible": true
@@ -221096,8 +221299,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.9399999976158142,
-							0.800000011920929,
+							0.93999999761581421,
+							0.80000001192092896,
 							1
 						]
 					}
@@ -245145,7 +245348,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.6200000047683716,
+							0.62000000476837158,
 							0.11999999731779099,
 							0.07999999821186066,
 							1
@@ -245260,7 +245463,7 @@
 					},
 					"text": {
 						"type": "string",
-						"value": "Glyphs: one small white texture per type, rendered once at 1/4 patch size, tinted per slot. Order: Leaf, Bowler, Star, Twig, Cap, Heart, Maple Seed, Chestnut, Feather, Note, Snowflake, Confetti, Bubble, Paper Plane, Raindrop, Newspaper."
+						"value": "Glyphs: one small white texture per type, rendered once at 1\/4 patch size, tinted per slot. Order: Leaf, Bowler, Star, Twig, Cap, Heart, Maple Seed, Chestnut, Feather, Note, Snowflake, Confetti, Bubble, Paper Plane, Raindrop, Newspaper."
 					}
 				},
 				"bounds": {
@@ -245395,7 +245598,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Twig Amount",
+				"name": "Twig Density",
 				"thumbnail_visible": true
 			},
 			"205": {
@@ -245467,7 +245670,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Cap Amount",
+				"name": "Cap Density",
 				"thumbnail_visible": true
 			},
 			"206": {
@@ -245539,7 +245742,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Heart Amount",
+				"name": "Heart Density",
 				"thumbnail_visible": true
 			},
 			"207": {
@@ -245611,7 +245814,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Maple Seed Amount",
+				"name": "Maple Seed Density",
 				"thumbnail_visible": true
 			},
 			"208": {
@@ -245683,7 +245886,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Chestnut Amount",
+				"name": "Chestnut Density",
 				"thumbnail_visible": true
 			},
 			"209": {
@@ -245755,16 +245958,20 @@
 					"unit",
 					"widget"
 				],
-				"name": "Feather Amount",
+				"name": "Feather Density",
 				"thumbnail_visible": true
 			},
 			"21": {
 				"attributes": {
+					"begin-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"begin-type": {
 						"type": "type",
 						"value": "float"
 					},
-					"flow": {
+					"pattern-flow": {
 						"type": "flow",
 						"value": "signal"
 					},
@@ -245775,6 +245982,14 @@
 					"size": {
 						"type": "integer",
 						"value": 1024
+					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"step-flow": {
+						"type": "flow",
+						"value": "signal"
 					},
 					"step-type": {
 						"type": "type",
@@ -245789,7 +246004,7 @@
 				},
 				"class": {
 					"id": "77697265-4b9a-a7f6-922e86685f6c",
-					"version": 2
+					"version": 3
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -245804,9 +246019,12 @@
 					}
 				},
 				"hidden": [
+					"begin-flow",
 					"begin-type",
-					"flow",
+					"pattern-flow",
 					"pattern-type",
+					"size-flow",
+					"step-flow",
 					"step-type"
 				],
 				"name": "Slot Index",
@@ -245881,7 +246099,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Note Amount",
+				"name": "Note Density",
 				"thumbnail_visible": true
 			},
 			"211": {
@@ -245953,7 +246171,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Snowflake Amount",
+				"name": "Snowflake Density",
 				"thumbnail_visible": true
 			},
 			"212": {
@@ -246025,7 +246243,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Confetti Amount",
+				"name": "Confetti Density",
 				"thumbnail_visible": true
 			},
 			"213": {
@@ -246097,7 +246315,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Bubble Amount",
+				"name": "Bubble Density",
 				"thumbnail_visible": true
 			},
 			"214": {
@@ -246169,7 +246387,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Paper Plane Amount",
+				"name": "Paper Plane Density",
 				"thumbnail_visible": true
 			},
 			"215": {
@@ -246241,7 +246459,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Raindrop Amount",
+				"name": "Raindrop Density",
 				"thumbnail_visible": true
 			},
 			"216": {
@@ -246279,7 +246497,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.4000000059604645,
+							0.40000000596046448,
 							0.27000001072883606,
 							0.15000000596046448,
 							1
@@ -246331,7 +246549,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.3799999952316284,
+							0.37999999523162842,
 							0.33000001311302185,
 							0.27000001072883606,
 							1
@@ -246383,7 +246601,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.8500000238418579,
+							0.85000002384185791,
 							0.2199999988079071,
 							0.27000001072883606,
 							1
@@ -246435,9 +246653,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.7799999713897705,
-							0.5799999833106995,
-							0.3199999928474426,
+							0.77999997138977051,
+							0.57999998331069946,
+							0.31999999284744263,
 							1
 						]
 					}
@@ -247624,9 +247842,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.9200000166893005,
-							0.8999999761581421,
-							0.8500000238418579,
+							0.92000001668930054,
+							0.89999997615814209,
+							0.85000002384185791,
 							1
 						]
 					}
@@ -247676,8 +247894,8 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
-							0.8999999761581421,
+							0.94999998807907104,
+							0.89999997615814209,
 							0.75,
 							1
 						]
@@ -247728,8 +247946,8 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.8999999761581421,
-							0.949999988079071,
+							0.89999997615814209,
+							0.94999998807907104,
 							1,
 							1
 						]
@@ -247780,7 +247998,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
+							0.94999998807907104,
 							0.75,
 							0.20000000298023224,
 							1
@@ -247832,8 +248050,8 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.800000011920929,
-							0.8999999761581421,
+							0.80000001192092896,
+							0.89999997615814209,
 							1,
 							1
 						]
@@ -247884,9 +248102,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.949999988079071,
-							0.949999988079071,
-							0.9200000166893005,
+							0.94999998807907104,
+							0.94999998807907104,
+							0.92000001668930054,
 							1
 						]
 					}
@@ -247936,9 +248154,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.6000000238418579,
+							0.60000002384185791,
 							0.75,
-							0.8999999761581421,
+							0.89999997615814209,
 							1
 						]
 					}
@@ -248030,6 +248248,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -248046,20 +248272,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 2200
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -248084,6 +248322,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -249119,11 +249361,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -250200,6 +250447,10 @@
 						"type": "flow",
 						"value": "signal"
 					},
+					"input0-type": {
+						"type": "type",
+						"value": "float2"
+					},
 					"instances": {
 						"type": "integer",
 						"value": 1024
@@ -250213,7 +250464,7 @@
 				},
 				"class": {
 					"id": "77697265-6799-4C3C-81E5-3AF690418F94",
-					"version": 0
+					"version": 1
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -254322,6 +254573,7 @@
 				},
 				"hidden": [
 					"flow",
+					"input0-type",
 					"instances"
 				],
 				"name": "Motion Angle",
@@ -261747,7 +261999,7 @@
 						"type": "float2",
 						"value": [
 							-0.75,
-							-0.550000011920929
+							-0.55000001192092896
 						]
 					},
 					"end": {
@@ -261798,8 +262050,8 @@
 					"end": {
 						"type": "float2",
 						"value": [
-							0.3499999940395355,
-							0.6000000238418579
+							0.34999999403953552,
+							0.60000002384185791
 						]
 					},
 					"thickness": {
@@ -261836,14 +262088,14 @@
 					"begin": {
 						"type": "float2",
 						"value": [
-							-0.3499999940395355,
+							-0.34999999403953552,
 							-0.27000001072883606
 						]
 					},
 					"end": {
 						"type": "float2",
 						"value": [
-							-0.6200000047683716,
+							-0.62000000476837158,
 							0.15000000596046448
 						]
 					},
@@ -263142,7 +263394,7 @@
 				"constants": {
 					"radius": {
 						"type": "float",
-						"value": 0.6200000047683716
+						"value": 0.62000000476837158
 					}
 				},
 				"hidden": [
@@ -263226,7 +263478,7 @@
 				"constants": {
 					"height": {
 						"type": "float",
-						"value": 0.800000011920929
+						"value": 0.80000001192092896
 					},
 					"round": {
 						"type": "float4",
@@ -263375,7 +263627,7 @@
 					},
 					"width": {
 						"type": "float",
-						"value": 0.699999988079071
+						"value": 0.69999998807907104
 					}
 				},
 				"hidden": [
@@ -263423,8 +263675,8 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							0.6800000071525574,
-							-0.1599999964237213
+							0.68000000715255737,
+							-0.15999999642372131
 						]
 					}
 				},
@@ -263508,7 +263760,7 @@
 						"type": "float2",
 						"value": [
 							-0.05000000074505806,
-							0.4399999976158142
+							0.43999999761581421
 						]
 					}
 				},
@@ -263586,11 +263838,15 @@
 			},
 			"25": {
 				"attributes": {
+					"begin-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"begin-type": {
 						"type": "type",
 						"value": "float"
 					},
-					"flow": {
+					"pattern-flow": {
 						"type": "flow",
 						"value": "signal"
 					},
@@ -263601,6 +263857,14 @@
 					"size": {
 						"type": "integer",
 						"value": 8192
+					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"step-flow": {
+						"type": "flow",
+						"value": "signal"
 					},
 					"step-type": {
 						"type": "type",
@@ -263615,24 +263879,27 @@
 				},
 				"class": {
 					"id": "77697265-4b9a-a7f6-922e86685f6c",
-					"version": 2
+					"version": 3
 				},
 				"clock": "video",
 				"color": "ffff6a00",
 				"constants": {
 					"begin": {
 						"type": "float",
-						"value": 0.3700000047683716
+						"value": 0.37000000476837158
 					},
 					"step": {
 						"type": "float",
-						"value": 7.309999942779541
+						"value": 7.30999994277954102
 					}
 				},
 				"hidden": [
+					"begin-flow",
 					"begin-type",
-					"flow",
+					"pattern-flow",
 					"pattern-type",
+					"size-flow",
+					"step-flow",
 					"step-type"
 				],
 				"name": "Random Seeds",
@@ -263779,7 +264046,7 @@
 				"constants": {
 					"size": {
 						"type": "float",
-						"value": 1.100000023841858
+						"value": 1.10000002384185791
 					}
 				},
 				"hidden": [
@@ -263828,7 +264095,7 @@
 						"type": "float2",
 						"value": [
 							0,
-							-0.550000011920929
+							-0.55000001192092896
 						]
 					}
 				},
@@ -264030,7 +264297,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							0.800000011920929,
+							0.80000001192092896,
 							0
 						]
 					}
@@ -264083,7 +264350,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							-0.800000011920929,
+							-0.80000001192092896,
 							0
 						]
 					}
@@ -273043,7 +273310,7 @@
 				"constants": {
 					"radius": {
 						"type": "float",
-						"value": 1.399999976158142
+						"value": 1.39999997615814209
 					}
 				},
 				"hidden": [
@@ -281291,7 +281558,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 97.12999725341797
+						"value": 97.12999725341796875
 					}
 				},
 				"hidden": [
@@ -281344,7 +281611,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							1.1200000047683716,
+							1.12000000476837158,
 							0
 						]
 					}
@@ -281397,7 +281664,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							-1.1200000047683716,
+							-1.12000000476837158,
 							0
 						]
 					}
@@ -281474,14 +281741,14 @@
 						"type": "float2",
 						"value": [
 							0,
-							-0.699999988079071
+							-0.69999998807907104
 						]
 					},
 					"end": {
 						"type": "float2",
 						"value": [
 							0,
-							0.6000000238418579
+							0.60000002384185791
 						]
 					},
 					"thickness": {
@@ -281568,14 +281835,14 @@
 						"type": "float2",
 						"value": [
 							0,
-							-0.6000000238418579
+							-0.60000002384185791
 						]
 					},
 					"end": {
 						"type": "float2",
 						"value": [
 							0,
-							-0.949999988079071
+							-0.94999998807907104
 						]
 					},
 					"thickness": {
@@ -290111,7 +290378,7 @@
 						"type": "float2",
 						"value": [
 							0.01999999955296516,
-							0.6200000047683716
+							0.62000000476837158
 						]
 					},
 					"thickness": {
@@ -290149,7 +290416,7 @@
 						"type": "float2",
 						"value": [
 							0.01999999955296516,
-							0.6000000238418579
+							0.60000002384185791
 						]
 					},
 					"end": {
@@ -290378,7 +290645,7 @@
 					},
 					"size": {
 						"type": "float",
-						"value": 0.8999999761581421
+						"value": 0.89999997615814209
 					},
 					"thickness": {
 						"type": "float",
@@ -290444,7 +290711,7 @@
 				"constants": {
 					"size": {
 						"type": "float",
-						"value": 1.100000023841858
+						"value": 1.10000002384185791
 					}
 				},
 				"hidden": [
@@ -290455,6 +290722,10 @@
 			},
 			"287": {
 				"attributes": {
+					"input-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"instances": {
 						"type": "integer",
 						"value": 1
@@ -290462,6 +290733,18 @@
 					"mode": {
 						"type": "integer",
 						"value": 0
+					},
+					"mode-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"thickness-flow": {
+						"type": "flow",
+						"value": "signal"
 					}
 				},
 				"bounds": {
@@ -290472,7 +290755,7 @@
 				},
 				"class": {
 					"id": "77697265-ab950887-37ee-4fd2-9487-c856b6b75c83",
-					"version": 2
+					"version": 4
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -290487,8 +290770,12 @@
 					}
 				},
 				"hidden": [
+					"input-flow",
 					"instances",
-					"mode"
+					"mode",
+					"mode-flow",
+					"output-flow",
+					"thickness-flow"
 				],
 				"name": "Edge",
 				"thumbnail_visible": true
@@ -290693,24 +290980,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 1950
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -298915,6 +299222,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -298922,7 +299233,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Base X",
 				"thumbnail_visible": true
@@ -298949,7 +299265,7 @@
 				"constants": {
 					"height": {
 						"type": "float",
-						"value": 0.8500000238418579
+						"value": 0.85000002384185791
 					},
 					"round": {
 						"type": "float4",
@@ -299112,7 +299428,7 @@
 				"constants": {
 					"radius": {
 						"type": "float",
-						"value": 0.6499999761581421
+						"value": 0.64999997615814209
 					}
 				},
 				"hidden": [
@@ -299123,6 +299439,10 @@
 			},
 			"293": {
 				"attributes": {
+					"input-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"instances": {
 						"type": "integer",
 						"value": 1
@@ -299130,6 +299450,18 @@
 					"mode": {
 						"type": "integer",
 						"value": 0
+					},
+					"mode-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"thickness-flow": {
+						"type": "flow",
+						"value": "signal"
 					}
 				},
 				"bounds": {
@@ -299140,7 +299472,7 @@
 				},
 				"class": {
 					"id": "77697265-ab950887-37ee-4fd2-9487-c856b6b75c83",
-					"version": 2
+					"version": 4
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -299155,8 +299487,12 @@
 					}
 				},
 				"hidden": [
+					"input-flow",
 					"instances",
-					"mode"
+					"mode",
+					"mode-flow",
+					"output-flow",
+					"thickness-flow"
 				],
 				"name": "Edge",
 				"thumbnail_visible": true
@@ -299441,7 +299777,7 @@
 					"pointA": {
 						"type": "float2",
 						"value": [
-							0.8500000238418579,
+							0.85000002384185791,
 							0
 						]
 					},
@@ -299489,7 +299825,7 @@
 					"pointA": {
 						"type": "float2",
 						"value": [
-							0.8500000238418579,
+							0.85000002384185791,
 							-0.01999999955296516
 						]
 					},
@@ -299503,8 +299839,8 @@
 					"pointC": {
 						"type": "float2",
 						"value": [
-							-0.699999988079071,
-							-0.3199999928474426
+							-0.69999998807907104,
+							-0.31999999284744263
 						]
 					}
 				},
@@ -299583,7 +299919,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Wind Direction (°)",
+				"name": "Wind Direction",
 				"thumbnail_visible": true
 			},
 			"30": {
@@ -299835,7 +300171,7 @@
 					"end": {
 						"type": "float2",
 						"value": [
-							0.550000011920929,
+							0.55000001192092896,
 							0
 						]
 					},
@@ -299920,7 +300256,7 @@
 					"translation": {
 						"type": "float2",
 						"value": [
-							0.5799999833106995,
+							0.57999998331069946,
 							0
 						]
 					}
@@ -300291,7 +300627,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 4
+						"value": 2.25
 					}
 				},
 				"hidden": [
@@ -300306,7 +300642,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Newspaper Amount",
+				"name": "Newspaper Density",
 				"thumbnail_visible": true
 			},
 			"313": {
@@ -300344,9 +300680,9 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.8999999761581421,
-							0.8700000047683716,
-							0.7799999713897705,
+							0.89999997615814209,
+							0.87000000476837158,
+							0.77999997138977051,
 							1
 						]
 					}
@@ -300383,7 +300719,7 @@
 				"constants": {
 					"height": {
 						"type": "float",
-						"value": 1.5499999523162842
+						"value": 1.54999995231628418
 					},
 					"round": {
 						"type": "float4",
@@ -300429,14 +300765,14 @@
 						"type": "float2",
 						"value": [
 							-0.46000000834465027,
-							0.5199999809265137
+							0.51999998092651367
 						]
 					},
 					"end": {
 						"type": "float2",
 						"value": [
 							0.46000000834465027,
-							0.5199999809265137
+							0.51999998092651367
 						]
 					},
 					"thickness": {
@@ -300620,7 +300956,7 @@
 					},
 					"width": {
 						"type": "float",
-						"value": 0.3799999952316284
+						"value": 0.37999999523162842
 					}
 				},
 				"hidden": [
@@ -300647,24 +300983,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2100
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -308869,6 +309225,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -308876,7 +309236,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Base Y",
 				"thumbnail_visible": true
@@ -309364,14 +309729,14 @@
 			"327": {
 				"attributes": {},
 				"bounds": {
-					"height": 130,
+					"height": 154,
 					"width": 195,
 					"x": 6400,
 					"y": 250
 				},
 				"class": {
 					"id": "77697265-ec64-44f7-b446-de2a0220c5b8",
-					"version": 0
+					"version": 1
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -309816,7 +310181,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 0.3499999940395355
+						"value": 0.34999999403953552
 					}
 				},
 				"hidden": [
@@ -309876,7 +310241,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 0.3499999940395355
+						"value": 0.34999999403953552
 					}
 				},
 				"hidden": [
@@ -310160,24 +310525,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2200
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -318382,6 +318767,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -318389,7 +318778,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Color",
 				"thumbnail_visible": true
@@ -318448,7 +318842,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.6000000238418579
+						"value": 0.60000002384185791
 					}
 				},
 				"hidden": [
@@ -318854,7 +319248,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 97.12999725341797
+						"value": 97.12999725341796875
 					}
 				},
 				"hidden": [
@@ -318927,6 +319321,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1
@@ -318943,20 +319345,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "event"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 8000,
 					"y": 850
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -318969,6 +319383,10 @@
 							0
 						]
 					},
+					"default": {
+						"type": "float",
+						"value": 0
+					},
 					"index": {
 						"type": "integer",
 						"value": 0
@@ -318978,11 +319396,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Random X",
 				"thumbnail_visible": true
@@ -319047,77 +319470,11 @@
 						"type": "type",
 						"value": "float"
 					},
-					"index-dimensions": {
-						"type": "integer",
-						"value": 1
-					},
-					"index-flow": {
-						"type": "flow",
-						"value": "event"
-					},
-					"index-type": {
-						"type": "type",
-						"value": "integer"
-					},
-					"interpolation": {
-						"type": "integer",
-						"value": 0
-					},
-					"wrapping": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 58,
-					"width": 195,
-					"x": 8000,
-					"y": 950
-				},
-				"class": {
-					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"collection": {
-						"type": "float",
-						"value": [
-							0,
-							0,
-							0
-						]
-					},
-					"index": {
-						"type": "integer",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"collection-dimensions",
-					"collection-flow",
-					"collection-type",
-					"index-dimensions",
-					"index-flow",
-					"index-type",
-					"interpolation",
-					"wrapping"
-				],
-				"name": "Random Y",
-				"thumbnail_visible": true
-			},
-			"351": {
-				"attributes": {
-					"collection-dimensions": {
-						"type": "integer",
-						"value": 3
-					},
-					"collection-flow": {
+					"default-flow": {
 						"type": "flow",
 						"value": "signal"
 					},
-					"collection-type": {
+					"default-type": {
 						"type": "type",
 						"value": "float"
 					},
@@ -319137,20 +319494,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "event"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 8000,
-					"y": 1050
+					"y": 950
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -319163,6 +319532,113 @@
 							0
 						]
 					},
+					"default": {
+						"type": "float",
+						"value": 0
+					},
+					"index": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"collection-dimensions",
+					"collection-flow",
+					"collection-type",
+					"default-flow",
+					"default-type",
+					"index-dimensions",
+					"index-flow",
+					"index-type",
+					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
+				],
+				"name": "Random Y",
+				"thumbnail_visible": true
+			},
+			"351": {
+				"attributes": {
+					"collection-dimensions": {
+						"type": "integer",
+						"value": 3
+					},
+					"collection-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"collection-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"index-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"index-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"index-type": {
+						"type": "type",
+						"value": "integer"
+					},
+					"interpolation": {
+						"type": "integer",
+						"value": 0
+					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"wrapping": {
+						"type": "integer",
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 8000,
+					"y": 1050
+				},
+				"class": {
+					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
+					"version": 6
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"collection": {
+						"type": "float",
+						"value": [
+							0,
+							0,
+							0
+						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
+					},
 					"index": {
 						"type": "integer",
 						"value": 2
@@ -319172,11 +319648,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Random Gate",
 				"thumbnail_visible": true
@@ -319689,24 +320170,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2300
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -327911,6 +328412,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -327918,7 +328423,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Depth",
 				"thumbnail_visible": true
@@ -328190,7 +328700,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 1.399999976158142
+						"value": 1.39999997615814209
 					}
 				},
 				"hidden": [
@@ -328250,7 +328760,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 0.800000011920929
+						"value": 0.80000001192092896
 					}
 				},
 				"hidden": [
@@ -346353,6 +346863,10 @@
 						"type": "flow",
 						"value": "signal"
 					},
+					"input0-type": {
+						"type": "type",
+						"value": "float2"
+					},
 					"instances": {
 						"type": "integer",
 						"value": 1024
@@ -346366,7 +346880,7 @@
 				},
 				"class": {
 					"id": "77697265-6799-4C3C-81E5-3AF690418F94",
-					"version": 0
+					"version": 1
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -350475,6 +350989,7 @@
 				},
 				"hidden": [
 					"flow",
+					"input0-type",
 					"instances"
 				],
 				"name": "To Polar",
@@ -354806,24 +355321,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2400
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -363028,6 +363563,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -363035,7 +363574,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Speed",
 				"thumbnail_visible": true
@@ -366213,7 +366757,7 @@
 					},
 					"input2": {
 						"type": "float",
-						"value": 0.6000000238418579
+						"value": 0.60000002384185791
 					}
 				},
 				"hidden": [
@@ -376627,7 +377171,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.3499999940395355
+						"value": 0.34999999403953552
 					}
 				},
 				"hidden": [
@@ -380933,6 +381477,22 @@
 							1
 						]
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"reset-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"time-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"time-type": {
 						"type": "type",
 						"value": "float"
@@ -380946,7 +381506,7 @@
 				},
 				"class": {
 					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -387116,6 +387676,10 @@
 					"input0-type",
 					"instances",
 					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"reset-flow",
+					"time-flow",
 					"time-type"
 				],
 				"name": "Delay",
@@ -387156,9 +387720,9 @@
 					"input0": {
 						"type": "float",
 						"value": [
-							0.7310000061988831,
-							1.9129999876022339,
-							2.377000093460083
+							0.73100000619888306,
+							1.91299998760223389,
+							2.37700009346008301
 						]
 					}
 				},
@@ -387252,9 +387816,9 @@
 					"input0": {
 						"type": "float",
 						"value": [
-							0.3700000047683716,
+							0.37000000476837158,
 							0.10999999940395355,
-							0.5299999713897705
+							0.52999997138977051
 						]
 					}
 				},
@@ -387265,6 +387829,97 @@
 					"instances"
 				],
 				"name": "Eddy Seed Offsets",
+				"thumbnail_visible": true
+			},
+			"391": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 16
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input2-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 3
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					},
+					"type2": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 106,
+					"width": 195,
+					"x": 520,
+					"y": 1000
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": [
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1,
+							1
+						]
+					},
+					"input1": {
+						"type": "float",
+						"value": 1
+					},
+					"input2": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"input2-dimensions",
+					"size",
+					"type0",
+					"type1",
+					"type2"
+				],
+				"name": "Densities to Counts",
 				"thumbnail_visible": true
 			},
 			"4": {
@@ -387357,24 +388012,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2500
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -395579,6 +396254,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -395586,7 +396265,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Sway Phase",
 				"thumbnail_visible": true
@@ -395655,24 +396339,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2600
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -403877,6 +404581,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -403884,7 +404592,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Spin",
 				"thumbnail_visible": true
@@ -403953,24 +404666,44 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"size": {
 						"type": "integer",
 						"value": 1024
 					},
+					"size-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 82,
+					"height": 106,
 					"width": 195,
 					"x": 1100,
 					"y": 2700
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-321E3756EA6A",
-					"version": 3
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -412175,6 +412908,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -412182,7 +412919,12 @@
 					"container-dimensions",
 					"container-flow",
 					"container-type",
-					"wrapping"
+					"default-flow",
+					"default-type",
+					"output-flow",
+					"size-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Rnd Phase",
 				"thumbnail_visible": true
@@ -412224,20 +412966,20 @@
 						"value": [
 							1,
 							0.75,
-							0.4000000059604645,
-							0.6000000238418579,
-							0.699999988079071,
-							0.800000011920929,
-							0.8999999761581421,
+							0.40000000596046448,
+							0.60000002384185791,
+							0.69999998807907104,
+							0.80000001192092896,
+							0.89999997615814209,
 							0.30000001192092896,
-							1.2000000476837158,
-							0.8999999761581421,
-							0.6000000238418579,
+							1.20000004768371582,
+							0.89999997615814209,
+							0.60000002384185791,
 							1,
-							0.800000011920929,
-							1.2999999523162842,
+							0.80000001192092896,
+							1.29999995231628418,
 							0.25,
-							1.149999976158142
+							1.14999997615814209
 						]
 					}
 				},
@@ -412285,22 +413027,22 @@
 					"input0": {
 						"type": "float",
 						"value": [
-							0.550000011920929,
-							0.8999999761581421,
+							0.55000001192092896,
+							0.89999997615814209,
 							0.11999999731779099,
-							0.800000011920929,
-							0.8500000238418579,
-							0.4000000059604645,
+							0.80000001192092896,
+							0.85000002384185791,
+							0.40000000596046448,
 							0.5,
-							1.2999999523162842,
+							1.29999995231628418,
 							0.25,
 							0.30000001192092896,
 							0.44999998807907104,
-							0.6000000238418579,
+							0.60000002384185791,
 							-0.5,
 							0.15000000596046448,
 							2.5,
-							0.3499999940395355
+							0.34999999403953552
 						]
 					}
 				},
@@ -412349,21 +413091,21 @@
 						"type": "float",
 						"value": [
 							1,
-							1.100000023841858,
+							1.10000002384185791,
 							0.5,
-							1.100000023841858,
-							0.8999999761581421,
-							0.699999988079071,
-							0.800000011920929,
-							0.550000011920929,
+							1.10000002384185791,
+							0.89999997615814209,
+							0.69999998807907104,
+							0.80000001192092896,
+							0.55000001192092896,
 							1,
-							0.699999988079071,
-							0.6000000238418579,
-							0.3499999940395355,
-							0.699999988079071,
-							0.8999999761581421,
-							0.6000000238418579,
-							1.2999999523162842
+							0.69999998807907104,
+							0.60000002384185791,
+							0.34999999403953552,
+							0.69999998807907104,
+							0.89999997615814209,
+							0.60000002384185791,
+							1.29999995231628418
 						]
 					}
 				},
@@ -412412,21 +413154,21 @@
 						"type": "float",
 						"value": [
 							1,
-							0.3499999940395355,
+							0.34999999403953552,
 							0,
-							0.6000000238418579,
-							0.4000000059604645,
+							0.60000002384185791,
+							0.40000000596046448,
 							0.30000001192092896,
 							2.5,
 							0.5,
-							0.4000000059604645,
+							0.40000000596046448,
 							0.20000000298023224,
 							0.30000001192092896,
 							2,
 							0,
 							0,
 							0,
-							0.699999988079071
+							0.69999998807907104
 						]
 					}
 				},
@@ -412484,7 +413226,7 @@
 							0,
 							0,
 							0,
-							0.4000000059604645,
+							0.40000000596046448,
 							0,
 							0,
 							0,
@@ -412571,7 +413313,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fall Direction (°)",
+				"name": "Fall Direction",
 				"thumbnail_visible": true
 			},
 			"50": {
@@ -412585,6 +413327,14 @@
 						"value": "signal"
 					},
 					"collection-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
 						"type": "type",
 						"value": "float"
 					},
@@ -412604,20 +413354,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 1700
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -412642,6 +413404,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -413677,11 +414443,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -413700,6 +414471,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -413716,20 +414495,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 1800
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -413754,6 +414545,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -414789,11 +415584,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -414812,6 +415612,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -414828,20 +415636,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 1900
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -414866,6 +415686,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -415901,11 +416725,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -415924,6 +416753,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -415940,20 +416777,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 2000
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -415978,6 +416827,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -417013,11 +417866,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -417036,6 +417894,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -417052,20 +417918,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1600,
 					"y": 2100
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -417090,6 +417968,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -418125,11 +419007,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -418221,7 +419108,7 @@
 				},
 				"class": {
 					"id": "77697265-3732-42da-653e-b641d4a49224",
-					"version": 2
+					"version": 3
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -418596,6 +419483,14 @@
 						"type": "type",
 						"value": "float"
 					},
+					"default-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"default-type": {
+						"type": "type",
+						"value": "float"
+					},
 					"index-dimensions": {
 						"type": "integer",
 						"value": 1024
@@ -418612,20 +419507,32 @@
 						"type": "integer",
 						"value": 0
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"wrapping": {
 						"type": "integer",
-						"value": 0
+						"value": 1
+					},
+					"wrapping-flow": {
+						"type": "flow",
+						"value": "attribute"
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 82,
 					"width": 195,
 					"x": 1500,
 					"y": 960
 				},
 				"class": {
 					"id": "77697265-A7DD-4C94-96ED-4A5E3756EA6A",
-					"version": 4
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -418650,6 +419557,10 @@
 							0,
 							0
 						]
+					},
+					"default": {
+						"type": "float",
+						"value": 0
 					},
 					"index": {
 						"type": "float",
@@ -419685,11 +420596,16 @@
 					"collection-dimensions",
 					"collection-flow",
 					"collection-type",
+					"default-flow",
+					"default-type",
 					"index-dimensions",
 					"index-flow",
 					"index-type",
 					"interpolation",
-					"wrapping"
+					"interpolation-flow",
+					"output0-flow",
+					"wrapping",
+					"wrapping-flow"
 				],
 				"name": "Read",
 				"thumbnail_visible": true
@@ -424029,7 +424945,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 9.999999747379e-05
+						"value": 0.00009999999747379
 					}
 				},
 				"hidden": [
@@ -424250,6 +425166,22 @@
 						"type": "integer",
 						"value": 1
 					},
+					"interpolation-flow": {
+						"type": "flow",
+						"value": "attribute"
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"reset-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"time-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
 					"time-type": {
 						"type": "type",
 						"value": "float"
@@ -424263,7 +425195,7 @@
 				},
 				"class": {
 					"id": "77697265-4BEE-483F-9F28-1BA5F21193DB",
-					"version": 5
+					"version": 6
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -424286,6 +425218,10 @@
 					"input0-type",
 					"instances",
 					"interpolation",
+					"interpolation-flow",
+					"output0-flow",
+					"reset-flow",
+					"time-flow",
 					"time-type"
 				],
 				"name": "Delay",
@@ -462819,11 +463755,11 @@
 				"constants": {
 					"input0": {
 						"type": "float",
-						"value": 2.1277999877929688
+						"value": 2.12779998779296875
 					},
 					"input1": {
 						"type": "float",
-						"value": 1.350000023841858
+						"value": 1.35000002384185791
 					}
 				},
 				"hidden": [
@@ -462863,7 +463799,7 @@
 					},
 					"input1": {
 						"type": "float",
-						"value": 2.700000047683716
+						"value": 2.70000004768371582
 					}
 				},
 				"hidden": [
@@ -472307,7 +473243,7 @@
 				"zoom": 1
 			},
 			"selection": [
-				"390"
+				"391"
 			]
 		}
 	},
@@ -472315,7 +473251,10 @@
 		"audio": {
 			"routing": {
 				"in": {},
-				"out": []
+				"out": [
+					null,
+					null
+				]
 			}
 		},
 		"deviceConnections": {
