@@ -197,10 +197,10 @@
 			},
 			"roots": [
 				{
-					"node": 10
+					"node": 17
 				},
 				{
-					"node": 17
+					"node": 10
 				},
 				{
 					"group": 1792918054215
@@ -231,7 +231,7 @@
 			"description": "Geo Tiles - tile collage of flat geometric motifs in three colors, 67 motifs: rows and grids (triangles, chevrons, waves, scales, quarter- and half-circle truchets, triangle truchets, bricks, windows, dots, rings, crosses, drops, diamonds, herringbone, plaid, sunbursts, rainbow rings, concentric squares) with single accent elements; combined tiles of mini motifs; strewn quartered circles, leaves on a stem; figures (trees, flowers, tulips, birds, fish, butterflies, stars, moons, suns, houses, mushrooms, clouds, mountains, eyes, spirals, pinwheels, arches, domes, hearts, drops ...). Per tile: motif, zoom, placement, rotation, mirror and colors. Follows the surface model: height is the reference, width shows more or fewer tiles, nothing is stretched. Nothing moves by itself: drive 'Clock' from Arena (Timeline or BPM Sync); one clock unit moves patterns by one element, and the 0-1000 loop is seamless. 'Scale' multiplies all sizes and speeds: 1 for any single screen, 1\/3 for three stacked to keep the tile size. Physics: 'Animate' = share of tiles that follow Clock (fixed rank per tile, a tile crossfades when it starts or stops following). Grid: 'Rows' = tiles per output height at Scale 1, 'Tile Aspect' = tile width \/ height, 'Seed' whole numbers, each value is a new layout, changes cut hard; 'Fill' = share of tiles shown (fixed rank, raising it only adds tiles, FFT friendly); 'Big Tiles' = share of 2x2 blocks merged into 2x2, 2x1 or 1x2 tiles. Very fine patterns blend into their average color instead of shimmering. Color 1-3: each tile uses all three colors as background, shape and accent. Backdrop: empty tiles show 'Backdrop Color' or stay transparent. Drawn by the ISF shader Resource\/GeoTiles.fs.",
 			"displayName": "Geo Tiles",
 			"identifier": "1a89845f-dffa-4ac8-a147-f9e2d6630754",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

@@ -2,7 +2,7 @@
 
 A source patch with alpha: a tile collage of 67 flat geometric motifs in three colors. Each tile has its own motif, zoom, placement, rotation, mirror and color order.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,9 +26,9 @@ A graphic, poster-like surface in the spirit of geometric pattern collages. Tile
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
-The patch has no internal motion. Motion comes from the first parameter, `Clock` (0 to 1000, default 0): one clock unit moves patterns by one element. Figures turn once, or pulse or bob 4 times, per 8 clock units.
+The patch has no internal motion. Motion comes from the parameter `Clock` (0 to 1000, default 0): one clock unit moves patterns by one element. Figures turn once, or pulse or bob 4 times, per 8 clock units.
 
 - Start value: in Arena set the phase source of `Clock` to `Timeline` with `Duration` = 1000 s (about 1 clock unit per second).
 - The loop from 1000 back to 0 is seamless. Play the timeline backwards to reverse all motion; BPM Sync works as well.
@@ -37,8 +37,8 @@ The patch has no internal motion. Motion comes from the first parameter, `Clock`
 
 All ranges are deliberately wide; the extremes are safe.
 
-- `Clock` (0 to 1000, default 0): see above.
 - `Scale` (0 to 10, default 1): size of all tiles relative to the output height.
+- `Clock` (0 to 1000, default 0): see above.
 
 **Physics**
 - `Animate` (0 to 1, default 0.6): share of tiles that follow `Clock`. Each tile has a fixed rank, and it crossfades when it starts or stops following.
@@ -84,6 +84,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#45). `Clock` replaces `Pattern Shift`, with a seamless loop. `Scale` and `Tile Aspect` are new, `Columns` and `Opacity` are gone, and `Rows` now reaches 200 and counts tiles per output height. `Fill`, `Big Tiles` and `Animate` run from 0 to 1. Motion rework (#29): `Animate` crossfades instead of jumping, moving tiles are sampled four times to soften hard cell edges, very fine patterns no longer shimmer, the accent of motifs 1, 15, 32, 39 and 49 no longer steps or splits a band. Shader moves to `Resource/` with a relative path (#5). Metadata filled in.
 
 ---
