@@ -858,7 +858,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Wind Direction (°)",
+				"name": "Wind Direction",
 				"thumbnail_visible": true
 			},
 			"11": {
