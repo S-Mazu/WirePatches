@@ -37,7 +37,7 @@ Rules:
 ├── CLAUDE.md          this file
 ├── README.md          overview of all patches (one line each, link to patch folder)
 ├── LICENSE
-├── _template/         README templates and checklists: Source.md, Effect.md
+├── _template/         README templates and checklists: Source.md, Effect.md, Tool.md
 └── <Patch Name>/      one folder per patch, self-contained
     ├── <Patch Name>.wire
     ├── README.md
