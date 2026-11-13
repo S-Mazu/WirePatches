@@ -167,7 +167,7 @@ void main() {
         float px = 2.0 / (res.y * safeScale) / size;
         float r = length(q);
         float rot = safe(fanRotation, -100000.0, 100000.0);
-        float ra = r > 1e-6 ? mod(degrees(atan(q.x, q.y)) - rot + 180.0, 360.0) - 180.0 : 0.0;   // angle from the direction the fan opens to
+        float ra = r > 1e-6 ? mod(degrees(atan(q.x, q.y)) + rot + 180.0, 360.0) - 180.0 : 0.0;   // angle from the direction the fan opens to
         float inFill = fill >= 359.9 ? 1.0 : cover(radians(abs(ra) - fill * 0.5) * max(r, 1e-3), px);
 
         // ---------- rays: Ray Count = rays in a full circle, Fill reveals them ----------
