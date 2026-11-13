@@ -40,18 +40,18 @@ All ranges are deliberately wide; the extremes are safe (for example `Reach` 0, 
 - `Clock` (0 to 1000, default 0): see above.
 
 **Flowers**
-- `Max Items` (0 to 960, default 960): scales all amounts down.
-- `<Flower> Amount` (0 to 137, defaults 2 to 6): spawn maximum per kind. Flowers in flight finish their way; raising it sends new ones out.
+- `Performance Cap` (0 to 960, default 960): upper limit of flowers in flight, for performance only. When the counts ask for more, all kinds are scaled down together.
+- `<Flower> Count` (0 to 137, defaults 2 to 6): spawn maximum per kind. All flowers come from the one instrument, so the count does not grow with the surface. Flowers in flight finish their way; raising it sends new ones out.
 - `<Flower> Color`: color of each kind.
-- `Color Variation` (0 to 180, default 15): fixed random hue offset per flower, in degrees.
-- `Hue Shift (°)` (0 to 360, default 0): turns all flower colors.
+- `Hue Variation` (0 to 180, default 15): fixed random hue offset per flower, in degrees.
+- `Hue Shift` (0 to 360, default 0): turns all flower colors.
 - `Flower Size` (0 to 10, default 0.2).
 - `Flowers Opacity` (0 to 1, default 1).
 
 **Physics**
 - `Reach` (0 to 50, default 2): flight distance before the flowers fade.
-- `Spread (°)` (0 to 360, default 40): cone around the instrument's direction; 360 = all directions.
-- `Fall Strength` (0 to 5, default 0.3), `Fall Direction (°)` (0 to 360, default 270 = down): bends the path.
+- `Spread` (0 to 360, default 40): cone around the instrument's direction; 360 = all directions.
+- `Fall Strength` (0 to 5, default 0.3), `Fall Direction` (0 to 360, default 270): bends the path; where the flowers fall to, 0 = right, 90 = up, 270 = down.
 - `Tumble` (0 to 4, default 0.25): spins the flowers.
 - `Speed Variation` (0 to 1, default 0.3): each flower gets its own speed.
 - `Grow Distance` (0 to 5, default 0.15): flight distance over which a flower grows to full size.
@@ -71,7 +71,7 @@ All ranges are deliberately wide; the extremes are safe (for example `Reach` 0, 
 
 - `Instrument X`, `Instrument Y` (-20 to 20, defaults -0.9, -0.3): position, in height units from the center.
 - `Instrument Z` (-3 to 10, default 0): pushes instrument and new flowers back; negative values bring them closer.
-- `Rotation (°)` (-360 to 360, default 0).
+- `Instrument Rotation` (-180 to 180, default 0): positive values turn counter-clockwise.
 - `Instrument Size` (0 to 10, default 0.85): 0 hides the instrument.
 - `Instrument Color`, `Line Color`.
 - `Instrument Opacity` (0 to 1, default 1).
@@ -107,6 +107,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary (#96, #89): `<Flower> Amount` → `<Flower> Count` (all flowers come from one instrument, so the number does not grow with the surface); `Max Items` → `Performance Cap` (limit only); `Color Variation` → `Hue Variation`; `Rotation` → `Instrument Rotation` (-180 to 180); no degree unit in `Spread`, `Hue Shift` and `Fall Direction`.
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#44, #28). New `Instrument` selector with Trumpet, Snare Drum, Bass Drum, Double Bass and Piano; each has its own starting point and direction. The group `Saxophone` becomes `Instrument`, with its controls renamed. `Scale` is new; a camera and `Patch Info` follow the surface model, and flowers are no longer distorted outside 16:9. `Color Var (°)`, `Fall` and `Fall Angle (°)` become `Color Variation`, `Fall Strength` and `Fall Direction (°)`, matching Autumn Wind. Wider ranges for `Instrument X`, `Instrument Y`, `Reach` and `Flower Size`.
 
