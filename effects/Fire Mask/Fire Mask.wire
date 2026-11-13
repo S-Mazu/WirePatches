@@ -348,7 +348,7 @@
 			"description": "Fire Mask - the brightness of the clip below decides what burns. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Burn By Brightness: Burn Brightness picks the brightness that burns (0 = black, 1 = white), Brightness Range is the width of the burning band around that brightness, Range Softness its soft edge, Show Input keeps the clip visible under the fire. Shader: Resource/FireMask.fs.",
 			"displayName": "Fire Mask",
 			"identifier": "b3845495-479d-45ad-809f-315931b93a3a",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",
