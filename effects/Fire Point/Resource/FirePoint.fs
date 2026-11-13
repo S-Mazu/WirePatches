@@ -177,13 +177,6 @@
       "MAX": 20.0
     },
     {
-      "NAME": "burnZ",
-      "TYPE": "float",
-      "DEFAULT": 0.0,
-      "MIN": -2.0,
-      "MAX": 20.0
-    },
-    {
       "NAME": "burnSize",
       "TYPE": "float",
       "DEFAULT": 0.16,
@@ -452,9 +445,8 @@ float sdHeart(vec2 p) {
 }
 
 void burnArea(vec2 p, vec2 uv, vec2 halfExt, float t, inout float cover, inout vec2 push) {
-    float depth = max(1.0 + burnZ * 0.4, 0.05);
-    vec2 c = vec2(burnX, burnY) / depth;
-    float size = max(burnSize, 0.0) / depth;
+    vec2 c = vec2(burnX, burnY);
+    float size = max(burnSize, 0.0);
     if (size <= 0.0) return;
     vec2 d = p - c;
     float a = radians(burnRotation);

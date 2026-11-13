@@ -258,16 +258,6 @@
 			},
 			{
 				"from": [
-					33,
-					"output"
-				],
-				"to": [
-					1,
-					"burnZ"
-				]
-			},
-			{
-				"from": [
 					34,
 					"output"
 				],
@@ -346,7 +336,6 @@
 						30,
 						31,
 						32,
-						33,
 						34,
 						35,
 						36,
@@ -385,11 +374,11 @@
 				"name": "Wire",
 				"version": {
 					"major": 7,
-					"minor": 23,
+					"minor": 29,
 					"patch": 0
 				}
 			},
-			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core / Mid / Tip from hottest to coolest. Smoke: Smoke Amount (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Shape X / Y (0 = centre, in height units), Shape Z (depth: larger is further away and smaller), Shape Size, Shape Rotation, Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource/FirePoint.fs.",
+			"description": "Fire Point - flames and smoke from one burning shape, on top of the clip below. A real-time fluid simulation. Burns as soon as it is loaded; Speed below 1 is slow motion, above 1 the flow gets stronger. Scale sizes everything relative to the output height. Physics: Speed, Rise (how strongly hot gas climbs; 0 lets smoke hang), Wind Direction (where the wind blows to: 0 = right, 90 = up) and Wind Strength (carries all flames and smoke together), Swirl (the large rolling eddies). Fire: Fire Strength (above 1 the flames feed themselves and spread from the source, at 10 an inferno), Flame Reach (how far flames reach before they burn out), Fire Burst (a short flare-up, good for FFT), Flame Core \/ Mid \/ Tip from hottest to coolest. Smoke: Smoke Density (above 2 it swells from the source into a dense fog), Smoke Life (seconds until it dissolves), Smoke Color. Shape: Shape (Point, Square, Heart), Shape X \/ Y (0 = centre, in height units), Shape Size, Shape Rotation (counter-clockwise), Shape Outline (only the edge of the shape burns), Outline Width. Shader: Resource\/FirePoint.fs.",
 			"displayName": "Fire Point",
 			"identifier": "828fc781-55ca-44bd-92b1-cbd418b4bce6",
 			"licenseName": "Unlicense",
@@ -418,12 +407,12 @@
 				"name": "Wire",
 				"version": {
 					"major": 7,
-					"minor": 28,
-					"patch": 1
+					"minor": 29,
+					"patch": 0
 				}
 			},
 			"thumbnail": "",
-			"url": "https://github.com/S-Mazu/WirePatches",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
 		"nextNodeId": 38,
@@ -475,7 +464,7 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "Resource/FirePoint.fs",
+								"main": "Resource\/FirePoint.fs",
 								"sub": ""
 							},
 							"value": {
@@ -578,8 +567,8 @@
 									{
 										"defaultValue": [
 											1,
-											0.9300000071525574,
-											0.6800000071525574,
+											0.93000000715255737,
+											0.68000000715255737,
 											1
 										],
 										"name": "flameCore",
@@ -597,7 +586,7 @@
 									},
 									{
 										"defaultValue": [
-											0.6200000047683716,
+											0.62000000476837158,
 											0.07000000029802322,
 											0.01999999955296516,
 											1
@@ -622,8 +611,8 @@
 									{
 										"defaultValue": [
 											0.41999998688697815,
-											0.4099999964237213,
-											0.4000000059604645,
+											0.40999999642372131,
+											0.40000000596046448,
 											1
 										],
 										"name": "smokeColor",
@@ -651,14 +640,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0,
-										"max": 20,
-										"min": -2,
-										"name": "burnZ",
-										"type": "float"
-									},
-									{
-										"defaultValue": 0.1599999964237213,
+										"defaultValue": 0.15999999642372131,
 										"max": 10,
 										"min": 0,
 										"name": "burnSize",
@@ -713,7 +695,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 706,
 					"width": 195,
 					"x": 800,
 					"y": 400
@@ -731,7 +713,7 @@
 					},
 					"burnSize": {
 						"type": "float",
-						"value": 0.1599999964237213
+						"value": 0.15999999642372131
 					},
 					"burnX": {
 						"type": "float",
@@ -740,10 +722,6 @@
 					"burnY": {
 						"type": "float",
 						"value": -0.44999998807907104
-					},
-					"burnZ": {
-						"type": "float",
-						"value": 0
 					},
 					"burst": {
 						"type": "float",
@@ -777,8 +755,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.9300000071525574,
-							0.6800000071525574,
+							0.93000000715255737,
+							0.68000000715255737,
 							1
 						]
 					},
@@ -798,7 +776,7 @@
 					"flameTip": {
 						"type": "color",
 						"value": [
-							0.6200000047683716,
+							0.62000000476837158,
 							0.07000000029802322,
 							0.01999999955296516,
 							1
@@ -836,8 +814,8 @@
 						"type": "color",
 						"value": [
 							0.41999998688697815,
-							0.4099999964237213,
-							0.4000000059604645,
+							0.40999999642372131,
+							0.40000000596046448,
 							1
 						]
 					},
@@ -946,7 +924,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Wind Direction (°)",
+				"name": "Wind Direction",
 				"thumbnail_visible": true
 			},
 			"11": {
@@ -1345,8 +1323,8 @@
 						"type": "color",
 						"value": [
 							1,
-							0.9300000071525574,
-							0.6800000071525574,
+							0.93000000715255737,
+							0.68000000715255737,
 							1
 						]
 					}
@@ -1448,7 +1426,7 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.6200000047683716,
+							0.62000000476837158,
 							0.07000000029802322,
 							0.01999999955296516,
 							1
@@ -1534,7 +1512,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Smoke Amount",
+				"name": "Smoke Density",
 				"thumbnail_visible": true
 			},
 			"2": {
@@ -1642,7 +1620,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Smoke Life (s)",
+				"name": "Smoke Life",
 				"thumbnail_visible": true
 			},
 			"21": {
@@ -1681,8 +1659,8 @@
 						"type": "color",
 						"value": [
 							0.41999998688697815,
-							0.4099999964237213,
-							0.4000000059604645,
+							0.40999999642372131,
+							0.40000000596046448,
 							1
 						]
 					}
@@ -1712,7 +1690,7 @@
 				},
 				"class": {
 					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
-					"version": 1
+					"version": 2
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -1974,78 +1952,6 @@
 				"name": "Shape Y",
 				"thumbnail_visible": true
 			},
-			"33": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 20
-					},
-					"min": {
-						"type": "float",
-						"value": -2
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 400,
-					"y": 540
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Shape Z",
-				"thumbnail_visible": true
-			},
 			"34": {
 				"attributes": {
 					"flow": {
@@ -2100,7 +2006,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.1599999964237213
+						"value": 0.15999999642372131
 					}
 				},
 				"hidden": [
@@ -2138,11 +2044,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -360
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -2187,7 +2093,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Shape Rotation (°)",
+				"name": "Shape Rotation",
 				"thumbnail_visible": true
 			},
 			"36": {
@@ -2612,7 +2518,10 @@
 		"audio": {
 			"routing": {
 				"in": {},
-				"out": []
+				"out": [
+					null,
+					null
+				]
 			}
 		},
 		"deviceConnections": {

@@ -43,7 +43,7 @@ All ranges are deliberately wide; the extremes are safe.
 **Physics**
 - `Speed` (0 to 10, default 1): 0 freezes the image, below 1 is slow motion (a lava lamp at low values). Above 1 the flow gets stronger; the fluid does not break up.
 - `Rise` (0 to 5, default 1): how strongly hot gas climbs. 0 lets the smoke hang in the air.
-- `Wind Direction (°)` (0 to 360, default 0): where the wind blows to; 0 = right, 90 = up.
+- `Wind Direction` (0 to 360, default 0): where the wind blows to; 0 = right, 90 = up.
 - `Wind Strength` (0 to 10, default 0): carries all flames and all smoke along together.
 - `Swirl` (0 to 5, default 1): the large rolling eddies in flames and smoke. The fine eddies stay the same at every value.
 
@@ -54,16 +54,15 @@ All ranges are deliberately wide; the extremes are safe.
 - `Flame Core`, `Flame Mid`, `Flame Tip`: colors from the hottest to the coolest part.
 
 **Smoke**
-- `Smoke Amount` (0 to 10, default 0.5): how much smoke rises. Above 2 it stays longer and collects under the top of the frame; at 10 the source fills the frame with a dense fog.
-- `Smoke Life (s)` (0.1 to 120, default 4): seconds until smoke dissolves.
+- `Smoke Density` (0 to 10, default 0.5): how much smoke rises. Above 2 it stays longer and collects under the top of the frame; at 10 the source fills the frame with a dense fog.
+- `Smoke Life` (0.1 to 120, default 4): seconds until smoke dissolves.
 - `Smoke Color`.
 
 **Shape**
 - `Shape` (Point / Square / Heart, default Point).
 - `Shape X`, `Shape Y` (-20 to 20, defaults 0, -0.45): position, 0 = centre of the frame, in height units.
-- `Shape Z` (-2 to 20, default 0): depth. Higher values are further away and smaller.
 - `Shape Size` (0 to 10, default 0.16).
-- `Shape Rotation (°)` (-360 to 360, default 0).
+- `Shape Rotation` (-180 to 180, default 0): positive values turn counter-clockwise.
 - `Shape Outline` (Off / On, default Off): only the edge of the shape burns.
 - `Outline Width` (0 to 2, default 0.03).
 
@@ -86,6 +85,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary (#98, #89): `Shape Z` removed (`Shape X`, `Shape Y` and `Shape Size` cover it); `Smoke Amount` → `Smoke Density`, `Smoke Life (s)` → `Smoke Life`; no degree unit in `Wind Direction` and `Shape Rotation`, which now ranges from -180 to 180.
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-08: Wind now carries all of the smoke: none stays behind or moves against it. Flames stay smooth at a `Scale` above 1. The controls `Burn X`, `Burn Y`, `Burn Z`, `Burn Size` and `Burn Rotation (°)` are now named `Shape …`.
 - 2026-11-08: Speed and Swirl no longer tear the fluid apart. Fire and fog now only grow from the source. Smoke gets depth at high density. Renamed `Fire Amount` to `Fire Strength` and `Flame Length` to `Flame Reach`.
