@@ -2677,7 +2677,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Scale Colors - overlay source with alpha that shows which parts of the octave are sounding right now (no key detection). Own sound analysis: feed 'Spectrum In' with External (master out of the band\/DJ), never Composition. Expects Arena audio at 48 kHz (Arena preferences); at 44.1 kHz all tones shift by about 1.5 semitones. All octaves above 'Min Freq (Hz)' (below about 400 Hz the FFT cannot separate semitones; low notes are caught through their overtones) up to 'Max Freq (Hz)' (always kept at least one octave above Min) are folded onto the 12 tones C to B; the share common to all tones (drums, noise) is removed, the strongest tone is 1. 'Focus' makes only the main tones light up, 'Gate' keeps everything dark on quiet noise (1 = only very loud tones), 'Fade' is the release time, 'Boost' the input gain. 'Scale' sizes the whole layout, lines included, relative to the output height. Layout: Keys (one octave), Pie, Ring, Grid 4x3, Circles (static). 'Layout Width' and 'Layout Height' set the box the layout fills as a share of the frame at Scale 1 (1 = full width \/ full height): Keys and Grid fill it exactly, Circles spread their positions over it and stay round, Pie and Ring stay round and fit inside. One instrument by design: on wide surfaces it does not repeat, set Layout Width per setup. Colors: at rest every cell shows exactly 'Rest Natural' (C D E F G A B) or 'Rest Accidental' (C# D# F# G# A#), including their alpha. A sounding tone replaces this completely with its own color at full opacity. Tone colors: hue from 'Hue Start (°)' spread over 'Hue Range (°)' (0 = one color for all, 360 = full color wheel), in chromatic order or, with 'Fifths Order', along the circle of fifths so the tones of one key get neighbouring colors; 'Tone Saturation' and 'Tone Brightness' set saturation and brightness of all sounding colors. 'Cells Opacity' sets the opacity of the cells. Outlines: 'Line Width', 'Line Color', 'Lines Opacity' (width independent of layout size). Backdrop On\/Off: On = solid Backdrop Color behind everything, Off = transparent background.",
+			"description": "Scale Colors - overlay source with alpha that shows which parts of the octave are sounding right now (no key detection). Own sound analysis: feed 'Spectrum In' with External (master out of the band\/DJ), never Composition. Expects Arena audio at 48 kHz (Arena preferences); at 44.1 kHz all tones shift by about 1.5 semitones. All octaves above 'Min Freq (Hz)' (below about 400 Hz the FFT cannot separate semitones; low notes are caught through their overtones) up to 'Max Freq (Hz)' (always kept at least one octave above Min) are folded onto the 12 tones C to B; the share common to all tones (drums, noise) is removed, the strongest tone is 1. 'Focus' makes only the main tones light up, 'Gate' keeps everything dark on quiet noise (1 = only very loud tones), 'Fade' is the release time, 'Boost' the input gain. 'Scale' sizes the whole layout, lines included, relative to the output height. Layout: Keys (one octave), Pie, Ring, Grid 4x3, Circles (static). 'Layout Width' and 'Layout Height' set the box the layout fills as a share of the frame at Scale 1 (1 = full width \/ full height): Keys and Grid fill it exactly, Circles spread their positions over it and stay round, Pie and Ring stay round and fit inside. One instrument by design: on wide surfaces it does not repeat, set Layout Width per setup. Colors: at rest every cell shows exactly 'Rest Natural' (C D E F G A B) or 'Rest Accidental' (C# D# F# G# A#), including their alpha. A sounding tone replaces this completely with its own color at full opacity. Tone colors: hue from 'Hue Start' spread over 'Hue Range' (0 = one color for all, 360 = full color wheel), in chromatic order or, with 'Fifths Order', along the circle of fifths so the tones of one key get neighbouring colors; 'Tone Saturation' and 'Tone Brightness' set saturation and brightness of all sounding colors. 'Cells Opacity' sets the opacity of the cells. Outlines: 'Line Width', 'Line Color', 'Lines Opacity' (width independent of layout size). Backdrop On\/Off: On = solid Backdrop Color behind everything, Off = transparent background.",
 			"displayName": "Scale Colors",
 			"identifier": "7812ab9c-9b38-4fc9-a80d-e7773a07cd77",
 			"licenseName": "Unlicense",
@@ -182763,7 +182763,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Hue Range (°)",
+				"name": "Hue Range",
 				"thumbnail_visible": true
 			},
 			"83": {
@@ -182968,7 +182968,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Hue Start (°)",
+				"name": "Hue Start",
 				"thumbnail_visible": true
 			},
 			"86": {

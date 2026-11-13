@@ -55,7 +55,7 @@ All ranges are deliberately wide; the extremes are safe.
 **Colors**
 - `Cells Opacity` (0 to 1, default 1).
 - `Rest Natural`, `Rest Accidental`: color at rest of C D E F G A B and of C# D# F# G# A#, including their alpha. A sounding tone replaces this with its own color at full opacity.
-- `Hue Start (°)` (0 to 360, default 200), `Hue Range (°)` (0 to 360, default 80): 0 = one color for all, 360 = full color wheel.
+- `Hue Start` (0 to 360, default 200), `Hue Range` (0 to 360, default 80): 0 = one color for all, 360 = full color wheel.
 - `Fifths Order` (default off): spreads the colors along the circle of fifths, so the tones of one key get neighbouring colors.
 - `Tone Saturation` (0 to 1, default 0.55), `Tone Brightness` (0 to 1, default 0.95).
 
@@ -90,6 +90,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Angle convention (#89): no degree unit in `Hue Start` and `Hue Range`.
 - 2026-11-13: Glossary names: `Fade (s)` → `Fade`; `Fade` moved before `Focus` in `Sound Input` (#94).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#49). The layout box reads the aspect ratio at runtime instead of a fixed 16:9; `Scale` and a camera follow the surface model. `Backdrop On` becomes Off / On, `Line Width` and `Layout Width`/`Layout Height` get wider ranges, the group `Mix` is dissolved into `Colors` and `Layout`, and `Sound Input` comes first. Metadata filled in, README added.
