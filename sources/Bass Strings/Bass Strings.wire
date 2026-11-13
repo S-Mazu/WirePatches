@@ -398,7 +398,7 @@
 			"description": "Bass Strings - four round-wound double bass strings (E A D G) that vibrate with the music, inspired by Len Lye's lines that move to the music. Each string is driven by one sound band: E = low, A = low-mid, D = mid, G = high. Silence = straight, still strings. Set 'Spectrum In' to External. 'Scale' sizes all strings relative to the output height. Physics: 'Amplitude' = widest swing at full level, 'Waves' = half waves along the string (stepless, 1 = one big bow; good for FFT), 'Vibe Speed (Hz)' = swing rate of the E string, the others are a fourth apart each; changes never jump. 'Overtones' adds extra modes at high levels. 'Motion Blur' = shutter time: at 1 the string sweeps its whole swing per frame. Strings: 'String Angle (°)' turns all strings stepless (0 = vertical, 90 = horizontal); they always span the whole frame with fixed ends at its edges. 'Spacing' = share of the frame across the strings, 'Line Width' (E string; the others get thinner), 'Strings Opacity', one color per string, 'Light Angle' and 'Shine' give the round look and the shadow. Sound Input: 'Boost' raises all bands, 'Gate' keeps quiet noise silent, 'Fade (s)' = time to fall back. The analysis learns the used frequency range on its own. Backdrop: colored or transparent. Drawn by the ISF shaders Resource\/BassStringsAnalysis.fs and Resource\/BassStrings.fs.",
 			"displayName": "Bass Strings",
 			"identifier": "9b569afb-7272-483f-a983-53bb61531805",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

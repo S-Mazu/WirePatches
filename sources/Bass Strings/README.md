@@ -2,7 +2,7 @@
 
 A source patch with alpha: four round-wound double bass strings (E A D G) vibrate with the music, one frequency band per string.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -28,9 +28,13 @@ Inspired by Len Lye's lines that move to the music. The strings stand for the in
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. In Arena set `Spectrum In` to External and choose the audio input.
 
+## Timing
+
+There is no `Clock`: sound sets how wide the strings swing, `Vibe Speed (Hz)` how fast.
+
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe. There is no `Clock`: sound sets how wide the strings swing, `Vibe Speed (Hz)` how fast.
+All ranges are deliberately wide; the extremes are safe.
 
 - `Scale` (0 to 10, default 1): size of all strings relative to the output height.
 
@@ -88,6 +92,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#41). From 39 to 22 controls; band, range and FFT settings are now internal, and `Boost`, `Gate` and `Fade (s)` remain. New `Waves` and stepless `String Angle (°)`. `Motion Blur` is a real shutter and replaces `Blur` and `Twist`. `Scale` is new, and sizes follow the output height. The swing phase runs in the analysis state: no jump at the top of the hour or when `Vibe Speed (Hz)` changes. Removed `Center X`, `Edge Soft (px)`, `Node Top`, `Node Bottom`, `Show Meter`, `Winding Pitch`, `Winding Depth`. Shaders move to `Resource/` with relative paths (#2). Metadata filled in, README added.
 
 ---
