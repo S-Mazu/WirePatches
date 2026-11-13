@@ -43,7 +43,7 @@ All ranges are deliberately wide; the extremes are safe.
 
 **Physics**
 - `Parallax` (-2 to 2, default 0.6): 0 = all layers equal, positive = back layers slower, negative = back layers faster.
-- `Airship Dir` (Left / Right / Random, default Left): Random picks a direction per row and changes with `Seed`.
+- `Airship Direction` (Left / Right / Random, default Left): Random picks a direction per row and changes with `Seed`.
 - `Star Scroll` (Off / On, default Off): Off = stars stay fixed, On = stars scroll behind Layer 1.
 
 **Skyline**
@@ -106,6 +106,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary (#89): `Airship Dir` → `Airship Direction`.
 - 2026-11-13: Glossary names: `Density` → `Building Density` (#106).
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#48). Add stars with `Star Density`, `Star Size`, `Star Color`, `Star Scroll`; group `Moon` becomes `Sky`. `Beam Density` reaches four times as many lights. `Scale` and `Horizon` follow the surface model: 4K now uses `Scale` 1, and `Horizon` is the distance above the bottom edge (old -0.95 = new 0.05). `Airship Dir` moves to `Physics`. Shader moves to `Resource/` with a relative path (#6). Undefined `smoothstep` and `atan` calls replaced.
