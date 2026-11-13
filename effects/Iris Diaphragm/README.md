@@ -38,7 +38,7 @@ All ranges are deliberately wide; the extremes are safe.
 - `Clock` (0 to 100, default 0).
 
 **Iris**
-- `Center X`, `Center Y` (-2 to 2, default 0): centre of the opening. 0 = centre, -1 and 1 = edges of the frame.
+- `Iris X`, `Iris Y` (-2 to 2, default 0): centre of the opening. 0 = centre, -1 and 1 = edges of the frame.
 - `Blade Count` (3 to 32, default 9).
 - `Blade Rotation (°)` (-360 to 360, default 0): turns all blades.
 - `Blade Twist (°)` (-360 to 360, default 60): how far the blades turn while closing; they turn back while opening.
@@ -57,7 +57,7 @@ Set `Blade Color` to white and use the layer as a mask (Mask Mode: One Below) to
 
 - Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched.
 - `Scale`: 1 for any single screen; ⅓ for three stacked to keep the edges as thin as on one screen.
-- Exception: the iris always covers the whole frame, and `Center X` / `Center Y` are relative to the frame.
+- Exception: the iris always covers the whole frame, and `Iris X` / `Iris Y` are relative to the frame.
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip.
 
 Tested sizes (in Wire):
@@ -74,6 +74,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Center X` → `Iris X`, `Center Y` → `Iris Y` (#104).
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-10: The frame is always closed outside the opening, also with few, strongly bent blades.
 - 2026-11-10: Rebuilt as an effect with real, overlapping blades (#46, #30). `Iris Phase (0-100)` is now `Clock`; new `Blade Curve`, `Shading`, `Scale`. The iris covers any surface. `Iris Opacity` and `Backdrop` removed.
