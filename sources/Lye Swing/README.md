@@ -2,7 +2,7 @@
 
 A source patch: a painted big-band score after Len Lye. Five shapes follow the music, one per sound band, with or without a transparent background.
 
-Last updated: 2026-11-09
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,9 +26,13 @@ Len Lye scratched and painted directly on film. In *Swinging the Lambeth Walk* a
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. In Arena, set `Spectrum In` to External for a live band or a DJ, or to Composition for clips in the composition.
 
+## Timing
+
+There is no `Clock`: the patch has no motion of its own besides the music. Automate position, size and rotation in Arena for movement, and store your looks with Arena's preset button.
+
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe. There is no `Clock`: the patch has no motion of its own besides the music. Automate position, size and rotation in Arena for movement, and store your looks with Arena's preset button.
+All ranges are deliberately wide; the extremes are safe.
 
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
 - `Spectrum In` (Composition / External): where the sound comes from.
@@ -84,6 +88,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-09: Revised to the current rules (#47). Automatic level per shape replaces 23 sound controls. Controls are named after the shapes. New `Scale`, `Boil` and `Punch`. Removed `Z`.
 
 ---
