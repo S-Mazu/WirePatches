@@ -103,7 +103,7 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] .wire is valid JSON:
       python3 -m json.tool "<Example Name>.wire" > /dev/null
 [ ] Patch "description" in the .wire matches this README
-[ ] patch.meta: author, mail, url filled; identifier unique
+[ ] patch.meta: author, mail, url filled; licenseName "Unlicense"; identifier unique
 [ ] Follows the surface model
 [ ] Every slider tested at both extremes: no NaN, no black/frozen output
 [ ] README updated: Last updated, Changelog

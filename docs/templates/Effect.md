@@ -105,7 +105,7 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] .wire is valid JSON:
       python3 -m json.tool "<Patch Name>.wire" > /dev/null
 [ ] Patch "description" in the .wire matches this README
-[ ] patch.meta: author, mail, url filled; identifier unique
+[ ] patch.meta: author, mail, url filled; licenseName "Unlicense"; identifier unique
 [ ] No controls duplicating Arena (global opacity/position/scale/rotation)
 [ ] `Scale` is the first parameter; `Clock` follows only if used (docs/GLOSSARY.md)
 [ ] `Texture In` directly after `Scale` / `Clock`; no `Backdrop`

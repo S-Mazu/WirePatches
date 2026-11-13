@@ -76,6 +76,7 @@ Every `.wire` file has these fields filled in `patch.meta`:
 | `author` | `Stefan Mazur` |
 | `mail` | `S.Mazur@cati-co.de` |
 | `url` | `https://github.com/S-Mazu/WirePatches` |
+| `licenseName` | `Unlicense` (as in `LICENSE`) |
 
 `identifier` must be unique per patch.
 
