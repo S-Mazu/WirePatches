@@ -44,9 +44,17 @@ Patches without show content that demonstrate a technique for building patches.
 
 Programs that run outside Wire and feed patches.
 
-| Tool | Status | Description |
+| Tool | Description |
+|---|---|
+| | None yet. A LIDAR tool for motion-based projections is in development ([#69](https://github.com/S-Mazu/WirePatches/issues/69)). |
+
+## Archive
+
+No longer developed, kept for reference. Not maintained and not tested with current versions.
+
+| Name | Kind | Description |
 |---|---|---|
-| [Kinect](tools/Kinect/) | **Discontinued**, no longer developed | Sent the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. We will rebuild this with a LIDAR. |
+| [Kinect](archive/Kinect/) | tool | Discontinued 2026-11-08. Sent the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. Replaced by the LIDAR tool ([#69](https://github.com/S-Mazu/WirePatches/issues/69)). |
 
 ## Installation
 

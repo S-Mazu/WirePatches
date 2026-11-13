@@ -45,6 +45,7 @@ Rules:
 ├── effects/<Patch Name>/     effect patches, same layout as sources
 ├── examples/<Example Name>/  patches that demonstrate a technique (e.g. Scaler)
 ├── tools/<Tool Name>/        programs outside Wire that feed patches (e.g. a sensor bridge)
+├── archive/<Name>/           patches, examples and tools that are no longer developed but kept (e.g. Kinect)
 └── docs/
     ├── PATCH_RULES.md        rules for patches, examples and tools
     ├── GLOSSARY.md           fixed control names, naming patterns, units
@@ -96,7 +97,7 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 ## Commits
 
 - English, imperative mood, prefixed with the patch name where applicable: `Twirl: fix aspect handling`.
-- Keep `README.md` (root) in sync when adding, renaming, moving or removing a patch, example or tool.
+- Keep `README.md` (root) in sync when adding, renaming, moving, archiving or removing a patch, example or tool.
 - Change `docs/PATCH_RULES.md` and `docs/GLOSSARY.md` only when the user explicitly instructs it, like this file.
 - One branch per task (issue or instruction), named `claude/<topic>`. In a cloud session, use the branch the session assigns.
 - One commit per patch, referencing its issue with `Refs #<n>`.

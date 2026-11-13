@@ -104,5 +104,5 @@ py -3.12 -m pip install kinect-next SpoutGL opencv-python numpy dearpygui
 
 ## Changelog
 
-- 2026-11-13: Moved from `Kinect - Discontinued/` to `tools/Kinect/`; the status is now in this README and the root README (#88).
+- 2026-11-13: Moved from `Kinect - Discontinued/` to `archive/Kinect/` (#88).
 - 2026-11-08: Discontinued.

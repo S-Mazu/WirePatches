@@ -1,6 +1,6 @@
 # Patch rules
 
-Rules for every patch in `sources/` and `effects/`, and for examples and tools as listed in "Examples and tools". Control names follow the [glossary](GLOSSARY.md).
+Rules for every patch in `sources/` and `effects/`, for examples and tools as listed in "Examples and tools", and for archived work as listed in "Archive". Control names follow the [glossary](GLOSSARY.md).
 
 ## Self-contained
 
@@ -82,7 +82,7 @@ Every `.wire` file has these fields filled in `patch.meta`:
 ## Naming and versions
 
 - Folder name = patch name = `.wire` file name (`effects/Patch Name/Patch Name.wire`). Patch names keep their spaces.
-- **No version suffixes** (`v2`) and no status (`Discontinued`) in folder or file names. Git history is the version history; tag releases if needed. A status goes into the README.
+- **No version suffixes** (`v2`) and no status (`Discontinued`) in folder or file names. Git history is the version history; tag releases if needed. Work that is no longer developed moves to `archive/` (see "Archive").
 - If two variants really must coexist, give them names that say how they differ.
 
 ## Patch description inside Wire
@@ -114,3 +114,15 @@ Changes to one of the two templates are applied to the other in the same commit.
   - Scripts sit directly in the tool folder (`Resource/` is a Wire concept).
   - Dependencies with versions in `requirements.txt` in the tool folder.
   - Runtime data (captured rooms, saved settings) is not committed; add it to the root `.gitignore`.
+
+## Archive
+
+`archive/` holds patches, examples and tools that are no longer developed but are kept for reference (e.g. code that a new tool may reuse).
+
+- Move the folder with `git mv` to `archive/<Name>/`; the folder name keeps the name without status.
+- The README starts with a note: since when it is no longer developed, why, and what replaces it. Add a changelog entry.
+- The root README lists it under "Archive", not in its former section.
+- The rules in this file no longer apply, except: no absolute paths. Do not fix, revise or test archived work.
+- Issues for archived work are closed as `not_planned`. Labels stay.
+- To revive it, move the folder back and bring it up to the current rules.
+- Delete it only when the user says so; git history keeps it anyway.

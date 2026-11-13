@@ -5,3 +5,4 @@ __pycache__/
 # Runtime data written by tools
 *.npy
 tools/*/settings.json
+archive/*/settings.json

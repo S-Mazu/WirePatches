@@ -85,5 +85,5 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] README updated: Last updated, Changelog
 [ ] Tested with the hardware; the commit states "Tested with <device>" or "Untested"
 [ ] Runtime data (captured rooms, saved settings) is in the root .gitignore
-[ ] Root README.md lists the tool under "Tools", with its status
+[ ] Root README.md lists the tool under "Tools"
 -->
