@@ -2,7 +2,7 @@
 
 An effect: 16 kinds of items drift across the clip below with depth, gusts, tumble and eddies.
 
-Last updated: 2026-11-10
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -25,7 +25,7 @@ Leaves, hats and newspapers blown through the picture, from a light autumn breez
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
 Nothing moves by itself: `Clock` drives all motion. If the clock stops, everything stops, eddies included. Start with phase source Timeline, Duration 1000 s, In 0, Out 1000. BPM Sync or FFT work as well.
 
@@ -33,8 +33,8 @@ Nothing moves by itself: `Clock` drives all motion. If the clock stops, everythi
 
 All ranges are deliberately wide; the extremes are safe.
 
-- `Clock` (0 to 1000, default 0).
 - `Scale` (0 to 10, default 1): size of everything relative to the output height.
+- `Clock` (0 to 1000, default 0).
 
 **Physics**
 - `Wind Strength` (0 to 10, default 0.3), `Wind Direction (°)` (0 to 360, default 0 = right, 90 = up).
@@ -85,6 +85,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-10: Revised to the current rules (#40). Now an effect over the clip below. Items grouped in themes with Amount and Color side by side; new item Newspaper. New `Eddies`, `Eddy Size`, `Depth Haze` and `Scale`; the area follows the aspect ratio. `Wind Clock (x)` is now `Clock`; `Overlay Opacity` and `Backdrop` removed.
 
 ---
