@@ -43,14 +43,14 @@ All ranges are deliberately wide; the extremes are safe.
 - `Spread` (0 to 5, default 0.3): random scatter around `Drop X` / `Drop Y`, relative to the frame. 0 = always the same point; from about 1 on, the drops land all over the frame.
 - `Drop Size` (0 to 0.5, default 0.03): size of the object and its crater.
 - `Drop Strength` (0 to 5, default 1): how hard it hits: height of the waves and of the splash.
-- `Fall Time (s)` (0 to 5, default 0.4): seconds from release to impact. 0 = instant.
+- `Fall Time` (0 to 5, default 0.4): seconds from release to impact. 0 = instant.
 - `Heart Color`.
 
 A drop is a small lens that shows the picture below upside down. Stones and hearts tumble while they fall. Each object casts a shadow that meets it at the impact.
 
 **Physics**
 - `Wave Speed` (0 to 5, default 0.4): how fast the rings run, in output heights per second at `Scale` 1.
-- `Wave Life (s)` (0.05 to 60, default 6): seconds until the rings have faded.
+- `Wave Life` (0.05 to 60, default 6): seconds until the rings have faded.
 
 **Water**
 - `Refraction` (0 to 5, default 0.4): how much the waves bend the clip below. Where the waves bend beyond an edge, the clip is mirrored.
@@ -81,6 +81,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Wave Life (s)` → `Wave Life`, `Fall Time (s)` → `Fall Time` (#101).
 - 2026-11-13: Section `Time` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-11: Rebuilt as an effect (#51). The waves bend the clip below (`Refraction`, #81). Real time instead of frames, several objects in the air, objects Drop, Stone, Heart and Mixed with shadow, splash crown and rebound, a softer, more realistic impact. Controls renamed (`Wave Life (s)`, `Wave Speed`, `Shading`, `Glints`, `Light Color`, `Light Angle (°)`), new `Scale`. One shader in `Resource/` with a relative path (#9). `Backdrop` removed.
 

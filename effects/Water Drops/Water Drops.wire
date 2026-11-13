@@ -1472,7 +1472,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Fall Time (s)",
+				"name": "Fall Time",
 				"thumbnail_visible": true
 			},
 			"19": {
@@ -1668,7 +1668,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Wave Life (s)",
+				"name": "Wave Life",
 				"thumbnail_visible": true
 			},
 			"22": {
