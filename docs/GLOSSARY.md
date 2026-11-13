@@ -17,6 +17,7 @@ Fixed terms for control names. Every patch and every revision uses only these.
 | `Sound Input` | Audio input and its conditioning | Group `Sound Input`. `Spectrum In` is its first entry, followed by `Boost`, `Gate`, `Fade`, then patch-specific controls. |
 | `Performance Cap` | Upper limit of simultaneous items, for performance only | Default high. The README states that on very large surfaces it can limit the density. |
 | `Seed` | Random start value | |
+| `Light Source` | Where the light comes from | Angle as in "Angles": 0 = right, 90 = up, 135 = top left. Describes the position of the source, so it is not a `Direction`. |
 
 ## Naming patterns
 
@@ -31,6 +32,8 @@ Fixed terms for control names. Every patch and every revision uses only these.
 | `<Element> Density` | Population: amount per reference area (output height × output height at `Scale` 1) | Grows with the surface. |
 | `<Element> Width` | Thickness of a line (line, edge, outline, border, ray, ring) | Relative to the output height, multiplied by `Scale`; never pixels. |
 | `<Element> Width`, `<Element> Height` | Dimensions of an element, used as a pair | Relative to the output height, multiplied by `Scale`; never pixels. |
+| `<Thing> Direction` | Where something moves or points to (wind, fall, flight) | Angle as in "Angles", 0 to 360. Always where it goes, never where it comes from. |
+| `<Element> Rotation` | Orientation of an element | Angle as in "Angles", -180 to 180. 0 = the element's rest position. |
 | `<Element> Aspect` | Proportions of a shape | |
 | `<Element> Spacing` | Distance between copies | Relative to the output height, multiplied by `Scale`; never pixels. |
 | `<Element> Opacity` | Opacity of an element | Plural for several elements (`Strings Opacity`), singular for one (`Moon Opacity`). |
@@ -42,7 +45,20 @@ Fixed terms for control names. Every patch and every revision uses only these.
 | `Spread` | Random range around a point or direction | |
 | `<Property> Variation` | Random deviation per item | Stable over the item's life, as a share of the base value. Hue in degrees. |
 
+## Angles
+
+One convention for every angle in every patch:
+
+- 0 = to the right, 90 = up, 180 = to the left, 270 = down. Positive turns are counter-clockwise.
+  Example: rising smoke is 90; an element at `Rotation` 90 that pointed right now points up.
+- Directions (`<Thing> Direction`): 0 to 360, where something goes.
+- Rotations (`<Element> Rotation`): -180 to 180, one full turn with the rest position in the middle.
+  Amounts of turning that are not an orientation (e.g. `Blade Twist`) may exceed one turn.
+- Spans (`Spread`, `<Element> Fill`, `Hue Range`): 0 to 360; `<Property> Variation` 0 to 180.
+- Hue: 0 to 360 on the color wheel.
+- Not used as labels: `Angle`, `Dir`.
+
 ## Units
 
-- Time is in seconds; labels carry no unit for it.
-- Other units are named in the label: `(°)`, `(Hz)`.
+- Time is in seconds and angles are in degrees; labels carry no unit for them.
+- Other units are named in the label: `(Hz)`.

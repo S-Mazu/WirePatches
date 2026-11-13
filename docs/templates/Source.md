@@ -54,7 +54,7 @@ Or explain why the patch has no `Clock` and how another timing control is used (
 
 <!-- Order as in Arena: `Scale`, `Clock` (if used), then the groups. Sources have a group `Backdrop` (`Backdrop On`, `Backdrop Color`).
 Group as in the Arena UI. Give the range and the effect. Ranges are deliberately wide; state that extremes are safe.
-Use only the glossary terms and naming patterns (docs/GLOSSARY.md). Time is in seconds, without unit in the label. -->
+Use only the glossary terms and naming patterns (docs/GLOSSARY.md). Time in seconds and angles in degrees, without unit in the label. -->
 
 - `Scale` (0 to <max>, default 1): size of all elements relative to the output height.
 
