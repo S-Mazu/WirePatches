@@ -54,8 +54,8 @@ All ranges are deliberately wide; the extremes are safe.
 - `Flame Core`, `Flame Mid`, `Flame Tip`: colors from the hottest to the coolest part.
 
 **Smoke**
-- `Smoke Amount` (0 to 10, default 0.5): how much smoke rises. Above 2 it stays longer and collects under the top of the frame; at 10 the source fills the frame with a dense fog.
-- `Smoke Life (s)` (0.1 to 120, default 4): seconds until smoke dissolves.
+- `Smoke Density` (0 to 10, default 0.5): how much smoke rises. Above 2 it stays longer and collects under the top of the frame; at 10 the source fills the frame with a dense fog.
+- `Smoke Life` (0.1 to 120, default 4): seconds until smoke dissolves.
 - `Smoke Color`.
 
 **Edges**
@@ -86,6 +86,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Smoke Amount` → `Smoke Density`, `Smoke Life (s)` → `Smoke Life` (#99).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-08: Wind now carries all of the smoke: none stays behind or moves against it. Flames stay smooth at a `Scale` above 1.
 - 2026-11-08: Speed and Swirl no longer tear the fluid apart. Fire and fog now only grow from the source. Smoke gets depth at high density. Renamed `Fire Amount` to `Fire Strength` and `Flame Length` to `Flame Reach`. Removed `Gaps` and `Gap Pattern`.
