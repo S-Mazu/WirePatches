@@ -47,7 +47,7 @@ All ranges are deliberately wide; the extremes are safe.
 
 **Strings**
 - `String Angle (°)` (-180 to 180, default 0): turns all strings, stepless. 0 = vertical, 90 = horizontal.
-- `Spacing` (0 to 2, default 0.18): distance between the strings, as a share of the frame across them.
+- `String Spacing` (0 to 2, default 0.18): distance between the strings, as a share of the frame across them.
 - `Line Width` (0 to 1, default 0.033): width of the E string; the others get thinner.
 - `Strings Opacity` (0 to 1, default 1).
 - `E String Color`, `A String Color`, `D String Color`, `G String Color`.
@@ -57,7 +57,7 @@ All ranges are deliberately wide; the extremes are safe.
 - `Spectrum In`: the audio source, see above.
 - `Boost` (0 to 20, default 1): raises all bands.
 - `Gate` (0 to 1, default 0.05): band levels below this stay silent.
-- `Fade (s)` (0.01 to 5, default 0.3): time to fall back. G fades a bit faster.
+- `Fade` (0.01 to 5, default 0.3): time to fall back. G fades a bit faster.
 
 The analysis learns the used frequency range on its own and splits it into the four bands.
 
@@ -69,7 +69,7 @@ The analysis learns the used frequency range on its own and splits it into the f
 
 - Follows the surface model: height is the reference, nothing is stretched.
 - `Scale`: 1 for any single screen, also 4K; ⅓ for three stacked to keep the string sizes.
-- Exceptions: none. The four strings spread with the frame through `Spacing`, as a zone.
+- Exceptions: none. The four strings spread with the frame through `String Spacing`, as a zone.
 - Anchor: center. The string ends are fixed at the frame edges at any angle, so `Waves` spreads over the whole frame; a longer string shows longer waves.
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip. On narrow surfaces lower `Amplitude`, or the strings overlap.
 - Size-dependent parameters: line width, swing and winding scale with the output height and `Scale`. Winding fades out near pixel size.
@@ -92,6 +92,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Spacing` → `String Spacing`, `Fade (s)` → `Fade` (#102).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#41). From 39 to 22 controls; band, range and FFT settings are now internal, and `Boost`, `Gate` and `Fade (s)` remain. New `Waves` and stepless `String Angle (°)`. `Motion Blur` is a real shutter and replaces `Blur` and `Twist`. `Scale` is new, and sizes follow the output height. The swing phase runs in the analysis state: no jump at the top of the hour or when `Vibe Speed (Hz)` changes. Removed `Center X`, `Edge Soft (px)`, `Node Top`, `Node Bottom`, `Show Meter`, `Winding Pitch`, `Winding Depth`. Shaders move to `Resource/` with relative paths (#2). Metadata filled in, README added.
 
