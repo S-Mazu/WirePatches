@@ -52,7 +52,7 @@ All ranges are deliberately wide; the extremes are safe.
 **Rings**
 - `Ring Count` (0 to 16, default 4): fractional values fade the next ring in. 0 = no rings.
 - `Ring Start` (0 to 10, default 0.3): radius of the first ring.
-- `Ring Gap` (0.01 to 5, default 0.2): distance between rings.
+- `Ring Spacing` (0.01 to 5, default 0.2): distance between rings.
 - `Ring Width` (0 to 2, default 0.02).
 - `Ring Style` (default Arch): Arch, Stepped, Chevron, Scallop, Beads, Double, Key.
 - `Ring Color`.
@@ -78,6 +78,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Glossary names: `Ring Gap` → `Ring Spacing` (#103).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-09: First version, split from Deco Marquee v2 (#42, #25). One fan per effect, new ray and ring styles, `Scale`.
 
