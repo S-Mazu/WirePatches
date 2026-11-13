@@ -2,7 +2,7 @@
 
 A source patch with alpha: an overlay that shows which of the 12 tones of the octave are sounding right now, as keys, pie, ring, grid or circles. It does not detect a key.
 
-Last updated: 2026-11-06
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -25,6 +25,10 @@ Makes harmony visible during a show: the tones of the music light up in their ow
 
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. In Arena set `Spectrum In` to External and choose the audio input.
+
+## Timing
+
+There is no `Clock`: the display follows the sound in real time. `Fade (s)` sets how fast a tone fades after it stops sounding.
 
 ## Parameters
 
@@ -86,6 +90,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#49). The layout box reads the aspect ratio at runtime instead of a fixed 16:9; `Scale` and a camera follow the surface model. `Backdrop On` becomes Off / On, `Line Width` and `Layout Width`/`Layout Height` get wider ranges, the group `Mix` is dissolved into `Colors` and `Layout`, and `Sound Input` comes first. Metadata filled in, README added.
 
 ---
