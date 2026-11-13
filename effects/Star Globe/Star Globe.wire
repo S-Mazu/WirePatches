@@ -380,7 +380,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Star Globe - glowing points over the clip below: fireflies that roam the whole frame, or stars caught in a vessel that fall, bounce, collide and simmer. Runs in real time, independent of the frame rate. Put a black clip below for points on black. Scale sizes everything relative to the output height. Physics: Gravity and Gravity Dir (270 = down), Bounce (how much speed a point keeps at the wall and at other points), Air Drag, Simmer (random kicks, makes a pile boil), Wander (points fly about on their own, like fireflies), Collide (points push each other apart; 0 = they pass through each other). Container: Shape (Frame = the edges of the output, Circle, Polygon, Heart), Corners (for Polygon), Container X and Container Y (0 = centre, -1 and 1 = frame edges), Size (radius in output heights), Width (1 = round, larger = wider), Rotation, Line Width (0 hides the line; the points alone then show the shape), Line Color. Stars: Amount (up to 512; a new point appears inside the container), Star Size (radius of the solid core, also the collision size), Glow Size, Star Color, Glow Color, Twinkle (each point flickers on its own). Shader: Resource/StarGlobe.fs.",
+			"description": "Star Globe - glowing points over the clip below: fireflies that roam the whole frame, or stars caught in a vessel that fall, bounce, collide and simmer. Runs in real time, independent of the frame rate. Put a black clip below for points on black. Scale sizes everything relative to the output height. Physics: Fall Strength and Fall Direction (where the points fall to: 0 = right, 90 = up, 270 = down), Bounce (how much speed a point keeps at the wall and at other points), Air Drag, Simmer (random kicks, makes a pile boil), Wander (points fly about on their own, like fireflies), Collide (points push each other apart; 0 = they pass through each other). Container: Container Shape (Frame = the edges of the output, Circle, Polygon, Heart), Corner Count (for Polygon), Container X and Container Y (0 = centre, -1 and 1 = frame edges), Container Size (radius in output heights), Container Aspect (1 = round, larger = wider), Container Rotation (counter-clockwise), Line Width (0 hides the line; the points alone then show the shape), Line Color. Stars: Star Count (up to 512; a new point appears inside the container), Star Size (radius of the solid core, also the collision size), Glow Size, Star Color, Glow Color, Star Twinkle (each point flickers on its own). Shader: Resource/StarGlobe.fs.",
 			"displayName": "Star Globe",
 			"identifier": "411754f4-84ed-4d7a-873a-c9ea523f6660",
 			"licenseName": "Unlicense",
@@ -1068,7 +1068,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Gravity",
+				"name": "Fall Strength",
 				"thumbnail_visible": true
 			},
 			"12": {
@@ -1140,7 +1140,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Gravity Dir (°)",
+				"name": "Fall Direction",
 				"thumbnail_visible": true
 			},
 			"13": {
@@ -1612,7 +1612,7 @@
 					"option3-label",
 					"option3-value"
 				],
-				"name": "Shape",
+				"name": "Container Shape",
 				"thumbnail_visible": true
 			},
 			"19": {
@@ -1684,7 +1684,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Corners",
+				"name": "Corner Count",
 				"thumbnail_visible": true
 			},
 			"20": {
@@ -1900,7 +1900,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Size",
+				"name": "Container Size",
 				"thumbnail_visible": true
 			},
 			"23": {
@@ -1972,7 +1972,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Width",
+				"name": "Container Aspect",
 				"thumbnail_visible": true
 			},
 			"24": {
@@ -1995,11 +1995,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360.0
+						"value": 180.0
 					},
 					"min": {
 						"type": "float",
-						"value": -360.0
+						"value": -180.0
 					},
 					"unit": {
 						"type": "integer",
@@ -2044,7 +2044,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Rotation (°)",
+				"name": "Container Rotation",
 				"thumbnail_visible": true
 			},
 			"25": {
@@ -2240,7 +2240,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Amount",
+				"name": "Star Count",
 				"thumbnail_visible": true
 			},
 			"28": {
@@ -2560,7 +2560,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Twinkle",
+				"name": "Star Twinkle",
 				"thumbnail_visible": true
 			},
 			"33": {
