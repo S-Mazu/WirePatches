@@ -988,11 +988,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 360.0
+						"value": 180.0
 					},
 					"min": {
 						"type": "float",
-						"value": -360.0
+						"value": -180.0
 					},
 					"unit": {
 						"type": "integer",
@@ -1037,7 +1037,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Blade Rotation (°)",
+				"name": "Blade Rotation",
 				"thumbnail_visible": true
 			},
 			"16": {
@@ -1109,7 +1109,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Blade Twist (°)",
+				"name": "Blade Twist",
 				"thumbnail_visible": true
 			},
 			"17": {

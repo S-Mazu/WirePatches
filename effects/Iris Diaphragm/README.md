@@ -40,8 +40,8 @@ All ranges are deliberately wide; the extremes are safe.
 **Iris**
 - `Iris X`, `Iris Y` (-2 to 2, default 0): centre of the opening. 0 = centre, -1 and 1 = edges of the frame.
 - `Blade Count` (3 to 32, default 9).
-- `Blade Rotation (°)` (-360 to 360, default 0): turns all blades.
-- `Blade Twist (°)` (-360 to 360, default 60): how far the blades turn while closing; they turn back while opening.
+- `Blade Rotation` (-180 to 180, default 0): turns all blades; positive values turn counter-clockwise.
+- `Blade Twist` (-360 to 360, default 60): how far the blades turn while closing; they turn back while opening.
 - `Blade Curve` (-5 to 5, default 0.6): bends the blades into a pinwheel; 0 = straight, negative = the other way.
 
 **Look**
@@ -74,6 +74,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Angle convention (#89): `Blade Rotation` range -180 to 180; no degree unit in `Blade Rotation` and `Blade Twist`.
 - 2026-11-13: Glossary names: `Center X` → `Iris X`, `Center Y` → `Iris Y` (#104).
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-10: The frame is always closed outside the opening, also with few, strongly bent blades.
