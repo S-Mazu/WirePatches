@@ -46,12 +46,12 @@ All ranges are deliberately wide; the extremes are safe.
 - `Motion Blur` (0 to 1, default 0.6): shutter time. At 1 the string sweeps its whole swing per frame.
 
 **Strings**
-- `String Angle (°)` (-180 to 180, default 0): turns all strings, stepless. 0 = vertical, 90 = horizontal.
+- `String Rotation` (-180 to 180, default 0): turns all strings, stepless and counter-clockwise. 0 = vertical, 90 = horizontal.
 - `String Spacing` (0 to 2, default 0.18): distance between the strings, as a share of the frame across them.
 - `Line Width` (0 to 1, default 0.033): width of the E string; the others get thinner.
 - `Strings Opacity` (0 to 1, default 1).
 - `E String Color`, `A String Color`, `D String Color`, `G String Color`.
-- `Light Angle (°)` (-180 to 180, default -35), `Shine` (0 to 1, default 0.7): give the round look, the highlight and the shadow.
+- `Light Source` (0 to 360, default 135): where the light comes from, 0 = right, 90 = up; it stays fixed in the frame when the strings turn. `Shine` (0 to 1, default 0.7): give the round look, the highlight and the shadow.
 
 **Sound Input**
 - `Spectrum In`: the audio source, see above.
@@ -92,6 +92,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Angle convention (#89): `String Angle` → `String Rotation`, now counter-clockwise. `Light Angle` → `Light Source`: a direction in the frame (default 135 = top left, as before), fixed when the strings turn.
 - 2026-11-13: Glossary names: `Spacing` → `String Spacing`, `Fade (s)` → `Fade` (#102).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-06: Revision to the current rules (#41). From 39 to 22 controls; band, range and FFT settings are now internal, and `Boost`, `Gate` and `Fade (s)` remain. New `Waves` and stepless `String Angle (°)`. `Motion Blur` is a real shutter and replaces `Blur` and `Twist`. `Scale` is new, and sizes follow the output height. The swing phase runs in the analysis state: no jump at the top of the hour or when `Vibe Speed (Hz)` changes. Removed `Center X`, `Edge Soft (px)`, `Node Top`, `Node Bottom`, `Show Meter`, `Winding Pitch`, `Winding Depth`. Shaders move to `Resource/` with relative paths (#2). Metadata filled in, README added.

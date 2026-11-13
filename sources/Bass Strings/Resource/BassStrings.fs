@@ -18,7 +18,7 @@
         {"NAME": "color2", "TYPE": "color", "DEFAULT": [0.86, 0.82, 0.75, 1.0]},
         {"NAME": "color3", "TYPE": "color", "DEFAULT": [0.86, 0.82, 0.75, 1.0]},
         {"NAME": "color4", "TYPE": "color", "DEFAULT": [0.86, 0.82, 0.75, 1.0]},
-        {"NAME": "lightAngle", "TYPE": "float", "DEFAULT": -35.0, "MIN": -180.0, "MAX": 180.0},
+        {"NAME": "lightAngle", "TYPE": "float", "DEFAULT": 135.0, "MIN": 0.0, "MAX": 360.0},
         {"NAME": "shine", "TYPE": "float", "DEFAULT": 0.7, "MIN": 0.0, "MAX": 1.0},
         {"NAME": "backdropOn", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0},
         {"NAME": "backdropColor", "TYPE": "color", "DEFAULT": [0.42, 0.08, 0.04, 1.0]}
@@ -63,7 +63,7 @@ void main() {
     vec2 halfExt = 0.5 * res * pix;
 
     // string space: y along the strings, x across them. The strings always span the whole frame.
-    float ang = radians(stringAngle);
+    float ang = -radians(stringAngle);                      // positive String Rotation turns counter-clockwise
     float sa = sin(ang), ca = cos(ang);
     float xs = dot(p, vec2(ca, -sa));
     float ys = dot(p, vec2(sa, ca));
@@ -71,8 +71,10 @@ void main() {
     float spanY = abs(halfExt.x * sa) + abs(halfExt.y * ca);
     float s = clamp((ys + spanY) / max(2.0 * spanY, 1e-6), 0.0, 1.0);
 
+    // Light Source: where the light comes from in the frame (0 = right, 90 = up). Only its part across
+    // the strings shades them, so the light stays fixed in the frame when the strings turn.
     float la = radians(lightAngle);
-    vec3 L = normalize(vec3(sin(la), 0.0, cos(la)));
+    vec3 L = normalize(vec3(dot(vec2(cos(la), sin(la)), vec2(ca, -sa)), 0.0, 1.0));
     vec3 Hv = normalize(L + vec3(0.0, 0.0, 1.0));
     float k = max(waves, 0.0);
     float shutter = clamp(motionBlur, 0.0, 1.0) * 0.5;       // 1 = half a cycle: the string sweeps its whole swing
