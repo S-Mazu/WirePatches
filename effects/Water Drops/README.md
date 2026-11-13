@@ -57,7 +57,7 @@ A drop is a small lens that shows the picture below upside down. Stones and hear
 - `Shading` (0 to 5, default 1): how plastic the waves look.
 - `Glints` (0 to 5, default 1): sun glints on the crests.
 - `Light Color`: sky reflection and light on the waves.
-- `Light Angle (°)` (0 to 360, default 135): direction the light comes from; it also sets where the shadows fall.
+- `Light Source` (0 to 360, default 135): where the light comes from, 0 = right, 90 = up; it also sets where the shadows fall.
 
 ## Any surface
 
@@ -81,6 +81,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Angle convention (#89): `Light Angle` renamed to `Light Source`; same values.
 - 2026-11-13: Glossary names: `Wave Life (s)` → `Wave Life`, `Fall Time (s)` → `Fall Time` (#101).
 - 2026-11-13: Section `Time` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-11: Rebuilt as an effect (#51). The waves bend the clip below (`Refraction`, #81). Real time instead of frames, several objects in the air, objects Drop, Stone, Heart and Mixed with shadow, splash crown and rebound, a softer, more realistic impact. Controls renamed (`Wave Life (s)`, `Wave Speed`, `Shading`, `Glints`, `Light Color`, `Light Angle (°)`), new `Scale`. One shader in `Resource/` with a relative path (#9). `Backdrop` removed.
