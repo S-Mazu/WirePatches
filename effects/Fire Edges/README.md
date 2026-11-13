@@ -43,7 +43,7 @@ All ranges are deliberately wide; the extremes are safe.
 **Physics**
 - `Speed` (0 to 10, default 1): 0 freezes the image, below 1 is slow motion (a lava lamp at low values). Above 1 the flow gets stronger; the fluid does not break up.
 - `Rise` (0 to 5, default 1): how strongly hot gas climbs. 0 lets the smoke hang in the air.
-- `Wind Direction (°)` (0 to 360, default 0): where the wind blows to; 0 = right, 90 = up.
+- `Wind Direction` (0 to 360, default 0): where the wind blows to; 0 = right, 90 = up.
 - `Wind Strength` (0 to 10, default 0): carries all flames and all smoke along together.
 - `Swirl` (0 to 5, default 1): the large rolling eddies in flames and smoke. The fine eddies stay the same at every value.
 
@@ -86,6 +86,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: Angle convention (#89): no degree unit in `Wind Direction`.
 - 2026-11-13: Glossary names: `Smoke Amount` → `Smoke Density`, `Smoke Life (s)` → `Smoke Life` (#99).
 - 2026-11-13: New section `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-08: Wind now carries all of the smoke: none stays behind or moves against it. Flames stay smooth at a `Scale` above 1.
