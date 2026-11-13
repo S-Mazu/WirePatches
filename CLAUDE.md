@@ -34,142 +34,39 @@ Rules:
 
 ```
 /
-├── CLAUDE.md          this file
-├── README.md          overview of all patches (one line each, link to patch folder)
+├── CLAUDE.md                 this file
+├── README.md                 overview: sources, effects, examples, tools (one line each, link to the folder)
 ├── LICENSE
-├── _template/         README templates and checklists: Source.md, Effect.md, Tool.md
-└── <Patch Name>/      one folder per patch, self-contained
-    ├── <Patch Name>.wire
-    ├── README.md
-    └── Resource/      all other required files (*.fs, *.py, images, …), as Wire's Consolidate lays them out
+├── .gitignore
+├── sources/<Patch Name>/     source patches, one folder per patch, self-contained
+│   ├── <Patch Name>.wire
+│   ├── README.md
+│   └── Resource/             all other required files (*.fs, *.py, images, …), as Wire's Consolidate lays them out
+├── effects/<Patch Name>/     effect patches, same layout as sources
+├── examples/<Example Name>/  patches that demonstrate a technique (e.g. Scaler)
+├── tools/<Tool Name>/        programs outside Wire that feed patches (e.g. a sensor bridge)
+└── docs/
+    ├── PATCH_RULES.md        rules for patches, examples and tools
+    ├── GLOSSARY.md           fixed control names, naming patterns, units
+    └── templates/            README templates and checklists: Source.md, Effect.md, Example.md, Tool.md
 ```
 
-## Patch rules
+Top-level folders are lowercase. Patch, example and tool folders keep their names with spaces.
 
-### Self-contained
-- A patch folder contains **everything** required to use the patch: `.wire`, ISF shaders (`.fs`), scripts, images, other resources.
-- No dependencies on files in other patch folders or anywhere outside the folder.
-- Copying the folder to any location on any machine must be enough.
+## Patch rules and glossary
 
-### Paths
-- **No absolute paths**, anywhere: not in `.wire` files, shaders, scripts or docs.
-- References to resources must be relative to the patch folder.
-- Wire stores ISF shader references in `.wire` files as `"type": "resourceIsf"` → `"value": { "path": { "main": "…" } }`.
-- `main` is resolved relative to the `.wire` file and reads `Resource/<Shader>.fs`. Wire stores a shader set by absolute path as absolute, so run the check below after every rebuild.
-- Check before every commit:
-  ```bash
-  grep -alE '(^|[^A-Za-z])[A-Za-z]:[\\/]|/Users/|/home/|OneDrive' */*.wire */*.fs */*.py */Resource/*.fs */Resource/*.py 2>/dev/null
-  ```
-  This must return nothing.
+The rules live in `docs/` so that colleagues can read them too. They are binding for Claude:
 
-### Surface independence
-Every patch must work on any surface:
-- a single projector
-- three projectors side by side or stacked
-- an LED wall of any size and aspect ratio
+@docs/PATCH_RULES.md
 
-#### Surface model
-1. **Height is the reference.**
-   - The image is designed for one screen of any height.
-   - On another surface, everything scales with the output height. The width only decides how much of the scene is visible; nothing is ever stretched.
-   - Wire's shape and mesh coordinates follow the shorter side (portrait: x ±1, y ±1/aspect). To make height the reference and apply `Scale`, render through one `Camera 2D` with `zoom = clamp(1/aspect, 1, 1000000) × safeScale`, where `safeScale = clamp(Scale, 0.001, 1000)`. The visible area is then y ±1/`safeScale`, x ±aspect/`safeScale`.
-2. **`Scale` turns "bigger" into "more scene".**
-   - `Scale` multiplies all element sizes, distances and speeds; default 1.
-   - The choice is made per setup in Arena, not per patch.
-3. **The scene must extend sideways.** Wide surfaces need content across the whole width (generated, repeating or distributed), not one centered picture with empty sides.
-4. **Elements are anchored.** Each element has an anchor (bottom, top, left, right or center). Its offset from the anchor is in reference units, multiplied by `Scale`. Example: the horizon sits at a fixed offset above the bottom edge, so with `Scale` ⅓ the city stays at the bottom and the sky grows.
-   - Percent of the actual frame only for zones and paths that are meant to grow with the frame (e.g. edge zones, the moon's path across the surface).
-
-Rules:
-- Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions.
-- No pixel units in controls (`(px)`). Sizes are relative to the height, multiplied by `Scale`.
-- A clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip. `meta.resolution` has no effect in Arena. Document this in the README.
-
-### Controls
-- **No duplication of Arena**: no controls for what Arena already does for the whole clip (global opacity, position, scale, rotation). Controls that act on individual elements inside the patch are fine (e.g. `Strings Opacity`).
-- **Consistent names**: the same thing has the same name in every patch. Use only the terms in the glossary below. New terms are added only after the names have been extracted from the patches and reconciled; never guessed.
-- **Label length**: at most 20 characters. Arena scales labels and cuts them off at about 19 characters; one clipped letter is accepted.
-- **Grouping**: controls that belong together are grouped.
-- **Wide ranges**: ranges are always wider than needed, to allow creative use.
-- **NaN-safe**: invalid values (NaN, Inf, division by zero, `log`/`sqrt`/`pow` of invalid input, `normalize` of a zero vector) are caught inside the patch, never by narrowing a slider range. Every patch must stay stable at all slider extremes.
-
-### Source and effect
-- Source: renders its own image.
-- Effect: processes the clip below. `Texture In` directly after `Scale` and `Clock`. No `Backdrop`.
-
-### Glossary
-Fixed terms. Every revision uses only these.
-
-| Term | Meaning | Rule |
-|---|---|---|
-| `Clock` | Controls the speed of the patch | Label exactly `Clock`. Directly after `Scale`, not in any group. Only for patches with a sequence (e.g. Rolling Landscape). Physical effects whose look breaks when slowed down or sped up (e.g. fire) have no `Clock`. Decide case by case for effects where slow motion just shows less action (e.g. Autumn Wind). |
-| `Backdrop` | Background behind the source | Group `Backdrop` containing `Backdrop On` and `Backdrop Color`. |
-| `Physics` | All physics and motion settings of a patch | One group `Physics` holding all of them. |
-| `Scale` | Size of all elements relative to the output height (surface model) | Label exactly `Scale`. Default 1, wide range. First parameter of every patch, not in any group. |
-| `Sound Input` | Audio input and its conditioning | Group `Sound Input`. `Spectrum In` is its first entry, followed by `Boost`, `Gate`, `Fade`, then patch-specific controls. |
-| `Performance Cap` | Upper limit of simultaneous items, for performance only | Default high. The README states that on very large surfaces it can limit the density. |
-| `Seed` | Random start value | |
-
-#### Naming patterns
-`<Element>` is the thing the control acts on (e.g. `Fan`, `Leaf`, `Ring`). If the prefixed label exceeds 20 characters, drop the prefix; the group name identifies the element.
-
-| Pattern | Meaning | Rule |
-|---|---|---|
-| `<Element> X`, `<Element> Y` | Position of an element | |
-| `<Element> Z` | Depth | Only for depth in a scene with parallax. |
-| `<Element> Size` | Size of an element | Relative to the output height, multiplied by `Scale`. |
-| `<Element> Count` | Explicit number of parts of one object (rays, blades, layers, copies) | Does not grow with the surface. |
-| `<Element> Density` | Population: amount per reference area (output height × output height at `Scale` 1) | Grows with the surface. |
-| `<Element> Width` | Thickness of a line (line, edge, outline, border, ray, ring) | Relative to the output height, multiplied by `Scale`; never pixels. |
-| `<Element> Width`, `<Element> Height` | Dimensions of an element, used as a pair | Relative to the output height, multiplied by `Scale`; never pixels. |
-| `<Element> Aspect` | Proportions of a shape | |
-| `<Element> Spacing` | Distance between copies | Relative to the output height, multiplied by `Scale`; never pixels. |
-| `<Element> Opacity` | Opacity of an element | Plural for several elements (`Strings Opacity`), singular for one (`Moon Opacity`). |
-| `<Element> Color` | Color of an element | |
-| `<Element> Life` | Lifetime of emitted elements | |
-| `<Element> On` | Switches an element on or off | |
-| `Show <X>` | Helper view or overlay (`Show Input`, `Show Meter`) | |
-| `Scatter` | Random offset per copy | Stable over time, in reference units multiplied by `Scale`. |
-| `Spread` | Random range around a point or direction | |
-| `<Property> Variation` | Random deviation per item | Stable over the item's life, as a share of the base value. Hue in degrees. |
-
-#### Units
-- Time is in seconds; labels carry no unit for it.
-- Other units are named in the label: `(°)`, `(Hz)`.
-
-### Metadata
-Every `.wire` file has these fields filled in `patch.meta`:
-
-| Field | Value |
-|---|---|
-| `author` | `Stefan Mazur` |
-| `mail` | `S.Mazur@cati-co.de` |
-| `url` | `https://github.com/S-Mazu/WirePatches` |
-
-`identifier` must be unique per patch.
-
-### Naming and versions
-- Folder name = patch name = `.wire` file name (`Patch Name/Patch Name.wire`).
-- **No version suffixes** (`v2`) in folder or file names. Git history is the version history; tag releases if needed.
-- If two variants really must coexist, give them names that say how they differ.
-
-### Patch description inside Wire
-- The patch-level `"description"` field in the `.wire` file is the in-app documentation. Keep it consistent with the patch README.
-
-## Patch README
-
-Every patch folder has a `README.md` based on [`_template/Source.md`](_template/Source.md) or [`_template/Effect.md`](_template/Effect.md). The templates define the sections and the pre-commit checklist.
-
-Changes to one of the two templates are applied to the other in the same commit.
-
-**Whenever a patch is changed, update its README in the same commit**, including `Last updated` and the changelog.
+@docs/GLOSSARY.md
 
 ## Editing `.wire` files directly
 
 - `.wire` is JSON (`formatVersion` 1.1.0 at the time of writing), tab-indented. Keep the formatting to keep diffs readable.
 - Validate after every edit:
   ```bash
-  python3 -m json.tool "<Patch>/<Patch>.wire" > /dev/null
+  python3 -m json.tool "<sources|effects|examples>/<Patch>/<Patch>.wire" > /dev/null
   ```
 - Node IDs and `connections` (`"from": [id, "outlet"]`, `"to": [id, "inlet"]`) must stay consistent. Do not renumber nodes.
 - Prefer building and modifying patches in Wire via MCP. Edit JSON by hand only for small, mechanical changes (paths, descriptions, default values).
@@ -186,8 +83,9 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 - **Labels** (lowercase; names are case-sensitive):
   - Type: `bug`, `enhancement`, `documentation`, `idea`, `question`, `invalid`.
   - Patch: `patch:<name>`. `<name>` is the patch name without version suffix, lowercase, with spaces replaced by `_`. Examples: `Autumn Wind` → `patch:autumn_wind`, `Deco Marquee v2` → `patch:deco_marquee`. Description: "Related to Patch <Patch Name>".
+  - Example: `example:<name>`, Tool: `tool:<name>`, built the same way. Descriptions: "Related to Example <Name>", "Related to Tool <Name>".
   - Workflow: `claude` marks work assigned to Claude (see below). `stefan` marks work for the user; Claude adds it, and also assigns the issue to `S-Mazu`.
-  - Not every patch has a label yet. Claude cannot create labels; if one is missing, ask the user.
+  - Not every patch, example or tool has a label yet. Claude cannot create labels; if one is missing, ask the user.
 - **Label `claude`**: the user assigns an issue to Claude by adding this label.
   - At the start of every planning or implementation phase, list the open issues labeled `claude` and bring them up with the user.
   - The label is a request to discuss, not permission to act. Agree on scope with the user before starting work.
@@ -198,7 +96,8 @@ All bugs, tasks and ideas live in GitHub Issues in `S-Mazu/WirePatches`. There i
 ## Commits
 
 - English, imperative mood, prefixed with the patch name where applicable: `Twirl: fix aspect handling`.
-- Keep `README.md` (root) in sync when adding, renaming or removing a patch.
+- Keep `README.md` (root) in sync when adding, renaming, moving or removing a patch, example or tool.
+- Change `docs/PATCH_RULES.md` and `docs/GLOSSARY.md` only when the user explicitly instructs it, like this file.
 - One branch per task (issue or instruction), named `claude/<topic>`. In a cloud session, use the branch the session assigns.
 - One commit per patch, referencing its issue with `Refs #<n>`.
 - One PR per branch, closing its issues with `Fixes #<n>`.

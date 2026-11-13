@@ -2,7 +2,7 @@
 
 An example source patch that shows how our patches adapt to any output surface: one projector, several projectors next to each other or on top of each other, or an LED wall of any shape. It has no show content. You load it to see the idea working, and you copy its nodes into your own patch.
 
-Last updated: 2026-11-08
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -227,7 +227,7 @@ You choose this for each show in Arena. It does not depend on the resolution of 
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. To change it, set `Width`/`Height` on the clip in Arena or reload the clip.
 - Size-dependent parameters: all shapes scale with the output height and `Scale`.
 
-The full rules are in the section "Surface model" in [CLAUDE.md](../CLAUDE.md).
+The full rules are in the section "Surface model" in [docs/PATCH_RULES.md](../../docs/PATCH_RULES.md).
 
 Tested sizes (in Wire):
 
@@ -243,10 +243,11 @@ Tested sizes (in Wire):
 
 ## Known issues
 
-See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=is%3Aissue+is%3Aopen+label%3Apatch%3Ascaler).
+See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=is%3Aissue+is%3Aopen+label%3Aexample%3Ascaler).
 
 ## Changelog
 
+- 2026-11-13: Moved to `examples/Scaler/`; the surface model rules moved to `docs/PATCH_RULES.md`; label `example:scaler` (#88).
 - 2026-11-08: The picture now explains each element and how to try it. The README explains the logic and how to use it in your own patch.
 - 2026-11-06: First version.
 

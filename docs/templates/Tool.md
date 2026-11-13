@@ -4,7 +4,8 @@ TEMPLATE FOR A TOOL README
 For programs that run outside Wire and feed patches (e.g. a sensor bridge).
 
 How to use:
-1. Copy this file into the tool folder as README.md.
+1. Create the tool folder `tools/<Tool Name>/` and copy this file into it as README.md.
+   Name the tool by its function, not by the device (docs/PATCH_RULES.md, "Examples and tools").
 2. Replace every <placeholder>, then delete all HTML comments (including this one).
 3. Before committing, work through the checklist at the end of this file.
 -->
@@ -78,10 +79,11 @@ CHECKLIST BEFORE COMMIT (delete this block)
 
 [ ] All required files are in this folder; no references to other folders
 [ ] No absolute paths, no hard-coded user folders
-[ ] All dependencies listed with versions
+[ ] All dependencies listed with versions in requirements.txt
 [ ] Starts on a fresh machine with the installation steps above
 [ ] Output section matches what the patches expect
 [ ] README updated: Last updated, Changelog
 [ ] Tested with the hardware; the commit states "Tested with <device>" or "Untested"
-[ ] Root README.md lists the tool
+[ ] Runtime data (captured rooms, saved settings) is in the root .gitignore
+[ ] Root README.md lists the tool under "Tools", with its status
 -->

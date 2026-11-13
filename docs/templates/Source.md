@@ -2,16 +2,16 @@
 TEMPLATE FOR A PATCH README: SOURCE
 
 For patches that render their own image.
-Keep in sync with _template/Effect.md (CLAUDE.md, "Patch README").
+Keep in sync with docs/templates/Effect.md (docs/PATCH_RULES.md, "Patch README").
 
 How to use:
-1. Create a new patch in Wire and save it as `<Patch Name>/<Patch Name>.wire`.
+1. Create a new patch in Wire and save it as `sources/<Patch Name>/<Patch Name>.wire`.
 2. Copy this file into the patch folder as README.md.
 3. Replace every <placeholder>, then delete all HTML comments (including this one).
 4. Before committing, work through the checklist at the end of this file.
 
 The folder name, the patch name and the .wire file name must be identical.
-No version suffixes (v2, final, …); use git history instead.
+No version suffixes (v2, final, …) and no status; use git history instead.
 -->
 
 # <Patch Name>
@@ -46,7 +46,7 @@ Last updated: <YYYY-MM-DD>
 
 ## Timing
 
-<!-- Required. See CLAUDE.md, Glossary, "Clock". -->
+<!-- Required. See docs/GLOSSARY.md, "Clock". -->
 <Explain the use of `Clock`: what it drives, its range, the default, and a sensible start value in Arena (e.g. phase source Timeline with Duration = 1000 s); alternatives such as BPM Sync or FFT.
 Or explain why the patch has no `Clock` and how another timing control is used (e.g. real time with `Speed`).>
 
@@ -54,7 +54,7 @@ Or explain why the patch has no `Clock` and how another timing control is used (
 
 <!-- Order as in Arena: `Scale`, `Clock` (if used), then the groups. Sources have a group `Backdrop` (`Backdrop On`, `Backdrop Color`).
 Group as in the Arena UI. Give the range and the effect. Ranges are deliberately wide; state that extremes are safe.
-Use only the glossary terms and naming patterns (CLAUDE.md, "Glossary"). Time is in seconds, without unit in the label. -->
+Use only the glossary terms and naming patterns (docs/GLOSSARY.md). Time is in seconds, without unit in the label. -->
 
 - `Scale` (0 to <max>, default 1): size of all elements relative to the output height.
 
@@ -63,7 +63,7 @@ Use only the glossary terms and naming patterns (CLAUDE.md, "Glossary"). Time is
 
 ## Any surface
 
-<!-- Required. See CLAUDE.md, "Surface model". -->
+<!-- Required. See docs/PATCH_RULES.md, "Surface model". -->
 - Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched.
 - `Scale`: <recommended values, e.g. 1 for one projector, ⅓ for three stacked to keep element sizes>
 - Exceptions: <anything that does not follow the model, and why>
@@ -107,7 +107,7 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] Patch "description" in the .wire matches this README
 [ ] patch.meta: author, mail, url filled; identifier unique
 [ ] No controls duplicating Arena (global opacity/position/scale/rotation)
-[ ] `Scale` is the first parameter; `Clock` follows only if used (CLAUDE.md, Glossary)
+[ ] `Scale` is the first parameter; `Clock` follows only if used (docs/GLOSSARY.md)
 [ ] Group `Backdrop` with `Backdrop On` and `Backdrop Color`
 [ ] patch.meta.category is "source"
 [ ] Control names follow the glossary terms and naming patterns
@@ -116,6 +116,6 @@ CHECKLIST BEFORE COMMIT (delete this block)
 [ ] README updated: Last updated, Changelog
 [ ] Tested on the show machine at the sizes listed above
     (the commit states "Tested in <Wire/Arena> (<sizes>)" or "Untested")
-[ ] Root README.md lists the patch with Type "source"
+[ ] Folder is in sources/; root README.md lists the patch under "Sources"
 [ ] Label patch:<patch_name> exists (ask the repo owner)
 -->

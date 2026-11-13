@@ -4,7 +4,7 @@
 
 Made projections in Arena interactive with a Kinect v2: a Python tool sends the outlines and skeletons of people to Arena and Wire via Spout.
 
-Last updated: 2026-11-08
+Last updated: 2026-11-13
 
 **Status:** masks, bones and head were tested with people in front of the sensor. Pulling the sensor cable while running was not tested.
 
@@ -101,3 +101,8 @@ Python libraries:
 ```
 py -3.12 -m pip install kinect-next SpoutGL opencv-python numpy dearpygui
 ```
+
+## Changelog
+
+- 2026-11-13: Moved from `Kinect - Discontinued/` to `tools/Kinect/`; the status is now in this README and the root README (#88).
+- 2026-11-08: Discontinued.

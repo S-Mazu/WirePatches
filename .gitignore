@@ -1,0 +1,7 @@
+# Python
+__pycache__/
+*.pyc
+
+# Runtime data written by tools
+*.npy
+tools/*/settings.json
