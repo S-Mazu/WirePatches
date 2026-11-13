@@ -195,10 +195,10 @@
 			},
 			"roots": [
 				{
-					"node": 10
+					"node": 11
 				},
 				{
-					"node": 11
+					"node": 10
 				},
 				{
 					"node": 0
@@ -226,7 +226,7 @@
 			"description": "Iris Diaphragm - a mechanical blade iris that closes over the clip below. Clock drives it: 0 = open, 50 = closed, 100 = open again; animate it with the clip Timeline or BPM Sync. Scale sizes the edges relative to the output height; the iris always covers the whole frame. Iris: Center X and Center Y (0 = centre, -1 and 1 = frame edges), Blade Count, Blade Rotation, Blade Twist (how far the blades turn while closing), Blade Curve (bends the blades into a pinwheel). Look: Blade Color, Edge Color, Edge Width, Edge Softness (soft opening), Shading (shadow and sheen on the blades). Set Blade Color to white and use the layer as a mask to show another clip on the blades. Shader: Resource/IrisDiaphragm.fs.",
 			"displayName": "Iris Diaphragm",
 			"identifier": "d399eacc-8f83-4282-bf81-cbae34481abf",
-			"licenseName": "",
+			"licenseName": "Unlicense",
 			"mail": "S.Mazur@cati-co.de",
 			"note": {
 				"text": "",

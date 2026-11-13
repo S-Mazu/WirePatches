@@ -2,7 +2,7 @@
 
 An effect: a mechanical blade iris that closes over the clip below.
 
-Last updated: 2026-11-10
+Last updated: 2026-11-13
 
 ## Vision
 
@@ -26,7 +26,7 @@ The iris of an old film camera: overlapping metal blades that turn in and close 
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. No further setup required.
 
-## Clock (required)
+## Timing
 
 `Clock` drives the iris: 0 = open, 50 = closed, 100 = open again, and it repeats beyond. Animate it with the clip Timeline (0 to 100) and trigger the clip in Piano mode for a single shot, or use BPM Sync for a loop.
 
@@ -34,8 +34,8 @@ The iris of an old film camera: overlapping metal blades that turn in and close 
 
 All ranges are deliberately wide; the extremes are safe.
 
-- `Clock` (0 to 100, default 0).
 - `Scale` (0 to 10, default 1): size of the edges relative to the output height. The iris always covers the whole frame.
+- `Clock` (0 to 100, default 0).
 
 **Iris**
 - `Center X`, `Center Y` (-2 to 2, default 0): centre of the opening. 0 = centre, -1 and 1 = edges of the frame.
@@ -74,6 +74,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
 - 2026-11-10: The frame is always closed outside the opening, also with few, strongly bent blades.
 - 2026-11-10: Rebuilt as an effect with real, overlapping blades (#46, #30). `Iris Phase (0-100)` is now `Clock`; new `Blade Curve`, `Shading`, `Scale`. The iris covers any surface. `Iris Opacity` and `Backdrop` removed.
 
