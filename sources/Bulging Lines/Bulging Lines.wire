@@ -1,0 +1,2289 @@
+{
+	"formatVersion": {
+		"major": 1,
+		"minor": 1,
+		"patch": 0
+	},
+	"patch": {
+		"connections": [
+			{
+				"from": [
+					3,
+					"output"
+				],
+				"to": [
+					0,
+					"scale"
+				]
+			},
+			{
+				"from": [
+					4,
+					"output"
+				],
+				"to": [
+					0,
+					"lineCount"
+				]
+			},
+			{
+				"from": [
+					5,
+					"output"
+				],
+				"to": [
+					0,
+					"lineWidth"
+				]
+			},
+			{
+				"from": [
+					6,
+					"output"
+				],
+				"to": [
+					0,
+					"lineColor"
+				]
+			},
+			{
+				"from": [
+					7,
+					"output"
+				],
+				"to": [
+					0,
+					"bulgeHeight"
+				]
+			},
+			{
+				"from": [
+					8,
+					"output"
+				],
+				"to": [
+					0,
+					"bulgeWidth"
+				]
+			},
+			{
+				"from": [
+					9,
+					"output"
+				],
+				"to": [
+					0,
+					"depthInfluence"
+				]
+			},
+			{
+				"from": [
+					10,
+					"output"
+				],
+				"to": [
+					0,
+					"showPeople"
+				]
+			},
+			{
+				"from": [
+					11,
+					"output"
+				],
+				"to": [
+					0,
+					"backdropOn"
+				]
+			},
+			{
+				"from": [
+					12,
+					"output"
+				],
+				"to": [
+					0,
+					"backdropColor"
+				]
+			},
+			{
+				"from": [
+					0,
+					"output"
+				],
+				"to": [
+					1,
+					"input"
+				]
+			},
+			{
+				"from": [
+					1,
+					"output"
+				],
+				"to": [
+					2,
+					"input"
+				]
+			},
+			{
+				"from": [
+					13,
+					"output"
+				],
+				"to": [
+					14,
+					"osc"
+				]
+			},
+			{
+				"from": [
+					13,
+					"output"
+				],
+				"to": [
+					15,
+					"osc"
+				]
+			},
+			{
+				"from": [
+					13,
+					"output"
+				],
+				"to": [
+					16,
+					"osc"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter1"
+				],
+				"to": [
+					0,
+					"x0"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter2"
+				],
+				"to": [
+					0,
+					"x1"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter3"
+				],
+				"to": [
+					0,
+					"x2"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter4"
+				],
+				"to": [
+					0,
+					"x3"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter5"
+				],
+				"to": [
+					0,
+					"x4"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter6"
+				],
+				"to": [
+					0,
+					"x5"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter7"
+				],
+				"to": [
+					0,
+					"x6"
+				]
+			},
+			{
+				"from": [
+					14,
+					"parameter8"
+				],
+				"to": [
+					0,
+					"x7"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter1"
+				],
+				"to": [
+					0,
+					"d0"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter2"
+				],
+				"to": [
+					0,
+					"d1"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter3"
+				],
+				"to": [
+					0,
+					"d2"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter4"
+				],
+				"to": [
+					0,
+					"d3"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter5"
+				],
+				"to": [
+					0,
+					"d4"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter6"
+				],
+				"to": [
+					0,
+					"d5"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter7"
+				],
+				"to": [
+					0,
+					"d6"
+				]
+			},
+			{
+				"from": [
+					15,
+					"parameter8"
+				],
+				"to": [
+					0,
+					"d7"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter1"
+				],
+				"to": [
+					0,
+					"a0"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter2"
+				],
+				"to": [
+					0,
+					"a1"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter3"
+				],
+				"to": [
+					0,
+					"a2"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter4"
+				],
+				"to": [
+					0,
+					"a3"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter5"
+				],
+				"to": [
+					0,
+					"a4"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter6"
+				],
+				"to": [
+					0,
+					"a5"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter7"
+				],
+				"to": [
+					0,
+					"a6"
+				]
+			},
+			{
+				"from": [
+					16,
+					"parameter8"
+				],
+				"to": [
+					0,
+					"a7"
+				]
+			},
+			{
+				"from": [
+					17,
+					"output"
+				],
+				"to": [
+					0,
+					"stale"
+				]
+			},
+			{
+				"from": [
+					13,
+					"output"
+				],
+				"to": [
+					18,
+					"osc"
+				]
+			},
+			{
+				"from": [
+					18,
+					"parameter1"
+				],
+				"to": [
+					19,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					19,
+					"output0"
+				],
+				"to": [
+					17,
+					"restart"
+				]
+			}
+		],
+		"inputOrder": {
+			"groups": {
+				"1795000000001": {
+					"children": [
+						4,
+						5,
+						6
+					],
+					"collapsed": false,
+					"name": "Lines"
+				},
+				"1795000000002": {
+					"children": [
+						7,
+						8,
+						9,
+						10
+					],
+					"collapsed": false,
+					"name": "Bulge"
+				},
+				"1795000000003": {
+					"children": [
+						11,
+						12
+					],
+					"collapsed": false,
+					"name": "Backdrop"
+				}
+			},
+			"roots": [
+				{
+					"node": 3
+				},
+				{
+					"group": 1795000000001
+				},
+				{
+					"group": 1795000000002
+				},
+				{
+					"group": 1795000000003
+				},
+				{
+					"node": 13
+				}
+			]
+		},
+		"meta": {
+			"author": "Stefan Mazur",
+			"category": "source",
+			"deploymentTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 29,
+					"patch": 0
+				}
+			},
+			"description": "Bulging Lines - horizontal lines across the whole frame bulge out where people stand in front of the surface. Driven by the Motion Bridge tool (2D lidar) over OSC; without the bridge the lines stay calm. Scale sizes everything relative to the output height. Lines: Line Count (lines per output height at Scale 1), Line Width, Line Color. Bulge: Bulge Height (how far the lines move at a person; negative bends them down), Bulge Width (half width of a bulge in output heights), Depth Influence (0 = every person bulges fully, 1 = only people at the surface bulge fully, far ones barely), Show People (a red marker per person, for setting up). Backdrop: Backdrop On, Backdrop Color (Off = transparent). OSC from the bridge: \/lidar\/x, \/lidar\/depth, \/lidar\/active (8 slots each), \/lidar\/alive. In Arena, enable OSC input in the Preferences and send the bridge to that port. Shader: Resource\/BulgingLines.fs.",
+			"displayName": "Bulging Lines",
+			"identifier": "18231369-8d7a-4444-b13d-7ec2fa10beec",
+			"licenseName": "Unlicense",
+			"mail": "S.Mazur@cati-co.de",
+			"note": {
+				"text": "",
+				"textColorIndex": 1,
+				"textSizeMultiplier": 3
+			},
+			"originalTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 29,
+					"patch": 0
+				}
+			},
+			"quality": 32856,
+			"resolution": {
+				"height": 1080,
+				"width": 1920
+			},
+			"saveTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 29,
+					"patch": 0
+				}
+			},
+			"thumbnail": "",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
+			"vendor": ""
+		},
+		"nextNodeId": 20,
+		"nodes": {
+			"0": {
+				"attributes": {
+					"bitdepth": {
+						"type": "integer",
+						"value": 0
+					},
+					"fragment-shader": {
+						"type": "resourceIsf",
+						"value": {
+							"path": {
+								"main": "Resource\/BulgingLines.fs",
+								"sub": ""
+							},
+							"value": {
+								"inputs": [
+									{
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
+										"name": "scale",
+										"type": "float"
+									},
+									{
+										"defaultValue": 24,
+										"max": 400,
+										"min": 0,
+										"name": "lineCount",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.00600000005215406,
+										"max": 0.5,
+										"min": 0,
+										"name": "lineWidth",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											0.92000001668930054,
+											0.87999999523162842,
+											0.80000001192092896,
+											1
+										],
+										"name": "lineColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0.25,
+										"max": 5,
+										"min": -5,
+										"name": "bulgeHeight",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.34999999403953552,
+										"max": 10,
+										"min": 0,
+										"name": "bulgeWidth",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.69999998807907104,
+										"max": 1,
+										"min": 0,
+										"name": "depthInfluence",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
+										"name": "showPeople",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1,
+										"max": 1,
+										"min": 0,
+										"name": "backdropOn",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											0.03999999910593033,
+											0.03999999910593033,
+											0.05999999865889549,
+											1
+										],
+										"name": "backdropColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x0",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d0",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a0",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x1",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d1",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a1",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x2",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d2",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a2",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x3",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d3",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a3",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x4",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d4",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a4",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x5",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d5",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a5",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x6",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d6",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a6",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "x7",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "d7",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"name": "a7",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
+										"name": "stale",
+										"type": "float"
+									}
+								]
+							}
+						}
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"resolution-absolute": {
+						"type": "float2",
+						"value": [
+							1920,
+							1080
+						]
+					},
+					"resolution-mode": {
+						"type": "integer",
+						"value": 0
+					},
+					"resolution-relative": {
+						"type": "float2",
+						"value": [
+							1,
+							1
+						]
+					}
+				},
+				"bounds": {
+					"height": 898,
+					"width": 195,
+					"x": 900,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-4576-4C11-899B-6F11F3275D36",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"a0": {
+						"type": "float",
+						"value": 1
+					},
+					"a1": {
+						"type": "float",
+						"value": 1
+					},
+					"a2": {
+						"type": "float",
+						"value": 0
+					},
+					"a3": {
+						"type": "float",
+						"value": 0
+					},
+					"a4": {
+						"type": "float",
+						"value": 0
+					},
+					"a5": {
+						"type": "float",
+						"value": 0
+					},
+					"a6": {
+						"type": "float",
+						"value": 0
+					},
+					"a7": {
+						"type": "float",
+						"value": 0
+					},
+					"backdropColor": {
+						"type": "color",
+						"value": [
+							0.03999999910593033,
+							0.03999999910593033,
+							0.05999999865889549,
+							1
+						]
+					},
+					"backdropOn": {
+						"type": "float",
+						"value": 1
+					},
+					"bulgeHeight": {
+						"type": "float",
+						"value": 0.25
+					},
+					"bulgeWidth": {
+						"type": "float",
+						"value": 0.34999999403953552
+					},
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"d0": {
+						"type": "float",
+						"value": 0
+					},
+					"d1": {
+						"type": "float",
+						"value": 0.80000001192092896
+					},
+					"d2": {
+						"type": "float",
+						"value": 0
+					},
+					"d3": {
+						"type": "float",
+						"value": 0
+					},
+					"d4": {
+						"type": "float",
+						"value": 0
+					},
+					"d5": {
+						"type": "float",
+						"value": 0
+					},
+					"d6": {
+						"type": "float",
+						"value": 0
+					},
+					"d7": {
+						"type": "float",
+						"value": 0
+					},
+					"depthInfluence": {
+						"type": "float",
+						"value": 0.69999998807907104
+					},
+					"lineColor": {
+						"type": "color",
+						"value": [
+							0.92000001668930054,
+							0.87999999523162842,
+							0.80000001192092896,
+							1
+						]
+					},
+					"lineCount": {
+						"type": "float",
+						"value": 24
+					},
+					"lineWidth": {
+						"type": "float",
+						"value": 0.00600000005215406
+					},
+					"scale": {
+						"type": "float",
+						"value": 1
+					},
+					"showPeople": {
+						"type": "float",
+						"value": 1
+					},
+					"stale": {
+						"type": "float",
+						"value": 0
+					},
+					"time": {
+						"type": "float",
+						"value": 0
+					},
+					"x0": {
+						"type": "float",
+						"value": 0.5
+					},
+					"x1": {
+						"type": "float",
+						"value": 0.15000000596046448
+					},
+					"x2": {
+						"type": "float",
+						"value": 0
+					},
+					"x3": {
+						"type": "float",
+						"value": 0
+					},
+					"x4": {
+						"type": "float",
+						"value": 0
+					},
+					"x5": {
+						"type": "float",
+						"value": 0
+					},
+					"x6": {
+						"type": "float",
+						"value": 0
+					},
+					"x7": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"bitdepth",
+					"bypass",
+					"instances",
+					"resolution-absolute",
+					"resolution-mode",
+					"resolution-relative"
+				],
+				"name": "Bulging Lines (ISF)",
+				"thumbnail_visible": true
+			},
+			"1": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 30,
+					"width": 195,
+					"x": 1200,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-F1A4-4AFC-B3F6-5635DC6FE964",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"bypass",
+					"instances"
+				],
+				"name": "Premultiply Alpha",
+				"thumbnail_visible": true
+			},
+			"10": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "On"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 730
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Show People",
+				"thumbnail_visible": true
+			},
+			"11": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "On"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 820
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Backdrop On",
+				"thumbnail_visible": true
+			},
+			"12": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 910
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.03999999910593033,
+							0.03999999910593033,
+							0.05999999865889549,
+							1
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Backdrop Color",
+				"thumbnail_visible": true
+			},
+			"13": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": -200,
+					"y": 1100
+				},
+				"class": {
+					"id": "77697265-6489-4B7E-A024-A50A1F4C47E4",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "osc",
+						"value": null
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances"
+				],
+				"name": "OSC In",
+				"thumbnail_visible": true
+			},
+			"14": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"parameter-number": {
+						"type": "integer",
+						"value": 8
+					},
+					"parameter-type1": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type2": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type3": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type4": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type5": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type6": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type7": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type8": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 250,
+					"width": 195,
+					"x": 100,
+					"y": 1000
+				},
+				"class": {
+					"id": "77697265-48C4-40C4-A756-81D6711CD472",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"address": {
+						"type": "string",
+						"value": "\/lidar\/x"
+					},
+					"osc": {
+						"type": "osc",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances",
+					"parameter-number",
+					"parameter-type1",
+					"parameter-type2",
+					"parameter-type3",
+					"parameter-type4",
+					"parameter-type5",
+					"parameter-type6",
+					"parameter-type7",
+					"parameter-type8"
+				],
+				"name": "Read X",
+				"thumbnail_visible": true
+			},
+			"15": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"parameter-number": {
+						"type": "integer",
+						"value": 8
+					},
+					"parameter-type1": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type2": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type3": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type4": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type5": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type6": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type7": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type8": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 250,
+					"width": 195,
+					"x": 100,
+					"y": 1250
+				},
+				"class": {
+					"id": "77697265-48C4-40C4-A756-81D6711CD472",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"address": {
+						"type": "string",
+						"value": "\/lidar\/depth"
+					},
+					"osc": {
+						"type": "osc",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances",
+					"parameter-number",
+					"parameter-type1",
+					"parameter-type2",
+					"parameter-type3",
+					"parameter-type4",
+					"parameter-type5",
+					"parameter-type6",
+					"parameter-type7",
+					"parameter-type8"
+				],
+				"name": "Read Depth",
+				"thumbnail_visible": true
+			},
+			"16": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"parameter-number": {
+						"type": "integer",
+						"value": 8
+					},
+					"parameter-type1": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type2": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type3": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type4": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type5": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type6": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type7": {
+						"type": "type",
+						"value": "float"
+					},
+					"parameter-type8": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 250,
+					"width": 195,
+					"x": 100,
+					"y": 1500
+				},
+				"class": {
+					"id": "77697265-48C4-40C4-A756-81D6711CD472",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"address": {
+						"type": "string",
+						"value": "\/lidar\/active"
+					},
+					"osc": {
+						"type": "osc",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances",
+					"parameter-number",
+					"parameter-type1",
+					"parameter-type2",
+					"parameter-type3",
+					"parameter-type4",
+					"parameter-type5",
+					"parameter-type6",
+					"parameter-type7",
+					"parameter-type8"
+				],
+				"name": "Read Active",
+				"thumbnail_visible": true
+			},
+			"17": {
+				"attributes": {
+					"duration-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"end-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"end-reached-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"loop-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"output-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"pause-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"phase-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"play-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"restart-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"rewind-flow": {
+						"type": "flow",
+						"value": "event"
+					},
+					"start-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"stop-flow": {
+						"type": "flow",
+						"value": "event"
+					}
+				},
+				"bounds": {
+					"height": 274,
+					"width": 195,
+					"x": 400,
+					"y": 1600
+				},
+				"class": {
+					"id": "77697265-8888-4ee6-83b9-2b12ff2a116b",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"duration": {
+						"type": "float",
+						"value": 1
+					},
+					"end": {
+						"type": "float",
+						"value": 1
+					},
+					"loop": {
+						"type": "bool",
+						"value": false
+					},
+					"pause": {
+						"type": "trigger",
+						"value": null
+					},
+					"play": {
+						"type": "trigger",
+						"value": null
+					},
+					"restart": {
+						"type": "trigger",
+						"value": null
+					},
+					"rewind": {
+						"type": "trigger",
+						"value": null
+					},
+					"start": {
+						"type": "float",
+						"value": 0
+					},
+					"stop": {
+						"type": "trigger",
+						"value": null
+					}
+				},
+				"hidden": [
+					"duration-flow",
+					"end-flow",
+					"end-reached-flow",
+					"instances",
+					"loop",
+					"loop-flow",
+					"output-flow",
+					"pause-flow",
+					"phase-flow",
+					"play-flow",
+					"restart-flow",
+					"rewind-flow",
+					"start-flow",
+					"stop-flow"
+				],
+				"name": "Since Last OSC",
+				"thumbnail_visible": true
+			},
+			"18": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"parameter-number": {
+						"type": "integer",
+						"value": 1
+					},
+					"parameter-type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 100,
+					"y": 1750
+				},
+				"class": {
+					"id": "77697265-48C4-40C4-A756-81D6711CD472",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"address": {
+						"type": "string",
+						"value": "\/lidar\/alive"
+					},
+					"osc": {
+						"type": "osc",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances",
+					"parameter-number",
+					"parameter-type1"
+				],
+				"name": "Read Alive",
+				"thumbnail_visible": true
+			},
+			"19": {
+				"attributes": {
+					"input0-flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-type": {
+						"type": "type",
+						"value": "float"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"output0-flow": {
+						"type": "flow",
+						"value": "event"
+					}
+				},
+				"bounds": {
+					"height": 30,
+					"width": 195,
+					"x": 400,
+					"y": 1850
+				},
+				"class": {
+					"id": "77697265-E6B2-4921-9FF4-CB3A0A78697D",
+					"version": 3
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 0
+					}
+				},
+				"hidden": [
+					"input0-flow",
+					"input0-type",
+					"instances",
+					"output0-flow"
+				],
+				"name": "New Message",
+				"thumbnail_visible": true
+			},
+			"2": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 132,
+					"x": 1450,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances"
+				],
+				"name": "Texture Out",
+				"thumbnail_visible": true
+			},
+			"3": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 100
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"4": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 400
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 190
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 24
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Line Count",
+				"thumbnail_visible": true
+			},
+			"5": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 0.5
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 280
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.00600000005215406
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Line Width",
+				"thumbnail_visible": true
+			},
+			"6": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 370
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.92000001668930054,
+							0.87999999523162842,
+							0.80000001192092896,
+							1
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Line Color",
+				"thumbnail_visible": true
+			},
+			"7": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 5
+					},
+					"min": {
+						"type": "float",
+						"value": -5
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 460
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.25
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Bulge Height",
+				"thumbnail_visible": true
+			},
+			"8": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 550
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.34999999403953552
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Bulge Width",
+				"thumbnail_visible": true
+			},
+			"9": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 300,
+					"y": 640
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.69999998807907104
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Depth Influence",
+				"thumbnail_visible": true
+			}
+		},
+		"ui": {
+			"camera": {
+				"x": 0,
+				"y": 0,
+				"zoom": 1
+			},
+			"selection": [
+				"19"
+			]
+		}
+	},
+	"ui": {
+		"audio": {
+			"routing": {
+				"in": {},
+				"out": [
+					null,
+					null
+				]
+			}
+		},
+		"deviceConnections": {
+			"input": {}
+		},
+		"transport": {
+			"bpm": 120,
+			"time-signature": [
+				4,
+				4
+			]
+		},
+		"video": {
+			"routing": {
+				"out": {
+					"Display 1": null,
+					"Display 2": null,
+					"Display 3": null,
+					"virtualOutputs": []
+				}
+			}
+		}
+	}
+}

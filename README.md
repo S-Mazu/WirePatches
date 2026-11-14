@@ -9,6 +9,7 @@ Patches that render their own image. In Arena they fill a clip slot.
 | Patch | Description |
 |---|---|
 | [Bass Strings](sources/Bass%20Strings/) | Four double bass strings vibrate with the music, one frequency band per string. |
+| [Bulging Lines](sources/Bulging%20Lines/) | Horizontal lines bulge out where people stand in front of the surface; driven by the Motion Bridge lidar tool. |
 | [Flower Sax](sources/Flower%20Sax/) | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](sources/Geo%20Tiles/) | Tile collage of 67 flat geometric motifs in three colors. |
 | [Lye Swing](sources/Lye%20Swing/) | Painted big-band score after Len Lye; five shapes follow the music, one per sound band. |
