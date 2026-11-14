@@ -46,7 +46,7 @@ Programs that run outside Wire and feed patches.
 
 | Tool | Description |
 |---|---|
-| | None yet. A LIDAR tool for motion-based projections is in development ([#69](https://github.com/S-Mazu/WirePatches/issues/69)). |
+| [Motion Bridge](tools/Motion%20Bridge/) | Reads a 2D lidar (LDROBOT STL-27L), finds people in front of the surface and sends their positions to patches over OSC. Mouse-driven setup, simulated people for testing. |
 
 ## Archive
 
@@ -54,7 +54,7 @@ No longer developed, kept for reference. Not maintained and not tested with curr
 
 | Name | Kind | Description |
 |---|---|---|
-| [Kinect](archive/Kinect/) | tool | Discontinued 2026-11-08. Sent the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. Replaced by the LIDAR tool ([#69](https://github.com/S-Mazu/WirePatches/issues/69)). |
+| [Kinect](archive/Kinect/) | tool | Discontinued 2026-11-08. Sent the outlines and skeletons of people from a Kinect v2 to Arena and Wire via Spout. Replaced by the [Motion Bridge](tools/Motion%20Bridge/). |
 
 ## Installation
 

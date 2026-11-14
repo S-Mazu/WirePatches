@@ -1,0 +1,4 @@
+pyserial==3.5
+numpy==2.5.4
+python-osc==1.10.2
+dearpygui==2.3.1

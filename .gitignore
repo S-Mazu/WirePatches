@@ -6,3 +6,7 @@ __pycache__/
 *.npy
 tools/*/settings.json
 archive/*/settings.json
+
+# Python environments and tool logs
+.venv/
+tools/*/logs/
