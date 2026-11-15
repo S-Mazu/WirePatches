@@ -16,7 +16,7 @@ import time
 
 import numpy as np
 
-from engine import SLOTS, Engine
+from engine import DEFAULTS, SLOTS, Engine
 from room import Room
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -75,10 +75,14 @@ HELP = {
              'screen, top = far edge.\nOccupancy: where something is (white = a surface crosses the whole cell).\n'
              'Motion: where the occupancy changes (white = a cell is taken or freed within 0.25 s). Standing still '
              'fades out.',
+    'reset_fields': 'Sets the field settings back to the recommended values: 32 x 16 cells, Motion fade 0.5 s, '
+                    'Motion threshold 0.3.',
     'field_cols': 'Cells along the screen (at most 32, one OSC message per row).',
     'field_rows': 'Cells from the screen to the far edge.',
     'field_fade_s': 'How long motion takes to fade out after it stops.',
-    'field_threshold': 'Motion below this share is ignored (sensor jitter at the edges of still objects).',
+    'field_threshold': 'Motion below this value is ignored: sensor noise at the edges of still objects. '
+                       'Recommended and default: 0.3 (measured noise up to 0.28, walking 0.5 to 1). '
+                       'Lower it only in a very quiet setup; raise it if still objects show motion.',
     'draw_area': 'Draws an area: click the corners in the view, then "Finish" (or click the first corner). '
                  'With at least one area, only people inside an area count.',
     'draw_excl': 'Draws an exclusion: nobody inside it counts (a bar, a stage edge, a door).',
@@ -444,6 +448,11 @@ def run_window(eng, snapshot=None, sim=0):
                 with dpg.tooltip(b):
                     dpg.add_text(f'Stop sending to {t}.')
 
+    def on_reset_fields():
+        for k in ('field_cols', 'field_rows', 'field_fade_s', 'field_threshold'):
+            eng.set(k, DEFAULTS[k])
+            dpg.set_value(k, DEFAULTS[k])
+
     def on_reset_adv():
         eng.reset_advanced()
         for k in ('tol_mm', 'gap_mm', 'min_pts', 'merge_mm', 'assoc_mm', 'smooth', 'hold_s', 'fade_s'):
@@ -640,6 +649,7 @@ def run_window(eng, snapshot=None, sim=0):
                             tip(dpg.add_slider_float(label=label, tag=key, min_value=lo, max_value=hi,
                                                      default_value=float(eng.s[key]), format=fmt,
                                                      callback=on_slider, user_data=key), key)
+                    tip(dpg.add_button(label='Reset to recommended', callback=on_reset_fields), 'reset_fields')
 
                 with dpg.collapsing_header(label='Output (OSC)', default_open=True):
                     tip(dpg.add_text('Targets:', color=DIM), 'targets')

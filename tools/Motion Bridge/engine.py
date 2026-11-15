@@ -41,7 +41,7 @@ DEFAULTS = {
     'field_cols': 32,
     'field_rows': 16,
     'field_fade_s': 0.5,
-    'field_threshold': 0.05,
+    'field_threshold': 0.3,             # measured: sensor noise at still objects reaches 0.28
     'log_quality': False,
     'ui_scale': 1.0,
 }

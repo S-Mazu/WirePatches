@@ -116,7 +116,7 @@ Options (this run only, not saved): `--port COM19` (port of the position with th
 
   - Row `r` = 0 is at the screen, `R` − 1 at the far edge (Depth Range). Column 0 is at the left end of the screen, `C` − 1 at the right end. The rows follow the trapezoid: at each column they divide the local Depth Range.
   - Occupancy: share of the cell size covered by a foreground surface. The lidar sees the side of a body facing the sensor, so a body crossing a cell gives about 1; cells hidden behind a body stay 0 (shadow).
-  - Motion: how fast the occupancy changes. A cell taken or freed within 0.25 s gives 1. It fades out over *Motion fade* (0.5 s); changes below *Motion threshold* (0.05) are ignored.
+  - Motion: how fast the occupancy changes. A cell taken or freed within 0.25 s gives 1. It fades out over *Motion fade* (0.5 s); changes below *Motion threshold* are ignored (default and recommendation 0.3: sensor noise at still objects measured up to 0.28, walking 0.5 to 1).
   - Simulated people count as discs of 0.44 m.
 - Patches read the points with `OSC In` → `Read OSC` (address as above, 8 parameters).
 - Patches read a field with one `Read OSC` whose `instances` is `R`, addresses `/lidar/motion/0` … `/lidar/motion/<R-1>`, `C` parameters; `Join` (`C` channels) gives one list of `C` × `R` values, column by column; `Texture from Data` (2D, stride `R`, 16 or 32 bit float) turns it into a texture of `R` × `C` pixels for a shader.
@@ -128,7 +128,7 @@ All settings are made in the window. Detection and output are saved in `settings
 
 - Countdown (default 10 s): time between a click and the measurement.
 - Room: positions, rotation, fan, screen, Depth Range per end (3 m), areas, barriers, reference: see Usage.
-- *Fields*: Columns (32, at most 32), Rows (16), Motion fade (0.5 s), Motion threshold (0.05).
+- *Fields*: Columns (32, at most 32), Rows (16), Motion fade (0.5 s), Motion threshold (0.3, recommended). *Reset to recommended* restores them.
 - Advanced detection, with tooltips: Tolerance (150 mm), Blob gap (250 mm), Min points (6), Merge distance (450 mm), Track distance (700 mm), Smoothing (0.5), Hold (0.4 s), Fade (0.3 s). *Reset to defaults* restores them.
 - *Sensor*: the port of the position with the sensor (COM19); OSC targets, quality log (off), UI scale (1.0).
 
@@ -147,7 +147,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
-- 2026-11-15: Occupancy and motion fields over the screen field, sent per row over OSC and shown live in the window (#69). The field in front of the screen can be a trapezoid: each end has its own Depth Range. Points (slots) unchanged. Fields untested with the live sensor.
+- 2026-11-15: Occupancy and motion fields over the screen field, sent per row over OSC and shown live in the window (#69). The field in front of the screen can be a trapezoid: each end has its own Depth Range. Points (slots) unchanged. Tested live: walking gives motion 0.5 to 1, still objects stay below 0.3 (the default *Motion threshold*).
 - 2026-11-15: Room map (#69): rooms per venue, several sensor positions with their own scans, alignment by dragging, rotation and a reference object, fan per position, screen drawn in the view or set by standing at its ends, areas, exclusions and barriers. Sensor mode removed; without a screen nothing is sent. Untested with more than one physical sensor.
 - 2026-11-15: Status explains itself on hover, with traffic lights; scan quality (revolutions per second, valid share, points per revolution) moved into the status as *Signal*; the *Sensor* section only holds port, connect and log; *Advanced detection* is step 3.
 - 2026-11-14: First version (#69): STL-27L reader, empty-room background, people tracking in 8 slots, surface and sensor mode, guided calibration with countdown and tones, mouse-driven window with tooltips and fullscreen, simulated people, OSC target check, quality log.
