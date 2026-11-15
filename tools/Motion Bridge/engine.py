@@ -1,4 +1,4 @@
-"""Motion Bridge engine: sensor -> people -> surface coordinates -> OSC.
+"""Motion Bridge engine: sensors -> room map -> people -> screen coordinates -> OSC.
 
 Runs in its own thread, independent of any window. The user interface only reads
 snapshots and calls the request methods.
@@ -16,6 +16,8 @@ import time
 import numpy as np
 from pythonosc.udp_client import SimpleUDPClient
 
+from field import Field
+from room import BEHIND_MM, Room, create_default
 from scene import MIN_MM, Background, blobs, foreground, to_xy
 from stl27l import Stl27lReader
 
@@ -25,13 +27,8 @@ CAL_REVS = 50                # revolutions for the empty room (5 s)
 END_SAMPLES = 10             # samples (about 1 s) when a surface end is set
 
 DEFAULTS = {
-    'port': 'COM19',
+    'room': 'Default',
     'osc_targets': ['127.0.0.1:7000', '127.0.0.1:8000'],   # Resolume defaults: Arena 7000, Wire 8000
-    'left': None,
-    'right': None,
-    'depth_mm': 3000.0,
-    'front_deg': 0.0,
-    'mirror': False,
     'countdown_s': 10.0,
     'tol_mm': 150.0,
     'gap_mm': 250.0,
@@ -41,54 +38,13 @@ DEFAULTS = {
     'smooth': 0.5,
     'hold_s': 0.4,
     'fade_s': 0.3,
+    'field_cols': 32,
+    'field_rows': 16,
+    'field_fade_s': 0.5,
+    'field_threshold': 0.3,             # measured: sensor noise at still objects reaches 0.28
     'log_quality': False,
     'ui_scale': 1.0,
 }
-
-
-# ---------------------------------------------------------------- mapping
-class Zone:
-    """Maps sensor coordinates (mm) to x 0..1 and a distance in mm.
-
-    With both surface ends set: x along the surface from left (0) to right (1), distance
-    away from the surface. Otherwise sensor mode: x follows the angle in the watched half
-    (90 deg left = 0, straight = 0.5, 90 deg right = 1), distance from the sensor.
-    """
-
-    def __init__(self, s):
-        self.left = np.array(s['left'], float) if s['left'] else None
-        self.right = np.array(s['right'], float) if s['right'] else None
-        self.depth_mm = float(s['depth_mm'])
-        self.front_deg = float(s['front_deg'])
-        self.mirror = bool(s['mirror'])
-
-    @property
-    def surface(self):
-        return (self.left is not None and self.right is not None
-                and float(np.linalg.norm(self.right - self.left)) > 300.0)
-
-    def frame(self):
-        axis = self.right - self.left
-        length = float(np.linalg.norm(axis))
-        u = axis / length
-        n = np.array([-u[1], u[0]])
-        if np.dot(-self.left, n) < 0:       # normal points from the surface into the room
-            n = -n
-        return u, n, length
-
-    def map(self, x_mm, y_mm):
-        if self.surface:
-            u, n, length = self.frame()
-            p = np.array([x_mm, y_mm]) - self.left
-            return float(np.dot(p, u) / length), float(np.dot(p, n))
-        angle = math.degrees(math.atan2(x_mm, y_mm)) - self.front_deg
-        angle = (angle + 180.0) % 360.0 - 180.0
-        if self.mirror:
-            angle = -angle
-        return 0.5 + angle / 180.0, math.hypot(x_mm, y_mm)
-
-    def inside(self, x01, dist_mm):
-        return -0.1 <= x01 <= 1.1 and -300.0 <= dist_mm <= self.depth_mm
 
 
 # ---------------------------------------------------------------- tracking
@@ -239,25 +195,39 @@ class Engine(threading.Thread):
     def __init__(self, folder, overrides=None):
         super().__init__(daemon=True)
         self.folder = folder
+        self.rooms_dir = os.path.join(folder, 'rooms')
         self.settings_path = os.path.join(folder, 'settings.json')
         self.s = copy.deepcopy(DEFAULTS)
+        old = {}
         if os.path.exists(self.settings_path):
             with open(self.settings_path) as f:
-                self.s.update(json.load(f))
+                old = json.load(f)
+            self.s.update({k: v for k, v in old.items() if k in DEFAULTS})
         self.saved = copy.deepcopy(self.s)            # what settings.json holds
         self.overrides = dict(overrides or {})        # command line: this run only, never saved
+        port_override = self.overrides.pop('port', None)
         self.s.update(self.overrides)
         self.lock = threading.RLock()
-        self.zone = Zone(self.s)
-        self.bg = Background(os.path.join(folder, 'background.npy'))
-        self.bg.load()
+        self.readers = {}                   # port -> Stl27lReader
+        self._dirty_t = None                # time of the first unsaved room edit
+        self._port_override = None          # (position, saved port) while --port is in effect
+        if not Room.names(self.rooms_dir):
+            create_default(self.rooms_dir, old, os.path.join(folder, 'background.npy'))
+        names = Room.names(self.rooms_dir)
+        self.room = None
+        self.load_room(self.s['room'] if self.s['room'] in names else names[0])
+        if port_override:
+            live = self.live_station() or self.room.stations[0]
+            self._port_override = (live.sid, live.port)
+            live.port = port_override       # this run only, see save_room
+            self.sync_readers()
         self.tracker = Tracker()
+        self.field = Field()
         self.quality = Quality(os.path.join(folder, 'logs'))
         self.quality.set_logging(self.s['log_quality'])
-        self.reader = None
         self.clients = []
         self.listening = {}
-        self.sim = []                       # simulated people, [x_mm, y_mm]
+        self.sim = []                       # simulated people, [x_mm, y_mm] in the map
         self.running = True
         self.task = None                    # countdown / measurement in progress
         self.message = ('', 'info', 0.0)
@@ -266,7 +236,6 @@ class Engine(threading.Thread):
         self._rate_n, self._rate_t = 0, time.time()
         self.snap = None
         self.end_samples = []
-        self.set_port(self.s['port'])
         self.set_targets(self.s['osc_targets'])
 
     # ------------------------------------------------ settings
@@ -281,8 +250,6 @@ class Engine(threading.Thread):
     def set(self, key, value):
         with self.lock:
             self.s[key] = value
-            if key in ('depth_mm', 'front_deg', 'mirror', 'left', 'right'):
-                self.zone = Zone(self.s)
             if key == 'log_quality':
                 self.quality.set_logging(bool(value))
         self.save()
@@ -295,16 +262,117 @@ class Engine(threading.Thread):
     def notify(self, text, level='info'):
         self.message = (text, level, time.time())
 
-    # ------------------------------------------------ sensor and OSC
-    def set_port(self, port):
+    # ------------------------------------------------ room
+    def load_room(self, name):
         with self.lock:
-            if self.reader:
-                self.reader.stop()
-            self.reader = Stl27lReader(port)
-            self.reader.start()
-            self.s['port'] = port
+            self.flush_room()
+            self._port_override = None
+            self.room = Room.load(os.path.join(self.rooms_dir, name))
+            self.s['room'] = name
+            self.sync_readers()
         self.save()
 
+    def new_room(self, name):
+        """A new room with one position at the origin; the connected sensor moves into it."""
+        name = Room.safe_name(name)
+        if not name or name in Room.names(self.rooms_dir):
+            return False
+        live = self.live_station()
+        room = Room(os.path.join(self.rooms_dir, name), name)
+        room.add_station(port=live.port if live else 'COM19')
+        room.depth_l_mm, room.depth_r_mm = self.room.depth_l_mm, self.room.depth_r_mm
+        room.save()
+        self.load_room(name)
+        return True
+
+    def save_room(self):
+        """Writes the room; a port given on the command line is not written."""
+        with self.lock:
+            ov = self._port_override
+            st = self.room.station(ov[0]) if ov else None
+            if st is None:
+                self.room.save()
+                return
+            cur, st.port = st.port, ov[1]
+            try:
+                self.room.save()
+            finally:
+                st.port = cur
+
+    def room_changed(self):
+        """Called after every edit; the room is written at most once per second."""
+        if self._dirty_t is None:
+            self._dirty_t = time.time()
+
+    def flush_room(self):
+        if self._dirty_t is not None and self.room is not None:
+            self._dirty_t = None
+            with self.lock:
+                self.save_room()
+
+    def live_station(self):
+        return next((s for s in self.room.stations if s.port), None)
+
+    def sync_readers(self):
+        """One reader per port that a position holds."""
+        with self.lock:
+            want = {s.port for s in self.room.stations if s.port}
+            for port in list(self.readers):
+                if port not in want:
+                    self.readers.pop(port).stop()
+            for port in want:
+                if port not in self.readers:
+                    rd = Stl27lReader(port)
+                    rd.start()
+                    self.readers[port] = rd
+
+    @property
+    def reader(self):
+        """Reader of the first position with a sensor (status display, quality)."""
+        st = self.live_station()
+        return self.readers.get(st.port) if st else None
+
+    def set_port(self, sid, port):
+        """Assigns a serial port to a position; another position holding it gives it up."""
+        with self.lock:
+            self._port_override = None
+            for s in self.room.stations:
+                if s.port == port or s.sid == sid:
+                    s.port = None
+            st = self.room.station(sid)
+            if st:
+                st.port = port or None
+            self.save_room()
+            self.sync_readers()
+
+    def add_position(self, from_sid):
+        """The sensor was moved: a new position takes over its port, then learns the room there."""
+        with self.lock:
+            self._port_override = None      # moving the sensor makes its port part of the room
+            src = self.room.station(from_sid)
+            port = src.port if src else None
+            if src:
+                src.port = None
+            st = self.room.add_station(near=src, port=port)
+            self.save_room()
+            self.sync_readers()
+        return st
+
+    def remove_position(self, sid):
+        with self.lock:
+            self._port_override = None
+            if len(self.room.stations) <= 1:
+                return False
+            st = self.room.station(sid)
+            port = st.port if st else None
+            self.room.remove_station(sid)
+            if port and not self.live_station():
+                self.room.stations[-1].port = port
+            self.save_room()
+            self.sync_readers()
+        return True
+
+    # ------------------------------------------------ OSC
     def set_targets(self, targets):
         clients = []
         for t in targets:
@@ -323,7 +391,7 @@ class Engine(threading.Thread):
             out[t] = port_listening(host, int(port))
         self.listening = out
 
-    def send(self, x, depth, active):
+    def send(self, x, depth, active, occ=None, motion=None):
         alive = float(self.sent % 1000)
         for _, c in self.clients:
             try:
@@ -331,6 +399,12 @@ class Engine(threading.Thread):
                 c.send_message('/lidar/depth', [float(v) for v in depth])
                 c.send_message('/lidar/active', [float(v) for v in active])
                 c.send_message('/lidar/count', float((active > 0).sum()))
+                if occ is not None:
+                    rows, cols = occ.shape
+                    c.send_message('/lidar/field/size', [float(cols), float(rows)])
+                    for r in range(rows):
+                        c.send_message(f'/lidar/occupancy/{r}', [float(v) for v in occ[r]])
+                        c.send_message(f'/lidar/motion/{r}', [float(v) for v in motion[r]])
                 c.send_message('/lidar/alive', alive)
             except OSError:
                 pass
@@ -346,10 +420,11 @@ class Engine(threading.Thread):
         return self.rate if time.time() - self._rate_t < 2.5 else 0.0
 
     # ------------------------------------------------ guided calibration
-    def request(self, kind):
-        """kind: 'background', 'left' or 'right'. Starts the countdown."""
+    def request(self, kind, sid=None):
+        """kind: 'background' (for position sid), 'left' or 'right'. Starts the countdown."""
         with self.lock:
-            self.task = {'kind': kind, 'phase': 'countdown', 'at': time.time() + float(self.s['countdown_s'])}
+            self.task = {'kind': kind, 'sid': sid, 'phase': 'countdown',
+                         'at': time.time() + float(self.s['countdown_s'])}
         if float(self.s['countdown_s']) <= 0:
             self._start_measure()
 
@@ -358,16 +433,16 @@ class Engine(threading.Thread):
             self.task = None
         self.notify('Cancelled.')
 
-    def clear_surface(self):
-        self.set('left', None)
-        self.set('right', None)
-        self.notify('Surface cleared: sensor mode.')
+    def _task_reader(self):
+        st = self.room.station(self.task.get('sid')) if self.task else None
+        return self.readers.get(st.port) if st and st.port else None
 
     def _start_measure(self):
         beep('start')
         with self.lock:
             self.task['phase'] = 'measure'
-            self.task['rev0'] = self.reader.rev_count
+            rd = self._task_reader()
+            self.task['rev0'] = rd.rev_count if rd else 0
             self.end_samples = []
 
     def _task_step(self, people):
@@ -379,19 +454,21 @@ class Engine(threading.Thread):
                 self._start_measure()
             return
         if task['kind'] == 'background':
-            if not self.reader.connected:
+            rd = self._task_reader()
+            st = self.room.station(task['sid'])
+            if rd is None or not rd.connected or st is None:
                 self.task = None
                 beep('fail')
-                self.notify('Sensor not connected: cannot learn the room.', 'error')
-            elif self.reader.rev_count - task['rev0'] >= CAL_REVS:
-                bg = Background(self.bg.path)
-                bg.learn(self.reader.latest(CAL_REVS))
+                self.notify('No sensor at this position: cannot learn the room.', 'error')
+            elif rd.rev_count - task['rev0'] >= CAL_REVS:
+                bg = Background(self.room.scan_path(st.sid))
+                bg.learn(rd.latest(CAL_REVS))
                 bg.save()
-                self.bg = bg
+                st.bg = bg
                 self.task = None
                 beep('done')
                 cover = bg.stats()[0]
-                self.notify(f'Empty room learned ({cover:.0f} % coverage).', 'ok')
+                self.notify(f'Empty room learned at {st.name} ({cover:.0f} % coverage).', 'ok')
             return
         self.end_samples.append(list(people))
         if len(self.end_samples) >= END_SAMPLES:
@@ -404,11 +481,14 @@ class Engine(threading.Thread):
                 return
             x = statistics.median(p['x'] for p in singles)
             y = statistics.median(p['y'] for p in singles)
-            self.set(task['kind'], [x, y])
+            scr = dict(self.room.screen or {})
+            scr[task['kind']] = [x, y]
+            self.room.screen = scr
+            self.save_room()
             beep('done')
-            msg = f"{task['kind'].capitalize()} end set."
-            if self.zone.surface:
-                msg += f' Surface {self.zone.frame()[2] / 1000:.2f} m wide.'
+            msg = f"Screen: {task['kind']} end set."
+            if self.room.has_screen():
+                msg += f' {self.room.frame()[2] / 1000:.2f} m wide.'
             self.notify(msg, 'ok')
 
     def task_state(self):
@@ -416,84 +496,113 @@ class Engine(threading.Thread):
         task = self.task
         if task is None:
             return None
-        name = {'background': 'Learning the empty room', 'left': 'Setting the left end',
-                'right': 'Setting the right end'}[task['kind']]
+        st = self.room.station(task.get('sid'))
+        name = {'background': f'Learning the empty room at {st.name if st else "?"}',
+                'left': 'Setting the left end', 'right': 'Setting the right end'}[task['kind']]
         if task['phase'] == 'countdown':
             left = max(0.0, task['at'] - time.time())
             total = max(float(self.s['countdown_s']), 1e-3)
             where = 'leave the scan plane' if task['kind'] == 'background' else 'stand there alone'
             return f'{name}: {where} - {left:.0f} s', 1.0 - left / total
         if task['kind'] == 'background':
-            done = (self.reader.rev_count - task['rev0']) / CAL_REVS
+            rd = self._task_reader()
+            done = (rd.rev_count - task['rev0']) / CAL_REVS if rd else 0.0
         else:
             done = len(self.end_samples) / END_SAMPLES
         return f'{name}: measuring, keep still', min(1.0, done)
 
     # ------------------------------------------------ main loop
     def run(self):
-        seen, last_tick, last_check = 0, 0.0, 0.0
+        seen, last_tick, last_check = {}, 0.0, 0.0
         while self.running:
             now = time.time()
             if now - last_check > 2.0:
                 self.check_targets()
                 last_check = now
-            rd = self.reader
-            if rd.rev_count != seen:
-                new = min(rd.rev_count - seen, 50)
-                seen = rd.rev_count
-                for rev in rd.latest(new):
-                    self.process(rev)
-                last_tick = time.time()
-            elif now - last_tick >= TICK_S and (self.sim or not rd.connected):
-                self.process(None)
+            if self._dirty_t is not None and now - self._dirty_t > 1.0:
+                self.flush_room()
+            with self.lock:
+                pairs = [(st, self.readers.get(st.port)) for st in self.room.stations if st.port]
+                primary = self.reader
+            new, revs = False, {}
+            for st, rd in pairs:
+                if rd is None:
+                    continue
+                c = rd.rev_count
+                if c != seen.get(rd.port):
+                    n = max(1, min(c - seen.get(rd.port, c - 1), 50))
+                    seen[rd.port] = c
+                    new = True
+                    if rd is primary:
+                        n_people = len(self.snap['in_zone']) if self.snap else 0
+                        for rev in rd.latest(n):
+                            self.quality.add(rev, n_people, rd.crc_bad)
+                latest = rd.latest(1)
+                if latest and now - latest[0].t < 0.5:
+                    revs[st.sid] = latest[0]
+            if new:
+                self.process(revs)
+                last_tick = now
+            elif now - last_tick >= TICK_S and (self.sim or not revs):
+                self.process(revs)
                 last_tick = now
             else:
                 time.sleep(0.005)
         self.send(np.zeros(SLOTS), np.zeros(SLOTS), np.zeros(SLOTS))
-        self.reader.stop()
+        self.flush_room()
+        for rd in self.readers.values():
+            rd.stop()
         self.quality.set_logging(False)
 
     def stop(self):
         self.running = False
 
-    def process(self, rev):
+    def process(self, revs):
         s = self.s
-        t = rev.t if rev is not None else time.time()
-        if rev is not None:
-            fg = foreground(rev, self.bg, s['tol_mm'])
-            bl = blobs(rev, fg, s['gap_mm'], int(s['min_pts']))
-            people = merge(bl, s['merge_mm'])
-        else:
-            fg, bl, people = None, [], []
-        people += [{'x': float(x), 'y': float(y), 'n': 50, 'sim': True} for x, y in self.sim]
-        in_zone = [p for p in people if self.zone.inside(*self.zone.map(p['x'], p['y']))]
-        self.tracker.update(in_zone, t, s['assoc_mm'], s['smooth'], s['hold_s'], s['fade_s'])
-        x, depth, active = np.zeros(SLOTS), np.zeros(SLOTS), np.zeros(SLOTS)
-        for k, tr in self.tracker.tracks.items():
-            x01, d_mm = self.zone.map(tr['x'], tr['y'])
-            x[k] = x01
-            depth[k] = min(1.0, max(0.0, d_mm / max(self.zone.depth_mm, 1.0)))
-            active[k] = tr['active']
-        self.send(x, depth, active)
-        if rev is not None:
-            self.quality.add(rev, len(in_zone), self.reader.crc_bad)
+        t = max((r.t for r in revs.values()), default=time.time())
+        views, people = {}, []
+        with self.lock:
+            room = self.room
+            for sid, rev in revs.items():
+                st = room.station(sid)
+                if st is None:
+                    continue
+                fg = foreground(rev, st.bg, s['tol_mm'])
+                mx, my = st.to_map(*to_xy(rev.angle, rev.dist))
+                keep = room.keep_points(st, rev.angle, mx, my)
+                for b in blobs(rev, fg & keep, s['gap_mm'], int(s['min_pts'])):
+                    b['x'], b['y'] = st.to_map(b['x'], b['y'])
+                    people.append(b)
+                views[sid] = {'mx': mx, 'my': my, 'valid': rev.dist >= MIN_MM, 'fg': fg, 'keep': keep,
+                              'dist': rev.dist}
+            people = merge(people, s['merge_mm'])
+            sim = [{'x': float(x), 'y': float(y), 'n': 50, 'sim': True} for x, y in self.sim]
+            sim = [p for p in sim if room.in_areas([p['x']], [p['y']])[0]]
+            people += sim
+            screen = room.has_screen()
+            in_zone = [p for p in people if not screen or room.map_xy(p['x'], p['y'])[1] >= -BEHIND_MM]
+            self.tracker.update(in_zone, t, s['assoc_mm'], s['smooth'], s['hold_s'], s['fade_s'])
+            x, depth, active = np.zeros(SLOTS), np.zeros(SLOTS), np.zeros(SLOTS)
+            if screen:
+                for k, tr in self.tracker.tracks.items():
+                    x01, d_mm = room.map_xy(tr['x'], tr['y'])
+                    x[k] = x01
+                    depth[k] = min(1.0, max(0.0, d_mm / float(room.depth_at(x01))))
+                    active[k] = tr['active']
+            self.field.configure(min(max(int(s['field_cols']), 1), 32), min(max(int(s['field_rows']), 1), 64))
+            self.field.update(room, list(views.values()), [[p['x'], p['y']] for p in sim], t,
+                              s['field_fade_s'], s['field_threshold'])
+            occ, motion = self.field.occ.copy(), self.field.motion.copy()
+        self.send(x, depth, active, occ, motion)
         with self.lock:
             self._task_step(in_zone)
             self.snap = {
-                'rev': rev, 'fg': fg, 'people': people, 'in_zone': in_zone,
+                'views': views, 'people': people, 'in_zone': in_zone,
                 'tracks': {k: dict(v) for k, v in self.tracker.tracks.items()},
-                'x': x, 'depth': depth, 'active': active, 't': t,
+                'x': x, 'depth': depth, 'active': active, 't': t, 'occ': occ, 'motion': motion,
             }
 
     # ------------------------------------------------ for the user interface
     def snapshot(self):
         with self.lock:
             return self.snap
-
-    def points_xy(self, snap):
-        rev, fg = snap['rev'], snap['fg']
-        if rev is None:
-            return None
-        valid = rev.dist >= MIN_MM
-        x, y = to_xy(rev.angle, rev.dist)
-        return x[valid & ~fg] / 1000.0, y[valid & ~fg] / 1000.0, x[fg] / 1000.0, y[fg] / 1000.0
