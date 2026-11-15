@@ -190,6 +190,8 @@ class Quality:
         self.hz = []
         self.valid = []
         self.points = []
+        self.crc = []
+        self.last_t = 0.0
 
     def add(self, rev, n_people, crc_bad):
         v = 100.0 * float((rev.dist >= MIN_MM).mean())
@@ -197,8 +199,10 @@ class Quality:
         self.hz.append(rev.hz)
         self.valid.append(v)
         self.points.append(len(rev.dist))
+        self.crc.append(crc_bad)
+        self.last_t = time.time()
         if len(self.hz) > 36000:            # keep about one hour
-            del self.hz[:6000], self.valid[:6000], self.points[:6000]
+            del self.hz[:6000], self.valid[:6000], self.points[:6000], self.crc[:6000]
         if self.log:
             self.log.writerow([f'{rev.t:.3f}', f'{rev.hz:.3f}', len(rev.dist), f'{v:.1f}', crc_bad, n_people])
 
@@ -220,6 +224,14 @@ class Quality:
                 'hz_mean': statistics.fmean(self.hz), 'hz_std': statistics.pstdev(self.hz),
                 'valid_mean': statistics.fmean(self.valid), 'valid_min': min(self.valid),
                 'points_mean': statistics.fmean(self.points)}
+
+    def recent(self, n=50):
+        """Means over the last n revolutions (about 5 s), new CRC errors, seconds since the last one."""
+        if not self.hz:
+            return {}
+        return {'hz': statistics.fmean(self.hz[-n:]), 'valid': statistics.fmean(self.valid[-n:]),
+                'points': statistics.fmean(self.points[-n:]), 'crc_new': self.crc[-1] - self.crc[-n:][0],
+                'age': time.time() - self.last_t}
 
 
 # ---------------------------------------------------------------- engine
@@ -328,6 +340,10 @@ class Engine(threading.Thread):
         if now - self._rate_t >= 1.0:
             self.rate = self._rate_n / (now - self._rate_t)
             self._rate_n, self._rate_t = 0, now
+
+    def osc_rate(self):
+        """Updates per second; 0 when sending has stopped."""
+        return self.rate if time.time() - self._rate_t < 2.5 else 0.0
 
     # ------------------------------------------------ guided calibration
     def request(self, kind):

@@ -69,6 +69,38 @@ HELP = {
     'fullscreen': 'Fullscreen on or off (also F11).',
     'fit': 'Shows the area around the sensor again (6 m).',
     'cancel': 'Stops the countdown or measurement.',
+    'refresh': 'Reads the list of serial ports again, e.g. after plugging in the adapter.',
+    'st_sensor': 'Connection to the lidar.\n'
+                 'Green: data arrives.\n'
+                 'Yellow: CRC errors are rising. These are damaged data packets; a few right after '
+                 'plugging in are normal. If they keep rising, check the wiring and the cable.\n'
+                 'Red: no data. Check the USB cable, the port under "Sensor" and that the motor spins.',
+    'st_signal': 'Quality of the scan over the last 5 seconds. Green = fine, yellow = keep an eye on it, '
+                 'red = act.\n\n'
+                 'rev/s: turns of the sensor per second. 10 is normal (green 9 to 11). Lower or unsteady '
+                 'usually means weak USB power.\n\n'
+                 'valid: share of measurements that hit something within range (green from 90 %). It drops '
+                 'with black or shiny surfaces, glass, open doors, direct sunlight or a dirty sensor window. '
+                 'In a large open hall a lower value can be normal: compare with a quiet moment.\n\n'
+                 'points/rev: measurements per turn, about 2160 at 10 rev/s. Much less means data is lost '
+                 'on the way (cable, USB).\n\n'
+                 'The grey line below sums up the whole run since the start.',
+    'st_room': 'The learned empty room is the reference: anything closer than the room counts as '
+               'foreground.\n\n'
+               'coverage: share of directions in which the sensor sees a wall or an object. Open sides '
+               'lower it; that is fine.\n'
+               'noise: typical jitter of the room measurement; below 20 mm is good.\n\n'
+               'Yellow: not learned yet, do step 1. Learn again whenever the sensor or the room changes.',
+    'st_map': 'How positions become x and depth for the patches.\n'
+              'Green: surface mode, both ends set; x follows the projection surface.\n'
+              'Yellow: sensor mode; x follows the angle around the sensor, fine for testing. See step 2.',
+    'st_osc': 'Data sent to the patches. The bridge sends one update per sensor turn, so about 10 '
+              'updates/s is normal and gives smooth motion. Below 8 motion gets jerky; 0 means nothing '
+              'is sent.\n\n'
+              'listening: targets on this computer where a program holds the port. If fewer are listening '
+              'than there are targets, switch OSC input on in Arena or Wire (see Output). Targets on other '
+              'computers cannot be checked.',
+    'st_people': 'People in the zone right now, including simulated ones. Grey: nobody there.',
     'view': 'Top view, sensor at the centre, metres. Mouse wheel zooms, right-drag pans, '
             'double-click fits. Grey: scan, red: closer than the empty room, blue: the empty room, '
             'coloured rings: tracked people with slot number.',
@@ -222,10 +254,13 @@ def run_window(eng, snapshot=None, sim=0):
                 dpg.add_separator()
 
                 with dpg.collapsing_header(label='Status', default_open=True):
-                    for key in ('st_sensor', 'st_room', 'st_map', 'st_osc', 'st_people'):
+                    for key in ('st_sensor', 'st_signal', 'st_room', 'st_map', 'st_osc', 'st_people'):
                         with dpg.group(horizontal=True):
-                            dpg.add_text('●', tag=key + '_dot', color=DIM)
-                            dpg.add_text('', tag=key, wrap=PANEL_W - 60)
+                            tip(dpg.add_text('●', tag=key + '_dot', color=DIM), key)
+                            tip(dpg.add_text('', tag=key, wrap=PANEL_W - 60), key)
+                        if key == 'st_signal':
+                            tip(dpg.add_text('', tag='st_session', color=DIM, indent=22, wrap=PANEL_W - 60),
+                                'st_signal')
                     dpg.add_text('', tag='st_msg', wrap=PANEL_W - 30)
                     with dpg.group(tag='task_group', show=False):
                         dpg.add_text('', tag='task_text', color=WARN, wrap=PANEL_W - 30)
@@ -267,14 +302,22 @@ def run_window(eng, snapshot=None, sim=0):
                                              callback=on_depth)
                     tip(s, 'depth')
 
-                with dpg.collapsing_header(label='Simulation', default_open=False):
-                    t = dpg.add_text('Drag the yellow points in the view.', color=DIM)
-                    tip(t, 'sim')
-                    with dpg.group(horizontal=True):
-                        b = dpg.add_button(label='Add person', callback=on_sim_add)
-                        tip(b, 'sim_add')
-                        b = dpg.add_button(label='Remove all', callback=on_sim_clear)
-                        tip(b, 'sim_clear')
+                with dpg.collapsing_header(label='3  Advanced detection', default_open=False):
+                    spec = [('tol_mm', 'Tolerance', 25, 2000, '%.0f mm'), ('gap_mm', 'Blob gap', 50, 2000, '%.0f mm'),
+                            ('merge_mm', 'Merge distance', 0, 3000, '%.0f mm'),
+                            ('assoc_mm', 'Track distance', 100, 5000, '%.0f mm'),
+                            ('smooth', 'Smoothing', 0.05, 1.0, '%.2f'), ('hold_s', 'Hold', 0.0, 5.0, '%.1f s'),
+                            ('fade_s', 'Fade', 0.02, 5.0, '%.2f s')]
+                    for key, label, lo, hi, fmt in spec:
+                        s = dpg.add_slider_float(label=label, tag=key, min_value=lo, max_value=hi,
+                                                 default_value=float(eng.s[key]), format=fmt,
+                                                 callback=on_slider, user_data=key)
+                        tip(s, key)
+                    s = dpg.add_slider_int(label='Min points', tag='min_pts', min_value=1, max_value=100,
+                                           default_value=int(eng.s['min_pts']), callback=on_slider, user_data='min_pts')
+                    tip(s, 'min_pts')
+                    b = dpg.add_button(label='Reset to defaults', callback=on_reset_adv)
+                    tip(b, 'reset_adv')
 
                 with dpg.collapsing_header(label='Output (OSC)', default_open=True):
                     t = dpg.add_text('Targets:', color=DIM)
@@ -294,34 +337,27 @@ def run_window(eng, snapshot=None, sim=0):
                                 for c in ('n', 'x', 'd', 'a'):
                                     dpg.add_text(str(k) if c == 'n' else '', tag=f'cell_{c}{k}', color=DIM)
 
-                with dpg.collapsing_header(label='Advanced detection', default_open=False):
-                    spec = [('tol_mm', 'Tolerance', 25, 2000, '%.0f mm'), ('gap_mm', 'Blob gap', 50, 2000, '%.0f mm'),
-                            ('merge_mm', 'Merge distance', 0, 3000, '%.0f mm'),
-                            ('assoc_mm', 'Track distance', 100, 5000, '%.0f mm'),
-                            ('smooth', 'Smoothing', 0.05, 1.0, '%.2f'), ('hold_s', 'Hold', 0.0, 5.0, '%.1f s'),
-                            ('fade_s', 'Fade', 0.02, 5.0, '%.2f s')]
-                    for key, label, lo, hi, fmt in spec:
-                        s = dpg.add_slider_float(label=label, tag=key, min_value=lo, max_value=hi,
-                                                 default_value=float(eng.s[key]), format=fmt,
-                                                 callback=on_slider, user_data=key)
-                        tip(s, key)
-                    s = dpg.add_slider_int(label='Min points', tag='min_pts', min_value=1, max_value=100,
-                                           default_value=int(eng.s['min_pts']), callback=on_slider, user_data='min_pts')
-                    tip(s, 'min_pts')
-                    b = dpg.add_button(label='Reset to defaults', callback=on_reset_adv)
-                    tip(b, 'reset_adv')
+                with dpg.collapsing_header(label='Simulation', default_open=False):
+                    t = dpg.add_text('Drag the yellow points in the view.', color=DIM)
+                    tip(t, 'sim')
+                    with dpg.group(horizontal=True):
+                        b = dpg.add_button(label='Add person', callback=on_sim_add)
+                        tip(b, 'sim_add')
+                        b = dpg.add_button(label='Remove all', callback=on_sim_clear)
+                        tip(b, 'sim_clear')
 
-                with dpg.collapsing_header(label='Sensor and quality', default_open=False):
+                with dpg.collapsing_header(label='Sensor', default_open=False):
                     with dpg.group(horizontal=True):
                         c = dpg.add_combo(list_ports(), tag='port', default_value=eng.s['port'], width=120)
                         tip(c, 'port')
                         b = dpg.add_button(label='Refresh', callback=on_refresh_ports)
+                        tip(b, 'refresh')
                         b2 = dpg.add_button(label='Connect', callback=on_connect)
                         tip(b2, 'connect')
                     c = dpg.add_checkbox(label='Write quality log (CSV)', default_value=bool(eng.s['log_quality']),
                                          callback=on_slider, user_data='log_quality')
                     tip(c, 'log')
-                    dpg.add_text('', tag='quality', color=DIM, wrap=PANEL_W - 30)
+                    dpg.add_text('', tag='log_path', color=DIM, wrap=PANEL_W - 30)
 
                 with dpg.collapsing_header(label='Display', default_open=False):
                     s = dpg.add_slider_float(label='UI scale', min_value=0.7, max_value=2.5,
@@ -365,14 +401,30 @@ def run_window(eng, snapshot=None, sim=0):
         now = time.time()
 
         # status lines
-        if rd.connected:
-            hz = snap['rev'].hz if snap and snap['rev'] is not None else 0.0
-            pts = len(snap['rev'].dist) if snap and snap['rev'] is not None else 0
-            set_status('st_sensor', OK, f'Sensor {eng.s["port"]}: running, {hz:.1f} Hz, {pts} points, '
-                                        f'{rd.crc_bad} CRC errors')
+        rq = eng.quality.recent()
+        live = rd.connected and rq and rq['age'] < 1.0
+        if live:
+            crc_col = WARN if rq['crc_new'] > 0 else OK
+            set_status('st_sensor', crc_col, f'Sensor {eng.s["port"]}: running, {rd.crc_bad} CRC errors'
+                       + (' (rising)' if rq['crc_new'] > 0 else ''))
+            exp_pts = 21600.0 / max(rq['hz'], 0.1)          # STL-27L: 21600 measurements per second
+            c_hz = OK if 9.0 <= rq['hz'] <= 11.0 else (WARN if 7.0 <= rq['hz'] <= 13.0 else BAD)
+            c_val = OK if rq['valid'] >= 90.0 else (WARN if rq['valid'] >= 70.0 else BAD)
+            ratio = rq['points'] / exp_pts
+            c_pts = OK if ratio >= 0.93 else (WARN if ratio >= 0.8 else BAD)
+            worst = BAD if BAD in (c_hz, c_val, c_pts) else (WARN if WARN in (c_hz, c_val, c_pts) else OK)
+            set_status('st_signal', worst, f"Signal: {rq['hz']:.1f} rev/s, valid {rq['valid']:.0f} %, "
+                                           f"{rq['points']:.0f} points/rev")
         else:
-            set_status('st_sensor', BAD, f'Sensor {eng.s["port"]}: not connected'
-                                         + (f' ({rd.last_error[:60]})' if rd.last_error else ''))
+            set_status('st_sensor', BAD, f'Sensor {eng.s["port"]}: '
+                       + ('connected, no data' if rd.connected else 'not connected')
+                       + (f' ({rd.last_error[:60]})' if rd.last_error and not rd.connected else ''))
+            set_status('st_signal', DIM, 'Signal: no data')
+        q = eng.quality.summary()
+        dpg.set_value('st_session', f"Since start: {q['minutes']:.0f} min, {q['revs']} revolutions, "
+                                    f"lowest valid {q['valid_min']:.0f} %" if q else '')
+        dpg.set_value('log_path', f"Log: logs/{os.path.basename(eng.quality.log_path)}"
+                      if eng.quality.log else '')
         if eng.bg.ok:
             cover, n_med, _ = eng.bg.stats()
             when = time.strftime('%d.%m. %H:%M', time.localtime(eng.bg.learned_at)) if eng.bg.learned_at else '?'
@@ -390,7 +442,10 @@ def run_window(eng, snapshot=None, sim=0):
         ok_targets = [t for t in eng.s['osc_targets'] if listening.get(t)]
         osc_color = OK if ok_targets else (WARN if eng.s['osc_targets'] else BAD)
         n_t = len(eng.s['osc_targets'])
-        set_status('st_osc', osc_color, f'OSC {eng.rate:.0f} msg/s to {n_t} target{"" if n_t == 1 else "s"}, '
+        rate = eng.osc_rate()
+        if rate < 8.0 and osc_color == OK:
+            osc_color = WARN if rate > 0 else BAD
+        set_status('st_osc', osc_color, f'OSC: {rate:.0f} updates/s to {n_t} target{"" if n_t == 1 else "s"}, '
                                         f'{len(ok_targets)} listening')
         for t in eng.s['osc_targets']:
             if dpg.does_item_exist(f'dot_{t}'):
@@ -412,13 +467,6 @@ def run_window(eng, snapshot=None, sim=0):
         if ts:
             dpg.set_value('task_text', ts[0])
             dpg.set_value('task_bar', ts[1])
-
-        q = eng.quality.summary()
-        if q:
-            dpg.set_value('quality', f"{q['minutes']:.1f} min, {q['revs']} revolutions, {q['hz_mean']:.2f} Hz "
-                                     f"(std {q['hz_std']:.3f}), valid {q['valid_mean']:.1f} % "
-                                     f"(min {q['valid_min']:.1f} %), {q['points_mean']:.0f} points/rev"
-                          + (f"\nLog: logs/{os.path.basename(eng.quality.log_path)}" if eng.quality.log else ''))
 
         if snap is None or snap is state['last_snap']:
             return

@@ -2,7 +2,7 @@
 
 Motion Bridge is a tool: it reads a 2D lidar, finds people in front of the projection surface and sends their positions to Wire patches over OSC, about 10 times per second.
 
-Last updated: 2026-11-14
+Last updated: 2026-11-15
 
 ## Purpose
 
@@ -67,7 +67,8 @@ The window shows the room from above on the left and the controls on the right. 
    - With a surface: click *Set left end*, walk to the left end of the projection surface and stand there alone, close to it, until the second tone. The same for *Set right end*. x then runs from 0 (left) to 1 (right).
    - Without a surface (sensor mode): x follows the angle in the watched half of the sensor. Turn the half with *Facing* or *Turn 180 deg* until the blue line points into the room; tick *Mirror* if the bulge moves the opposite way.
    - *Depth Range*: how far from the surface people count.
-3. **Check**: the status lines must all be green; tracked people appear as coloured rings with their slot, x and depth.
+3. **Advanced detection**: fine-tune detection for the room (see Configuration).
+4. **Check**: the status lines should be green (yellow = keep an eye on it, red = act); hover over a line to see what it means and which values are good. *Signal* shows the scan quality of the last 5 s (revolutions per second, valid share, points per revolution), the grey line below it the whole run. Tracked people appear as coloured rings with their slot, x and depth.
 
 **Simulation**: *Add person* creates a yellow point in the view that you drag with the mouse. It is sent like a real person, also without a sensor, so patches can be developed and checked anywhere.
 
@@ -113,6 +114,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-15: Status explains itself on hover, with traffic lights; scan quality (revolutions per second, valid share, points per revolution) moved into the status as *Signal*; the *Sensor* section only holds port, connect and log; *Advanced detection* is step 3.
 - 2026-11-14: First version (#69): STL-27L reader, empty-room background, people tracking in 8 slots, surface and sensor mode, guided calibration with countdown and tones, mouse-driven window with tooltips and fullscreen, simulated people, OSC target check, quality log.
 
 ---
