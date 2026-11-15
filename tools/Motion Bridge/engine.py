@@ -16,6 +16,7 @@ import time
 import numpy as np
 from pythonosc.udp_client import SimpleUDPClient
 
+from field import Field
 from room import BEHIND_MM, Room, create_default
 from scene import MIN_MM, Background, blobs, foreground, to_xy
 from stl27l import Stl27lReader
@@ -37,6 +38,10 @@ DEFAULTS = {
     'smooth': 0.5,
     'hold_s': 0.4,
     'fade_s': 0.3,
+    'field_cols': 32,
+    'field_rows': 16,
+    'field_fade_s': 0.5,
+    'field_threshold': 0.05,
     'log_quality': False,
     'ui_scale': 1.0,
 }
@@ -217,6 +222,7 @@ class Engine(threading.Thread):
             live.port = port_override       # this run only, see save_room
             self.sync_readers()
         self.tracker = Tracker()
+        self.field = Field()
         self.quality = Quality(os.path.join(folder, 'logs'))
         self.quality.set_logging(self.s['log_quality'])
         self.clients = []
@@ -274,7 +280,7 @@ class Engine(threading.Thread):
         live = self.live_station()
         room = Room(os.path.join(self.rooms_dir, name), name)
         room.add_station(port=live.port if live else 'COM19')
-        room.depth_mm = self.room.depth_mm
+        room.depth_l_mm, room.depth_r_mm = self.room.depth_l_mm, self.room.depth_r_mm
         room.save()
         self.load_room(name)
         return True
@@ -385,7 +391,7 @@ class Engine(threading.Thread):
             out[t] = port_listening(host, int(port))
         self.listening = out
 
-    def send(self, x, depth, active):
+    def send(self, x, depth, active, occ=None, motion=None):
         alive = float(self.sent % 1000)
         for _, c in self.clients:
             try:
@@ -393,6 +399,12 @@ class Engine(threading.Thread):
                 c.send_message('/lidar/depth', [float(v) for v in depth])
                 c.send_message('/lidar/active', [float(v) for v in active])
                 c.send_message('/lidar/count', float((active > 0).sum()))
+                if occ is not None:
+                    rows, cols = occ.shape
+                    c.send_message('/lidar/field/size', [float(cols), float(rows)])
+                    for r in range(rows):
+                        c.send_message(f'/lidar/occupancy/{r}', [float(v) for v in occ[r]])
+                        c.send_message(f'/lidar/motion/{r}', [float(v) for v in motion[r]])
                 c.send_message('/lidar/alive', alive)
             except OSError:
                 pass
@@ -561,10 +573,12 @@ class Engine(threading.Thread):
                 for b in blobs(rev, fg & keep, s['gap_mm'], int(s['min_pts'])):
                     b['x'], b['y'] = st.to_map(b['x'], b['y'])
                     people.append(b)
-                views[sid] = {'mx': mx, 'my': my, 'valid': rev.dist >= MIN_MM, 'fg': fg, 'keep': keep}
+                views[sid] = {'mx': mx, 'my': my, 'valid': rev.dist >= MIN_MM, 'fg': fg, 'keep': keep,
+                              'dist': rev.dist}
             people = merge(people, s['merge_mm'])
             sim = [{'x': float(x), 'y': float(y), 'n': 50, 'sim': True} for x, y in self.sim]
-            people += [p for p in sim if room.in_areas([p['x']], [p['y']])[0]]
+            sim = [p for p in sim if room.in_areas([p['x']], [p['y']])[0]]
+            people += sim
             screen = room.has_screen()
             in_zone = [p for p in people if not screen or room.map_xy(p['x'], p['y'])[1] >= -BEHIND_MM]
             self.tracker.update(in_zone, t, s['assoc_mm'], s['smooth'], s['hold_s'], s['fade_s'])
@@ -573,15 +587,19 @@ class Engine(threading.Thread):
                 for k, tr in self.tracker.tracks.items():
                     x01, d_mm = room.map_xy(tr['x'], tr['y'])
                     x[k] = x01
-                    depth[k] = min(1.0, max(0.0, d_mm / max(room.depth_mm, 1.0)))
+                    depth[k] = min(1.0, max(0.0, d_mm / float(room.depth_at(x01))))
                     active[k] = tr['active']
-        self.send(x, depth, active)
+            self.field.configure(min(max(int(s['field_cols']), 1), 32), min(max(int(s['field_rows']), 1), 64))
+            self.field.update(room, list(views.values()), [[p['x'], p['y']] for p in sim], t,
+                              s['field_fade_s'], s['field_threshold'])
+            occ, motion = self.field.occ.copy(), self.field.motion.copy()
+        self.send(x, depth, active, occ, motion)
         with self.lock:
             self._task_step(in_zone)
             self.snap = {
                 'views': views, 'people': people, 'in_zone': in_zone,
                 'tracks': {k: dict(v) for k, v in self.tracker.tracks.items()},
-                'x': x, 'depth': depth, 'active': active, 't': t,
+                'x': x, 'depth': depth, 'active': active, 't': t, 'occ': occ, 'motion': motion,
             }
 
     # ------------------------------------------------ for the user interface

@@ -123,7 +123,8 @@ class Room:
         self.folder, self.name = folder, name
         self.stations = []
         self.screen = None                      # {'left': [x, y], 'right': [x, y]} in mm
-        self.depth_mm = 3000.0
+        self.depth_l_mm = 3000.0                 # Depth Range at the left and the right end of the screen:
+        self.depth_r_mm = 3000.0                 # the tracked field is a trapezoid in front of the screen
         self.areas = []                         # [{'kind': 'include'|'exclude', 'pts': [[x, y], ...]}]
         self.barriers = []                      # [[[x, y], [x, y]], ...]
         self.ref = None                         # reference marker [x, y] (e.g. a pole)
@@ -149,7 +150,9 @@ class Room:
             d = json.load(f)
         room.stations = [Station(**s) for s in d.get('stations', [])]
         room.screen = d.get('screen')
-        room.depth_mm = float(d.get('depth_mm', 3000.0))
+        old = float(d.get('depth_mm', 3000.0))
+        room.depth_l_mm = float(d.get('depth_l_mm', old))
+        room.depth_r_mm = float(d.get('depth_r_mm', old))
         room.areas = d.get('areas', [])
         room.barriers = d.get('barriers', [])
         room.ref = d.get('ref')
@@ -160,7 +163,8 @@ class Room:
 
     def save(self):
         os.makedirs(self.folder, exist_ok=True)
-        d = {'stations': [s.to_dict() for s in self.stations], 'screen': self.screen, 'depth_mm': self.depth_mm,
+        d = {'stations': [s.to_dict() for s in self.stations], 'screen': self.screen,
+             'depth_l_mm': self.depth_l_mm, 'depth_r_mm': self.depth_r_mm,
              'areas': self.areas, 'barriers': self.barriers, 'ref': self.ref}
         tmp = os.path.join(self.folder, 'room.json.tmp')
         with open(tmp, 'w') as f:
@@ -274,11 +278,41 @@ class Room:
         p = np.array([mx, my], float) - np.array(self.screen['left'], float)
         return float(np.dot(p, u) / length), float(np.dot(p, n))
 
+    def depth_at(self, x01):
+        """Depth Range at a position along the screen (mm): linear from the left to the right end."""
+        t = np.clip(x01, 0.0, 1.0)
+        return np.maximum(self.depth_l_mm + (self.depth_r_mm - self.depth_l_mm) * t, 1.0)
+
+    def to_field(self, mx, my):
+        """Map points -> (x 0..1 along the screen, depth 0..1 within the trapezoid), vectorised."""
+        u, n, length = self.frame()
+        l = np.array(self.screen['left'], float)
+        px, py = np.asarray(mx, float) - l[0], np.asarray(my, float) - l[1]
+        x01 = (px * u[0] + py * u[1]) / length
+        d = px * n[0] + py * n[1]
+        return x01, d / self.depth_at(x01)
+
+    def far_corner(self, end):
+        """Back corner of the field behind the 'left' or 'right' end of the screen (mm)."""
+        u, n, _ = self.frame()
+        depth = self.depth_l_mm if end == 'left' else self.depth_r_mm
+        return np.array(self.screen[end], float) + n * depth
+
+    def set_far_corner(self, end, mx, my):
+        """Drags a back corner: only its distance from the screen counts (at least 0.3 m)."""
+        u, n, _ = self.frame()
+        d = float(np.dot(np.array([mx, my], float) - np.array(self.screen[end], float), n))
+        d = max(300.0, d)
+        if end == 'left':
+            self.depth_l_mm = d
+        else:
+            self.depth_r_mm = d
+
     def screen_band(self):
-        """Closed outline of the screen and the line at Depth Range, for drawing (mm)."""
+        """Closed outline of the tracked field (screen and the far edge at Depth Range), mm."""
         u, n, _ = self.frame()
         l, r = np.array(self.screen['left'], float), np.array(self.screen['right'], float)
-        fl, fr = l + n * self.depth_mm, r + n * self.depth_mm
+        fl, fr = l + n * self.depth_l_mm, r + n * self.depth_r_mm
         return [l[0], r[0], fr[0], fl[0], l[0]], [l[1], r[1], fr[1], fl[1], l[1]]
 
     def area_from_screen(self):
@@ -311,7 +345,7 @@ class Room:
         """A copy for drawing, without the scans."""
         c = Room(self.folder, self.name)
         c.stations = [copy.copy(s) for s in self.stations]
-        c.screen, c.depth_mm = copy.deepcopy(self.screen), self.depth_mm
+        c.screen, c.depth_l_mm, c.depth_r_mm = copy.deepcopy(self.screen), self.depth_l_mm, self.depth_r_mm
         c.areas, c.barriers, c.ref = copy.deepcopy(self.areas), copy.deepcopy(self.barriers), copy.deepcopy(self.ref)
         return c
 
@@ -325,7 +359,7 @@ def create_default(rooms_dir, old_settings, old_background):
     """
     room = Room(os.path.join(rooms_dir, 'Default'), 'Default')
     st = room.add_station(port=old_settings.get('port') or 'COM19')
-    room.depth_mm = float(old_settings.get('depth_mm') or 3000.0)
+    room.depth_l_mm = room.depth_r_mm = float(old_settings.get('depth_mm') or 3000.0)
     if old_settings.get('left') and old_settings.get('right'):
         room.screen = {'left': list(old_settings['left']), 'right': list(old_settings['right'])}
     room.save()

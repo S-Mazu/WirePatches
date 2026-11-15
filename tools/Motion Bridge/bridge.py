@@ -68,7 +68,17 @@ HELP = {
                    'The ends can be dragged afterwards.',
     'screen_swap': 'Swaps the ends: the room side changes to the other side of the screen.',
     'screen_clear': 'Removes the screen. Without a screen nothing is sent.',
-    'depth': 'depth = 0 at the screen, 1 at this distance. People further away send 1.',
+    'depth': 'Sets the Depth Range at both ends of the screen. depth = 0 at the screen, 1 at the far edge; '
+             'people further away send 1.\nFor a trapezoid, drag the far corners (F) in the view: each end gets '
+             'its own depth.',
+    'field': 'What the patches get as fields, seen from the room: left to right along the screen, bottom = at the '
+             'screen, top = far edge.\nOccupancy: where something is (white = a surface crosses the whole cell).\n'
+             'Motion: where the occupancy changes (white = a cell is taken or freed within 0.25 s). Standing still '
+             'fades out.',
+    'field_cols': 'Cells along the screen (at most 32, one OSC message per row).',
+    'field_rows': 'Cells from the screen to the far edge.',
+    'field_fade_s': 'How long motion takes to fade out after it stops.',
+    'field_threshold': 'Motion below this share is ignored (sensor jitter at the edges of still objects).',
     'draw_area': 'Draws an area: click the corners in the view, then "Finish" (or click the first corner). '
                  'With at least one area, only people inside an area count.',
     'draw_excl': 'Draws an exclusion: nobody inside it counts (a bar, a stage edge, a door).',
@@ -323,7 +333,7 @@ def run_window(eng, snapshot=None, sim=0):
 
     def on_depth(sender, value):
         with eng.lock:
-            room().depth_mm = float(value) * 1000.0
+            room().depth_l_mm = room().depth_r_mm = float(value) * 1000.0
         changed()
 
     def on_area_screen():
@@ -472,6 +482,9 @@ def run_window(eng, snapshot=None, sim=0):
         dpg.set_axis_limits('yaxis', min(ys) - pad, max(ys) + pad)
         state['unlock'] = 2
 
+    with dpg.colormap_registry():
+        dpg.add_colormap([[20, 20, 28, 255], [255, 255, 255, 255]], False, tag='cm_field')   # 0 dark .. 1 white
+
     # ---- layout
     with dpg.window(tag='main', no_scrollbar=True):
         with dpg.group(horizontal=True):
@@ -602,6 +615,32 @@ def run_window(eng, snapshot=None, sim=0):
                                            user_data='min_pts'), 'min_pts')
                     tip(dpg.add_button(label='Reset to defaults', callback=on_reset_adv), 'reset_adv')
 
+                with dpg.collapsing_header(label='Fields', default_open=True):
+                    tip(dpg.add_text('Occupancy                      Motion', color=DIM), 'field')
+                    with dpg.group(horizontal=True):
+                        for tag in ('occ', 'mot'):
+                            with dpg.plot(tag=f'fp_{tag}', width=(PANEL_W - 40) // 2, height=150, no_menus=True,
+                                          no_mouse_pos=True, no_inputs=True, no_title=True):
+                                dpg.add_plot_axis(dpg.mvXAxis, tag=f'fx_{tag}', no_tick_labels=True,
+                                                  no_gridlines=True)
+                                with dpg.plot_axis(dpg.mvYAxis, tag=f'fy_{tag}', no_tick_labels=True,
+                                                   no_gridlines=True):
+                                    dpg.add_heat_series([0.0], 1, 1, tag=f'fh_{tag}', scale_min=0.0, scale_max=1.0,
+                                                        bounds_min=(0.0, 0.0), bounds_max=(1.0, 1.0), format='')
+                            dpg.bind_colormap(f'fp_{tag}', 'cm_field')
+                    for key, label, lo, hi, fmt in (('field_cols', 'Columns', 1, 32, None),
+                                                    ('field_rows', 'Rows', 1, 64, None),
+                                                    ('field_fade_s', 'Motion fade', 0.0, 5.0, '%.2f s'),
+                                                    ('field_threshold', 'Motion threshold', 0.0, 0.9, '%.2f')):
+                        if fmt is None:
+                            tip(dpg.add_slider_int(label=label, tag=key, min_value=lo, max_value=hi,
+                                                   default_value=int(eng.s[key]), callback=on_slider,
+                                                   user_data=key), key)
+                        else:
+                            tip(dpg.add_slider_float(label=label, tag=key, min_value=lo, max_value=hi,
+                                                     default_value=float(eng.s[key]), format=fmt,
+                                                     callback=on_slider, user_data=key), key)
+
                 with dpg.collapsing_header(label='Output (OSC)', default_open=True):
                     tip(dpg.add_text('Targets:', color=DIM), 'targets')
                     dpg.add_group(tag='targets')
@@ -724,6 +763,11 @@ def run_window(eng, snapshot=None, sim=0):
                 add_handle(f'h_{end}', lambda end=end: tuple(v / 1000.0 for v in room().screen[end]),
                            lambda x, y, end=end: room().screen.__setitem__(end, [x * 1000.0, y * 1000.0]),
                            SCREEN_C, lab)
+            if r.has_screen():
+                for end, lab in (('left', 'F'), ('right', 'F')):
+                    add_handle(f'h_far_{end}', lambda end=end: tuple(v / 1000.0 for v in room().far_corner(end)),
+                               lambda x, y, end=end: room().set_far_corner(end, x * 1000.0, y * 1000.0),
+                               (150, 150, 165), lab)
         if r.ref:
             add_handle('h_ref', lambda: tuple(v / 1000.0 for v in room().ref),
                        lambda x, y: setattr(room(), 'ref', [x * 1000.0, y * 1000.0]), REF_C, 'ref')
@@ -816,7 +860,7 @@ def run_window(eng, snapshot=None, sim=0):
         st = sel()
         dpg.set_value('sel_title', f'Selected: {st.sid}  {st.name}' + ('  (sensor)' if st.port else '  (scan only)'))
         for tag, val in (('pos_x', st.x / 1000.0), ('pos_y', st.y / 1000.0), ('rot', st.rot),
-                         ('fan', st.fan_span), ('flip', st.flip), ('depth', room().depth_mm / 1000.0)):
+                         ('fan', st.fan_span), ('flip', st.flip), ('depth', max(room().depth_l_mm, room().depth_r_mm) / 1000.0)):
             if not dpg.is_item_active(tag):
                 dpg.set_value(tag, val)
         if st.fan_span < 360.0 and f'h_fan_{st.sid}' not in state['handles'] or \
@@ -894,7 +938,9 @@ def run_window(eng, snapshot=None, sim=0):
         if r.has_screen():
             extra = (f', {len(r.areas)} area{"" if len(r.areas) == 1 else "s"}' if r.areas else '') + \
                     (f', {len(r.barriers)} barrier{"" if len(r.barriers) == 1 else "s"}' if r.barriers else '')
-            set_status('st_map', OK, f'Screen {r.frame()[2] / 1000:.2f} m wide, depth {r.depth_mm / 1000:.1f} m{extra}')
+            dl, dr = r.depth_l_mm / 1000.0, r.depth_r_mm / 1000.0
+            dtxt = f'{dl:.1f} m' if abs(dl - dr) < 0.05 else f'{dl:.1f} m left, {dr:.1f} m right'
+            set_status('st_map', OK, f'Screen {r.frame()[2] / 1000:.2f} m wide, depth {dtxt}{extra}')
         else:
             set_status('st_map', BAD, 'No screen: nothing is sent (step 3)')
         listening = eng.listening
@@ -945,6 +991,12 @@ def run_window(eng, snapshot=None, sim=0):
             ox += list(v['mx'][c] / 1000.0)
             oy += list(v['my'][c] / 1000.0)
         dpg.set_value('s_pts', [px, py])
+        for tag, key in (('occ', 'occ'), ('mot', 'motion')):
+            f = snap.get(key)
+            if f is not None and f.size:
+                rows, cols = f.shape
+                dpg.configure_item(f'fh_{tag}', rows=rows, cols=cols)
+                dpg.set_value(f'fh_{tag}', [[float(v) for v in f[::-1].ravel()]])   # row 0 (at the screen) at the bottom
         dpg.set_value('s_fg', [fx, fy])
         dpg.set_value('s_out', [ox, oy])
 
@@ -972,6 +1024,9 @@ def run_window(eng, snapshot=None, sim=0):
 
     rebuild()
     on_fit()
+    for tag in ('occ', 'mot'):
+        dpg.set_axis_limits(f'fx_{tag}', 0.0, 1.0)
+        dpg.set_axis_limits(f'fy_{tag}', 0.0, 1.0)
     for _ in range(sim):
         on_sim_add()
     t_start = time.time()
