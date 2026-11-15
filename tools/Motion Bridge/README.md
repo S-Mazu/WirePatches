@@ -15,7 +15,36 @@ The bridge interprets nothing for a patch: what a value means in the picture is 
 
 Everything happens in one room map seen from above, in metres. Several sensor positions (several sensors, or one sensor moved around) are aligned in this map; the screen, areas, exclusions and barriers are drawn into it with the mouse. Rooms of any size and shape work: nothing assumes a rectangle. Patches only receive these normalized values, so they work on any surface and with any sensor that delivers them.
 
-Patches using it: [Bulging Lines](../../sources/Bulging%20Lines/).
+Patches using it: [Bulging Lines](../../sources/Bulging%20Lines/) (points). No patch uses the fields yet; see Status.
+
+## How it works and why
+
+1. **Read the lidar** (`stl27l.py`): about 10 turns per second, about 2160 distances per turn, checked by CRC. The reader reconnects by itself after a cable pull, so a show survives a loose plug.
+2. **Learn the empty room** (`scene.py`): per position, the median distance and the noise per 0.5° direction while nobody is in the scan plane. Everything clearly closer than this background is foreground. Why: walls, columns and furniture never count as motion, without drawing them by hand.
+3. **Put all positions into one room map** (`room.py`): each position has a place and a rotation in a top view in metres; the scans are aligned by eye, by dragging, rotating and an optional reference object. Why: several sensors, or one sensor measured from several places, must describe the same room.
+4. **Filter** (`room.py`): per position a fan (only these directions count), barriers (a sensor does not look through them), areas and exclusions (only/never these places count). Why: rooms are irregular; the person setting up decides what is relevant, not a rectangle in the code.
+5. **Map onto the screen** (`room.py`): the screen is a line in the map, the field in front of it a trapezoid (each end has its own Depth Range). Every foreground point gets `x` (0 left end … 1 right end) and `depth` (0 at the screen … 1 at Depth Range). Why: patches work in screen terms, independent of room size and sensor placement.
+6. **Fields** (`field.py`): the trapezoid is divided into cells (default 32 × 16). Occupancy = share of a cell covered by foreground surface; motion = how fast the occupancy changes, with a threshold against sensor noise and a fade. Why: projections should react to motion, not to "people"; a field carries any motion (an arm, a group, a run) without interpreting it.
+7. **Points** (`engine.py`): neighbouring foreground points form blobs, close blobs merge, blobs are followed in 8 fixed slots with fade in and out. Why: some patches need single positions; kept for them and for the existing patch.
+8. **Send** (`engine.py`): fields and points over OSC once per turn, plus a heartbeat (`/lidar/alive`) so a patch can calm down when the bridge stops.
+
+## Status (2026-11-15)
+
+Tested:
+- Reading the STL-27L: 9.9–10 turns/s, 0 CRC errors over minutes.
+- Room map with one sensor: empty room, screen, fan, barrier, areas (live sensor and simulation); room files and the takeover of the older single-sensor setup.
+- Fields with the live sensor (walk test): walking gives motion 0.5 to 1 over 5 to 13 cells, still objects stay below 0.3, so the default *Motion threshold* is 0.3.
+- Trapezoid and field display in the window (simulation).
+- Getting a field into Wire: one instanced `Read OSC`, `Join` and `Texture from Data` give a correct texture (checked with a test pattern in a separate Wire patch).
+
+Not tested:
+- More than one physical sensor at the same time (only one sensor was available; several positions were tested by moving it).
+- Window editing by mouse (drawing, dragging handles) was only checked by use, not systematically.
+
+Failed:
+- **No patch reacts to the fields yet.** A rebuild of Bulging Lines on the motion field (branch `claude/lidar-room-map`, not merged) rendered correctly in Wire with a synthetic test field, but did not react to real motion in Arena with the live bridge. The cause was not found. Not checked: whether Arena passes the 16 rows `/lidar/motion/<r>` to an instanced `Read OSC` inside a clip, whether the values reaching the patch are above 0 (small cells, threshold 0.3), and the patch's own mapping. Start there.
+- **Wire crashed or hung three times** during that rebuild. Cause: the `.wire` keeps a copy of an ISF shader's input list; swapping a `.fs` with different inputs under an existing node makes the two disagree. Safe way: give the new shader a fresh ISF node, connect its image inputs first, save and reload the patch as a test. Wire also compiles an ISF shader only if images are read directly in `main()`, and reads shader pass targets flipped vertically.
+- **Working method** (Claude, who built this): changes were made before they were thought through and checked. The bridge was first built around "people" instead of motion, and a patch-specific format (and Spout) was proposed before the interface was defined for any patch. A shader was changed while the patch was loaded. The fields and this README are the result of correcting that.
 
 ## Hardware
 
@@ -29,7 +58,7 @@ Patches using it: [Bulging Lines](../../sources/Bulging%20Lines/).
   | 3 | green | GND | GND |
   | 4 | red | +5 V | +5V |
 
-- Mount the sensor at the height that should be detected (legs near the floor, bodies at about 1 m) with a free view, out of reach of people.
+- Mount the sensor at the height that should be detected, typically 1.2 to 1.5 m on a stand, with a free view, out of reach of people.
 
 ## Requirements
 
@@ -43,7 +72,7 @@ Patches using it: [Bulging Lines](../../sources/Bulging%20Lines/).
 | File | Purpose |
 |---|---|
 | `bridge.py` | Start here: window (or `--headless`), command-line options |
-| `engine.py` | Processing thread: background, people, tracking in the room map, calibration, OSC, quality log |
+| `engine.py` | Processing thread: foreground per position, fields, points (tracking), calibration, OSC, quality log |
 | `room.py` | Room map: sensor positions, fans, screen, field trapezoid, areas, barriers, reference snap, saving |
 | `field.py` | Occupancy and motion field over the trapezoid |
 | `scene.py` | Empty-room background, foreground points, blobs |
@@ -147,6 +176,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-15: README: how the bridge works and why, status with what is tested, untested and failed.
 - 2026-11-15: Occupancy and motion fields over the screen field, sent per row over OSC and shown live in the window (#69). The field in front of the screen can be a trapezoid: each end has its own Depth Range. Points (slots) unchanged. Tested live: walking gives motion 0.5 to 1, still objects stay below 0.3 (the default *Motion threshold*).
 - 2026-11-15: Room map (#69): rooms per venue, several sensor positions with their own scans, alignment by dragging, rotation and a reference object, fan per position, screen drawn in the view or set by standing at its ends, areas, exclusions and barriers. Sensor mode removed; without a screen nothing is sent. Untested with more than one physical sensor.
 - 2026-11-15: Status explains itself on hover, with traffic lights; scan quality (revolutions per second, valid share, points per revolution) moved into the status as *Signal*; the *Sensor* section only holds port, connect and log; *Advanced detection* is step 3.
