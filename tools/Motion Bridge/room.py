@@ -153,20 +153,20 @@ class Room:
 
     # ------------------------------------------------ files
     @staticmethod
-    def names(rooms_dir):
+    def names(rooms_dir: str) -> list[str]:
         if not os.path.isdir(rooms_dir):
             return []
         return sorted(n for n in os.listdir(rooms_dir) if os.path.exists(os.path.join(rooms_dir, n, 'room.json')))
 
     @staticmethod
-    def safe_name(name):
+    def safe_name(name: str) -> str:
         return re.sub(r'[^A-Za-z0-9 _-]', '', name).strip()[:40]
 
     def scan_path(self, sid):
         return os.path.join(self.folder, f'scan_{sid}.npy')
 
     @classmethod
-    def load(cls, folder):
+    def load(cls, folder: str) -> 'Room':
         room = cls(folder, os.path.basename(folder))
         with open(os.path.join(folder, 'room.json')) as f:
             d = json.load(f)
@@ -204,7 +204,7 @@ class Room:
                 area = [list(map(float, p)) for p in (l, r, r + n * dr, l + n * dl)]
         return area, front, exc
 
-    def save(self):
+    def save(self) -> None:
         os.makedirs(self.folder, exist_ok=True)
         d = {'stations': [s.to_dict() for s in self.stations], 'area': self.area, 'front': self.front,
              'exclusions': self.exclusions, 'barriers': self.barriers, 'ref': self.ref}
@@ -214,7 +214,7 @@ class Room:
         os.replace(tmp, os.path.join(self.folder, 'room.json'))
 
     # ------------------------------------------------ stations
-    def station(self, sid):
+    def station(self, sid) -> 'Station | None':
         return next((s for s in self.stations if s.sid == sid), None)
 
     def add_station(self, near=None, port=None):
@@ -297,15 +297,15 @@ class Room:
         return True
 
     # ------------------------------------------------ area and front
-    def has_area(self):
+    def has_area(self) -> bool:
         return bool(self.area) and len(self.area) >= 3
 
-    def has_front(self):
+    def has_front(self) -> bool:
         f = self.front
         return bool(f and f.get('left') and f.get('right')
                     and math.hypot(f['right'][0] - f['left'][0], f['right'][1] - f['left'][1]) > MIN_FRONT_MM)
 
-    def ready(self):
+    def ready(self) -> bool:
         """Area and front are set: the field has a frame and something counts."""
         return self.has_area() and self.has_front()
 
@@ -313,7 +313,7 @@ class Room:
         """Unit vector along the front (left -> right), unit normal into the area, length (mm)."""
         return _line_frame(self.front['left'], self.front['right'])
 
-    def depth_mm(self):
+    def depth_mm(self) -> float:
         """How far the area reaches from the front (mm), at least MIN_DEPTH_MM."""
         if not self.has_area():
             return MIN_DEPTH_MM
@@ -321,7 +321,7 @@ class Room:
         pts = np.array(self.area, float) - np.array(self.front['left'], float)
         return max(MIN_DEPTH_MM, float((pts @ n).max()))
 
-    def front_faces_area(self):
+    def front_faces_area(self) -> bool:
         """False when the area lies behind the front (its ends are swapped)."""
         if not self.ready():
             return True
@@ -329,7 +329,7 @@ class Room:
         c = np.array(self.area, float).mean(axis=0) - np.array(self.front['left'], float)
         return float(c @ n) > 0.0
 
-    def to_front(self, mx, my):
+    def to_front(self, mx: float, my: float) -> tuple[float, float]:
         """Map position -> (x along the front 0..1, distance from the front in mm)."""
         u, n, length = self.frame()
         p = np.array([mx, my], float) - np.array(self.front['left'], float)
@@ -344,7 +344,7 @@ class Room:
         d = px * n[0] + py * n[1]
         return x01, d / self.depth_mm()
 
-    def field_cells(self, cols, rows):
+    def field_cells(self, cols: int, rows: int):
         """Map coordinates of the cell centres, arrays of shape (rows, cols)."""
         u, n, length = self.frame()
         l = np.array(self.front['left'], float)
@@ -353,7 +353,7 @@ class Room:
         X, D = np.meshgrid(xm, dm)
         return l[0] + u[0] * X + n[0] * D, l[1] + u[1] * X + n[1] * D
 
-    def field_mask(self, cols, rows):
+    def field_mask(self, cols: int, rows: int) -> np.ndarray:
         """1 for cells whose centre lies inside the area, 0 outside; shape (rows, cols)."""
         key = (cols, rows, tuple(map(tuple, self.area)), tuple(self.front['left']), tuple(self.front['right']))
         if self._mask is None or self._mask[0] != key:
@@ -369,7 +369,7 @@ class Room:
         fl, fr = l + n * d, r + n * d
         return [l[0], r[0], fr[0], fl[0], l[0]], [l[1], r[1], fr[1], fl[1], l[1]]
 
-    def area_from_front(self, depth_mm=START_DEPTH_MM):
+    def area_from_front(self, depth_mm: float = START_DEPTH_MM) -> None:
         """A rectangle in front of the front, as a starting point for editing."""
         u, n, _ = self.frame()
         l, r = np.array(self.front['left'], float), np.array(self.front['right'], float)

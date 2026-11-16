@@ -85,17 +85,17 @@ HELP = {
               'Raise it if walls or furniture flicker red.',
     'gap_mm': 'Foreground points further apart than this start a new blob.',
     'min_pts': 'Blobs with fewer points are ignored (noise, small objects).',
-    'merge_mm': 'Blobs closer than this become one person (arm and body; the same person seen by two sensors).',
-    'assoc_mm': 'A person found this close to a tracked one continues that track (same slot).',
+    'merge_mm': 'Blobs closer than this become one object (arm and body; the same body seen by two sensors).',
+    'assoc_mm': 'An object found this close to a tracked one continues that track (same slot).',
     'smooth': 'Share of the new position taken each revolution. Lower = calmer, higher = faster.',
-    'hold_s': 'A lost person keeps its slot this long before fading out.',
-    'fade_s': 'Time for a person to fade in or out (active 0 -> 1).',
+    'hold_s': 'A lost object keeps its slot this long before fading out.',
+    'fade_s': 'Time for an object to fade in or out (active 0 -> 1).',
     'reset_adv': 'Restores the detection defaults.',
     'port': 'Serial port of the lidar adapter (Silicon Labs CP210x).',
     'assign': 'The sensor on this port stands at the selected position. Another position holding the port '
               'gives it up. The bridge reconnects by itself after a cable pull.',
     'release': 'The selected position keeps its scan but gets no live data.',
-    'log': 'Writes one line per revolution to logs/quality_*.csv (speed, points, valid share, CRC errors, people).',
+    'log': 'Writes one line per revolution to logs/quality_*.csv (speed, points, valid share, CRC errors, objects).',
     'scale': 'Size of text and controls.',
     'fullscreen': 'Fullscreen on or off (also F11).',
     'fit': 'Shows the whole room: all scans, the area and the front.',
@@ -132,7 +132,7 @@ HELP = {
               'listening: targets on this computer where a program holds the port. If fewer are listening '
               'than there are targets, switch OSC input on in Arena or Wire (see Output). Targets on other '
               'computers cannot be checked.',
-    'st_people': 'Objects tracked right now (points output), including simulated ones. Grey: nothing there.',
+    'st_objects': 'Objects tracked right now (points output), including simulated ones. Grey: nothing there.',
     'view': 'The room from above, metres. Mouse wheel zooms, right-drag pans.\n\n'
             'Coloured dots: empty-room scan of each position; square: the sensor, line: its front; '
             'outline: its fan, round handle: points the fan.\n'

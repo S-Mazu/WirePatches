@@ -23,7 +23,7 @@ class StatusLines:
 
     def _build(self, panel_w):
         with dpg.collapsing_header(label='Status', default_open=True):
-            for key in ('st_sensor', 'st_signal', 'st_room', 'st_map', 'st_osc', 'st_people'):
+            for key in ('st_sensor', 'st_signal', 'st_room', 'st_map', 'st_osc', 'st_objects'):
                 with dpg.group(horizontal=True):
                     tip(dpg.add_text('●', tag=key + '_dot', color=DIM), key)
                     tip(dpg.add_text('', tag=key, wrap=panel_w - 60), key)
@@ -52,7 +52,7 @@ class StatusLines:
         self._room()
         self._map()
         self._osc()
-        self._set('st_people', OK if n_tracked else DIM, f'{n_tracked} {"object" if n_tracked == 1 else "objects"} tracked'
+        self._set('st_objects', OK if n_tracked else DIM, f'{n_tracked} {"object" if n_tracked == 1 else "objects"} tracked'
                   + (f' ({n_sim} simulated)' if n_sim else ''))
         text, level, t_msg = eng.message
         if text and now - t_msg < MESSAGE_S:
