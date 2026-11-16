@@ -1,13 +1,14 @@
-"""Occupancy and motion field over the tracked trapezoid in front of the screen.
+"""Occupancy and motion field over the area in front of the front line.
 
-The field is a grid: columns run along the screen (0 = left end), rows into the room
-(0 = at the screen, last = at Depth Range). Each cell holds two values 0..1:
+The field is a grid over front width x area depth: columns run along the front (0 = left
+end), rows into the room (0 = at the front, last = at the far edge of the area). Cells whose
+centre lies outside the area stay 0. Each cell holds two values 0..1:
 
 - occupancy: how much of the cell is taken by something that is not part of the empty
   room. A 2D lidar sees the surface of a body facing the sensor, so occupancy is the share
   of the cell size covered by that surface (a body crossing a cell gives about 1).
 - motion: how fast the occupancy changes. A cell that gets taken or freed within
-  REF_S seconds reaches 1; standing still gives 0. Fades out over Field Fade.
+  REF_S seconds reaches 1; standing still gives 0. Fades out over Motion fade.
 """
 import math
 
@@ -15,7 +16,7 @@ import numpy as np
 
 REF_S = 0.25            # a cell that changes completely within this time gives motion 1
 SMOOTH = 0.5            # share of the new occupancy taken each update (sensor jitter)
-SIM_RADIUS_MM = 220.0   # simulated people are discs of this radius
+SIM_RADIUS_MM = 220.0   # simulated objects are discs of this radius
 
 
 class Field:
@@ -36,13 +37,11 @@ class Field:
         """Occupancy of this moment, before smoothing."""
         rows, cols = self.rows, self.cols
         occ = np.zeros((rows, cols), np.float32)
-        if not room.has_screen():
+        if not room.ready():
             return occ
         _, _, length = room.frame()
-        cell_w = length / cols
-        x_mid = (np.arange(cols) + 0.5) / cols
-        cell_d = room.depth_at(x_mid) / rows                    # depth of a cell, per column
-        extent = 0.5 * (cell_w + cell_d)[None, :]               # typical length of a surface across a cell
+        depth = room.depth_mm()
+        extent = 0.5 * (length / cols + depth / rows)           # typical length of a surface across a cell (mm)
         for v in views:
             m = v['valid'] & v['fg'] & v['keep']
             if not m.any():
@@ -59,16 +58,11 @@ class Field:
             np.add.at(covered, (r, c), weight)
             occ = np.maximum(occ, np.minimum(covered / extent, 1.0))   # several sensors: no double count
         if sim:
-            u, n, _ = room.frame()
-            l = np.array(room.screen['left'], float)
-            d_mid = (np.arange(rows) + 0.5) / rows
-            xm, dm = np.meshgrid(x_mid, d_mid)
-            cx = l[0] + u[0] * xm * length + n[0] * dm * room.depth_at(xm)
-            cy = l[1] + u[1] * xm * length + n[1] * dm * room.depth_at(xm)
+            cx, cy = room.field_cells(cols, rows)
             for sx, sy in sim:
                 dist = np.hypot(cx - sx, cy - sy)
                 occ = np.maximum(occ, np.clip((SIM_RADIUS_MM - dist) / extent + 0.5, 0.0, 1.0))
-        return occ
+        return occ * room.field_mask(cols, rows)
 
     def update(self, room, views, sim, t, fade_s, threshold):
         raw = self._raw(room, views, sim)

@@ -1,7 +1,14 @@
-"""Room map: sensor positions, screen, areas and barriers in one top view.
+"""Room map: sensor positions, area, front, exclusions and barriers in one top view.
 
 Map frame: millimetres, x to the right, y up, seen from above. The first sensor position
 starts at the origin. Sensor frame (scene.py): x to the right, y = sensor front.
+
+- The area is a polygon: only foreground inside it counts, and the field covers it.
+- The front is a line (left end, right end as seen from the area): it gives the field its
+  frame. x runs along the front from 0 to 1, depth from 0 at the front to 1 at the point
+  of the area farthest from it.
+- Exclusions are polygons inside which nothing counts; barriers are walls a sensor does
+  not look through.
 
 A room lives in rooms/<name>/: room.json plus one empty-room scan per position
 (scan_<id>.npy). Several positions can come from several sensors or from one sensor
@@ -17,7 +24,9 @@ import numpy as np
 
 from scene import Background, to_xy
 
-BEHIND_MM = 300.0               # people further than this behind the screen are ignored
+MIN_FRONT_MM = 300.0            # a front shorter than this is not a front
+MIN_DEPTH_MM = 300.0            # the field is at least this deep
+START_DEPTH_MM = 3000.0         # depth of the area made from the front, and of migrated rooms
 
 
 def _rot(x, y, deg):
@@ -118,42 +127,55 @@ def blocked(sx, sy, px, py, barriers):
     return out
 
 
+def _line_frame(left, right):
+    """Unit vector along a line (left -> right), unit normal to its front side, length.
+
+    Seen from the front side, facing the line, the left end is on the left; so the front
+    side lies to the right of the direction left -> right in the top view: n = (u.y, -u.x).
+    """
+    l, r = np.array(left, float), np.array(right, float)
+    axis = r - l
+    length = float(np.linalg.norm(axis))
+    u = axis / length
+    return u, np.array([u[1], -u[0]]), length
+
+
 class Room:
     def __init__(self, folder, name):
         self.folder, self.name = folder, name
         self.stations = []
-        self.screen = None                      # {'left': [x, y], 'right': [x, y]} in mm
-        self.depth_l_mm = 3000.0                 # Depth Range at the left and the right end of the screen:
-        self.depth_r_mm = 3000.0                 # the tracked field is a trapezoid in front of the screen
-        self.areas = []                         # [{'kind': 'include'|'exclude', 'pts': [[x, y], ...]}]
+        self.area = None                        # [[x, y], ...] polygon (mm): only foreground inside counts
+        self.front = None                       # {'left': [x, y], 'right': [x, y]} (mm), ends seen from the area
+        self.exclusions = []                    # [[[x, y], ...], ...] polygons inside which nothing counts
         self.barriers = []                      # [[[x, y], [x, y]], ...]
         self.ref = None                         # reference marker [x, y] (e.g. a pole)
+        self._mask = None                       # (key, mask): cache of field_mask
 
     # ------------------------------------------------ files
     @staticmethod
-    def names(rooms_dir):
+    def names(rooms_dir: str) -> list[str]:
         if not os.path.isdir(rooms_dir):
             return []
         return sorted(n for n in os.listdir(rooms_dir) if os.path.exists(os.path.join(rooms_dir, n, 'room.json')))
 
     @staticmethod
-    def safe_name(name):
+    def safe_name(name: str) -> str:
         return re.sub(r'[^A-Za-z0-9 _-]', '', name).strip()[:40]
 
     def scan_path(self, sid):
         return os.path.join(self.folder, f'scan_{sid}.npy')
 
     @classmethod
-    def load(cls, folder):
+    def load(cls, folder: str) -> 'Room':
         room = cls(folder, os.path.basename(folder))
         with open(os.path.join(folder, 'room.json')) as f:
             d = json.load(f)
         room.stations = [Station(**s) for s in d.get('stations', [])]
-        room.screen = d.get('screen')
-        old = float(d.get('depth_mm', 3000.0))
-        room.depth_l_mm = float(d.get('depth_l_mm', old))
-        room.depth_r_mm = float(d.get('depth_r_mm', old))
-        room.areas = d.get('areas', [])
+        if 'screen' in d or 'areas' in d:
+            room.area, room.front, room.exclusions = cls._legacy(d)
+        else:
+            room.area, room.front = d.get('area'), d.get('front')
+            room.exclusions = d.get('exclusions', [])
         room.barriers = d.get('barriers', [])
         room.ref = d.get('ref')
         for st in room.stations:
@@ -161,18 +183,38 @@ class Room:
             st.bg.load()
         return room
 
-    def save(self):
+    @staticmethod
+    def _legacy(d):
+        """Room files before 2026-11-16: screen, Depth Ranges and include/exclude areas.
+
+        The screen becomes the front. The first include area becomes the area; without one,
+        the screen trapezoid (screen width x Depth Range per end) does.
+        """
+        front = d.get('screen') or None
+        old = float(d.get('depth_mm', START_DEPTH_MM))
+        dl, dr = float(d.get('depth_l_mm', old)), float(d.get('depth_r_mm', old))
+        areas = d.get('areas') or []
+        inc = [a['pts'] for a in areas if a.get('kind') == 'include' and len(a.get('pts', [])) >= 3]
+        exc = [a['pts'] for a in areas if a.get('kind') == 'exclude' and len(a.get('pts', [])) >= 3]
+        area = inc[0] if inc else None
+        if area is None and front and front.get('left') and front.get('right'):
+            l, r = np.array(front['left'], float), np.array(front['right'], float)
+            if np.linalg.norm(r - l) > MIN_FRONT_MM:
+                _, n, _ = _line_frame(l, r)
+                area = [list(map(float, p)) for p in (l, r, r + n * dr, l + n * dl)]
+        return area, front, exc
+
+    def save(self) -> None:
         os.makedirs(self.folder, exist_ok=True)
-        d = {'stations': [s.to_dict() for s in self.stations], 'screen': self.screen,
-             'depth_l_mm': self.depth_l_mm, 'depth_r_mm': self.depth_r_mm,
-             'areas': self.areas, 'barriers': self.barriers, 'ref': self.ref}
+        d = {'stations': [s.to_dict() for s in self.stations], 'area': self.area, 'front': self.front,
+             'exclusions': self.exclusions, 'barriers': self.barriers, 'ref': self.ref}
         tmp = os.path.join(self.folder, 'room.json.tmp')
         with open(tmp, 'w') as f:
             json.dump(d, f, indent=2)
         os.replace(tmp, os.path.join(self.folder, 'room.json'))
 
     # ------------------------------------------------ stations
-    def station(self, sid):
+    def station(self, sid) -> 'Station | None':
         return next((s for s in self.stations if s.sid == sid), None)
 
     def add_station(self, near=None, port=None):
@@ -254,99 +296,109 @@ class Room:
         st.y += self.ref[1] - c[1]
         return True
 
-    # ------------------------------------------------ screen
-    def has_screen(self):
-        s = self.screen
-        return bool(s and s.get('left') and s.get('right')
-                    and math.hypot(s['right'][0] - s['left'][0], s['right'][1] - s['left'][1]) > 300.0)
+    # ------------------------------------------------ area and front
+    def has_area(self) -> bool:
+        return bool(self.area) and len(self.area) >= 3
+
+    def has_front(self) -> bool:
+        f = self.front
+        return bool(f and f.get('left') and f.get('right')
+                    and math.hypot(f['right'][0] - f['left'][0], f['right'][1] - f['left'][1]) > MIN_FRONT_MM)
+
+    def ready(self) -> bool:
+        """Area and front are set: the field has a frame and something counts."""
+        return self.has_area() and self.has_front()
 
     def frame(self):
-        """Unit vector along the screen (left -> right), unit normal into the room, length.
+        """Unit vector along the front (left -> right), unit normal into the area, length (mm)."""
+        return _line_frame(self.front['left'], self.front['right'])
 
-        Seen from the room, facing the screen, the left end is on the left; so the room lies
-        to the right of the direction left -> right in the top view: n = (u.y, -u.x).
-        """
-        l, r = np.array(self.screen['left'], float), np.array(self.screen['right'], float)
-        axis = r - l
-        length = float(np.linalg.norm(axis))
-        u = axis / length
-        return u, np.array([u[1], -u[0]]), length
+    def depth_mm(self) -> float:
+        """How far the area reaches from the front (mm), at least MIN_DEPTH_MM."""
+        if not self.has_area():
+            return MIN_DEPTH_MM
+        _, n, _ = self.frame()
+        pts = np.array(self.area, float) - np.array(self.front['left'], float)
+        return max(MIN_DEPTH_MM, float((pts @ n).max()))
 
-    def map_xy(self, mx, my):
-        """Map position -> (x along the screen 0..1, distance from the screen in mm)."""
+    def front_faces_area(self) -> bool:
+        """False when the area lies behind the front (its ends are swapped)."""
+        if not self.ready():
+            return True
+        _, n, _ = self.frame()
+        c = np.array(self.area, float).mean(axis=0) - np.array(self.front['left'], float)
+        return float(c @ n) > 0.0
+
+    def to_front(self, mx: float, my: float) -> tuple[float, float]:
+        """Map position -> (x along the front 0..1, distance from the front in mm)."""
         u, n, length = self.frame()
-        p = np.array([mx, my], float) - np.array(self.screen['left'], float)
+        p = np.array([mx, my], float) - np.array(self.front['left'], float)
         return float(np.dot(p, u) / length), float(np.dot(p, n))
 
-    def depth_at(self, x01):
-        """Depth Range at a position along the screen (mm): linear from the left to the right end."""
-        t = np.clip(x01, 0.0, 1.0)
-        return np.maximum(self.depth_l_mm + (self.depth_r_mm - self.depth_l_mm) * t, 1.0)
-
     def to_field(self, mx, my):
-        """Map points -> (x 0..1 along the screen, depth 0..1 within the trapezoid), vectorised."""
+        """Map points -> (x 0..1 along the front, depth 0..1 within the field), vectorised."""
         u, n, length = self.frame()
-        l = np.array(self.screen['left'], float)
+        l = np.array(self.front['left'], float)
         px, py = np.asarray(mx, float) - l[0], np.asarray(my, float) - l[1]
         x01 = (px * u[0] + py * u[1]) / length
         d = px * n[0] + py * n[1]
-        return x01, d / self.depth_at(x01)
+        return x01, d / self.depth_mm()
 
-    def far_corner(self, end):
-        """Back corner of the field behind the 'left' or 'right' end of the screen (mm)."""
-        u, n, _ = self.frame()
-        depth = self.depth_l_mm if end == 'left' else self.depth_r_mm
-        return np.array(self.screen[end], float) + n * depth
+    def field_cells(self, cols: int, rows: int):
+        """Map coordinates of the cell centres, arrays of shape (rows, cols)."""
+        u, n, length = self.frame()
+        l = np.array(self.front['left'], float)
+        xm = (np.arange(cols) + 0.5) / cols * length
+        dm = (np.arange(rows) + 0.5) / rows * self.depth_mm()
+        X, D = np.meshgrid(xm, dm)
+        return l[0] + u[0] * X + n[0] * D, l[1] + u[1] * X + n[1] * D
 
-    def set_far_corner(self, end, mx, my):
-        """Drags a back corner: only its distance from the screen counts (at least 0.3 m)."""
-        u, n, _ = self.frame()
-        d = float(np.dot(np.array([mx, my], float) - np.array(self.screen[end], float), n))
-        d = max(300.0, d)
-        if end == 'left':
-            self.depth_l_mm = d
-        else:
-            self.depth_r_mm = d
+    def field_mask(self, cols: int, rows: int) -> np.ndarray:
+        """1 for cells whose centre lies inside the area, 0 outside; shape (rows, cols)."""
+        key = (cols, rows, tuple(map(tuple, self.area)), tuple(self.front['left']), tuple(self.front['right']))
+        if self._mask is None or self._mask[0] != key:
+            cx, cy = self.field_cells(cols, rows)
+            self._mask = (key, inside_polygon(cx, cy, self.area).astype(np.float32))
+        return self._mask[1]
 
-    def screen_band(self):
-        """Closed outline of the tracked field (screen and the far edge at Depth Range), mm."""
+    def field_outline(self):
+        """Closed outline of the field (front width x area depth), mm."""
         u, n, _ = self.frame()
-        l, r = np.array(self.screen['left'], float), np.array(self.screen['right'], float)
-        fl, fr = l + n * self.depth_l_mm, r + n * self.depth_r_mm
+        l, r = np.array(self.front['left'], float), np.array(self.front['right'], float)
+        d = self.depth_mm()
+        fl, fr = l + n * d, r + n * d
         return [l[0], r[0], fr[0], fl[0], l[0]], [l[1], r[1], fr[1], fl[1], l[1]]
 
-    def area_from_screen(self):
-        """An area polygon covering screen x Depth Range, as a starting point for editing."""
-        xs, ys = self.screen_band()
-        self.areas.append({'kind': 'include', 'pts': [[float(x), float(y)] for x, y in zip(xs[:4], ys[:4])]})
+    def area_from_front(self, depth_mm: float = START_DEPTH_MM) -> None:
+        """A rectangle in front of the front, as a starting point for editing."""
+        u, n, _ = self.frame()
+        l, r = np.array(self.front['left'], float), np.array(self.front['right'], float)
+        self.area = [list(map(float, p)) for p in (l, r, r + n * depth_mm, l + n * depth_mm)]
 
     # ------------------------------------------------ filters
     def keep_points(self, st, angle, mx, my):
-        """Which points of one station count: inside its fan, not behind a barrier, inside the areas."""
+        """Which points of one station count: inside its fan, not behind a barrier, counting."""
         keep = st.fan_mask(angle)
         if self.barriers:
             keep &= ~blocked(st.x, st.y, mx, my, self.barriers)
-        return keep & self.in_areas(mx, my)
+        return keep & self.counts(mx, my)
 
-    def in_areas(self, mx, my):
+    def counts(self, mx, my):
+        """True where a map point counts: inside the area (if there is one), in no exclusion."""
         mx, my = np.asarray(mx, float), np.asarray(my, float)
-        inc = [a['pts'] for a in self.areas if a['kind'] == 'include' and len(a['pts']) >= 3]
-        exc = [a['pts'] for a in self.areas if a['kind'] == 'exclude' and len(a['pts']) >= 3]
-        keep = np.ones(mx.shape, bool)
-        if inc:
-            keep = np.zeros(mx.shape, bool)
-            for poly in inc:
-                keep |= inside_polygon(mx, my, poly)
-        for poly in exc:
-            keep &= ~inside_polygon(mx, my, poly)
+        keep = inside_polygon(mx, my, self.area) if self.has_area() else np.ones(mx.shape, bool)
+        for poly in self.exclusions:
+            if len(poly) >= 3:
+                keep &= ~inside_polygon(mx, my, poly)
         return keep
 
     def copy(self):
         """A copy for drawing, without the scans."""
         c = Room(self.folder, self.name)
         c.stations = [copy.copy(s) for s in self.stations]
-        c.screen, c.depth_l_mm, c.depth_r_mm = copy.deepcopy(self.screen), self.depth_l_mm, self.depth_r_mm
-        c.areas, c.barriers, c.ref = copy.deepcopy(self.areas), copy.deepcopy(self.barriers), copy.deepcopy(self.ref)
+        c.area, c.front = copy.deepcopy(self.area), copy.deepcopy(self.front)
+        c.exclusions, c.barriers, c.ref = (copy.deepcopy(self.exclusions), copy.deepcopy(self.barriers),
+                                           copy.deepcopy(self.ref))
         return c
 
 
@@ -354,14 +406,15 @@ def create_default(rooms_dir, old_settings, old_background):
     """First start: a room 'Default' with one position at the origin.
 
     Takes over the old single-sensor setup if there is one: port, surface ends (they were
-    measured in the sensor frame, which equals the map frame of position A) and the learned
-    empty room.
+    measured in the sensor frame, which equals the map frame of position A) as the front
+    with a rectangle in front of it as the area, and the learned empty room.
     """
     room = Room(os.path.join(rooms_dir, 'Default'), 'Default')
     st = room.add_station(port=old_settings.get('port') or 'COM19')
-    room.depth_l_mm = room.depth_r_mm = float(old_settings.get('depth_mm') or 3000.0)
     if old_settings.get('left') and old_settings.get('right'):
-        room.screen = {'left': list(old_settings['left']), 'right': list(old_settings['right'])}
+        room.front = {'left': list(old_settings['left']), 'right': list(old_settings['right'])}
+        if room.has_front():
+            room.area_from_front(float(old_settings.get('depth_mm') or START_DEPTH_MM))
     room.save()
     if old_background and os.path.exists(old_background):
         bg = Background(old_background)
