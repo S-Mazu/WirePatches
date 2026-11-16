@@ -2,7 +2,9 @@
 
 Bulging Lines is a source: horizontal lines run across the whole frame and bulge out where people stand in front of the surface, the closer to it the stronger. Driven by the [Motion Bridge](../../tools/Motion%20Bridge/) tool (2D lidar) over OSC; without it the lines stay calm. With `Backdrop On` off it has alpha.
 
-Last updated: 2026-11-14
+Last updated: 2026-11-16
+
+**2026-11-16: not working.** The Motion Bridge no longer sends OSC; its interface is a Spout field texture now (see [#115](https://github.com/S-Mazu/WirePatches/issues/115)). This patch is being rebuilt on it. Until then the lines stay calm.
 
 ## Vision
 
@@ -77,6 +79,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-16: Marked as not working: the Motion Bridge changed its interface from OSC to a Spout texture (#115); rebuild pending.
 - 2026-11-14: First version (#73, PoC for #69): lines bulge per tracked person (8 slots), depth from the surface weakens the bulge, heartbeat fade-out without the bridge, `Show People` for setting up.
 
 ---

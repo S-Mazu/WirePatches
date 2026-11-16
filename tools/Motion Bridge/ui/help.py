@@ -50,15 +50,15 @@ HELP = {
     'front_swap': 'Swaps the ends. The arrow must point into the area; use this when it points away from it or '
                   'the picture is mirrored.',
     'front_clear': 'Removes the front. Zeros are sent until a new one is drawn.',
-    'field': 'What the patches get as fields, seen from the area: left to right along the front, bottom = at the '
+    'field': 'What the patches get, seen from the area: left to right along the front, bottom = at the '
              'front, top = far edge of the area. Cells outside the area stay 0.\n'
              'Occupancy: where something is (white = a surface crosses the whole cell).\n'
              'Motion: where the occupancy changes (white = a cell is taken or freed within 0.25 s). Standing still '
-             'fades out.',
-    'reset_fields': 'Sets the field settings back to the recommended values: 32 x 16 cells, Motion fade 0.5 s, '
+             'fades out.\nThe patches receive both as one Spout texture (red = occupancy, green = motion).',
+    'reset_fields': 'Sets the field settings back to the recommended values: cell size 0.10 m, Motion fade 0.5 s, '
                     'Motion threshold 0.3.',
-    'field_cols': 'Cells along the front (at most 32, one OSC message per row).',
-    'field_rows': 'Cells from the front to the far edge of the area.',
+    'cell_mm': 'Size of one cell in the room, the same along the front and into the area. The texture size follows: '
+               'a 4 m front at 0.10 m is 40 pixels wide. Patches do not depend on it.',
     'field_fade_s': 'How long motion takes to fade out after it stops.',
     'field_threshold': 'Motion below this value is ignored: sensor noise at the edges of still objects. '
                        'Recommended and default: 0.3 (measured noise up to 0.28, walking 0.5 to 1). '
@@ -73,23 +73,23 @@ HELP = {
                    'can drag.',
     'countdown_s': 'Time between the click and the measurement, so you can walk to your place '
                  '(out of the room, or to an end of the front). A tone marks the start and the end.',
-    'sim': 'Adds objects you can drag in the view with the mouse. They count like real foreground, '
-           'so patches can be tested without walking around or without a sensor.',
+    'sim': 'Adds objects you can drag in the view with the mouse. They count like real foreground and appear '
+           'in the field, so patches can be tested without walking around or without a sensor.',
     'sim_add': 'Adds a simulated object 1.5 m in front of the front (or of the sensor). Drag the yellow point '
                'in the view.',
     'sim_clear': 'Removes all simulated objects.',
-    'targets': 'Programs that receive the OSC data. Arena listens on 7000 and Wire on 8000 by default '
-               '(Preferences > OSC). A green dot means a local program holds that port.',
-    'add_target': 'host:port, for example 127.0.0.1:7000 or 192.168.1.20:7000.',
+    'spout': 'The field leaves the bridge as a Spout texture named "Motion Bridge": one image per frame, 30 per '
+             'second. In Arena it appears under Sources > Spout; in Wire a Texture In node set to Spout receives it. '
+             'Red = occupancy, green = motion, blue = visibility. The last row is reserved: its first pixel counts '
+             'up every frame, so a patch can tell a live field from a frozen one.\nNeeds the SpoutGL package '
+             '(Windows).',
     'tol_mm': 'How much closer than the empty room a point must be to count as foreground. '
               'Raise it if walls or furniture flicker red.',
     'gap_mm': 'Foreground points further apart than this start a new blob.',
     'min_pts': 'Blobs with fewer points are ignored (noise, small objects).',
-    'merge_mm': 'Blobs closer than this become one object (arm and body; the same body seen by two sensors).',
-    'assoc_mm': 'An object found this close to a tracked one continues that track (same slot).',
-    'smooth': 'Share of the new position taken each revolution. Lower = calmer, higher = faster.',
-    'hold_s': 'A lost object keeps its slot this long before fading out.',
-    'fade_s': 'Time for an object to fade in or out (active 0 -> 1).',
+    'merge_mm': 'Blobs closer than this count as one object (arm and body; the same body seen by two sensors). '
+                'Objects are shown in the view and used when you stand at an end of the front; the patches get '
+                'the field, not objects.',
     'reset_adv': 'Restores the detection defaults.',
     'port': 'Serial port of the lidar adapter (Silicon Labs CP210x).',
     'assign': 'The sensor on this port stands at the selected position. Another position holding the port '
@@ -126,13 +126,10 @@ HELP = {
               'Green: both set.\n'
               'Yellow: the front faces away from the area; click "Swap ends".\n'
               'Red: no area or no front; zeros are sent. See step 3.',
-    'st_osc': 'Data sent to the patches. The bridge sends one update per sensor turn, so about 10 '
-              'updates/s is normal and gives smooth motion. Below 8 motion gets jerky; 0 means nothing '
-              'is sent.\n\n'
-              'listening: targets on this computer where a program holds the port. If fewer are listening '
-              'than there are targets, switch OSC input on in Arena or Wire (see Output). Targets on other '
-              'computers cannot be checked.',
-    'st_objects': 'Objects tracked right now (points output), including simulated ones. Grey: nothing there.',
+    'st_output': 'The field texture leaving the bridge over Spout: sender name, size in pixels and frames per '
+                 'second (30 is normal).\nRed: nothing is sent. Install SpoutGL (pip install SpoutGL) or read '
+                 'logs/bridge.log.',
+    'st_objects': 'Foreground objects seen right now, including simulated ones. Grey: nothing there.',
     'view': 'The room from above, metres. Mouse wheel zooms, right-drag pans.\n\n'
             'Coloured dots: empty-room scan of each position; square: the sensor, line: its front; '
             'outline: its fan, round handle: points the fan.\n'
@@ -141,7 +138,7 @@ HELP = {
             'White: the front with its ends L and R; the arrow points into the area. Thin grey outline: the '
             'field, front width x area depth.\n'
             'Green: the area, red: exclusions, orange: barriers, yellow cross: reference marker.\n'
-            'Coloured rings: tracked objects with slot, x and depth.',
+            'White rings: foreground objects (blobs merged by Merge distance).',
 }
 
 

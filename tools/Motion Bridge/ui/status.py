@@ -12,7 +12,6 @@ LIVE_S = 1.0                # data younger than this counts as live
 HZ_OK, HZ_WARN = (9.0, 11.0), (7.0, 13.0)
 VALID_OK, VALID_WARN = 90.0, 70.0
 POINTS_OK, POINTS_WARN = 0.93, 0.8
-RATE_OK = 8.0               # OSC updates per second below which motion gets jerky
 MEASUREMENTS_PER_S = 21600.0    # STL-27L: expected points per second
 
 
@@ -23,7 +22,7 @@ class StatusLines:
 
     def _build(self, panel_w):
         with dpg.collapsing_header(label='Status', default_open=True):
-            for key in ('st_sensor', 'st_signal', 'st_room', 'st_map', 'st_osc', 'st_objects'):
+            for key in ('st_sensor', 'st_signal', 'st_room', 'st_map', 'st_output', 'st_objects'):
                 with dpg.group(horizontal=True):
                     tip(dpg.add_text('●', tag=key + '_dot', color=DIM), key)
                     tip(dpg.add_text('', tag=key, wrap=panel_w - 60), key)
@@ -45,14 +44,15 @@ class StatusLines:
         dpg.set_value(tag, text)
         dpg.configure_item(tag + '_dot', color=color)
 
-    def frame(self, n_sim, n_tracked):
+    def frame(self, n_sim, n_objects):
         eng = self.eng
         now = time.time()
         self._sensor_and_signal()
         self._room()
         self._map()
-        self._osc()
-        self._set('st_objects', OK if n_tracked else DIM, f'{n_tracked} {"object" if n_tracked == 1 else "objects"} tracked'
+        ok, text = eng.output_status()
+        self._set('st_output', OK if ok else BAD, text)
+        self._set('st_objects', OK if n_objects else DIM, f'{n_objects} {"object" if n_objects == 1 else "objects"}'
                   + (f' ({n_sim} simulated)' if n_sim else ''))
         text, level, t_msg = eng.message
         if text and now - t_msg < MESSAGE_S:
@@ -126,21 +126,4 @@ class StatusLines:
                 self._set('st_map', WARN, txt + '. The front faces away from the area: Swap ends')
         else:
             missing = ' and '.join(w for w, ok in (('area', r.has_area()), ('front', r.has_front())) if not ok)
-            self._set('st_map', BAD, f'No {missing}: zeros are sent (step 3)')
-
-    def _osc(self):
-        eng = self.eng
-        listening = eng.osc.listening
-        targets = eng.s['osc_targets']
-        ok_targets = [t for t in targets if listening.get(t)]
-        osc_color = OK if ok_targets else (WARN if targets else BAD)
-        rate = eng.osc.rate()
-        if rate < RATE_OK and osc_color == OK:
-            osc_color = WARN if rate > 0 else BAD
-        n_t = len(targets)
-        self._set('st_osc', osc_color, f'OSC: {rate:.0f} updates/s to {n_t} target{"" if n_t == 1 else "s"}, '
-                                       f'{len(ok_targets)} listening')
-        for t in targets:
-            if dpg.does_item_exist(f'dot_{t}'):
-                v = listening.get(t)
-                dpg.configure_item(f'dot_{t}', color=OK if v else (DIM if v is None else BAD))
+            self._set('st_map', BAD, f'No {missing}: a black field is sent (step 3)')

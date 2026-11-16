@@ -1,40 +1,38 @@
-"""Motion Bridge engine: sensors -> room map -> foreground -> fields and points -> OSC.
+"""Motion Bridge engine: sensors -> room map -> foreground -> field -> Spout texture.
 
 Threads:
 - One Stl27lReader per serial port collects revolutions (stl27l.py).
 - The Engine thread (this module) takes the newest revolution of every position, builds
-  the foreground, the fields and the points, sends them (osc_out.py) and keeps a snapshot
-  for the window.
+  the foreground, the objects and the field (10 Hz, with the sensor), renders the field
+  texture at FRAME_HZ and sends it over Spout (spout_out.py), and keeps a snapshot for
+  the window.
 - The window thread (ui) reads `snapshot()` and the room, and changes the room only
-  through `edit()`; settings through `set()`, `set_targets()`, `reset()`; measurements
-  through `request()` and `cancel()`.
+  through `edit()`; settings through `set()` and `reset()`; measurements through
+  `request()` and `cancel()`.
 
-`lock` guards the room, the readers and the snapshot. Settings are plain values that are
-replaced, not mutated, so reading them needs no lock.
+`lock` guards the room, the readers, the field and the snapshot. Settings are plain values
+that are replaced, not mutated, so reading them needs no lock.
 """
 import logging
 import os
 import threading
 import time
 
-import numpy as np
-
 from calibration import Calibration
 from field import Field
-from osc_out import OscOut
 from quality import Quality
 from room import Room, create_default
-from scene import MIN_MM, blobs, foreground, to_xy
+from scene import MIN_MM, blobs, foreground, merge, to_xy
 from settings import DEFAULT_PORT, Settings
+from spout_out import SpoutOut
 from stl27l import Stl27lReader
-from tracking import SLOTS, Tracker, merge
 
 log = logging.getLogger(__name__)
 
-TICK_S = 0.1                 # without sensor data (simulation only) the engine still sends at 10 Hz
+TICK_S = 0.1                 # without sensor data (simulation only) the field is still measured at 10 Hz
+FRAME_HZ = 30.0              # texture frames per second; motion fades between measurements
 STALE_S = 0.5                # a revolution older than this is not used
 SAVE_DELAY_S = 1.0           # the room is written at most once per second while it is edited
-TARGET_CHECK_S = 2.0         # how often the OSC targets are checked for a listener
 
 
 class Engine(threading.Thread):
@@ -59,11 +57,13 @@ class Engine(threading.Thread):
             self._port_override = (live.sid, live.port)
             live.port = port_override       # this run only, see save_room
             self.sync_readers()
-        self.tracker = Tracker()
         self.field = Field()
         self.quality = Quality(os.path.join(folder, 'logs'))
         self.quality.set_logging(self.s['log_quality'])
-        self.osc = OscOut(self.s['osc_targets'])
+        self.spout = None                   # created in run(): Spout wants one thread
+        self.counter = 0                    # frame counter in the texture, 0..255
+        self.frame_rate = 0.0               # texture frames per second, measured
+        self._frames, self._frames_t = 0, time.time()
         self.cal = Calibration(lambda: self.s['countdown_s'], self.notify, self.save_room)
         self.sim: list = []                 # simulated objects, [x_mm, y_mm] in the map
         self.running = True
@@ -78,10 +78,6 @@ class Engine(threading.Thread):
 
     def reset(self, keys) -> None:
         self.s.reset(keys)
-
-    def set_targets(self, targets) -> None:
-        self.osc.set_targets(targets)
-        self.s.set('osc_targets', list(targets))
 
     def notify(self, text: str, level: str = 'info') -> None:
         self.message = (text, level, time.time())
@@ -225,12 +221,11 @@ class Engine(threading.Thread):
 
     # ------------------------------------------------ main loop
     def run(self) -> None:
-        seen, last_tick, last_check = {}, 0.0, 0.0
+        self.spout = SpoutOut()
+        seen, last_tick, last_frame = {}, 0.0, 0.0
+        frame_s = 1.0 / FRAME_HZ
         while self.running:
             now = time.time()
-            if now - last_check > TARGET_CHECK_S:
-                self.osc.check()
-                last_check = now
             if self._dirty_t is not None and now - self._dirty_t > SAVE_DELAY_S:
                 self.flush_room()
             with self.lock:
@@ -252,16 +247,15 @@ class Engine(threading.Thread):
                 latest = rd.latest(1)
                 if latest and now - latest[0].t < STALE_S:
                     revs[st.sid] = latest[0]
-            if new:
+            if new or (now - last_tick >= TICK_S and (self.sim or not revs)):
                 self.process(revs)
                 last_tick = now
-            elif now - last_tick >= TICK_S and (self.sim or not revs):
-                self.process(revs)
-                last_tick = now
+            if now - last_frame >= frame_s:
+                self.frame(now)
+                last_frame = now
             else:
-                time.sleep(0.005)
-        self.osc.send(np.zeros(SLOTS), np.zeros(SLOTS), np.zeros(SLOTS))
-        self.osc.close()
+                time.sleep(0.002)
+        self.spout.close()
         self.flush_room()
         for rd in self.readers.values():
             rd.stop()
@@ -271,7 +265,7 @@ class Engine(threading.Thread):
         self.running = False
 
     def process(self, revs: dict) -> None:
-        """One step: the newest revolution per position -> foreground, objects, points, fields -> OSC."""
+        """One measurement: the newest revolution per position -> foreground, objects, field."""
         s = self.s
         t = max((r.t for r in revs.values()), default=time.time())
         views, found = {}, []
@@ -293,29 +287,38 @@ class Engine(threading.Thread):
             sim = [{'x': float(x), 'y': float(y), 'n': 50, 'sim': True} for x, y in self.sim]
             sim = [o for o in sim if room.counts([o['x']], [o['y']])[0]]
             objects += sim
-            self.tracker.update(objects, t, s['assoc_mm'], s['smooth'], s['hold_s'], s['fade_s'])
-            x, depth, active = np.zeros(SLOTS), np.zeros(SLOTS), np.zeros(SLOTS)
-            if room.ready():
-                extent = room.depth_mm()
-                for k, tr in self.tracker.tracks.items():
-                    x01, d_mm = room.to_front(tr['x'], tr['y'])
-                    x[k] = x01
-                    depth[k] = min(1.0, max(0.0, d_mm / extent))
-                    active[k] = tr['active']
-            self.field.configure(s['field_cols'], s['field_rows'])
+            self.field.configure_for(room, s['cell_mm'])
             self.field.update(room, list(views.values()), [[o['x'], o['y']] for o in sim], t,
                               s['field_fade_s'], s['field_threshold'])
-            occ, motion = self.field.occ.copy(), self.field.motion.copy()
-        self.osc.send(x, depth, active, occ, motion)
-        with self.lock:
             self.cal.step(room, self.reader_of(self.cal.sid), objects)
             self.snap = {
-                'views': views, 'objects': objects,
-                'tracks': {k: dict(v) for k, v in self.tracker.tracks.items()},
-                'x': x, 'depth': depth, 'active': active, 't': t, 'occ': occ, 'motion': motion,
+                'views': views, 'objects': objects, 't': t,
+                'occ': self.field.occ.copy(), 'motion': self.field.motion.copy(), 'vis': self.field.vis.copy(),
             }
+
+    def frame(self, now: float) -> None:
+        """One texture frame: motion fades, the counter advances, the image goes out over Spout."""
+        with self.lock:
+            self.field.configure_for(self.room, self.s['cell_mm'])
+            self.field.decay(now, self.s['field_fade_s'])
+            tex = self.field.texture(self.counter)
+        self.counter = (self.counter + 1) % 256
+        self.spout.send(tex)
+        self._frames += 1
+        if now - self._frames_t >= 1.0:
+            self.frame_rate = self._frames / (now - self._frames_t)
+            self._frames, self._frames_t = 0, now
 
     # ------------------------------------------------ for the user interface
     def snapshot(self):
         with self.lock:
             return self.snap
+
+    def output_status(self):
+        """(ok, text) for the status line: what leaves the bridge."""
+        sp = self.spout
+        if sp is None:
+            return False, 'Output: starting'
+        if not sp.sending:
+            return False, f'Output: {sp.status}; nothing is sent'
+        return True, f'Output: {sp.status}, {self.frame_rate:.0f} frames/s'

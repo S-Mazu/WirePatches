@@ -74,7 +74,7 @@ def run_window(eng, snapshot=None, sim=0):
         view.frame()
         panel.frame()
         snap = eng.snapshot()
-        status.frame(view.sim_count, len(snap['tracks']) if snap else 0)
+        status.frame(view.sim_count, len(snap['objects']) if snap else 0)
         if snap is not None and snap is not last_snap:
             last_snap = snap
             view.show(snap)
