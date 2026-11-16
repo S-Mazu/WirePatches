@@ -108,11 +108,12 @@ class Engine(threading.Thread):
         self.load_room(name)
         return True
 
-    def edit(self, fn) -> None:
-        """Runs fn(room) under the lock and schedules the room to be written."""
+    def edit(self, fn):
+        """Runs fn(room) under the lock, schedules the room to be written, returns fn's result."""
         with self.lock:
-            fn(self.room)
+            result = fn(self.room)
             self.room_changed()
+        return result
 
     def save_room(self) -> None:
         """Writes the room; a port given on the command line is not written."""

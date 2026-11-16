@@ -74,7 +74,8 @@ Failed:
 
 | File | Purpose |
 |---|---|
-| `bridge.py` | Start here: window (or `--headless`), command-line options, logging |
+| `bridge.py` | Start here: command-line options, logging, window or `--headless` |
+| `ui/` | The window: `window.py` (layout, frame loop), `view.py` (room map, handles, live points), `panel.py` (controls), `status.py` (status lines), `drafting.py` (drawing shapes with clicks), `help.py` (all help texts), `theme.py` |
 | `engine.py` | Processing thread: readers per position, foreground, objects, fields, points, room and port management |
 | `settings.py` | Detection and output settings: defaults, limits, `settings.json`, command-line overrides |
 | `osc_out.py` | OSC output: targets, listener check, the messages of one update |
@@ -194,6 +195,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-16: Window split into the package `ui/` (view, panel, status, drafting, help, theme); the drawing of shapes is a class without dearpygui and has tests. Scan points are converted for the plot only when a position or its scan changes. Checked by starting the window under a virtual display with a demo room (snapshot); untested by hand.
 - 2026-11-16: Engine split into settings, OSC output, calibration, quality and tracking modules; the window changes the room only through the engine. Log file `logs/bridge.log`. Tests for settings, the OSC messages of one update (received by a local socket) and the guided measurements. Window started under a virtual display only; untested with a sensor.
 - 2026-11-16: Area and front replace the screen, the trapezoid with two Depth Ranges and the include areas (#111). The area is a free polygon (what counts), the front a free line (where the projection is); the field covers front width × area depth, cells outside the area stay 0. Points and OSC addresses unchanged; `depth` reaches 1 at the far edge of the area. Older room files are converted on load. Unit tests under `tests/`. Untested in the window and with a sensor.
 - 2026-11-15: README: how the bridge works and why, status with what is tested, untested and failed.
