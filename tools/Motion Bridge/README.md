@@ -74,8 +74,13 @@ Failed:
 
 | File | Purpose |
 |---|---|
-| `bridge.py` | Start here: window (or `--headless`), command-line options |
-| `engine.py` | Processing thread: foreground per position, fields, points (tracking), calibration, OSC, quality log |
+| `bridge.py` | Start here: window (or `--headless`), command-line options, logging |
+| `engine.py` | Processing thread: readers per position, foreground, objects, fields, points, room and port management |
+| `settings.py` | Detection and output settings: defaults, limits, `settings.json`, command-line overrides |
+| `osc_out.py` | OSC output: targets, listener check, the messages of one update |
+| `calibration.py` | Guided measurements with countdown and tones: learn the empty room, set an end of the front |
+| `quality.py` | Scan quality statistics and the optional CSV log |
+| `tracking.py` | Points output: blobs merged into objects, followed in 8 slots (frozen) |
 | `room.py` | Room map: sensor positions, fans, area, front, field frame, exclusions, barriers, reference snap, saving, conversion of older room files |
 | `field.py` | Occupancy and motion field over the area |
 | `scene.py` | Empty-room background, foreground points, blobs |
@@ -83,7 +88,7 @@ Failed:
 | `requirements.txt` | Python packages with versions |
 | `tests/` | Unit tests with synthetic data (room map, field, one engine step) |
 
-Created at runtime and not committed: `.venv/`, `settings.json` (detection and output settings), `rooms/<name>/` (one folder per room: `room.json` and a scan per position, `scan_<id>.npy`), `logs/` (quality logs). On the first start an older `background.npy` and surface ends are taken over into the room `Default`. Room files written before 2026-11-16 (screen, Depth Ranges, include areas) are converted when the room is loaded: the screen becomes the front, the first include area (or else the screen trapezoid) becomes the area.
+Created at runtime and not committed: `.venv/`, `settings.json` (detection and output settings), `rooms/<name>/` (one folder per room: `room.json` and a scan per position, `scan_<id>.npy`), `logs/` (`bridge.log` with what the bridge did and what failed, and the quality logs). On the first start an older `background.npy` and surface ends are taken over into the room `Default`. Room files written before 2026-11-16 (screen, Depth Ranges, include areas) are converted when the room is loaded: the screen becomes the front, the first include area (or else the screen trapezoid) becomes the area.
 
 ## Installation
 
@@ -175,6 +180,7 @@ All settings are made in the window. Detection and output are saved in `settings
 
 ## Troubleshooting
 
+- Anything odd: read `logs/bridge.log`; it says which room and readers were started and what failed.
 - Sensor not connected, no COM port: CP210x driver missing or USB cable. With a port but no data: check the wiring above; the motor must spin audibly.
 - Walls or furniture show red: learn the empty room again, or raise *Tolerance*.
 - One person gives two rings: raise *Merge distance*. With two positions: align them better.
@@ -188,6 +194,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-16: Engine split into settings, OSC output, calibration, quality and tracking modules; the window changes the room only through the engine. Log file `logs/bridge.log`. Tests for settings, the OSC messages of one update (received by a local socket) and the guided measurements. Window started under a virtual display only; untested with a sensor.
 - 2026-11-16: Area and front replace the screen, the trapezoid with two Depth Ranges and the include areas (#111). The area is a free polygon (what counts), the front a free line (where the projection is); the field covers front width × area depth, cells outside the area stay 0. Points and OSC addresses unchanged; `depth` reaches 1 at the far edge of the area. Older room files are converted on load. Unit tests under `tests/`. Untested in the window and with a sensor.
 - 2026-11-15: README: how the bridge works and why, status with what is tested, untested and failed.
 - 2026-11-15: Occupancy and motion fields over the screen field, sent per row over OSC and shown live in the window (#69). The field in front of the screen can be a trapezoid: each end has its own Depth Range. Points (slots) unchanged. Tested live: walking gives motion 0.5 to 1, still objects stay below 0.3 (the default *Motion threshold*).

@@ -9,6 +9,8 @@ Settings are made in the window: detection and output in settings.json, everythi
 the room (positions, area, front, exclusions, barriers) in rooms/<name>/. OSC interface: README.md.
 """
 import argparse
+import logging
+import logging.handlers
 import math
 import os
 import sys
@@ -16,8 +18,12 @@ import time
 
 import numpy as np
 
-from engine import DEFAULTS, SLOTS, Engine
+from engine import Engine
 from room import Room
+from settings import ADVANCED, DEFAULT_PORT, DEFAULTS, FIELD
+from tracking import SLOTS
+
+log = logging.getLogger('bridge')
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 PANEL_W = 450
@@ -176,9 +182,10 @@ HELP = {
 def list_ports():
     try:
         from serial.tools import list_ports as lp
-        return [p.device for p in lp.comports()] or ['COM19']
-    except Exception:
-        return ['COM19']
+        return [p.device for p in lp.comports()] or [DEFAULT_PORT]
+    except Exception as e:
+        log.warning('cannot list serial ports: %s', e)
+        return [DEFAULT_PORT]
 
 
 def station_color(room, sid):
@@ -459,13 +466,13 @@ def run_window(eng, snapshot=None, sim=0):
                     dpg.add_text(f'Stop sending to {t}.')
 
     def on_reset_fields():
-        for k in ('field_cols', 'field_rows', 'field_fade_s', 'field_threshold'):
-            eng.set(k, DEFAULTS[k])
-            dpg.set_value(k, DEFAULTS[k])
+        eng.reset(FIELD)
+        for k in FIELD:
+            dpg.set_value(k, eng.s[k])
 
     def on_reset_adv():
-        eng.reset_advanced()
-        for k in ('tol_mm', 'gap_mm', 'min_pts', 'merge_mm', 'assoc_mm', 'smooth', 'hold_s', 'fade_s'):
+        eng.reset(ADVANCED)
+        for k in ADVANCED:
             dpg.set_value(k, eng.s[k])
 
     def on_assign():
@@ -690,7 +697,7 @@ def run_window(eng, snapshot=None, sim=0):
                 with dpg.collapsing_header(label='Sensor', default_open=False):
                     with dpg.group(horizontal=True):
                         live = eng.live_station()
-                        tip(dpg.add_combo(list_ports(), tag='port', default_value=live.port if live else 'COM19',
+                        tip(dpg.add_combo(list_ports(), tag='port', default_value=live.port if live else DEFAULT_PORT,
                                           width=110), 'port')
                         tip(dpg.add_button(label='Refresh', callback=on_refresh_ports), 'refresh')
                     with dpg.group(horizontal=True):
@@ -979,11 +986,11 @@ def run_window(eng, snapshot=None, sim=0):
         else:
             missing = ' and '.join(w for w, ok in (('area', r.has_area()), ('front', r.has_front())) if not ok)
             set_status('st_map', BAD, f'No {missing}: zeros are sent (step 3)')
-        listening = eng.listening
+        listening = eng.osc.listening
         ok_targets = [t for t in eng.s['osc_targets'] if listening.get(t)]
         osc_color = OK if ok_targets else (WARN if eng.s['osc_targets'] else BAD)
         n_t = len(eng.s['osc_targets'])
-        rate = eng.osc_rate()
+        rate = eng.osc.rate()
         if rate < 8.0 and osc_color == OK:
             osc_color = WARN if rate > 0 else BAD
         set_status('st_osc', osc_color, f'OSC: {rate:.0f} updates/s to {n_t} target{"" if n_t == 1 else "s"}, '
@@ -1083,6 +1090,21 @@ def run_window(eng, snapshot=None, sim=0):
 
 
 # ---------------------------------------------------------------- main
+def setup_logging(folder):
+    """Console and logs/bridge.log (1 MB, 3 files kept)."""
+    os.makedirs(os.path.join(folder, 'logs'), exist_ok=True)
+    fmt = logging.Formatter('%(asctime)s %(levelname)s %(name)s: %(message)s')
+    root = logging.getLogger()
+    root.setLevel(logging.INFO)
+    fh = logging.handlers.RotatingFileHandler(os.path.join(folder, 'logs', 'bridge.log'),
+                                              maxBytes=1_000_000, backupCount=3, encoding='utf-8')
+    fh.setFormatter(fmt)
+    root.addHandler(fh)
+    ch = logging.StreamHandler()
+    ch.setFormatter(fmt)
+    root.addHandler(ch)
+
+
 def main():
     ap = argparse.ArgumentParser(description='2D lidar to OSC for Wire patches')
     ap.add_argument('--port', help='serial port of the position with the sensor (this run only)')
@@ -1091,6 +1113,7 @@ def main():
     ap.add_argument('--snapshot', help='save a PNG of the window after 4 s and quit (documentation, tests)')
     ap.add_argument('--sim', type=int, default=0, help='start with this many simulated people')
     a = ap.parse_args()
+    setup_logging(HERE)
     overrides = {}
     if a.port:
         overrides['port'] = a.port
@@ -1098,6 +1121,7 @@ def main():
         overrides['osc_targets'] = a.osc
     eng = Engine(HERE, overrides)
     eng.start()
+    log.info('started: room %s, targets %s', eng.room.name, ', '.join(eng.s['osc_targets']))
     try:
         if a.headless:
             live = eng.live_station()

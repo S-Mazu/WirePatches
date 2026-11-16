@@ -25,7 +25,9 @@ def make_engine(area=RECT, front=FRONT):
                    'exclusions': [], 'barriers': [], 'ref': None}, f)
     with open(os.path.join(folder, 'settings.json'), 'w') as f:
         json.dump({'room': 'T', 'osc_targets': []}, f)                 # no OSC targets: nothing leaves the test
-    return Engine(folder)
+    eng = Engine(folder)
+    eng.osc.close()
+    return eng
 
 
 class EngineTest(unittest.TestCase):
@@ -61,12 +63,12 @@ class EngineTest(unittest.TestCase):
 
     def test_front_end_set_by_standing_there(self):
         eng = make_engine(front=None)
-        eng.s['countdown_s'] = 0.0
+        eng.set('countdown_s', 0.0)
         eng.sim = [[3900.0, -200.0]]
         eng.request('right')
         for _ in range(12):
             eng.process({})
-        self.assertIsNone(eng.task)
+        self.assertIsNone(eng.cal.task)
         self.assertEqual(eng.room.front['right'], [3900.0, -200.0])
 
 
