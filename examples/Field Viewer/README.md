@@ -83,11 +83,14 @@ Tested sizes:
 
 ## Known issues
 
-Untested: built in a cloud session, not yet loaded in Wire or Arena (#115).
+Loaded in Arena 7.29.0 on 2026-11-16 as an effect on the Spout clip (#115):
+- The shader runs: yellow line and size bars appear. The field does not: `Texture In` is empty, while a built-in Invert RGB on the same clip shows the field inverted. A Wire effect does not get the Spout clip's texture in Arena; the way in is still open (bridge README, Status).
+- The raw clip shows the band at the **bottom**, so the viewer's band overlay at the top and its counter sample at 31/32 are at the wrong end. To be changed together with the bridge's `FLIP` once the input path works.
+- Tested sizes above are still untested for the same reason.
 
 ## Changelog
 
-- 2026-11-16: First version (#115): channels, status band with counter bar and orientation lines, size bars. Untested.
+- 2026-11-16: First version (#115): channels, status band with counter bar and orientation lines, size bars. Loaded in Arena once: shader runs, Texture In empty (see Known issues).
 
 ---
 
