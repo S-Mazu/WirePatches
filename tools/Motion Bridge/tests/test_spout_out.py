@@ -18,8 +18,8 @@ class SpoutOutTest(unittest.TestCase):
         out = SpoutOut()
         self.assertFalse(out.sending)
         self.assertIn('SpoutGL not installed', out.status)
-        out.send(np.zeros((9, 8, 4), np.uint8))
-        self.assertEqual(out.size, (8, 9))
+        out.send(np.zeros((16, 8, 4), np.uint8))
+        self.assertEqual(out.size, (8, 16))
         self.assertEqual(out.frames, 0)
         out.close()
 

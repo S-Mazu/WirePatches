@@ -79,10 +79,10 @@ HELP = {
                'in the view.',
     'sim_clear': 'Removes all simulated objects.',
     'spout': 'The field leaves the bridge as a Spout texture named "Motion Bridge": one image per frame, 30 per '
-             'second. In Arena it appears under Sources > Spout; in Wire a Texture In node set to Spout receives it. '
-             'Red = occupancy, green = motion, blue = visibility. The last row is reserved: its first pixel counts '
-             'up every frame, so a patch can tell a live field from a frozen one.\nNeeds the SpoutGL package '
-             '(Windows).',
+             'second. In Arena: load it as a clip (Sources > Spout), set Resize to Stretch, and put the patch on it '
+             'as an effect. Red = occupancy, green = motion, blue = visibility. The top sixteenth of the image is '
+             'a status band whose pixels count up every frame, so a patch can tell a live field from a frozen '
+             'one.\nNeeds the SpoutGL package (Windows).',
     'tol_mm': 'How much closer than the empty room a point must be to count as foreground. '
               'Raise it if walls or furniture flicker red.',
     'gap_mm': 'Foreground points further apart than this start a new blob.',

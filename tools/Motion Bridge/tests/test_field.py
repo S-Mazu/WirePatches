@@ -96,18 +96,23 @@ if __name__ == '__main__':
 
 
 class TextureTest(unittest.TestCase):
-    def test_grid_size_follows_the_cell_size(self):
-        self.assertEqual(grid_size(4000.0, 3000.0, 100.0), (40, 30))
-        self.assertEqual(grid_size(20000.0, 8000.0, 125.0), (160, 64))
-        self.assertEqual(grid_size(50.0, 50.0, 100.0), (1, 1))
-        self.assertEqual(grid_size(1e9, 1e9, 1.0), (1024, 1024))
+    def test_grid_size_follows_the_cell_size_and_keeps_the_band_a_sixteenth(self):
+        self.assertEqual(grid_size(4000.0, 3000.0, 100.0), (40, 30, 2))          # 30 needed: 2 x 15, band 2 of 32
+        self.assertEqual(grid_size(20000.0, 8000.0, 125.0), (160, 75, 5))        # 64 needed: 5 x 15 rows
+        self.assertEqual(grid_size(50.0, 50.0, 100.0), (1, 15, 1))
+        cols, rows, band = grid_size(1e9, 1e9, 1.0)
+        self.assertEqual((cols, rows, band), (1020, 1020, 68))
+        for depth in (300.0, 1499.0, 1500.0, 1501.0, 30000.0):
+            cols, rows, band = grid_size(4000.0, depth, 100.0)
+            self.assertEqual(rows, 15 * band)
+            self.assertGreaterEqual(rows, round(depth / 100.0))
 
     def test_configure_for_room(self):
         f = Field()
         f.configure_for(make_room(), 100.0)
-        self.assertEqual((f.cols, f.rows), (40, 30))
+        self.assertEqual((f.cols, f.rows, f.band), (40, 30, 2))
         f.configure_for(make_room(area=None), 100.0)
-        self.assertEqual((f.cols, f.rows), EMPTY_SIZE)
+        self.assertEqual((f.cols, f.rows, f.band), EMPTY_SIZE)
 
     def test_texture_layout(self):
         room = make_room()
@@ -116,15 +121,15 @@ class TextureTest(unittest.TestCase):
         for k in range(6):
             f.update(room, [], [[2000.0, -1500.0]], 0.1 * k, 0.5, 0.3)        # disc at x 0.5, depth 0.5
         tex = f.texture(200)
-        self.assertEqual(tex.shape, (31, 40, 4))
+        self.assertEqual(tex.shape, (32, 40, 4))                             # 30 field rows + band of 2
         self.assertEqual(tex.dtype, np.uint8)
         self.assertEqual(int(tex[..., 3].min()), 255)                        # opaque
         self.assertGreater(int(tex[15, 20, 0]), 230)                         # R occupancy at the disc
         self.assertEqual(int(tex[0, 0, 0]), 0)                               # front left corner empty
-        self.assertEqual(tuple(tex[30, 0, :3]), (200, 200, 200))             # counter pixel
-        self.assertEqual(int(tex[30, 1:, :3].max()), 0)                      # rest of the reserved row black
+        self.assertEqual(int(tex[30:, :, :3].min()), 200)                    # the whole band carries the counter
+        self.assertEqual(int(tex[30:, :, :3].max()), 200)
         self.assertEqual(int(tex[:30, :, 2].max()), 0)                       # visibility not implemented: 0
-        self.assertEqual(tuple(f.texture(300)[30, 0, :3]), (44, 44, 44))     # counter wraps at 256
+        self.assertEqual(int(f.texture(300)[31, 39, 1]), 44)                 # counter wraps at 256
 
     def test_motion_fades_between_measurements(self):
         room = make_room()
