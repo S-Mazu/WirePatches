@@ -313,7 +313,7 @@ class Panel:
             dpg.set_value('spout_text', 'Starting.')
         elif sp.sending:
             dpg.set_value('spout_text', f'Sender "{sp.name}", {sp.size[0]} x {sp.size[1]} pixels '
-                                        f'(last row reserved), {self.eng.frame_rate:.0f} frames/s, '
+                                        f'(top sixteenth is the status band), {self.eng.frame_rate:.0f} frames/s, '
                                         f'{sp.frames} frames sent.')
         else:
             dpg.set_value('spout_text', f'{sp.status}. The field is shown here but not sent.')

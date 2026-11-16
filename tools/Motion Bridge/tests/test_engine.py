@@ -43,10 +43,10 @@ class EngineTest(unittest.TestCase):
         eng.frame(time.time())
         eng.frame(time.time())
         tex = eng.field.texture(eng.counter)
-        self.assertEqual(tex.shape, (31, 40, 4))                        # one reserved row
+        self.assertEqual(tex.shape, (32, 40, 4))                        # 30 field rows + band of 2
         self.assertGreater(tex[7, 10, 0], 230)                          # R = occupancy
         self.assertEqual(eng.counter, 2)
-        self.assertEqual(eng.spout.size, (40, 31))
+        self.assertEqual(eng.spout.size, (40, 32))
 
     def test_object_outside_the_area_is_ignored(self):
         eng = make_engine()
@@ -64,9 +64,9 @@ class EngineTest(unittest.TestCase):
         self.assertEqual(len(snap['objects']), 1)                       # still shown in the window
         self.assertEqual(float(snap['occ'].max()), 0.0)
         tex = eng.field.texture(7)
-        self.assertEqual(tex.shape, (9, 8, 4))
-        self.assertEqual(int(tex[:8, :, :3].max()), 0)                 # black field
-        self.assertEqual(tuple(tex[8, 0, :3]), (7, 7, 7))               # counter in the reserved row
+        self.assertEqual(tex.shape, (16, 8, 4))                         # 15 black rows + band of 1
+        self.assertEqual(int(tex[:15, :, :3].max()), 0)                # black field
+        self.assertEqual(tuple(tex[15, 3, :3]), (7, 7, 7))              # counter in the band
 
     def test_front_end_set_by_standing_there(self):
         eng = make_engine(front=None)

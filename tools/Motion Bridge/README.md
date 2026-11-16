@@ -1,6 +1,6 @@
 # Motion Bridge
 
-Motion Bridge is a tool: it reads a 2D lidar and sends patches a Spout texture, 30 times per second, that says where in a defined area something is and where something moves.
+Motion Bridge is a tool: it reads a 2D lidar and sends patches a Spout texture, 30 times per second, that says where in a defined area something is and where something moves. Patches use it as effects on that texture in Arena.
 
 Last updated: 2026-11-16
 
@@ -12,7 +12,7 @@ The bridge interprets nothing for a patch: what a value means in the picture is 
 
 Everything happens in one room map seen from above, in metres. Several sensor positions (several sensors, or one sensor moved around) are aligned in this map; the area, the front, exclusions and barriers are drawn into it with the mouse. Rooms and areas of any size and shape work: nothing assumes a rectangle. Patches only receive the normalized texture, so they work on any surface and with any sensor that delivers it.
 
-Patches using it: none yet. [Bulging Lines](../../sources/Bulging%20Lines/) used the earlier OSC output and is being rebuilt on the field (#115).
+Patches using it: none yet. [Bulging Lines](../../sources/Bulging%20Lines/) used the earlier OSC output and is being rebuilt on the field as an effect (#115).
 
 ## How it works and why
 
@@ -22,22 +22,31 @@ Patches using it: none yet. [Bulging Lines](../../sources/Bulging%20Lines/) used
 4. **Filter** (`room.py`): per position a fan (only these directions count), barriers (a sensor does not look through them), the area (only inside it counts) and exclusions (never inside them). Why: rooms are irregular; the person setting up decides what is relevant, not a rectangle in the code.
 5. **Map onto the front** (`room.py`): the front is a line in the map where the projection is, drawn freely; the area is the polygon that counts. Every foreground point gets `x` (0 at the left end … 1 at the right end of the front) and `depth` (0 at the front … 1 at the point of the area farthest from it). Why: patches work in projection terms, independent of room size, room shape and sensor placement. A composed projection (U-shape, mapped objects) later needs a polyline front; the free line keeps that open.
 6. **Field** (`field.py`): the field covers front width × area depth in square cells of *Cell size* (0.1 m); cells outside the area stay 0. Occupancy = share of a cell covered by foreground surface; motion = how fast the occupancy changes, with a threshold against sensor noise and a fade. Why: projections should react to motion, not to "people"; a field carries any motion (an arm, a group, a run) without interpreting it.
-7. **Send** (`field.py`, `spout_out.py`): the field is rendered as an RGBA image and shared as a Spout texture 30 times per second; motion fades between measurements, so the frames are smooth. A counter pixel changes every frame, so a patch can tell a live field from a frozen one. Why a texture: a field is an image, and a texture is what Wire and Arena read natively. Any resolution, one frame per update, nothing to reassemble in the patch. Why not OSC: a list of numbers forces every patch to hard-wire the grid size and to rebuild the image.
+7. **Send** (`field.py`, `spout_out.py`): the field is rendered as an RGBA image and shared as a Spout texture 30 times per second; motion fades between measurements, so the frames are smooth. A status band at the top counts up every frame, so a patch can tell a live field from a frozen one. Why a texture: a field is an image, and a texture is what Wire and Arena read natively. Any resolution, one frame per update, nothing to reassemble in the patch. Why not OSC: a list of numbers forces every patch to hard-wire the grid size and to rebuild the image. Why a band and not a pixel: everything that passes through Arena is resampled (clip resize, interpolation); a band of one sixteenth survives that, a single pixel does not.
 
 Foreground blobs are also merged into *objects* (`scene.py`) for the window and for setting the ends of the front by standing there. Patches do not get them; a tracker in fixed slots was tried and dropped, it is the wrong model for dancing.
 
 ## Status (2026-11-16)
 
 Untested (built in a cloud session on 2026-11-16, checked only by the unit tests in `tests/` with synthetic data and by starting the window under a virtual display; no sensor, no Spout):
-- Field as a Spout texture, the counter pixel, 30 frames per second, cell size instead of a fixed grid (#115). OSC and the points are gone.
+- Field as a Spout texture with the status band, 30 frames per second, cell size instead of a fixed grid (#115). OSC and the points are gone.
 - Area and front, replacing the screen, the trapezoid with two Depth Ranges and the include areas (#111). Older room files are converted on load.
 
-To test on the show machine (#115):
-- A Wire patch running as a clip in Arena receives the texture through `Texture In` (Spout). The archived Kinect tool had this working; it also once delivered 0 × 0 pixels during a performance, cause unknown. The counter pixel exposes a frozen texture.
+Measured on the show machine on 2026-11-16 (Arena 7.29.0, live sensor, Field Viewer example):
+- A Wire **source** patch loaded as a clip in Arena does not receive the Spout texture: `Texture In` gives a black 1 × 1 image. Inside Arena the host supplies the texture; the Spout choice made in the Wire editor is not carried over.
+- The texture arrives in Arena as a clip (Sources > Spout): occupancy red, motion green, the status band grey. Before `python.exe` of the venv and `Arena.exe` were set to *High performance* in the Windows graphics settings, the clip showed no image (empty thumbnail, transparent preview) although Arena knew the sender's size. Whether that setting was the cause is not proven, but it is what Spout prescribes for laptops with two adapters, and it is now part of Installation.
+- **Orientation**: the status band appears at the **bottom** of the clip, so row 0 (the front) is at the top in Arena. The contract text under Output still says "band at the top"; `FLIP` and the Field Viewer are not yet changed.
+- Setting the clip's Width/Height to 1920 × 1080 does **not** stretch the texture: it appears about ten times enlarged and centred. The clip's resize mode has to be set as well (Arena, Clip menu); not yet done.
+- A Wire **effect** on the Spout clip runs (the Field Viewer draws its lines and bars) but its `Texture In` is empty. A built-in Resolume effect (Invert RGB) on the same clip works. So Arena's effect chain gets the Spout texture, a Wire effect does not. **Open.** Next candidate, documented in Arena: a second layer with the Router source pointing at the Spout layer, and the Wire effect on that layer, so it gets Arena's own layer texture instead of the shared Spout texture.
+
+So the recipe under Output (Spout clip, Resize Stretch, Wire effect on it) is **not confirmed**; the Wire effect part fails. The contract stands, the way into the patch is still open.
+
+To test on the show machine (#115), with the example `Field Viewer` as an effect:
+- Clip *Resize* set to *Stretch* fills the effect's texture with the field at composition size; whether the effect has to sit before or after Arena's Transform.
 - Orientation: whether row 0 (the front) arrives at the bottom or the top in Wire. Then `FLIP` in `spout_out.py` and this README are fixed.
-- Reading the counter pixel in a patch: `texelFetch` in an ISF shader; which node does it in node flow.
-- What `Texture In` shows when the sender stops: the last frame or black. Both are safe for a patch.
-- A laptop with two graphics adapters: the bridge and Arena must use the same one.
+- Reading the status band in a patch: a sample near the top edge in an ISF shader; which node does it in node flow.
+- What the effect sees when the bridge stops: the last frame or black. Both are safe for a patch.
+- The archived Kinect tool once delivered 0 × 0 pixels during a performance, cause unknown; the status band exposes a frozen texture. A laptop with two graphics adapters: the bridge and Arena must use the same one.
 
 Tested on the show machine on 2026-11-15, before these changes:
 - Reading the STL-27L: 9.9–10 turns/s, 0 CRC errors over minutes.
@@ -82,7 +91,7 @@ Learned the hard way (2026-11-15):
 | `ui/` | The window: `window.py` (layout, frame loop), `view.py` (room map, handles, live points), `panel.py` (controls), `status.py` (status lines), `drafting.py` (drawing shapes with clicks), `help.py` (all help texts), `theme.py` |
 | `engine.py` | Processing thread: readers per position, foreground, objects, field, texture frames, room and port management |
 | `settings.py` | Detection and field settings: defaults, limits, `settings.json`, command-line overrides |
-| `field.py` | Occupancy and motion over the area, and the texture with the counter pixel |
+| `field.py` | Occupancy and motion over the area, and the texture with the status band |
 | `spout_out.py` | Spout sender around SpoutGL; without SpoutGL the bridge runs and says so |
 | `calibration.py` | Guided measurements with countdown and tones: learn the empty room, set an end of the front |
 | `quality.py` | Scan quality statistics and the optional CSV log |
@@ -103,7 +112,8 @@ Created at runtime and not committed: `.venv/`, `settings.json` (detection and f
    py -3.13 -m venv .venv
    .venv\Scripts\python.exe -m pip install -r requirements.txt
    ```
-4. Nothing to switch on in Arena or Wire: Spout sources are always listed. On a laptop with two graphics adapters, run the bridge and Arena on the same one (Windows graphics settings, "high performance").
+4. Windows Settings > System > Display > Graphics: add `.venv\Scripts\python.exe` of this folder and `Arena.exe`, both set to *High performance*. Spout shares textures only between programs on the same graphics adapter; on a laptop with two adapters the Python process otherwise lands on the integrated one and Arena sees the sender's name and size but no image. Nothing to switch on in Arena or Wire: Spout sources are always listed.
+5. In Arena: load `Motion Bridge` from Sources > Spout as a clip, set the clip's *Resize* to *Stretch*, and put a motion patch on it as an effect (see Output).
 
 ## Usage
 
@@ -146,17 +156,18 @@ Options (this run only, not saved): `--port COM19` (port of the position with th
 
 The interface to the patches is one Spout texture. This is the contract; patches rely on it and nothing else.
 
-- **Sender**: Spout, name `Motion Bridge`, on the same computer as Arena and Wire. In Arena it appears under Sources > Spout; in Wire a `Texture In` node set to Spout receives it, also when the patch runs as a clip in Arena (to be confirmed, see Status).
+- **Sender**: Spout, name `Motion Bridge`, on the same computer as Arena and Wire.
+- **How a patch gets it**: in Arena the texture is a clip (Sources > Spout), its *Resize* set to *Stretch*, and the patch is an **effect** on that clip: its `Texture In` is the field, stretched over the whole composition. A Wire source patch cannot pick up Spout inside Arena (see Status). In the Wire editor, `Texture In` set to Spout shows the same texture for building the patch.
 - **Format**: RGBA, 8 bits per channel. 30 frames per second; the measurement behind it is 10 per second, motion fades between measurements.
-- **Size**: width = front width / cell size, height = area depth / cell size + 1. The cell size is a bridge setting (default 0.1 m, so a 4 × 3 m area gives 40 × 31 pixels). A patch must not depend on the size: it samples the texture with normalized coordinates, 0..1 along the front and 0..1 into the area.
+- **Layout**: the lower fifteen sixteenths of the rows are the field, the upper sixteenth is the status band (see below). Width = front width / cell size; field rows = area depth / cell size, rounded up to a multiple of 15; band = field rows / 15. The cell size is a bridge setting (default 0.1 m, so a 4 × 3 m area gives 40 × 32 pixels: 30 field rows and a band of 2). A patch must not depend on the size: it samples the texture with normalized coordinates, 0..1 along the front, and 0..15/16 into the area (depth `d` is at 15/16 · `d`).
 - **Channels**, each 0..255 for 0..1:
   - R: occupancy, how much of the cell is covered by a foreground surface. The lidar sees the side of a body facing the sensor, so a body crossing a cell gives about 0.8 to 1; cells hidden behind a body stay 0 (shadow).
   - G: motion, how fast the occupancy changes. A cell taken or freed within 0.25 s gives 1; it fades out over *Motion fade* (0.5 s); changes below *Motion threshold* are ignored (0.3: sensor noise at still objects measured up to 0.28, walking 0.5 to 1).
   - B: visibility, 1 where a sensor sees the cell (#113, not implemented yet: always 0).
   - A: always 255.
-- **Orientation**: column 0 is at the left end of the front, column width − 1 at the right end. Row 0 is at the front, the last row but one at the far edge of the area. Whether row 0 arrives at the bottom or the top of the texture in Wire is confirmed on the show machine and then fixed here.
-- **Reserved row**: the last row carries no field data. Its first pixel holds a counter in R, G and B that changes every frame (0..255, wraps). A patch reads it with `texelFetch` and fades out when it stops changing, so the picture stays calm without the bridge (docs/PATCH_RULES.md, "Patches that use a tool"). The rest of the row is black.
-- **Without area and front**: an 8 × 9 black texture; the counter keeps running.
+- **Orientation**: column 0 is at the left end of the front, column width − 1 at the right end. Row 0 is at the front, the last field row at the far edge of the area, the band above it. Whether row 0 arrives at the bottom or the top of the texture in Wire is confirmed on the show machine and then fixed here.
+- **Status band**: the top sixteenth of the texture carries no field data. Every pixel of it holds a counter in R, G and B that changes every frame (0..255, wraps). A patch samples it anywhere in the band, e.g. at 31/32 of the height, and fades out when the value stops changing, so the picture stays calm without the bridge (docs/PATCH_RULES.md, "Patches that use a tool"). The band is a sixteenth so that it survives Arena's resampling at any size.
+- **Without area and front**: an 8 × 16 black texture; the band keeps counting.
 - **Simulated objects** count as discs of 0.44 m.
 
 ## Configuration
@@ -178,7 +189,8 @@ All settings are made in the window. Detection and field settings are saved in `
 - Objects appear in the wrong place or mirrored: check the front ends (*Swap ends*; the status says when the front faces away from the area) and *Mirrored* of the position.
 - *Output* is red: SpoutGL is not installed (`pip install SpoutGL` in the venv) or the sender failed; the log says which.
 - The texture does not appear in Arena or Wire, or is 0 × 0: the bridge and Arena may run on different graphics adapters; set both to the same one in the Windows graphics settings.
-- The picture in the patch stands still although the status shows frames: the patch reads a frozen texture; check the counter pixel in the patch.
+- The picture in the patch stands still although the status shows frames: the patch reads a frozen texture; check the status band in the patch.
+- The patch shows nothing although the Spout clip shows the field: the patch is a source, or the effect sits where the texture is not yet stretched. Patches must be effects on the clip, Resize Stretch (see Output).
 
 ## Known issues
 
@@ -186,6 +198,8 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-16: First test on the show machine (see Status): the texture reaches Arena and built-in effects, a Wire effect gets an empty Texture In; the band arrives at the bottom; Width/Height alone does not stretch. Nothing changed in the code yet.
+- 2026-11-16: Status band instead of a counter pixel (#115): the top sixteenth of the texture counts up every frame, so the sign of life survives Arena's resampling. Patches are effects on the Spout clip with Resize Stretch; a source patch cannot read Spout inside Arena (measured). Untested beyond that.
 - 2026-11-16: The field leaves the bridge as a Spout texture (#115): R occupancy, G motion, B visibility (reserved), A 255, a counter pixel in a reserved last row, 30 frames per second with motion fading between measurements. Cell size (0.1 m) replaces the fixed grid; the texture size follows the area. OSC output, the 8-slot points and their settings are removed. Output section is the contract. Untested with Spout and with a sensor.
 - 2026-11-16: Window split into the package `ui/` (view, panel, status, drafting, help, theme); the drawing of shapes is a class without dearpygui and has tests. Scan points are converted for the plot only when a position or its scan changes. Checked by starting the window under a virtual display with a demo room (snapshot); untested by hand.
 - 2026-11-16: Engine split into settings, OSC output, calibration, quality and tracking modules; the window changes the room only through the engine. Log file `logs/bridge.log`. Tests for settings, the OSC messages of one update (received by a local socket) and the guided measurements. Window started under a virtual display only; untested with a sensor.
