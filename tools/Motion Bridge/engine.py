@@ -1,4 +1,4 @@
-"""Motion Bridge engine: sensors -> room map -> people -> screen coordinates -> OSC.
+"""Motion Bridge engine: sensors -> room map -> foreground -> fields and points -> OSC.
 
 Runs in its own thread, independent of any window. The user interface only reads
 snapshots and calls the request methods.
@@ -17,7 +17,7 @@ import numpy as np
 from pythonosc.udp_client import SimpleUDPClient
 
 from field import Field
-from room import BEHIND_MM, Room, create_default
+from room import Room, create_default
 from scene import MIN_MM, Background, blobs, foreground, to_xy
 from stl27l import Stl27lReader
 
@@ -280,7 +280,6 @@ class Engine(threading.Thread):
         live = self.live_station()
         room = Room(os.path.join(self.rooms_dir, name), name)
         room.add_station(port=live.port if live else 'COM19')
-        room.depth_l_mm, room.depth_r_mm = self.room.depth_l_mm, self.room.depth_r_mm
         room.save()
         self.load_room(name)
         return True
@@ -421,7 +420,7 @@ class Engine(threading.Thread):
 
     # ------------------------------------------------ guided calibration
     def request(self, kind, sid=None):
-        """kind: 'background' (for position sid), 'left' or 'right'. Starts the countdown."""
+        """kind: 'background' (for position sid), 'left' or 'right' (end of the front). Starts the countdown."""
         with self.lock:
             self.task = {'kind': kind, 'sid': sid, 'phase': 'countdown',
                          'at': time.time() + float(self.s['countdown_s'])}
@@ -481,13 +480,13 @@ class Engine(threading.Thread):
                 return
             x = statistics.median(p['x'] for p in singles)
             y = statistics.median(p['y'] for p in singles)
-            scr = dict(self.room.screen or {})
-            scr[task['kind']] = [x, y]
-            self.room.screen = scr
+            front = dict(self.room.front or {})
+            front[task['kind']] = [x, y]
+            self.room.front = front
             self.save_room()
             beep('done')
-            msg = f"Screen: {task['kind']} end set."
-            if self.room.has_screen():
+            msg = f"Front: {task['kind']} end set."
+            if self.room.has_front():
                 msg += f' {self.room.frame()[2] / 1000:.2f} m wide.'
             self.notify(msg, 'ok')
 
@@ -534,7 +533,7 @@ class Engine(threading.Thread):
                     seen[rd.port] = c
                     new = True
                     if rd is primary:
-                        n_people = len(self.snap['in_zone']) if self.snap else 0
+                        n_people = len(self.snap['objects']) if self.snap else 0
                         for rev in rd.latest(n):
                             self.quality.add(rev, n_people, rd.crc_bad)
                 latest = rd.latest(1)
@@ -575,19 +574,18 @@ class Engine(threading.Thread):
                     people.append(b)
                 views[sid] = {'mx': mx, 'my': my, 'valid': rev.dist >= MIN_MM, 'fg': fg, 'keep': keep,
                               'dist': rev.dist}
-            people = merge(people, s['merge_mm'])
+            objects = merge(people, s['merge_mm'])           # foreground objects: blobs merged, plus simulated ones
             sim = [{'x': float(x), 'y': float(y), 'n': 50, 'sim': True} for x, y in self.sim]
-            sim = [p for p in sim if room.in_areas([p['x']], [p['y']])[0]]
-            people += sim
-            screen = room.has_screen()
-            in_zone = [p for p in people if not screen or room.map_xy(p['x'], p['y'])[1] >= -BEHIND_MM]
-            self.tracker.update(in_zone, t, s['assoc_mm'], s['smooth'], s['hold_s'], s['fade_s'])
+            sim = [p for p in sim if room.counts([p['x']], [p['y']])[0]]
+            objects += sim
+            self.tracker.update(objects, t, s['assoc_mm'], s['smooth'], s['hold_s'], s['fade_s'])
             x, depth, active = np.zeros(SLOTS), np.zeros(SLOTS), np.zeros(SLOTS)
-            if screen:
+            if room.ready():
+                extent = room.depth_mm()
                 for k, tr in self.tracker.tracks.items():
-                    x01, d_mm = room.map_xy(tr['x'], tr['y'])
+                    x01, d_mm = room.to_front(tr['x'], tr['y'])
                     x[k] = x01
-                    depth[k] = min(1.0, max(0.0, d_mm / float(room.depth_at(x01))))
+                    depth[k] = min(1.0, max(0.0, d_mm / extent))
                     active[k] = tr['active']
             self.field.configure(min(max(int(s['field_cols']), 1), 32), min(max(int(s['field_rows']), 1), 64))
             self.field.update(room, list(views.values()), [[p['x'], p['y']] for p in sim], t,
@@ -595,9 +593,9 @@ class Engine(threading.Thread):
             occ, motion = self.field.occ.copy(), self.field.motion.copy()
         self.send(x, depth, active, occ, motion)
         with self.lock:
-            self._task_step(in_zone)
+            self._task_step(objects)
             self.snap = {
-                'views': views, 'people': people, 'in_zone': in_zone,
+                'views': views, 'objects': objects,
                 'tracks': {k: dict(v) for k, v in self.tracker.tracks.items()},
                 'x': x, 'depth': depth, 'active': active, 't': t, 'occ': occ, 'motion': motion,
             }

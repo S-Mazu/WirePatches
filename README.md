@@ -47,7 +47,7 @@ Programs that run outside Wire and feed patches.
 
 | Tool | Description |
 |---|---|
-| [Motion Bridge](tools/Motion%20Bridge/) | Reads a 2D lidar (LDROBOT STL-27L), finds people in front of the surface and sends their positions to patches over OSC. Mouse-driven setup, simulated people for testing. |
+| [Motion Bridge](tools/Motion%20Bridge/) | Reads a 2D lidar (LDROBOT STL-27L) and sends patches over OSC where in a drawn area something is and where something moves (occupancy and motion fields), plus up to 8 tracked points. Mouse-driven room map, simulated objects for testing. |
 
 ## Archive
 

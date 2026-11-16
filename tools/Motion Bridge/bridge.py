@@ -1,4 +1,4 @@
-"""Motion Bridge: 2D lidar -> people in a room map -> OSC for Wire patches.
+"""Motion Bridge: 2D lidar -> foreground in a room map -> fields and points over OSC for Wire patches.
 
 Usage:
   .venv\\Scripts\\python.exe bridge.py                 window (default)
@@ -6,7 +6,7 @@ Usage:
   Options: --port COM19   --osc 127.0.0.1:7000 (repeatable)
 
 Settings are made in the window: detection and output in settings.json, everything about
-the room (positions, screen, areas, barriers) in rooms/<name>/. OSC interface: README.md.
+the room (positions, area, front, exclusions, barriers) in rooms/<name>/. OSC interface: README.md.
 """
 import argparse
 import math
@@ -27,17 +27,18 @@ SLOT_COLORS = [(255, 210, 60), (90, 200, 255), (255, 120, 200), (140, 255, 140),
                (255, 160, 80), (180, 140, 255), (240, 240, 240), (120, 255, 230)]
 STATION_COLORS = [(80, 140, 255), (90, 220, 150), (200, 130, 255), (255, 170, 70), (255, 110, 150), (90, 220, 230)]
 OK, WARN, BAD, DIM = (110, 220, 130), (255, 190, 80), (255, 95, 85), (140, 140, 155)
-SCREEN_C, AREA_C, EXCL_C, BAR_C, REF_C = (255, 255, 255), (90, 210, 120), (255, 95, 85), (255, 150, 40), (255, 230, 90)
+FRONT_C, AREA_C, EXCL_C, BAR_C, REF_C = (255, 255, 255), (90, 210, 120), (255, 95, 85), (255, 150, 40), (255, 230, 90)
+FIELD_C, FG_OUT_C = (150, 150, 165), (150, 60, 55)
 
 HELP = {
     'room': 'A room holds everything measured and drawn for one venue: sensor positions, their scans, '
-            'screen, areas and barriers. Switch rooms here; each is kept in rooms/<name>/.',
+            'area, front, exclusions and barriers. Switch rooms here; each is kept in rooms/<name>/.',
     'new_room': 'Creates an empty room with one position. The connected sensor moves into it.',
     'positions': 'Each position is one place where a sensor stood or stands and its scan of the empty room. '
                  'The position marked "sensor" delivers live data.\nClick a position to select it; its controls '
                  'are below. In the view, drag the coloured square to move it.',
     'learn': 'Learns what the empty room looks like from the selected position. Everything closer than '
-             'the empty room later counts as a person.\nClick, leave the scan plane during the countdown and '
+             'the empty room later counts as foreground.\nClick, leave the scan plane during the countdown and '
              'stay out until the second tone (about 5 s).\nLearn again whenever the sensor or the room changes.',
     'moved': 'You moved the sensor to another place: creates a new position that takes over the sensor, '
              'placed 1 m next to the current one. Learn the empty room there, then align its scan with the '
@@ -60,45 +61,51 @@ HELP = {
                 'Then turn it (with "Turn around reference") until the walls match.\nThe object must stand '
                 'free, at least 0.5 m away from walls, and be in the room while each position learns its scan. '
                 'A tube of 10 cm or more is found reliably.',
-    'screen_left': 'Stand alone at the LEFT end of the screen (seen from the room), close to it, and stay '
-                   'still until the second tone.',
-    'screen_right': 'Stand alone at the RIGHT end of the screen (seen from the room), close to it, and stay '
-                    'still until the second tone.',
-    'screen_draw': 'Draws the screen in the view: click the left end, then the right end (seen from the room). '
-                   'The ends can be dragged afterwards.',
-    'screen_swap': 'Swaps the ends: the room side changes to the other side of the screen.',
-    'screen_clear': 'Removes the screen. Without a screen nothing is sent.',
-    'depth': 'Sets the Depth Range at both ends of the screen. depth = 0 at the screen, 1 at the far edge; '
-             'people further away send 1.\nFor a trapezoid, drag the far corners (F) in the view: each end gets '
-             'its own depth.',
-    'field': 'What the patches get as fields, seen from the room: left to right along the screen, bottom = at the '
-             'screen, top = far edge.\nOccupancy: where something is (white = a surface crosses the whole cell).\n'
+    'area_draw': 'Draws the area: click its corners in the view, then "Finish" (or click the first corner). '
+                 'Only foreground inside the area counts, and the field covers it. Tick "Edit points" to drag the '
+                 'corners later.\nWithout an area everything in view counts in the window, but zeros are sent.',
+    'area_front': 'Makes the area a rectangle in front of the front, 3 m deep, as a start. Tick "Edit points" and '
+                  'drag its corners.',
+    'area_clear': 'Removes the area. Zeros are sent until a new one is drawn.',
+    'front_draw': 'Draws the front in the view: click the LEFT end, then the RIGHT end, as seen from the area. '
+                  'The front is where the projection is. For the patches, x runs along it from 0 (left) to 1 '
+                  '(right) and depth from 0 at the front to 1 at the far edge of the area.\nThe ends can be '
+                  'dragged afterwards.',
+    'front_left': 'Stand alone at the LEFT end of the front (seen from the area), close to it, and stay still '
+                  'until the second tone.',
+    'front_right': 'Stand alone at the RIGHT end of the front (seen from the area), close to it, and stay still '
+                   'until the second tone.',
+    'front_swap': 'Swaps the ends. The arrow must point into the area; use this when it points away from it or '
+                  'the picture is mirrored.',
+    'front_clear': 'Removes the front. Zeros are sent until a new one is drawn.',
+    'field': 'What the patches get as fields, seen from the area: left to right along the front, bottom = at the '
+             'front, top = far edge of the area. Cells outside the area stay 0.\n'
+             'Occupancy: where something is (white = a surface crosses the whole cell).\n'
              'Motion: where the occupancy changes (white = a cell is taken or freed within 0.25 s). Standing still '
              'fades out.',
     'reset_fields': 'Sets the field settings back to the recommended values: 32 x 16 cells, Motion fade 0.5 s, '
                     'Motion threshold 0.3.',
-    'field_cols': 'Cells along the screen (at most 32, one OSC message per row).',
-    'field_rows': 'Cells from the screen to the far edge.',
+    'field_cols': 'Cells along the front (at most 32, one OSC message per row).',
+    'field_rows': 'Cells from the front to the far edge of the area.',
     'field_fade_s': 'How long motion takes to fade out after it stops.',
     'field_threshold': 'Motion below this value is ignored: sensor noise at the edges of still objects. '
                        'Recommended and default: 0.3 (measured noise up to 0.28, walking 0.5 to 1). '
                        'Lower it only in a very quiet setup; raise it if still objects show motion.',
-    'draw_area': 'Draws an area: click the corners in the view, then "Finish" (or click the first corner). '
-                 'With at least one area, only people inside an area count.',
-    'draw_excl': 'Draws an exclusion: nobody inside it counts (a bar, a stage edge, a door).',
+    'draw_excl': 'Draws an exclusion: click its corners in the view, then "Finish". Nothing inside it counts '
+                 '(a bar, a stage edge, a door).',
     'draw_bar': 'Draws a barrier: click its two ends. Sensors do not look through it; everything behind it, '
                 'seen from a sensor, is ignored.',
-    'finish': 'Closes the area being drawn.',
+    'finish': 'Closes the polygon being drawn.',
     'cancel_draw': 'Stops drawing; nothing is added.',
-    'area_screen': 'Adds an area covering the screen width and the Depth Range, as a start. Tick "Edit points" '
-                   'to drag its corners.',
-    'edit_points': 'Shows the corners of areas and the ends of barriers as handles you can drag.',
+    'edit_points': 'Shows the corners of the area and the exclusions, and the ends of barriers, as handles you '
+                   'can drag.',
     'countdown': 'Time between the click and the measurement, so you can walk to your place '
-                 '(out of the room, or to a screen end). A tone marks the start and the end.',
-    'sim': 'Adds people you can drag in the view with the mouse. They are sent like real people, '
+                 '(out of the room, or to an end of the front). A tone marks the start and the end.',
+    'sim': 'Adds objects you can drag in the view with the mouse. They count like real foreground, '
            'so patches can be tested without walking around or without a sensor.',
-    'sim_add': 'Adds a simulated person 1.5 m in front of the screen. Drag the yellow point in the view.',
-    'sim_clear': 'Removes all simulated people.',
+    'sim_add': 'Adds a simulated object 1.5 m in front of the front (or of the sensor). Drag the yellow point '
+               'in the view.',
+    'sim_clear': 'Removes all simulated objects.',
     'targets': 'Programs that receive the OSC data. Arena listens on 7000 and Wire on 8000 by default '
                '(Preferences > OSC). A green dot means a local program holds that port.',
     'add_target': 'host:port, for example 127.0.0.1:7000 or 192.168.1.20:7000.',
@@ -119,7 +126,7 @@ HELP = {
     'log': 'Writes one line per revolution to logs/quality_*.csv (speed, points, valid share, CRC errors, people).',
     'scale': 'Size of text and controls.',
     'fullscreen': 'Fullscreen on or off (also F11).',
-    'fit': 'Shows the whole room: all scans and the screen.',
+    'fit': 'Shows the whole room: all scans, the area and the front.',
     'cancel': 'Stops the countdown or measurement.',
     'refresh': 'Reads the list of serial ports again, e.g. after plugging in the adapter.',
     'st_sensor': 'Connection to the lidar.\n'
@@ -143,25 +150,26 @@ HELP = {
                'lower it; that is fine.\n'
                'noise: typical jitter of the room measurement; below 20 mm is good.\n\n'
                'Yellow: not learned yet. Learn again whenever the sensor or the room changes.',
-    'st_map': 'The screen turns positions into x and depth for the patches.\n'
-              'Green: screen set.\n'
-              'Red: no screen; nothing is sent. See step 3.',
+    'st_map': 'The area says what counts; the front turns positions into x and depth for the patches.\n'
+              'Green: both set.\n'
+              'Yellow: the front faces away from the area; click "Swap ends".\n'
+              'Red: no area or no front; zeros are sent. See step 3.',
     'st_osc': 'Data sent to the patches. The bridge sends one update per sensor turn, so about 10 '
               'updates/s is normal and gives smooth motion. Below 8 motion gets jerky; 0 means nothing '
               'is sent.\n\n'
               'listening: targets on this computer where a program holds the port. If fewer are listening '
               'than there are targets, switch OSC input on in Arena or Wire (see Output). Targets on other '
               'computers cannot be checked.',
-    'st_people': 'People counted right now, including simulated ones. Grey: nobody there.',
+    'st_people': 'Objects tracked right now (points output), including simulated ones. Grey: nothing there.',
     'view': 'The room from above, metres. Mouse wheel zooms, right-drag pans.\n\n'
             'Coloured dots: empty-room scan of each position; square: the sensor, line: its front; '
             'outline: its fan, round handle: points the fan.\n'
-            'Grey: live scan, red: closer than the empty room, dark: ignored (outside fan or area, behind a '
-            'barrier).\n'
-            'White: screen with its ends L and R; the arrow points into the room; the thin outline reaches '
-            'to the Depth Range.\n'
-            'Green: areas, red: exclusions, orange: barriers, yellow cross: reference marker.\n'
-            'Coloured rings: tracked people with slot, x and depth.',
+            'Grey: live scan, red: foreground (closer than the empty room), dark red: foreground that does not '
+            'count (outside the area, in an exclusion), dark: ignored (outside the fan, behind a barrier).\n'
+            'White: the front with its ends L and R; the arrow points into the area. Thin grey outline: the '
+            'field, front width x area depth.\n'
+            'Green: the area, red: exclusions, orange: barriers, yellow cross: reference marker.\n'
+            'Coloured rings: tracked objects with slot, x and depth.',
 }
 
 
@@ -318,45 +326,47 @@ def run_window(eng, snapshot=None, sim=0):
             eng.notify('No free-standing object found near the marker in this scan. Drag the position '
                        'closer and try again.', 'error')
 
-    # ---- callbacks: screen, shapes
+    # ---- callbacks: area, front, shapes
     def set_mode(mode):
         state['mode'] = mode
         state['draft'] = []
 
     def on_swap():
-        if room().screen:
+        if room().front:
             with eng.lock:
-                s = room().screen
-                room().screen = {'left': s.get('right'), 'right': s.get('left')}
+                f = room().front
+                room().front = {'left': f.get('right'), 'right': f.get('left')}
             changed(True)
 
-    def on_screen_clear():
+    def on_front_clear():
         with eng.lock:
-            room().screen = None
+            room().front = None
         changed(True)
 
-    def on_depth(sender, value):
+    def on_area_clear():
         with eng.lock:
-            room().depth_l_mm = room().depth_r_mm = float(value) * 1000.0
-        changed()
+            room().area = None
+        changed(True)
 
-    def on_area_screen():
-        if not room().has_screen():
-            eng.notify('Set the screen first.', 'error')
+    def on_area_front():
+        if not room().has_front():
+            eng.notify('Draw the front first.', 'error')
             return
         with eng.lock:
-            room().area_from_screen()
+            room().area_from_front()
         changed(True)
 
     def finish_draft():
         mode, pts = state['mode'], state['draft']
         with eng.lock:
-            if mode in ('area', 'exclude') and len(pts) >= 3:
-                room().areas.append({'kind': 'include' if mode == 'area' else 'exclude', 'pts': pts})
+            if mode == 'area' and len(pts) >= 3:
+                room().area = pts
+            elif mode == 'exclude' and len(pts) >= 3:
+                room().exclusions.append(pts)
             elif mode == 'barrier' and len(pts) == 2:
                 room().barriers.append(pts)
-            elif mode == 'screen' and len(pts) == 2:
-                room().screen = {'left': pts[0], 'right': pts[1]}
+            elif mode == 'front' and len(pts) == 2:
+                room().front = {'left': pts[0], 'right': pts[1]}
             elif mode == 'ref' and len(pts) == 1:
                 room().ref = pts[0]
         set_mode(None)
@@ -365,8 +375,8 @@ def run_window(eng, snapshot=None, sim=0):
     def on_remove_shape(sender, app_data, what):
         kind, i = what
         with eng.lock:
-            if kind == 'area':
-                del room().areas[i]
+            if kind == 'excl':
+                del room().exclusions[i]
             else:
                 del room().barriers[i]
         changed(True)
@@ -381,7 +391,7 @@ def run_window(eng, snapshot=None, sim=0):
             finish_draft()
             return
         d.append(p)
-        need = {'barrier': 2, 'screen': 2, 'ref': 1}.get(mode)
+        need = {'barrier': 2, 'front': 2, 'ref': 1}.get(mode)
         if need and len(d) >= need:
             finish_draft()
 
@@ -406,9 +416,9 @@ def run_window(eng, snapshot=None, sim=0):
 
     def on_sim_add():
         k = len(sim_points)
-        if room().has_screen():
+        if room().has_front():
             u, n, length = room().frame()
-            c = (np.array(room().screen['left']) + u * length * (0.3 + 0.2 * (k % 3)) + n * 1500.0) / 1000.0
+            c = (np.array(room().front['left']) + u * length * (0.3 + 0.2 * (k % 3)) + n * 1500.0) / 1000.0
             pos = (float(c[0]), float(c[1]))
         else:
             st = sel()
@@ -482,10 +492,13 @@ def run_window(eng, snapshot=None, sim=0):
                 ys += [float(np.percentile(my, 2)) / 1000.0, float(np.percentile(my, 98)) / 1000.0]
             xs.append(st.x / 1000.0)
             ys.append(st.y / 1000.0)
-        if room().has_screen():
-            bx, by = room().screen_band()
+        if room().ready():
+            bx, by = room().field_outline()
             xs += [v / 1000.0 for v in bx]
             ys += [v / 1000.0 for v in by]
+        if room().has_area():
+            xs += [p[0] / 1000.0 for p in room().area]
+            ys += [p[1] / 1000.0 for p in room().area]
         pad = 0.5
         dpg.set_axis_limits('xaxis', min(xs) - pad, max(xs) + pad)
         dpg.set_axis_limits('yaxis', min(ys) - pad, max(ys) + pad)
@@ -502,12 +515,13 @@ def run_window(eng, snapshot=None, sim=0):
                           fit_button=dpg.mvMouseButton_Middle):
                 dpg.add_plot_axis(dpg.mvXAxis, label='x (m)', tag='xaxis')
                 with dpg.plot_axis(dpg.mvYAxis, label='y (m)', tag='yaxis'):
-                    dpg.add_line_series([], [], tag='l_band')
+                    dpg.add_line_series([], [], tag='l_field')
                     dpg.add_scatter_series([], [], tag='s_out')
                     dpg.add_scatter_series([], [], tag='s_pts')
+                    dpg.add_scatter_series([], [], tag='s_fg_out')
                     dpg.add_scatter_series([], [], tag='s_fg')
-                    dpg.add_line_series([], [], tag='l_screen')
-                    dpg.add_line_series([], [], tag='l_normal')
+                    dpg.add_line_series([], [], tag='l_front')
+                    dpg.add_line_series([], [], tag='l_arrow')
                     dpg.add_line_series([], [], tag='l_draft')
                     dpg.add_scatter_series([], [], tag='s_draft')
                     for k in range(SLOTS):
@@ -585,28 +599,29 @@ def run_window(eng, snapshot=None, sim=0):
                         tip(dpg.add_button(label='Place marker', callback=lambda: set_mode('ref')), 'ref_place')
                         tip(dpg.add_button(label='Snap position to marker', callback=on_snap), 'ref_snap')
 
-                with dpg.collapsing_header(label='3  Screen', default_open=True):
+                with dpg.collapsing_header(label='3  Area and front', default_open=True):
+                    dpg.add_text('Area: what counts', color=DIM)
                     with dpg.group(horizontal=True):
-                        tip(dpg.add_button(label='Draw in view', callback=lambda: set_mode('screen')), 'screen_draw')
-                        tip(dpg.add_button(label='Swap ends', callback=on_swap), 'screen_swap')
-                        tip(dpg.add_button(label='Remove', callback=on_screen_clear), 'screen_clear')
+                        tip(dpg.add_button(label='Draw area', callback=lambda: set_mode('area')), 'area_draw')
+                        tip(dpg.add_button(label='Area from front', callback=on_area_front), 'area_front')
+                        tip(dpg.add_button(label='Remove', callback=on_area_clear), 'area_clear')
+                    dpg.add_text('Front: where the projection is', color=DIM)
+                    with dpg.group(horizontal=True):
+                        tip(dpg.add_button(label='Draw front', callback=lambda: set_mode('front')), 'front_draw')
+                        tip(dpg.add_button(label='Swap ends', callback=on_swap), 'front_swap')
+                        tip(dpg.add_button(label='Remove', callback=on_front_clear), 'front_clear')
                     with dpg.group(horizontal=True):
                         tip(dpg.add_button(label='Stand at left end', callback=lambda: eng.request('left')),
-                            'screen_left')
+                            'front_left')
                         tip(dpg.add_button(label='Stand at right end', callback=lambda: eng.request('right')),
-                            'screen_right')
-                    tip(dpg.add_slider_float(label='Depth Range', tag='depth', min_value=0.5, max_value=30.0,
-                                             format='%.1f m', callback=on_depth), 'depth')
+                            'front_right')
+                    tip(dpg.add_checkbox(label='Edit points', tag='edit_points',
+                                         callback=lambda: state.update(rebuild=True)), 'edit_points')
 
-                with dpg.collapsing_header(label='4  Areas and barriers', default_open=True):
+                with dpg.collapsing_header(label='4  Exclusions and barriers', default_open=True):
                     with dpg.group(horizontal=True):
-                        tip(dpg.add_button(label='Draw area', callback=lambda: set_mode('area')), 'draw_area')
                         tip(dpg.add_button(label='Draw exclusion', callback=lambda: set_mode('exclude')), 'draw_excl')
                         tip(dpg.add_button(label='Draw barrier', callback=lambda: set_mode('barrier')), 'draw_bar')
-                    with dpg.group(horizontal=True):
-                        tip(dpg.add_button(label='Area from screen', callback=on_area_screen), 'area_screen')
-                        tip(dpg.add_checkbox(label='Edit points', tag='edit_points',
-                                             callback=lambda: state.update(rebuild=True)), 'edit_points')
                     dpg.add_group(tag='shapes')
 
                 with dpg.collapsing_header(label='5  Advanced detection', default_open=False):
@@ -692,8 +707,8 @@ def run_window(eng, snapshot=None, sim=0):
 
     # ---- static themes
     for tag, color, size in [('s_out', (70, 70, 85), 1.5), ('s_pts', (175, 175, 185), 1.5),
-                             ('s_fg', (255, 80, 70), 2.5), ('l_screen', SCREEN_C, 4.0),
-                             ('l_normal', SCREEN_C, 2.0), ('l_band', (150, 150, 165), 1.0),
+                             ('s_fg', (255, 80, 70), 2.5), ('s_fg_out', FG_OUT_C, 2.0), ('l_front', FRONT_C, 4.0),
+                             ('l_arrow', FRONT_C, 2.0), ('l_field', FIELD_C, 1.0),
                              ('l_draft', (255, 255, 120), 2.0), ('s_draft', (255, 255, 120), 5.0)]:
         dpg.bind_item_theme(tag, themed(color, size))
     for k in range(SLOTS):
@@ -740,13 +755,19 @@ def run_window(eng, snapshot=None, sim=0):
         state['dynamic'], state['handles'], state['last_set'] = [], {}, {}
         r = room()
         edit = dpg.get_value('edit_points')
-        for i, a in enumerate(r.areas):
-            add_series(f'area_{i}', 'line', AREA_C if a['kind'] == 'include' else EXCL_C, 2.0)
+        if r.has_area():
+            add_series('l_area', 'line', AREA_C, 2.0)
             if edit:
-                for j in range(len(a['pts'])):
-                    add_handle(f'h_v_{i}_{j}', lambda i=i, j=j: tuple(v / 1000.0 for v in room().areas[i]['pts'][j]),
-                               lambda x, y, i=i, j=j: room().areas[i]['pts'].__setitem__(j, [x * 1000.0, y * 1000.0]),
-                               AREA_C if a['kind'] == 'include' else EXCL_C, '')
+                for j in range(len(r.area)):
+                    add_handle(f'h_a_{j}', lambda j=j: tuple(v / 1000.0 for v in room().area[j]),
+                               lambda x, y, j=j: room().area.__setitem__(j, [x * 1000.0, y * 1000.0]), AREA_C, '')
+        for i, e in enumerate(r.exclusions):
+            add_series(f'excl_{i}', 'line', EXCL_C, 2.0)
+            if edit:
+                for j in range(len(e)):
+                    add_handle(f'h_e_{i}_{j}', lambda i=i, j=j: tuple(v / 1000.0 for v in room().exclusions[i][j]),
+                               lambda x, y, i=i, j=j: room().exclusions[i].__setitem__(j, [x * 1000.0, y * 1000.0]),
+                               EXCL_C, '')
         for i in range(len(r.barriers)):
             add_series(f'bar_{i}', 'line', BAR_C, 4.0)
             if edit:
@@ -768,16 +789,11 @@ def run_window(eng, snapshot=None, sim=0):
                            lambda sid=st.sid: tuple(v / 1000.0 for v in room().station(sid).fan_handle(FAN_HANDLE_MM)),
                            lambda x, y, sid=st.sid: room().station(sid).set_fan_towards(x * 1000.0, y * 1000.0),
                            c, '', select=st.sid)
-        if r.screen and r.screen.get('left') and r.screen.get('right'):
+        if r.front and r.front.get('left') and r.front.get('right'):
             for end, lab in (('left', 'L'), ('right', 'R')):
-                add_handle(f'h_{end}', lambda end=end: tuple(v / 1000.0 for v in room().screen[end]),
-                           lambda x, y, end=end: room().screen.__setitem__(end, [x * 1000.0, y * 1000.0]),
-                           SCREEN_C, lab)
-            if r.has_screen():
-                for end, lab in (('left', 'F'), ('right', 'F')):
-                    add_handle(f'h_far_{end}', lambda end=end: tuple(v / 1000.0 for v in room().far_corner(end)),
-                               lambda x, y, end=end: room().set_far_corner(end, x * 1000.0, y * 1000.0),
-                               (150, 150, 165), lab)
+                add_handle(f'h_{end}', lambda end=end: tuple(v / 1000.0 for v in room().front[end]),
+                           lambda x, y, end=end: room().front.__setitem__(end, [x * 1000.0, y * 1000.0]),
+                           FRONT_C, lab)
         if r.ref:
             add_handle('h_ref', lambda: tuple(v / 1000.0 for v in room().ref),
                        lambda x, y: setattr(room(), 'ref', [x * 1000.0, y * 1000.0]), REF_C, 'ref')
@@ -787,11 +803,10 @@ def run_window(eng, snapshot=None, sim=0):
         dpg.configure_item('pos_list', items=names)
         dpg.set_value('pos_list', next((n for n in names if n.split(' ', 1)[0] == cur.sid), names[0]))
         dpg.delete_item('shapes', children_only=True)
-        for i, a in enumerate(r.areas):
+        for i, e in enumerate(r.exclusions):
             with dpg.group(horizontal=True, parent='shapes'):
-                dpg.add_text(f"{'Area' if a['kind'] == 'include' else 'Exclusion'} {i + 1} ({len(a['pts'])} corners)",
-                             color=AREA_C if a['kind'] == 'include' else EXCL_C)
-                dpg.add_button(label='remove', small=True, callback=on_remove_shape, user_data=('area', i))
+                dpg.add_text(f'Exclusion {i + 1} ({len(e)} corners)', color=EXCL_C)
+                dpg.add_button(label='remove', small=True, callback=on_remove_shape, user_data=('excl', i))
         for i in range(len(r.barriers)):
             with dpg.group(horizontal=True, parent='shapes'):
                 dpg.add_text(f'Barrier {i + 1}', color=BAR_C)
@@ -835,25 +850,31 @@ def run_window(eng, snapshot=None, sim=0):
             dpg.set_value(f'fan_{st.sid}', [[v / 1000.0 for v in fx], [v / 1000.0 for v in fy]])
             hx, hy = st.to_map(np.array([0.0, 0.0]), np.array([0.0, 600.0]))
             dpg.set_value(f'head_{st.sid}', [list(hx / 1000.0), list(hy / 1000.0)])
-        for i, a in enumerate(r.areas):
-            pts = a['pts'] + a['pts'][:1]
-            dpg.set_value(f'area_{i}', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
+        if r.has_area() and dpg.does_item_exist('l_area'):
+            pts = r.area + r.area[:1]
+            dpg.set_value('l_area', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
+        for i, e in enumerate(r.exclusions):
+            pts = e + e[:1]
+            dpg.set_value(f'excl_{i}', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
         for i, b in enumerate(r.barriers):
             dpg.set_value(f'bar_{i}', [[b[0][0] / 1000.0, b[1][0] / 1000.0], [b[0][1] / 1000.0, b[1][1] / 1000.0]])
-        if r.has_screen():
-            l, rr = r.screen['left'], r.screen['right']
-            dpg.set_value('l_screen', [[l[0] / 1000.0, rr[0] / 1000.0], [l[1] / 1000.0, rr[1] / 1000.0]])
-            bx, by = r.screen_band()
-            dpg.set_value('l_band', [[v / 1000.0 for v in bx], [v / 1000.0 for v in by]])
+        if r.has_front():
+            l, rr = r.front['left'], r.front['right']
+            dpg.set_value('l_front', [[l[0] / 1000.0, rr[0] / 1000.0], [l[1] / 1000.0, rr[1] / 1000.0]])
             u, n, length = r.frame()
             mid = (np.array(l) + np.array(rr)) / 2.0
             tipp = mid + n * 700.0
             wing = 180.0
             pts = [mid, tipp, tipp - n * wing + u * wing, tipp, tipp - n * wing - u * wing]
-            dpg.set_value('l_normal', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
+            dpg.set_value('l_arrow', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
         else:
-            for tag in ('l_screen', 'l_band', 'l_normal'):
+            for tag in ('l_front', 'l_arrow'):
                 dpg.set_value(tag, [[], []])
+        if r.ready():
+            bx, by = r.field_outline()
+            dpg.set_value('l_field', [[v / 1000.0 for v in bx], [v / 1000.0 for v in by]])
+        else:
+            dpg.set_value('l_field', [[], []])
         d = state['draft']
         if state['mode'] and d:
             pts = list(d)
@@ -870,16 +891,16 @@ def run_window(eng, snapshot=None, sim=0):
         st = sel()
         dpg.set_value('sel_title', f'Selected: {st.sid}  {st.name}' + ('  (sensor)' if st.port else '  (scan only)'))
         for tag, val in (('pos_x', st.x / 1000.0), ('pos_y', st.y / 1000.0), ('rot', st.rot),
-                         ('fan', st.fan_span), ('flip', st.flip), ('depth', max(room().depth_l_mm, room().depth_r_mm) / 1000.0)):
+                         ('fan', st.fan_span), ('flip', st.flip)):
             if not dpg.is_item_active(tag):
                 dpg.set_value(tag, val)
         if st.fan_span < 360.0 and f'h_fan_{st.sid}' not in state['handles'] or \
                 st.fan_span >= 360.0 and f'h_fan_{st.sid}' in state['handles']:
             state['rebuild'] = True
-        labels = {'area': 'Drawing an area: click the corners in the view, then Finish (or click the first corner).',
+        labels = {'area': 'Drawing the area: click its corners in the view, then Finish (or click the first corner).',
                   'exclude': 'Drawing an exclusion: click the corners in the view, then Finish.',
                   'barrier': 'Drawing a barrier: click its two ends in the view.',
-                  'screen': 'Drawing the screen: click the LEFT end, then the RIGHT end (seen from the room).',
+                  'front': 'Drawing the front: click the LEFT end, then the RIGHT end (seen from the area).',
                   'ref': 'Click the reference object in the view.'}
         mode = state['mode']
         dpg.configure_item('mode_group', show=mode is not None)
@@ -945,14 +966,19 @@ def run_window(eng, snapshot=None, sim=0):
         else:
             set_status('st_room', WARN, f'{st.sid}: empty room not learned (step 2)')
         r = room()
-        if r.has_screen():
-            extra = (f', {len(r.areas)} area{"" if len(r.areas) == 1 else "s"}' if r.areas else '') + \
-                    (f', {len(r.barriers)} barrier{"" if len(r.barriers) == 1 else "s"}' if r.barriers else '')
-            dl, dr = r.depth_l_mm / 1000.0, r.depth_r_mm / 1000.0
-            dtxt = f'{dl:.1f} m' if abs(dl - dr) < 0.05 else f'{dl:.1f} m left, {dr:.1f} m right'
-            set_status('st_map', OK, f'Screen {r.frame()[2] / 1000:.2f} m wide, depth {dtxt}{extra}')
+        if r.ready():
+            n_e, n_b = len(r.exclusions), len(r.barriers)
+            extra = (f', {n_e} exclusion{"" if n_e == 1 else "s"}' if n_e else '') + \
+                    (f', {n_b} barrier{"" if n_b == 1 else "s"}' if n_b else '')
+            txt = (f'Area {len(r.area)} corners, front {r.frame()[2] / 1000:.2f} m wide, '
+                   f'depth {r.depth_mm() / 1000:.1f} m{extra}')
+            if r.front_faces_area():
+                set_status('st_map', OK, txt)
+            else:
+                set_status('st_map', WARN, txt + '. The front faces away from the area: Swap ends')
         else:
-            set_status('st_map', BAD, 'No screen: nothing is sent (step 3)')
+            missing = ' and '.join(w for w, ok in (('area', r.has_area()), ('front', r.has_front())) if not ok)
+            set_status('st_map', BAD, f'No {missing}: zeros are sent (step 3)')
         listening = eng.listening
         ok_targets = [t for t in eng.s['osc_targets'] if listening.get(t)]
         osc_color = OK if ok_targets else (WARN if eng.s['osc_targets'] else BAD)
@@ -968,7 +994,7 @@ def run_window(eng, snapshot=None, sim=0):
                 dpg.configure_item(f'dot_{t}', color=OK if v else (DIM if v is None else BAD))
         n_tr = len(snap['tracks']) if snap else 0
         n_sim = len(sim_points)
-        set_status('st_people', OK if n_tr else DIM, f'{n_tr} {"person" if n_tr == 1 else "people"} tracked'
+        set_status('st_people', OK if n_tr else DIM, f'{n_tr} {"object" if n_tr == 1 else "objects"} tracked'
                    + (f' ({n_sim} simulated)' if n_sim else ''))
 
         text, level, t_msg = eng.message
@@ -988,25 +1014,29 @@ def run_window(eng, snapshot=None, sim=0):
         state['last_snap'] = snap
 
         # live points of all positions with a sensor
-        px, py, fx, fy, ox, oy = [], [], [], [], [], []
+        px, py, fx, fy, gx, gy, ox, oy = [], [], [], [], [], [], [], []
         for v in snap['views'].values():
             ok = v['valid']
-            a = ok & ~v['fg'] & v['keep']
-            b = ok & v['fg'] & v['keep']
-            c = ok & ~v['keep']
+            a = ok & ~v['fg'] & v['keep']           # background that counts: grey
+            b = ok & v['fg'] & v['keep']            # foreground that counts: red
+            g = ok & v['fg'] & ~v['keep']           # foreground that does not count: dark red
+            c = ok & ~v['fg'] & ~v['keep']          # ignored: dark
             px += list(v['mx'][a] / 1000.0)
             py += list(v['my'][a] / 1000.0)
             fx += list(v['mx'][b] / 1000.0)
             fy += list(v['my'][b] / 1000.0)
+            gx += list(v['mx'][g] / 1000.0)
+            gy += list(v['my'][g] / 1000.0)
             ox += list(v['mx'][c] / 1000.0)
             oy += list(v['my'][c] / 1000.0)
         dpg.set_value('s_pts', [px, py])
+        dpg.set_value('s_fg_out', [gx, gy])
         for tag, key in (('occ', 'occ'), ('mot', 'motion')):
             f = snap.get(key)
             if f is not None and f.size:
                 rows, cols = f.shape
                 dpg.configure_item(f'fh_{tag}', rows=rows, cols=cols)
-                dpg.set_value(f'fh_{tag}', [[float(v) for v in f[::-1].ravel()]])   # row 0 (at the screen) at the bottom
+                dpg.set_value(f'fh_{tag}', [[float(v) for v in f[::-1].ravel()]])   # row 0 (at the front) at the bottom
         dpg.set_value('s_fg', [fx, fy])
         dpg.set_value('s_out', [ox, oy])
 
