@@ -13,18 +13,12 @@ DEFAULT_PORT = 'COM19'                  # serial port of the lidar adapter until
 
 DEFAULTS = {
     'room': 'Default',
-    'osc_targets': ['127.0.0.1:7000', '127.0.0.1:8000'],   # Resolume defaults: Arena 7000, Wire 8000
     'countdown_s': 10.0,
     'tol_mm': 150.0,
     'gap_mm': 250.0,
     'min_pts': 6,
     'merge_mm': 450.0,
-    'assoc_mm': 700.0,
-    'smooth': 0.5,
-    'hold_s': 0.4,
-    'fade_s': 0.3,
-    'field_cols': 32,
-    'field_rows': 16,
+    'cell_mm': 100.0,                   # field cell size; the texture size follows the area
     'field_fade_s': 0.5,
     'field_threshold': 0.3,             # measured: sensor noise at still objects reaches 0.28
     'log_quality': False,
@@ -38,19 +32,14 @@ LIMITS = {
     'gap_mm': (50.0, 2000.0),
     'min_pts': (1, 100),
     'merge_mm': (0.0, 3000.0),
-    'assoc_mm': (100.0, 5000.0),
-    'smooth': (0.05, 1.0),
-    'hold_s': (0.0, 5.0),
-    'fade_s': (0.02, 5.0),
-    'field_cols': (1, 32),              # one OSC message per row, at most 32 floats each
-    'field_rows': (1, 64),
+    'cell_mm': (20.0, 1000.0),
     'field_fade_s': (0.0, 5.0),
     'field_threshold': (0.0, 0.9),
     'ui_scale': (0.7, 2.5),
 }
 
-ADVANCED = ('tol_mm', 'gap_mm', 'min_pts', 'merge_mm', 'assoc_mm', 'smooth', 'hold_s', 'fade_s')
-FIELD = ('field_cols', 'field_rows', 'field_fade_s', 'field_threshold')
+ADVANCED = ('tol_mm', 'gap_mm', 'min_pts', 'merge_mm')
+FIELD = ('cell_mm', 'field_fade_s', 'field_threshold')
 
 
 class Settings:

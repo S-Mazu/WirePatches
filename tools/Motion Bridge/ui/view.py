@@ -8,10 +8,8 @@ import math
 import dearpygui.dearpygui as dpg
 import numpy as np
 
-from tracking import SLOTS
-
-from .theme import (AREA_C, BAR_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, FRONT_C, OUT_C, REF_C, SCAN_C,
-                    SIM_C, SLOT_COLORS, station_color)
+from .theme import (AREA_C, BAR_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, FRONT_C, OBJ_C, OUT_C, REF_C, SCAN_C,
+                    SIM_C, station_color)
 
 FAN_HANDLE_MM = 1200.0      # distance of the fan handle from the sensor
 FAN_RING_MM = 400.0         # radius of the circle drawn for a position that looks all around
@@ -50,18 +48,12 @@ class RoomView:
                 dpg.add_line_series([], [], tag='l_arrow')
                 dpg.add_line_series([], [], tag='l_draft')
                 dpg.add_scatter_series([], [], tag='s_draft')
-                for k in range(SLOTS):
-                    dpg.add_scatter_series([], [], tag=f's_slot{k}')
-            for k in range(SLOTS):
-                dpg.add_plot_annotation(tag=f'a_slot{k}', default_value=(0.0, 0.0),
-                                        offset=(18, -18) if k % 2 == 0 else (18, 22),
-                                        color=SLOT_COLORS[k] + (255,), show=False)
+                dpg.add_scatter_series([], [], tag='s_obj')
         for tag, color, size in [('s_out', OUT_C, 1.5), ('s_pts', SCAN_C, 1.5), ('s_fg', FG_C, 2.5),
                                  ('s_fg_out', FG_OUT_C, 2.0), ('l_front', FRONT_C, 4.0), ('l_arrow', FRONT_C, 2.0),
                                  ('l_field', FIELD_C, 1.0), ('l_draft', DRAFT_C, 2.0), ('s_draft', DRAFT_C, 5.0)]:
             dpg.bind_item_theme(tag, self.themes.series(color, size))
-        for k in range(SLOTS):
-            dpg.bind_item_theme(f's_slot{k}', self.themes.series(SLOT_COLORS[k], 16, dpg.mvPlotMarker_Circle, ring=True))
+        dpg.bind_item_theme('s_obj', self.themes.series(OBJ_C, 16, dpg.mvPlotMarker_Circle, ring=True))
 
     # ------------------------------------------------ items that depend on the room
     def _add_series(self, tag, kind, color, size):
@@ -230,7 +222,7 @@ class RoomView:
             dpg.set_value('s_draft', [[], []])
 
     def show(self, snap):
-        """Live points of all positions with a sensor, and the tracked objects."""
+        """Live points of all positions with a sensor, and the foreground objects."""
         px, py, fx, fy, gx, gy, ox, oy = [], [], [], [], [], [], [], []
         for v in snap['views'].values():
             ok = v['valid']
@@ -250,16 +242,7 @@ class RoomView:
         dpg.set_value('s_fg_out', [gx, gy])
         dpg.set_value('s_fg', [fx, fy])
         dpg.set_value('s_out', [ox, oy])
-        for k in range(SLOTS):
-            tr = snap['tracks'].get(k)
-            if tr:
-                tx, ty = tr['x'] / 1000.0, tr['y'] / 1000.0
-                dpg.set_value(f's_slot{k}', [[tx], [ty]])
-                dpg.configure_item(f'a_slot{k}', show=True, default_value=(tx, ty),
-                                   label=f"{k}: x {snap['x'][k]:.2f}  d {snap['depth'][k]:.2f}")
-            else:
-                dpg.set_value(f's_slot{k}', [[], []])
-                dpg.configure_item(f'a_slot{k}', show=False)
+        dpg.set_value('s_obj', [[o['x'] / 1000.0 for o in snap['objects']], [o['y'] / 1000.0 for o in snap['objects']]])
 
     # ------------------------------------------------ mouse
     def on_press(self):

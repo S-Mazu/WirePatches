@@ -1,4 +1,4 @@
-"""Scene analysis for the STL-27L: empty-room background, foreground points and blobs.
+"""Scene analysis for the STL-27L: empty-room background, foreground points, blobs and objects.
 
 Coordinates: sensor at the origin, x to the right, y to the front of the sensor, millimetres.
 """
@@ -109,3 +109,19 @@ def blobs(rev, fg, gap_mm=250.0, min_pts=6):
         out.append({'x': cx, 'y': cy, 'w': width, 'n': len(g), 'r': math.hypot(cx, cy)})
     out.sort(key=lambda o: o['r'])
     return out
+
+
+def merge(bl, merge_mm):
+    """Joins blobs closer than merge_mm into one object (parts of one body, one body seen by two sensors)."""
+    objects = []
+    for b in bl:
+        for o in objects:
+            if math.hypot(b['x'] - o['x'], b['y'] - o['y']) < merge_mm:
+                n = o['n'] + b['n']
+                o['x'] = (o['x'] * o['n'] + b['x'] * b['n']) / n
+                o['y'] = (o['y'] * o['n'] + b['y'] * b['n']) / n
+                o['n'] = n
+                break
+        else:
+            objects.append({'x': b['x'], 'y': b['y'], 'n': b['n']})
+    return objects

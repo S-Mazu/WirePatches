@@ -32,23 +32,23 @@ class SettingsTest(unittest.TestCase):
 
     def test_set_clamps_and_writes(self):
         s = Settings(self.path())
-        s.set('field_cols', 99)
-        s.set('smooth', -1)
-        self.assertEqual(s['field_cols'], 32)
-        self.assertEqual(s['smooth'], 0.05)
+        s.set('cell_mm', 5000)
+        s.set('field_threshold', -1)
+        self.assertEqual(s['cell_mm'], 1000.0)
+        self.assertEqual(s['field_threshold'], 0.0)
         with open(s.path) as f:
-            self.assertEqual(json.load(f)['field_cols'], 32)
+            self.assertEqual(json.load(f)['cell_mm'], 1000.0)
         with self.assertRaises(KeyError):
             s.set('nonsense', 1)
 
     def test_override_is_used_but_not_saved(self):
-        p = self.path({'osc_targets': ['10.0.0.1:7000']})
-        s = Settings(p, {'osc_targets': ['127.0.0.1:9000'], 'port': 'COM3'})
-        self.assertEqual(s['osc_targets'], ['127.0.0.1:9000'])
+        p = self.path({'room': 'Club'})
+        s = Settings(p, {'room': 'Test', 'port': 'COM3'})
+        self.assertEqual(s['room'], 'Test')
         s.set('tol_mm', 180.0)
         with open(p) as f:
             data = json.load(f)
-        self.assertEqual(data['osc_targets'], ['10.0.0.1:7000'])
+        self.assertEqual(data['room'], 'Club')
         self.assertEqual(data['tol_mm'], 180.0)
 
     def test_reset_group(self):
@@ -62,7 +62,7 @@ class SettingsTest(unittest.TestCase):
         with open(p, 'w') as f:
             f.write('{not json')
         s = Settings(p)
-        self.assertEqual(s['hold_s'], DEFAULTS['hold_s'])
+        self.assertEqual(s['gap_mm'], DEFAULTS['gap_mm'])
 
 
 if __name__ == '__main__':

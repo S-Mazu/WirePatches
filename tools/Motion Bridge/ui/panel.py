@@ -3,20 +3,17 @@ import logging
 
 import dearpygui.dearpygui as dpg
 
-from osc_out import parse_target
 from room import Room
 from settings import ADVANCED, DEFAULT_PORT, FIELD, LIMITS
-from tracking import SLOTS
 
 from .help import tip
-from .theme import BAR_C, DIM, EXCL_C, SLOT_COLORS
+from .theme import BAR_C, DIM, EXCL_C
 
 log = logging.getLogger(__name__)
 
 ADVANCED_SLIDERS = [('tol_mm', 'Tolerance', '%.0f mm'), ('gap_mm', 'Blob gap', '%.0f mm'),
-                    ('merge_mm', 'Merge distance', '%.0f mm'), ('assoc_mm', 'Track distance', '%.0f mm'),
-                    ('smooth', 'Smoothing', '%.2f'), ('hold_s', 'Hold', '%.1f s'), ('fade_s', 'Fade', '%.2f s')]
-FIELD_SLIDERS = [('field_cols', 'Columns', None), ('field_rows', 'Rows', None),
+                    ('merge_mm', 'Merge distance', '%.0f mm')]
+FIELD_SLIDERS = [('cell_mm', 'Cell size', '%.0f mm'),
                  ('field_fade_s', 'Motion fade', '%.2f s'), ('field_threshold', 'Motion threshold', '%.2f')]
 NUDGES = (-5.0, -1.0, -0.1, 0.1, 1.0, 5.0)
 
@@ -137,20 +134,8 @@ class Panel:
                 self._slider(key, label, fmt)
             tip(dpg.add_button(label='Reset to recommended', callback=self._on_reset_fields), 'reset_fields')
 
-        with dpg.collapsing_header(label='Output (OSC)', default_open=True):
-            tip(dpg.add_text('Targets:', color=DIM), 'targets')
-            dpg.add_group(tag='targets')
-            with dpg.group(horizontal=True):
-                tip(dpg.add_input_text(tag='new_target', hint='host:port', width=200, on_enter=True,
-                                       callback=self._on_add_target), 'add_target')
-                tip(dpg.add_button(label='Add', callback=self._on_add_target), 'add_target')
-            with dpg.table(header_row=True, borders_innerH=True, policy=dpg.mvTable_SizingStretchSame):
-                for h in ('slot', 'x', 'depth', 'active'):
-                    dpg.add_table_column(label=h)
-                for k in range(SLOTS):
-                    with dpg.table_row():
-                        for c in ('n', 'x', 'd', 'a'):
-                            dpg.add_text(str(k) if c == 'n' else '', tag=f'cell_{c}{k}', color=DIM)
+        with dpg.collapsing_header(label='Output (Spout)', default_open=True):
+            tip(dpg.add_text('', tag='spout_text', wrap=w - 30), 'spout')
 
         with dpg.collapsing_header(label='Simulation', default_open=False):
             tip(dpg.add_text('Drag the yellow points in the view.', color=DIM), 'sim')
@@ -176,7 +161,6 @@ class Panel:
             tip(dpg.add_slider_float(label='UI scale', min_value=LIMITS['ui_scale'][0], max_value=LIMITS['ui_scale'][1],
                                      default_value=float(eng.s['ui_scale']), format='%.2f',
                                      callback=self._on_scale), 'scale')
-        self._rebuild_targets()
 
     # ------------------------------------------------ callbacks: rooms and positions
     def _on_room(self, sender, value):
@@ -282,32 +266,6 @@ class Panel:
         for k in ADVANCED:
             dpg.set_value(k, self.eng.s[k])
 
-    def _on_add_target(self):
-        t = dpg.get_value('new_target').strip()
-        try:
-            parse_target(t)
-        except ValueError:
-            self.eng.notify('Target must be host:port, e.g. 127.0.0.1:7000.', 'error')
-            return
-        if t not in self.eng.s['osc_targets']:
-            self.eng.set_targets(self.eng.s['osc_targets'] + [t])
-        dpg.set_value('new_target', '')
-        self._rebuild_targets()
-
-    def _on_remove_target(self, sender, app_data, t):
-        self.eng.set_targets([x for x in self.eng.s['osc_targets'] if x != t])
-        self._rebuild_targets()
-
-    def _rebuild_targets(self):
-        dpg.delete_item('targets', children_only=True)
-        for t in self.eng.s['osc_targets']:
-            with dpg.group(horizontal=True, parent='targets'):
-                dpg.add_text('●', tag=f'dot_{t}', color=DIM)
-                dpg.add_text(t)
-                b = dpg.add_button(label='remove', small=True, callback=self._on_remove_target, user_data=t)
-                with dpg.tooltip(b):
-                    dpg.add_text(f'Stop sending to {t}.')
-
     def _on_assign(self):
         self.eng.set_port(self._sel().sid, dpg.get_value('port'))
         self.state.rebuild = True
@@ -350,20 +308,21 @@ class Panel:
         has_handle = f'h_fan_{st.sid}' in self.view.handles
         if (st.fan_span < 360.0) != has_handle:
             self.state.rebuild = True
+        sp = self.eng.spout
+        if sp is None:
+            dpg.set_value('spout_text', 'Starting.')
+        elif sp.sending:
+            dpg.set_value('spout_text', f'Sender "{sp.name}", {sp.size[0]} x {sp.size[1]} pixels '
+                                        f'(last row reserved), {self.eng.frame_rate:.0f} frames/s, '
+                                        f'{sp.frames} frames sent.')
+        else:
+            dpg.set_value('spout_text', f'{sp.status}. The field is shown here but not sent.')
 
     def show(self, snap):
-        """Field heatmaps and the slot table."""
+        """Field heatmaps."""
         for tag, key in (('occ', 'occ'), ('mot', 'motion')):
             f = snap.get(key)
             if f is not None and f.size:
                 rows, cols = f.shape
                 dpg.configure_item(f'fh_{tag}', rows=rows, cols=cols)
                 dpg.set_value(f'fh_{tag}', [[float(v) for v in f[::-1].ravel()]])   # row 0 (at the front) at the bottom
-        for k in range(SLOTS):
-            act = snap['active'][k] > 0
-            col = SLOT_COLORS[k] if act else DIM
-            dpg.set_value(f'cell_x{k}', f"{snap['x'][k]:.2f}" if act else '-')
-            dpg.set_value(f'cell_d{k}', f"{snap['depth'][k]:.2f}" if act else '-')
-            dpg.set_value(f'cell_a{k}', f"{snap['active'][k]:.2f}" if act else '-')
-            for c in ('n', 'x', 'd', 'a'):
-                dpg.configure_item(f'cell_{c}{k}', color=col)

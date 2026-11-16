@@ -9,7 +9,7 @@ Patches that render their own image. In Arena they fill a clip slot.
 | Patch | Description |
 |---|---|
 | [Bass Strings](sources/Bass%20Strings/) | Four double bass strings vibrate with the music, one frequency band per string. |
-| [Bulging Lines](sources/Bulging%20Lines/) | Horizontal lines bulge out where people stand in front of the surface; driven by the Motion Bridge lidar tool. |
+| [Bulging Lines](sources/Bulging%20Lines/) | Horizontal lines bulge out where people stand in front of the surface; driven by the Motion Bridge lidar tool. Being rebuilt on the bridge's field texture (#115); the OSC input it reads is no longer sent. |
 | [Flower Sax](sources/Flower%20Sax/) | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](sources/Geo%20Tiles/) | Tile collage of 67 flat geometric motifs in three colors. |
 | [Lye Swing](sources/Lye%20Swing/) | Painted big-band score after Len Lye; five shapes follow the music, one per sound band. |
@@ -47,7 +47,7 @@ Programs that run outside Wire and feed patches.
 
 | Tool | Description |
 |---|---|
-| [Motion Bridge](tools/Motion%20Bridge/) | Reads a 2D lidar (LDROBOT STL-27L) and sends patches over OSC where in a drawn area something is and where something moves (occupancy and motion fields), plus up to 8 tracked points. Mouse-driven room map, simulated objects for testing. |
+| [Motion Bridge](tools/Motion%20Bridge/) | Reads a 2D lidar (LDROBOT STL-27L) and sends patches a Spout texture that says where in a drawn area something is and where something moves (occupancy and motion). Mouse-driven room map, simulated objects for testing. |
 
 ## Archive
 

@@ -3,14 +3,14 @@ import json
 import os
 import sys
 import tempfile
+import time
 import unittest
-
-import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from engine import Engine  # noqa: E402
 from room import Station  # noqa: E402
+from spout_out import SpoutOut  # noqa: E402
 
 FRONT = {'left': [0.0, 0.0], 'right': [4000.0, 0.0]}
 RECT = [[0.0, 0.0], [4000.0, 0.0], [4000.0, -3000.0], [0.0, -3000.0]]
@@ -24,25 +24,29 @@ def make_engine(area=RECT, front=FRONT):
         json.dump({'stations': [Station('A', 'Position A').to_dict()], 'area': area, 'front': front,
                    'exclusions': [], 'barriers': [], 'ref': None}, f)
     with open(os.path.join(folder, 'settings.json'), 'w') as f:
-        json.dump({'room': 'T', 'osc_targets': []}, f)                 # no OSC targets: nothing leaves the test
+        json.dump({'room': 'T'}, f)
     eng = Engine(folder)
-    eng.osc.close()
+    eng.spout = SpoutOut()                                              # as run() would; sends nothing here
     return eng
 
 
 class EngineTest(unittest.TestCase):
-    def test_simulated_object_gives_points_and_field(self):
+    def test_simulated_object_gives_field_and_texture(self):
         eng = make_engine()
         eng.sim = [[1000.0, -750.0]]                                    # x 0.25, depth 0.25
         for _ in range(5):
             eng.process({})
         snap = eng.snapshot()
         self.assertEqual(len(snap['objects']), 1)
-        self.assertAlmostEqual(snap['x'][0], 0.25)
-        self.assertAlmostEqual(snap['depth'][0], 0.25)
-        self.assertGreater(snap['active'][0], 0.0)
-        self.assertGreater(snap['occ'][4, 8], 0.9)
-        self.assertEqual(snap['occ'].shape, (16, 32))
+        self.assertEqual(snap['occ'].shape, (30, 40))                   # 4 x 3 m at 0.1 m cells
+        self.assertGreater(snap['occ'][7, 10], 0.9)                     # 0.75 m into the area, 1 m along the front
+        eng.frame(time.time())
+        eng.frame(time.time())
+        tex = eng.field.texture(eng.counter)
+        self.assertEqual(tex.shape, (31, 40, 4))                        # one reserved row
+        self.assertGreater(tex[7, 10, 0], 230)                          # R = occupancy
+        self.assertEqual(eng.counter, 2)
+        self.assertEqual(eng.spout.size, (40, 31))
 
     def test_object_outside_the_area_is_ignored(self):
         eng = make_engine()
@@ -50,16 +54,19 @@ class EngineTest(unittest.TestCase):
         eng.process({})
         snap = eng.snapshot()
         self.assertEqual(len(snap['objects']), 0)
-        self.assertEqual(float(np.abs(snap['active']).sum()), 0.0)
+        self.assertEqual(float(snap['occ'].max()), 0.0)
 
-    def test_without_front_zeros_are_sent(self):
+    def test_without_front_a_black_field_is_sent(self):
         eng = make_engine(front=None)
         eng.sim = [[1000.0, -750.0]]
         eng.process({})
         snap = eng.snapshot()
-        self.assertEqual(len(snap['objects']), 1)                       # still tracked in the window
-        self.assertEqual(float(np.abs(snap['x']).sum()), 0.0)
+        self.assertEqual(len(snap['objects']), 1)                       # still shown in the window
         self.assertEqual(float(snap['occ'].max()), 0.0)
+        tex = eng.field.texture(7)
+        self.assertEqual(tex.shape, (9, 8, 4))
+        self.assertEqual(int(tex[:8, :, :3].max()), 0)                 # black field
+        self.assertEqual(tuple(tex[8, 0, :3]), (7, 7, 7))               # counter in the reserved row
 
     def test_front_end_set_by_standing_there(self):
         eng = make_engine(front=None)
