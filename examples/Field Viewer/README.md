@@ -11,7 +11,7 @@ Every motion patch depends on the field texture arriving the way the bridge READ
 ## Requirements
 
 - Resolume Wire / Arena: 7.29
-- Inputs: the layer it sits on (`Texture In`), which plays the Spout source `Motion Bridge`
+- Inputs: the clip it sits on (`Texture In`), a Spout clip of `Motion Bridge`
 - Performance: one full-screen shader and a 3 × 1 state texture, light. Not measured.
 
 ## Files
@@ -25,14 +25,14 @@ Every motion patch depends on the field texture arriving the way the bridge READ
 
 1. Copy this whole folder into your Resolume Wire patches folder (`Documents/Resolume Wire/Patches/`).
 2. Start the Motion Bridge (its README, Usage).
-3. In Arena (the recipe of the bridge README, Output):
-   1. Add the Spout source `Motion Bridge` to a layer as a clip (Sources > Spout). Its *Width* and *Height* must be the texture's own size (e.g. 19 × 48). If the clip shows other values, click the clip's resize button (*Maximize Video*, next to the source name in the clip panel) until they match the texture.
+3. In Arena (bridge README, Usage, "In Arena"):
+   1. Drag the Spout source `Motion Bridge` into a clip slot (Sources > Spout). Its *Width* and *Height* must be the texture's own size (e.g. 19 × 48); a fresh Spout clip takes it by itself. If the clip shows other values, click the resize button next to the source name in the clip panel until they match.
    2. Set the layer's *Auto Size* (layer panel, Video) to *Stretch*.
-   3. Put `Field Viewer` on the **layer** as an effect, not on the clip.
+   3. Drag `Field Viewer` onto the clip, after its Transform. A clip like this can stay in a spare column of the show composition as a check.
 
 ## The idea in plain words
 
-The bridge sends a small image: fifteen sixteenths of it are the field in front of the projection, one sixteenth is a band that counts up every frame. Arena stretches that image over the layer, and the viewer paints it full frame. A panel on the left reports, with a traffic light per line, what arrives:
+The bridge sends a small image: fifteen sixteenths of it are the field in front of the projection, one sixteenth is a band that counts up every frame. Arena stretches that image over the composition, and the viewer paints it full frame. A panel on the left reports, with a traffic light per line, what arrives:
 
 | Line | Shows | Green when |
 |---|---|---|
@@ -49,7 +49,7 @@ The band gets a line at its inner edge and the counter as a bar that grows and w
 
 With the bridge running and two simulated objects (`bridge.py --sim 2`):
 
-1. **Does the field arrive, stretched?** Red blobs (occupancy) and green trails (motion) fill the frame; `IN` equals `OUT`. Put the same Spout clip on a second layer without the viewer and switch `Show Info` off: both layers show the same picture.
+1. **Does the field arrive, stretched?** Red blobs (occupancy) and green trails (motion) fill the frame; `IN` equals `OUT`. Switch `Show Info` off and compare with the same Spout clip without the viewer: the pictures are the same.
 2. **Which way up?** `BAND TOP`.
 3. **Is it alive?** `FPS` near 30, `AGE MS` 0, `COUNT` running.
 4. **Bridge stopped:** close the bridge. The picture goes black, `BAND NONE`, `FPS 0`, `AGE MS` counts up, the last `COUNT` stays. Start the bridge again: Arena picks the sender up by itself, the lights turn green.
@@ -65,7 +65,7 @@ With the bridge running and two simulated objects (`bridge.py --sim 2`):
 
 ## Using it in your own patch
 
-Your patch is a layer effect, like the viewer. In its shader:
+Your patch is an effect on the Spout clip, like the viewer. In its shader:
 
 ```glsl
 vec4 field = IMG_NORM_PIXEL(inputImage, vec2(x, depth * 15.0 / 16.0));   // x: 0 left .. 1 right end of the front; depth: 0 front .. 1 far edge
@@ -81,7 +81,7 @@ float counter = IMG_NORM_PIXEL(inputImage, vec2(0.5, 31.0 / 32.0)).r;   // the b
 
 ## Any surface
 
-- The viewer fills whatever layer it runs on; the field is stretched to it, which is what the bridge contract defines (x over the whole projection width). The panel scales with the shorter side.
+- The viewer fills the composition; the field is stretched to it, which is what the bridge contract defines (x over the whole projection width). The panel scales with the shorter side.
 
 Tested sizes:
 
@@ -101,7 +101,7 @@ Tested sizes:
 
 ## Changelog
 
-- 2026-11-17: Rebuilt in Wire (#115). The first version, written by hand, missed `Texture In` in the patch's input list, so Arena gave it a black 1 × 1 texture. Now a layer effect that measures the contract: input and render size, band position, counter steps per second, time since the last change. Tested in Arena (1920×1080) with the bridge's live sensor and simulated objects, including stopping and restarting the bridge.
+- 2026-11-17: Rebuilt in Wire (#115). The first version, written by hand, missed `Texture In` in the patch's input list, so Arena gave it a black 1 × 1 texture. Now an effect on the Spout clip that measures the contract: input and render size, band position, counter steps per second, time since the last change. Tested in Arena (1920×1080) with the bridge's live sensor and simulated objects, including stopping and restarting the bridge.
 - 2026-11-16: First version (#115): channels, status band with counter bar and orientation lines, size bars. Untested.
 
 ---
