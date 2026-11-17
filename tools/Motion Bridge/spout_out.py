@@ -8,7 +8,7 @@ import logging
 log = logging.getLogger(__name__)
 
 SENDER_NAME = 'Motion Bridge'
-FLIP = False            # whether rows are sent bottom-up; fixed after the first test in Wire (README, Output)
+FLIP = True             # rows are sent bottom-up, so the band arrives at the top in Arena (README, Output; measured 2026-11-17)
 
 try:
     import SpoutGL
