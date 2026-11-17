@@ -1,8 +1,8 @@
 # Motion Bridge
 
-Motion Bridge is a tool: it reads a 2D lidar and sends patches a Spout texture, 30 times per second, that says where in a defined area something is and where something moves. Patches use it as effects on that texture in Arena.
+Motion Bridge is a tool: it reads a 2D lidar and sends patches a Spout texture, 30 times per second, that says where in a defined area something is and where something moves. In Arena the texture is a clip, and a patch sits on that clip as a clip effect.
 
-Last updated: 2026-11-16
+Last updated: 2026-11-17
 
 ## Purpose
 
@@ -26,27 +26,17 @@ Patches using it: none yet. [Bulging Lines](../../sources/Bulging%20Lines/) used
 
 Foreground blobs are also merged into *objects* (`scene.py`) for the window and for setting the ends of the front by standing there. Patches do not get them; a tracker in fixed slots was tried and dropped, it is the wrong model for dancing.
 
-## Status (2026-11-16)
+## Status (2026-11-17)
 
-Untested (built in a cloud session on 2026-11-16, checked only by the unit tests in `tests/` with synthetic data and by starting the window under a virtual display; no sensor, no Spout):
-- Field as a Spout texture with the status band, 30 frames per second, cell size instead of a fixed grid (#115). OSC and the points are gone.
-- Area and front, replacing the screen, the trapezoid with two Depth Ranges and the include areas (#111). Older room files are converted on load.
-
-Measured on the show machine on 2026-11-16 (Arena 7.29.0, live sensor, Field Viewer example):
-- A Wire **source** patch loaded as a clip in Arena does not receive the Spout texture: `Texture In` gives a black 1 × 1 image. Inside Arena the host supplies the texture; the Spout choice made in the Wire editor is not carried over.
-- The texture arrives in Arena as a clip (Sources > Spout): occupancy red, motion green, the status band grey. Before `python.exe` of the venv and `Arena.exe` were set to *High performance* in the Windows graphics settings, the clip showed no image (empty thumbnail, transparent preview) although Arena knew the sender's size. Whether that setting was the cause is not proven, but it is what Spout prescribes for laptops with two adapters, and it is now part of Installation.
-- **Orientation**: the status band appears at the **bottom** of the clip, so row 0 (the front) is at the top in Arena. The contract text under Output still says "band at the top"; `FLIP` and the Field Viewer are not yet changed.
-- Setting the clip's Width/Height to 1920 × 1080 does **not** stretch the texture: it appears about ten times enlarged and centred. The clip's resize mode has to be set as well (Arena, Clip menu); not yet done.
-- A Wire **effect** on the Spout clip runs (the Field Viewer draws its lines and bars) but its `Texture In` is empty. A built-in Resolume effect (Invert RGB) on the same clip works. So Arena's effect chain gets the Spout texture, a Wire effect does not. **Open.** Next candidate, documented in Arena: a second layer with the Router source pointing at the Spout layer, and the Wire effect on that layer, so it gets Arena's own layer texture instead of the shared Spout texture.
-
-So the recipe under Output (Spout clip, Resize Stretch, Wire effect on it) is **not confirmed**; the Wire effect part fails. The contract stands, the way into the patch is still open.
-
-To test on the show machine (#115), with the example `Field Viewer` as an effect:
-- Clip *Resize* set to *Stretch* fills the effect's texture with the field at composition size; whether the effect has to sit before or after Arena's Transform.
-- Orientation: whether row 0 (the front) arrives at the bottom or the top in Wire. Then `FLIP` in `spout_out.py` and this README are fixed.
-- Reading the status band in a patch: a sample near the top edge in an ISF shader; which node does it in node flow.
-- What the effect sees when the bridge stops: the last frame or black. Both are safe for a patch.
-- The archived Kinect tool once delivered 0 × 0 pixels during a performance, cause unknown; the status band exposes a frozen texture. A laptop with two graphics adapters: the bridge and Arena must use the same one.
+Tested in Arena 7.29.0 on 2026-11-17 with the live sensor, two simulated objects, the example [Field Viewer](../../examples/Field%20Viewer/) and [Bulging Lines](../../effects/Bulging%20Lines/) as clip effects on the Spout clip (composition 1920 × 1080, texture 19 × 48; setup as under "In Arena"):
+- The field arrives in the patch stretched over the frame (input = render size, 1920 × 1080), pixel for pixel the same picture as the Spout clip without the patch.
+- With `FLIP = True` the band arrives at the top: row 0 (the front) at the bottom, as the contract says.
+- The band's counter reaches the patch at 29 steps per second.
+- Bridge stopped: the patch gets a black frame of the composition size, no NaN and no frozen picture. Arena takes the sender up again by itself when the bridge restarts.
+- The clip must have the texture's own size and the layer *Auto Size* must be *Stretch*; then the clip's Transform scales the field to the composition and a clip effect after the Transform gets it at full size. With the clip at composition size (1920 × 1080) the field stays small and unstretched in the middle (2026-11-16). Clip *Resize* is a one-time button, not a setting (Resolume manual, Clips). A freshly loaded Spout clip takes the texture's size by itself.
+- Several clips of the same Spout source, each with its own effect settings, in different columns: each gets the field (Field Viewer and Bulging Lines measured one after the other in the same layer).
+- A Wire patch loaded as a source does not receive Spout inside Arena: `Texture In` gives a black 1 × 1 image (2026-11-16).
+- python.exe of the venv and Arena.exe must run on the same graphics adapter (Windows graphics settings, "high performance"); before, Arena knew the sender's size but showed no image (2026-11-16).
 
 Tested on the show machine on 2026-11-15, before these changes:
 - Reading the STL-27L: 9.9–10 turns/s, 0 CRC errors over minutes.
@@ -54,12 +44,19 @@ Tested on the show machine on 2026-11-15, before these changes:
 - Fields with the live sensor (walk test): walking gives motion 0.5 to 1 over 5 to 13 cells, still objects stay below 0.3, so the default *Motion threshold* is 0.3.
 
 Not tested:
+- Whether the clip follows when the texture size changes (another area or cell size); the clip keeps its *Width* and *Height*.
+- Whether column 0 arrives at the left (needs an object at a known place).
+- Other composition sizes.
+- Area and front, the cell size and the window built on 2026-11-16 were only used, not systematically tested (#111).
+- The archived Kinect tool once delivered 0 × 0 pixels during a performance, cause unknown; the status band would expose a frozen texture.
 - More than one physical sensor at the same time (only one sensor was available; several positions were tested by moving it).
 - Window editing by mouse (drawing, dragging handles) was only checked by use, not systematically.
 
 Learned the hard way (2026-11-15):
 - A field sent as OSC rows (one `Read OSC` with 16 instances, `Join`, `Texture from Data`) rendered correctly in Wire with a test pattern but did not react to real motion in Arena; the cause was not found. That path is replaced by the texture.
 - Wire crashed or hung three times while a `.fs` with different inputs was swapped under an existing ISF node: the `.wire` keeps a copy of the shader's input list. Safe way: a fresh ISF node for a new shader, connect its image inputs first, save and reload the patch as a test. Wire also compiles an ISF shader only if images are read directly in `main()`, and reads shader pass targets flipped vertically.
+- 2026-11-17: I first concluded, without measuring, that a clip effect renders only at the clip's 19 × 48 and documented a layer effect, then a Video Router construction, as the recipe. Both were impractical for a performance and the conclusion was wrong: measured, a clip effect on the Spout clip gets the field at full size. Claims about Arena are measured with the Field Viewer before they are written down.
+- 2026-11-17: the first Field Viewer was written as JSON by hand and missed `Texture In` in the patch's input list; Arena then gave it a black 1 × 1 texture, which looked like a Spout problem. Patches are built in Wire.
 - Working method: changes were made before they were thought through. The bridge was first built around "people" instead of motion, and a patch-specific format was proposed before the interface was defined. The field, the contract below and this README are the result of correcting that.
 
 ## Hardware
@@ -113,7 +110,7 @@ Created at runtime and not committed: `.venv/`, `settings.json` (detection and f
    .venv\Scripts\python.exe -m pip install -r requirements.txt
    ```
 4. Windows Settings > System > Display > Graphics: add `.venv\Scripts\python.exe` of this folder and `Arena.exe`, both set to *High performance*. Spout shares textures only between programs on the same graphics adapter; on a laptop with two adapters the Python process otherwise lands on the integrated one and Arena sees the sender's name and size but no image. Nothing to switch on in Arena or Wire: Spout sources are always listed.
-5. In Arena: load `Motion Bridge` from Sources > Spout as a clip, set the clip's *Resize* to *Stretch*, and put a motion patch on it as an effect (see Output).
+5. Copy the patches that use the bridge (e.g. [Bulging Lines](../../effects/Bulging%20Lines/)) and, for checking, the example [Field Viewer](../../examples/Field%20Viewer/) into the Wire patches folder (`Documents/Resolume Wire/Patches/`). Set them up in Arena as under Usage, "In Arena".
 
 ## Usage
 
@@ -147,6 +144,37 @@ For shows without a window: `.venv\Scripts\python.exe bridge.py --headless` uses
 
 Options (this run only, not saved): `--port COM19` (port of the position with the sensor), `--sim 2` (start with simulated objects), `--snapshot file.png` (save a picture of the window after 4 s and quit).
 
+### From the room to the picture
+
+| Step | Where | What happens |
+|---|---|---|
+| 1 | Sensor | The lidar measures about 2160 distances per turn, 10 turns per second, in one plane at chest height. |
+| 2 | Bridge | Foreground = everything clearly closer than the learned empty room, inside the area and not excluded. |
+| 3 | Bridge | The foreground is mapped onto the area seen from the front: `x` 0..1 along the front, `depth` 0..1 away from it. |
+| 4 | Bridge | Per cell of the field: occupancy (how much is covered) and motion (how fast that changes, fading out). |
+| 5 | Bridge | The field becomes an RGBA image with the status band and is sent as the Spout texture `Motion Bridge`, 30 times per second. |
+| 6 | Arena | A Spout clip receives the texture; the layer's *Auto Size* *Stretch* scales it to the composition. |
+| 7 | Patch | A Wire patch on the clip (clip effect) reads the field with normalized coordinates and draws its own picture; without a live status band it calms down. |
+
+What a patch does with the field is up to the patch; see its README (e.g. Bulging Lines, "How it works").
+
+### In Arena
+
+Set up once per composition, tested in Arena 7.29.0:
+
+1. Start the bridge and check that *Output (Spout)* is green and shows the texture size and about 30 frames/s.
+2. Drag `Motion Bridge` from Sources > Spout into a clip slot. A fresh Spout clip takes the texture's own size (clip *Width* / *Height*, e.g. 19 × 48); if they show anything else (e.g. after the composition size was applied), click the resize button next to the source name in the clip panel until they match.
+3. In the layer panel, set *Auto Size* (Video) to *Stretch*. This scales the small field to the whole composition.
+4. Drag the patch (e.g. Bulging Lines) onto the clip. It must sit after the clip's *Transform* (the default when it is dropped on the clip).
+5. Set the layer's blend mode so the patch lies over the content of the layers below; for a patch with a transparent background (Bulging Lines) *Alpha*.
+6. For more looks: duplicate the clip into other columns or layers and change the patch's settings there. Every clip is an ordinary clip: triggered, faded and automated like any other. Each one receives the same Spout texture.
+7. To check what arrives: a further Spout clip with the example Field Viewer as clip effect (see its README).
+
+Notes:
+- Trigger order does not matter: Arena connects to the sender when the clip plays, and takes it up again by itself when the bridge restarts.
+- When the area or the cell size changes, the texture size changes. Whether existing clips follow by themselves is not tested; check the clip's *Width* / *Height* (step 2).
+- The Spout clip itself is never seen; the patch replaces its picture.
+
 **Tests** (no sensor, no window, no Spout; need only numpy and pyserial):
 ```
 .venv\Scripts\python.exe -m unittest discover -s tests
@@ -157,7 +185,7 @@ Options (this run only, not saved): `--port COM19` (port of the position with th
 The interface to the patches is one Spout texture. This is the contract; patches rely on it and nothing else.
 
 - **Sender**: Spout, name `Motion Bridge`, on the same computer as Arena and Wire.
-- **How a patch gets it**: in Arena the texture is a clip (Sources > Spout), its *Resize* set to *Stretch*, and the patch is an **effect** on that clip: its `Texture In` is the field, stretched over the whole composition. A Wire source patch cannot pick up Spout inside Arena (see Status). In the Wire editor, `Texture In` set to Spout shows the same texture for building the patch.
+- **How a patch gets it** (tested, see Status and Usage, "In Arena"): the patch is an **effect** (category `effect`) on a Spout clip of `Motion Bridge`. The clip has the texture's own size, the layer's *Auto Size* is *Stretch*, the patch sits after the clip's Transform; its `Texture In` is then the field stretched to the composition. A Wire *source* patch cannot pick up Spout inside Arena. In the Wire editor, `Texture In` set to Spout shows the same texture for building the patch.
 - **Format**: RGBA, 8 bits per channel. 30 frames per second; the measurement behind it is 10 per second, motion fades between measurements.
 - **Layout**: the lower fifteen sixteenths of the rows are the field, the upper sixteenth is the status band (see below). Width = front width / cell size; field rows = area depth / cell size, rounded up to a multiple of 15; band = field rows / 15. The cell size is a bridge setting (default 0.1 m, so a 4 × 3 m area gives 40 × 32 pixels: 30 field rows and a band of 2). A patch must not depend on the size: it samples the texture with normalized coordinates, 0..1 along the front, and 0..15/16 into the area (depth `d` is at 15/16 · `d`).
 - **Channels**, each 0..255 for 0..1:
@@ -165,8 +193,9 @@ The interface to the patches is one Spout texture. This is the contract; patches
   - G: motion, how fast the occupancy changes. A cell taken or freed within 0.25 s gives 1; it fades out over *Motion fade* (0.5 s); changes below *Motion threshold* are ignored (0.3: sensor noise at still objects measured up to 0.28, walking 0.5 to 1).
   - B: visibility, 1 where a sensor sees the cell (#113, not implemented yet: always 0).
   - A: always 255.
-- **Orientation**: column 0 is at the left end of the front, column width − 1 at the right end. Row 0 is at the front, the last field row at the far edge of the area, the band above it. Whether row 0 arrives at the bottom or the top of the texture in Wire is confirmed on the show machine and then fixed here.
-- **Status band**: the top sixteenth of the texture carries no field data. Every pixel of it holds a counter in R, G and B that changes every frame (0..255, wraps). A patch samples it anywhere in the band, e.g. at 31/32 of the height, and fades out when the value stops changing, so the picture stays calm without the bridge (docs/PATCH_RULES.md, "Patches that use a tool"). The band is a sixteenth so that it survives Arena's resampling at any size.
+- **Orientation**: column 0 is at the left end of the front, column width − 1 at the right end. Row 0 is at the front, the last field row at the far edge of the area, the band above it. In a patch, normalized y = 0 is the front, at the bottom of the frame (`FLIP = True` in `spout_out.py`; measured in Arena 2026-11-17).
+- **Status band**: the top sixteenth of the texture carries no field data. Every pixel of it holds a counter in R, G and B that changes every frame (0..255, wraps). A patch samples it anywhere in the band, e.g. at 31/32 of the height, and fades out when the value stops changing, so the picture stays calm without the bridge (docs/PATCH_RULES.md, "Patches that use a tool"). The band is a sixteenth so that it survives Arena's resampling at any size. The example [Field Viewer](../../examples/Field%20Viewer/) shows how to keep the last value and measure the time since it changed.
+- **Without the bridge**: the patch gets a black frame (measured); a patch must not show the band and must fade out when the counter stops.
 - **Without area and front**: an 8 × 16 black texture; the band keeps counting.
 - **Simulated objects** count as discs of 0.44 m.
 
@@ -190,7 +219,7 @@ All settings are made in the window. Detection and field settings are saved in `
 - *Output* is red: SpoutGL is not installed (`pip install SpoutGL` in the venv) or the sender failed; the log says which.
 - The texture does not appear in Arena or Wire, or is 0 × 0: the bridge and Arena may run on different graphics adapters; set both to the same one in the Windows graphics settings.
 - The picture in the patch stands still although the status shows frames: the patch reads a frozen texture; check the status band in the patch.
-- The patch shows nothing although the Spout clip shows the field: the patch is a source, or the effect sits where the texture is not yet stretched. Patches must be effects on the clip, Resize Stretch (see Output).
+- The patch shows nothing or a tiny field although the Spout clip shows the field: the patch is a source, the clip is not at the texture's size, or the layer's *Auto Size* is not *Stretch* (Usage, "In Arena"). The example Field Viewer shows what arrives.
 
 ## Known issues
 
@@ -198,6 +227,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-17: Tested in Arena with the example Field Viewer (#115): `FLIP = True`, so the band arrives at the top and the front at the bottom, as the contract says. Setup: the patch is a clip effect on the Spout clip, the clip at the texture's size, the layer's *Auto Size* *Stretch* (Usage, "In Arena", with the data flow from the room to the picture). Measured 29 frames per second at the patch, black when the bridge stops, automatic reconnect.
 - 2026-11-16: First test on the show machine (see Status): the texture reaches Arena and built-in effects, a Wire effect gets an empty Texture In; the band arrives at the bottom; Width/Height alone does not stretch. Nothing changed in the code yet.
 - 2026-11-16: Status band instead of a counter pixel (#115): the top sixteenth of the texture counts up every frame, so the sign of life survives Arena's resampling. Patches are effects on the Spout clip with Resize Stretch; a source patch cannot read Spout inside Arena (measured). Untested beyond that.
 - 2026-11-16: The field leaves the bridge as a Spout texture (#115): R occupancy, G motion, B visibility (reserved), A 255, a counter pixel in a reserved last row, 30 frames per second with motion fading between measurements. Cell size (0.1 m) replaces the fixed grid; the texture size follows the area. OSC output, the 8-slot points and their settings are removed. Output section is the contract. Untested with Spout and with a sensor.
