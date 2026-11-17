@@ -12,7 +12,7 @@ The bridge interprets nothing for a patch: what a value means in the picture is 
 
 Everything happens in one room map seen from above, in metres. Several sensor positions (several sensors, or one sensor moved around) are aligned in this map; the area, the front, exclusions and barriers are drawn into it with the mouse. Rooms and areas of any size and shape work: nothing assumes a rectangle. Patches only receive the normalized texture, so they work on any surface and with any sensor that delivers it.
 
-Patches using it: none yet. [Bulging Lines](../../sources/Bulging%20Lines/) used the earlier OSC output and is being rebuilt on the field as an effect (#115).
+Patches using it: [Bulging Lines](../../effects/Bulging%20Lines/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
 
 ## How it works and why
 
