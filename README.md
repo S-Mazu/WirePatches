@@ -40,7 +40,7 @@ Patches without show content that demonstrate a technique for building patches.
 | Example | Description |
 |---|---|
 | [Scaler](examples/Scaler/) | Shows live how our patches handle oversized surfaces: height as the reference, `Scale`, anchors. |
-| [Field Viewer](examples/Field%20Viewer/) | Shows the Motion Bridge field texture as it arrives in an effect: channels, status band, texture size. For checking the bridge contract in Arena. |
+| [Field Viewer](examples/Field%20Viewer/) | Shows the Motion Bridge field texture as it arrives in a layer effect and measures the bridge contract: size, band position, frames per second, time since the last frame. For checking the bridge in Arena. |
 
 ## Tools
 

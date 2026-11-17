@@ -39,11 +39,41 @@
 			{
 				"from": [
 					4,
-					"output"
+					"hours"
 				],
 				"to": [
 					1,
-					"channel"
+					"clockH"
+				]
+			},
+			{
+				"from": [
+					4,
+					"minutes"
+				],
+				"to": [
+					1,
+					"clockM"
+				]
+			},
+			{
+				"from": [
+					4,
+					"seconds"
+				],
+				"to": [
+					1,
+					"clockS"
+				]
+			},
+			{
+				"from": [
+					4,
+					"milliseconds"
+				],
+				"to": [
+					1,
+					"clockMs"
 				]
 			},
 			{
@@ -53,7 +83,7 @@
 				],
 				"to": [
 					1,
-					"showBand"
+					"channel"
 				]
 			},
 			{
@@ -63,7 +93,7 @@
 				],
 				"to": [
 					1,
-					"showSize"
+					"showInfo"
 				]
 			}
 		],
@@ -71,7 +101,7 @@
 			"groups": {},
 			"roots": [
 				{
-					"node": 4
+					"node": 0
 				},
 				{
 					"node": 5
@@ -89,11 +119,11 @@
 				"name": "Wire",
 				"version": {
 					"major": 7,
-					"minor": 23,
+					"minor": 29,
 					"patch": 0
 				}
 			},
-			"description": "Field Viewer - example effect: shows the Motion Bridge field texture as it arrives in a patch. In Arena, load the Spout source 'Motion Bridge' as a clip, set its Resize to Stretch, and put this patch on it as an effect. Channel: All shows red = occupancy, green = motion, blue = visibility; or one channel as grey. Show Band: the top sixteenth of the texture is the bridge's status band; its counter is drawn as a yellow bar that must keep moving (about 8.5 s per cycle); a yellow line marks the expected lower edge of the band, a magenta line where it would be if the rows arrive flipped. Show Size: four bars from the bottom, length log2(pixels)/12 (4096 px = full width): input width (cyan), input height (orange), render width and render height (grey). Equal input and render bars mean the field is stretched to the composition.",
+			"description": "Field Viewer - example effect: shows the Motion Bridge field texture as it arrives in a patch and measures the bridge contract. Use it as a LAYER effect: in Arena, load the Spout source 'Motion Bridge' as a clip at its original size, set the layer's Auto Size to Stretch, and put this patch on the layer. The panel shows: IN = size of the texture the patch gets, OUT = render size (equal = the field is stretched over the frame); BAND = where the status band was found (TOP = as the contract says, BOTTOM = rows flipped, NONE = no live band); FPS = counter steps per second, i.e. bridge frames that reach the patch (the bridge sends 30); AGE MS = milliseconds since the last change (green below 250); COUNT = the counter. The band gets a line at its inner edge and the counter as a bar. Channel: All shows red = occupancy, green = motion, blue = visibility; or one channel as grey. Show Info switches the panel and the band marks off. Shader: Resource/FieldViewer.fs.",
 			"displayName": "Field Viewer",
 			"identifier": "e4e85327-fd0d-43d5-9327-837b536cd094",
 			"licenseName": "Unlicense",
@@ -199,14 +229,35 @@
 										"defaultValue": 1,
 										"max": 1,
 										"min": 0,
-										"name": "showBand",
+										"name": "showInfo",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1,
-										"max": 1,
+										"defaultValue": 0,
+										"max": 24,
 										"min": 0,
-										"name": "showSize",
+										"name": "clockH",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 60,
+										"min": 0,
+										"name": "clockM",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 60,
+										"min": 0,
+										"name": "clockS",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0,
+										"max": 1000,
+										"min": 0,
+										"name": "clockMs",
 										"type": "float"
 									}
 								]
@@ -237,7 +288,7 @@
 					}
 				},
 				"bounds": {
-					"height": 58,
+					"height": 226,
 					"width": 195,
 					"x": 500,
 					"y": 200
@@ -257,15 +308,27 @@
 						"type": "float",
 						"value": 0
 					},
+					"clockH": {
+						"type": "float",
+						"value": 0
+					},
+					"clockM": {
+						"type": "float",
+						"value": 0
+					},
+					"clockMs": {
+						"type": "float",
+						"value": 0
+					},
+					"clockS": {
+						"type": "float",
+						"value": 0
+					},
 					"inputImage": {
 						"type": "texture2d",
 						"value": null
 					},
-					"showBand": {
-						"type": "float",
-						"value": 1
-					},
-					"showSize": {
+					"showInfo": {
 						"type": "float",
 						"value": 1
 					},
@@ -282,7 +345,7 @@
 					"resolution-mode",
 					"resolution-relative"
 				],
-				"name": "Field Viewer (ISF)",
+				"name": "ISF",
 				"thumbnail_visible": true
 			},
 			"2": {
@@ -295,7 +358,7 @@
 				"bounds": {
 					"height": 30,
 					"width": 195,
-					"x": 800,
+					"x": 850,
 					"y": 200
 				},
 				"class": {
@@ -331,12 +394,12 @@
 				"bounds": {
 					"height": 82,
 					"width": 132,
-					"x": 1050,
+					"x": 1100,
 					"y": 200
 				},
 				"class": {
 					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
-					"version": 1
+					"version": 2
 				},
 				"clock": "video",
 				"color": "ffff6a00",
@@ -353,6 +416,32 @@
 				"thumbnail_visible": true
 			},
 			"4": {
+				"attributes": {
+					"type": {
+						"type": "type",
+						"value": "integer"
+					}
+				},
+				"bounds": {
+					"height": 130,
+					"width": 195,
+					"x": 100,
+					"y": 500
+				},
+				"class": {
+					"id": "77697265-1493-477D-981B-735FE719A4DB",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {},
+				"hidden": [
+					"type"
+				],
+				"name": "System Time",
+				"thumbnail_visible": true
+			},
+			"5": {
 				"attributes": {
 					"flow": {
 						"type": "flow",
@@ -384,7 +473,7 @@
 					},
 					"option0-value": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"option1-label": {
 						"type": "string",
@@ -392,7 +481,7 @@
 					},
 					"option1-value": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"option2-label": {
 						"type": "string",
@@ -400,7 +489,7 @@
 					},
 					"option2-value": {
 						"type": "float",
-						"value": 2.0
+						"value": 2
 					},
 					"option3-label": {
 						"type": "string",
@@ -408,7 +497,7 @@
 					},
 					"option3-value": {
 						"type": "float",
-						"value": 3.0
+						"value": 3
 					},
 					"options-count": {
 						"type": "integer",
@@ -464,98 +553,6 @@
 				"name": "Channel",
 				"thumbnail_visible": true
 			},
-			"5": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1
-					},
-					"min": {
-						"type": "float",
-						"value": 0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Off"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0.0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "On"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1.0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 2
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 300
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Show Band",
-				"thumbnail_visible": true
-			},
 			"6": {
 				"attributes": {
 					"flow": {
@@ -588,7 +585,7 @@
 					},
 					"option0-value": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"option1-label": {
 						"type": "string",
@@ -596,7 +593,7 @@
 					},
 					"option1-value": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"options-count": {
 						"type": "integer",
@@ -615,7 +612,7 @@
 					"height": 82,
 					"width": 130,
 					"x": 100,
-					"y": 400
+					"y": 330
 				},
 				"class": {
 					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
@@ -645,7 +642,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Show Size",
+				"name": "Show Info",
 				"thumbnail_visible": true
 			}
 		},
@@ -655,14 +652,19 @@
 				"y": 0,
 				"zoom": 1
 			},
-			"selection": []
+			"selection": [
+				"6"
+			]
 		}
 	},
 	"ui": {
 		"audio": {
 			"routing": {
 				"in": {},
-				"out": []
+				"out": [
+					null,
+					null
+				]
 			}
 		},
 		"deviceConnections": {
