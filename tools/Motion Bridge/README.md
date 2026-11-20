@@ -12,7 +12,7 @@ The bridge interprets nothing for a patch: what a value means in the picture is 
 
 Everything happens in one room map seen from above, in metres. Several sensor positions (several sensors, or one sensor moved around) are aligned in this map; the area, the front, exclusions and barriers are drawn into it with the mouse. Rooms and areas of any size and shape work: nothing assumes a rectangle. Patches only receive the normalized texture, so they work on any surface and with any sensor that delivers it.
 
-Patches using it: [Bulging Lines](../../effects/Bulging%20Lines/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
+Patches using it: [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
 
 ## How it works and why
 
@@ -29,7 +29,7 @@ Foreground blobs are also merged into *objects* (`scene.py`) for the window and 
 
 ## Status (2026-11-17)
 
-Tested in Arena 7.29.0 on 2026-11-17 with the live sensor, two simulated objects, the example [Field Viewer](../../examples/Field%20Viewer/) and [Bulging Lines](../../effects/Bulging%20Lines/) as clip effects on the Spout clip (composition 1920 × 1080, texture 19 × 48; setup as under "In Arena"):
+Tested in Arena 7.29.0 on 2026-11-17 with the live sensor, two simulated objects, the example [Field Viewer](../../examples/Field%20Viewer/) and Bulging Lines (now [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/)) as clip effects on the Spout clip (composition 1920 × 1080, texture 19 × 48; setup as under "In Arena"):
 - The field arrives in the patch stretched over the frame (input = render size, 1920 × 1080), pixel for pixel the same picture as the Spout clip without the patch.
 - With `FLIP = True` the band arrives at the top: row 0 (the front) at the bottom, as the contract says.
 - The band's counter reaches the patch at 29 steps per second.
@@ -117,7 +117,7 @@ Created at runtime and not committed: `.venv/`, `settings.json` (detection and f
    .venv\Scripts\python.exe -m pip install -r requirements.txt
    ```
 4. Windows Settings > System > Display > Graphics: add `.venv\Scripts\python.exe` of this folder and `Arena.exe`, both set to *High performance*. Spout shares textures only between programs on the same graphics adapter; on a laptop with two adapters the Python process otherwise lands on the integrated one and Arena sees the sender's name and size but no image. Nothing to switch on in Arena or Wire: Spout sources are always listed.
-5. Copy the patches that use the bridge (e.g. [Bulging Lines](../../effects/Bulging%20Lines/)) and, for checking, the example [Field Viewer](../../examples/Field%20Viewer/) into the Wire patches folder (`Documents/Resolume Wire/Patches/`). Set them up in Arena as under Usage, "In Arena".
+5. Copy the patches that use the bridge (e.g. [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/)) and, for checking, the example [Field Viewer](../../examples/Field%20Viewer/) into the Wire patches folder (`Documents/Resolume Wire/Patches/`). Set them up in Arena as under Usage, "In Arena".
 
 ## Usage
 
@@ -165,7 +165,7 @@ Options (this run only, not saved): `--port COM19` (port of the position with th
 | 6 | Arena | A Spout clip receives the texture; the layer's *Auto Size* *Stretch* scales it to the composition. |
 | 7 | Patch | A Wire patch on the clip (clip effect) reads the field with normalized coordinates and draws its own picture; without a live status band it calms down. |
 
-What a patch does with the field is up to the patch; see its README (e.g. Bulging Lines, "How it works").
+What a patch does with the field is up to the patch; see its README (e.g. Motion Bridge - Fabric Wind, "How it works").
 
 ### In Arena
 
@@ -174,8 +174,8 @@ Set up once per composition, tested in Arena 7.29.0:
 1. Start the bridge and check that *Output (Spout)* is green and shows the texture size and about 30 frames/s.
 2. Drag `Motion Bridge` from Sources > Spout into a clip slot. A fresh Spout clip takes the texture's own size (clip *Width* / *Height*, e.g. 19 × 48); if they show anything else (e.g. after the composition size was applied), click the resize button next to the source name in the clip panel until they match.
 3. In the layer panel, set *Auto Size* (Video) to *Stretch*. This scales the small field to the whole composition.
-4. Drag the patch (e.g. Bulging Lines) onto the clip. It must sit after the clip's *Transform* (the default when it is dropped on the clip).
-5. Set the layer's blend mode so the patch lies over the content of the layers below; for a patch with a transparent background (Bulging Lines) *Alpha*.
+4. Drag the patch (e.g. Motion Bridge - Fabric Wind) onto the clip. It must sit after the clip's *Transform* (the default when it is dropped on the clip).
+5. Set the layer's blend mode so the patch lies over the content of the layers below; for a patch with a transparent background (Motion Bridge - Fabric Wind) *Alpha*.
 6. For more looks: duplicate the clip into other columns or layers and change the patch's settings there. Every clip is an ordinary clip: triggered, faded and automated like any other. Each one receives the same Spout texture.
 7. To check what arrives: a further Spout clip with the example Field Viewer as clip effect (see its README).
 

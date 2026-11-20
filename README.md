@@ -23,13 +23,13 @@ Patches that process the clip below. In Arena they go onto a clip, layer, group 
 | Patch | Description |
 |---|---|
 | [Autumn Wind](effects/Autumn%20Wind/) | 16 kinds of items (leaves, hats, newspapers, …) drift across the clip with depth, gusts, tumble and eddies. |
-| [Bulging Lines](effects/Bulging%20Lines/) | Ribbons fly over the floor towards the viewer, flow around whatever stands there and flutter where something moves; driven by the Motion Bridge field. |
 | [Deco Fan](effects/Deco%20Fan/) | One Art Deco fan of rays and rings; add it several times for several fans. |
 | [Deco Marquee](effects/Deco%20Marquee/) | Art Deco theatre frame with chasing marquee lamps. |
 | [Fire Edges](effects/Fire%20Edges/) | Flames and smoke grow from the edges of the frame, from a glow to an inferno. |
 | [Fire Mask](effects/Fire%20Mask/) | The brightness of the clip decides what burns: logos, text, silhouettes. |
 | [Fire Point](effects/Fire%20Point/) | Flames and smoke rise from one burning shape: point, square or heart. |
 | [Iris Diaphragm](effects/Iris%20Diaphragm/) | Mechanical blade iris with overlapping blades that closes over the clip. |
+| [Motion Bridge - Fabric Wind](effects/Motion%20Bridge%20-%20Fabric%20Wind/) | Ribbons of fabric (rags, silk, velvet, …) blow in the wind over the floor or across the screen, flow around whatever stands there and flutter where something moves; driven by the Motion Bridge field. |
 | [Star Globe](effects/Star%20Globe/) | Glowing points over the clip: fireflies across the frame, or stars in a vessel that fall, collide and simmer. |
 | [Water Drops](effects/Water%20Drops/) | View onto water over the clip: drops, stones or hearts fall in and send out rings that bend the picture. |
 
