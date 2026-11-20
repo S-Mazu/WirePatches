@@ -3,6 +3,7 @@ import logging
 
 import dearpygui.dearpygui as dpg
 
+import port_scan
 from room import Room
 from settings import ADVANCED, DEFAULT_PORT, FIELD, LIMITS
 
@@ -18,19 +19,13 @@ FIELD_SLIDERS = [('cell_mm', 'Cell size', '%.0f mm'),
 NUDGES = (-5.0, -1.0, -0.1, 0.1, 1.0, 5.0)
 
 
-def list_ports():
-    try:
-        from serial.tools import list_ports as lp
-        return [p.device for p in lp.comports()] or [DEFAULT_PORT]
-    except Exception as e:
-        log.warning('cannot list serial ports: %s', e)
-        return [DEFAULT_PORT]
-
-
 class Panel:
     def __init__(self, eng, state, draft, view, panel_w):
         self.eng, self.state, self.draft, self.view = eng, state, draft, view
         self.panel_w = panel_w
+        self._ports = port_scan.list_ports()        # PortInfo per serial port
+        self._scanner = None                        # port_scan.Scanner while a scan runs
+        self._scanned = False                       # a scan has finished: the list can show only sensors
         self._build()
 
     def _sel(self):
@@ -144,12 +139,15 @@ class Panel:
                 tip(dpg.add_button(label='Remove all', callback=lambda: self.view.clear_sim()), 'sim_clear')
 
         with dpg.collapsing_header(label='Sensor', default_open=False):
+            live = eng.live_station()
+            tip(dpg.add_combo(self._port_items(), tag='port', default_value=self._label_of(live.port if live
+                                                                                           else DEFAULT_PORT),
+                              width=-1), 'port')
             with dpg.group(horizontal=True):
-                live = eng.live_station()
-                tip(dpg.add_combo(list_ports(), tag='port', default_value=live.port if live else DEFAULT_PORT,
-                                  width=110), 'port')
-                tip(dpg.add_button(label='Refresh', callback=lambda: dpg.configure_item('port', items=list_ports())),
-                    'refresh')
+                tip(dpg.add_button(label='Find sensor', tag='find_sensor', callback=self._on_find_sensor), 'find')
+                tip(dpg.add_checkbox(label='Show all ports', tag='show_all', callback=self._fill_ports), 'show_all')
+            dpg.add_text('Find sensor listens briefly on every port and lists those that deliver lidar data.',
+                         tag='scan_text', color=DIM, wrap=w - 30)
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Sensor is at selected position', callback=self._on_assign), 'assign')
                 tip(dpg.add_button(label='Release', callback=self._on_release_port), 'release')
@@ -267,8 +265,58 @@ class Panel:
             dpg.set_value(k, self.eng.s[k])
 
     def _on_assign(self):
-        self.eng.set_port(self._sel().sid, dpg.get_value('port'))
-        self.state.rebuild = True
+        port = port_scan.device_of(dpg.get_value('port'))
+        if port:
+            self.eng.set_port(self._sel().sid, port)
+            self.state.rebuild = True
+
+    # ------------------------------------------------ the port list and the sensor search
+    def _label_of(self, device):
+        p = next((p for p in self._ports if p.device == device), None)
+        return p.label() if p else (device or '')
+
+    def _port_items(self):
+        """Only ports with a sensor after a scan, else all ports with their description."""
+        found = [p.label() for p in self._ports if p.sensor]
+        if self._scanned and found and not (dpg.does_item_exist('show_all') and dpg.get_value('show_all')):
+            return found
+        return [p.label() for p in self._ports] or [DEFAULT_PORT]
+
+    def _fill_ports(self, *_):
+        current = port_scan.device_of(dpg.get_value('port'))
+        items = self._port_items()
+        dpg.configure_item('port', items=items)
+        dpg.set_value('port', next((i for i in items if port_scan.device_of(i) == current), items[0]))
+
+    def _on_find_sensor(self):
+        if self._scanner and not self._scanner.done:
+            return
+        self._ports = port_scan.list_ports()
+        in_use = {port: rd.packets > 0 for port, rd in list(self.eng.readers.items())}
+        self._scanner = port_scan.Scanner(self._ports, in_use)
+        self._scanner.start()
+        dpg.configure_item('find_sensor', enabled=False)
+
+    def _scan_frame(self):
+        sc = self._scanner
+        if sc is None:
+            return
+        if not sc.done:
+            dpg.set_value('scan_text', f'Listening on {sc.current or "the ports"} ...')
+            return
+        self._scanner = None
+        self._scanned = True
+        dpg.configure_item('find_sensor', enabled=True)
+        found = sc.found
+        if found:
+            names = ', '.join(p.device for p in found)
+            dpg.set_value('scan_text', f'Sensor data on {names}. Select the port and assign it to a position.')
+        else:
+            dpg.set_value('scan_text', f'No lidar data on {len(sc.ports)} ports. Check that the sensor has power '
+                                       'and spins, and the USB cable. All ports are listed.')
+        self._fill_ports()
+        if len(found) == 1:
+            dpg.set_value('port', found[0].label())
 
     def _on_release_port(self):
         self.eng.set_port(self._sel().sid, None)
@@ -299,6 +347,7 @@ class Panel:
 
     # ------------------------------------------------ every frame
     def frame(self):
+        self._scan_frame()
         st = self._sel()
         dpg.set_value('sel_title', f'Selected: {st.sid}  {st.name}' + ('  (sensor)' if st.port else '  (scan only)'))
         for tag, val in (('pos_x', st.x / 1000.0), ('pos_y', st.y / 1000.0), ('rot', st.rot),

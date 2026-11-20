@@ -91,7 +91,8 @@ HELP = {
                 'Objects are shown in the view and used when you stand at an end of the front; the patches get '
                 'the field, not objects.',
     'reset_adv': 'Restores the detection defaults.',
-    'port': 'Serial port of the lidar adapter (Silicon Labs CP210x).',
+    'port': 'Serial port of the lidar adapter (Silicon Labs CP210x). After "Find sensor" only ports with lidar '
+            'data are listed, with the rotation the sensor reports.',
     'assign': 'The sensor on this port stands at the selected position. Another position holding the port '
               'gives it up. The bridge reconnects by itself after a cable pull.',
     'release': 'The selected position keeps its scan but gets no live data.',
@@ -100,7 +101,11 @@ HELP = {
     'fullscreen': 'Fullscreen on or off (also F11).',
     'fit': 'Shows the whole room: all scans, the area and the front.',
     'cancel': 'Stops the countdown or measurement.',
-    'refresh': 'Reads the list of serial ports again, e.g. after plugging in the adapter.',
+    'find': 'Listens about half a second on every serial port and lists only the ports that deliver lidar data '
+            '(valid STL-27L packets). It only reads: nothing is sent to any device. The port the bridge reads '
+            'itself is not opened; it shows as "in use". Ports that hang when opened (Bluetooth) are skipped '
+            'after two seconds. All ports are checked at the same time, so a search takes at most about 2.5 s.',
+    'show_all': 'Lists every serial port with its Windows description, also without a sensor.',
     'st_sensor': 'Connection to the lidar.\n'
                  'Green: data arrives.\n'
                  'Yellow: CRC errors are rising. These are damaged data packets; a few right after '

@@ -2,7 +2,7 @@
 
 Motion Bridge is a tool: it reads a 2D lidar and sends patches a Spout texture, 30 times per second, that says where in a defined area something is and where something moves. In Arena the texture is a clip, and a patch sits on that clip as a clip effect.
 
-Last updated: 2026-11-17
+Last updated: 2026-11-20
 
 ## Purpose
 
@@ -37,6 +37,8 @@ Tested in Arena 7.29.0 on 2026-11-17 with the live sensor, two simulated objects
 - Several clips of the same Spout source, each with its own effect settings, in different columns: each gets the field (Field Viewer and Bulging Lines measured one after the other in the same layer).
 - A Wire patch loaded as a source does not receive Spout inside Arena: `Texture In` gives a black 1 × 1 image (2026-11-16).
 - python.exe of the venv and Arena.exe must run on the same graphics adapter (Windows graphics settings, "high performance"); before, Arena knew the sender's size but showed no image (2026-11-16).
+
+Tested on the show machine on 2026-11-20: *Find sensor* (Sensor section) with nine serial ports. It found the STL-27L on COM19 (958 valid packets in 0.5 s, 10 turns/s), listed only that port, and was done in 2.5 s although four Bluetooth ports (COM11 to COM14) did not answer. With the port in use by the bridge it shows "in use" without opening it.
 
 Tested on the show machine on 2026-11-15, before these changes:
 - Reading the STL-27L: 9.9–10 turns/s, 0 CRC errors over minutes.
@@ -90,13 +92,14 @@ Learned the hard way (2026-11-15):
 | `settings.py` | Detection and field settings: defaults, limits, `settings.json`, command-line overrides |
 | `field.py` | Occupancy and motion over the area, and the texture with the status band |
 | `spout_out.py` | Spout sender around SpoutGL; without SpoutGL the bridge runs and says so |
+| `port_scan.py` | *Find sensor*: lists the serial ports with their description and finds the ones that deliver STL-27L packets |
 | `calibration.py` | Guided measurements with countdown and tones: learn the empty room, set an end of the front |
 | `quality.py` | Scan quality statistics and the optional CSV log |
 | `room.py` | Room map: sensor positions, fans, area, front, field frame, exclusions, barriers, reference snap, saving, conversion of older room files |
 | `scene.py` | Empty-room background, foreground points, blobs, objects |
 | `stl27l.py` | Serial reader for the STL-27L (packets, CRC, revolutions, reconnect) |
 | `requirements.txt` | Python packages with versions |
-| `tests/` | Unit tests with synthetic data (room map, field and texture, settings, measurements, drafting, one engine step) |
+| `tests/` | Unit tests with synthetic data (room map, field and texture, settings, measurements, drafting, one engine step, port scan) |
 
 Created at runtime and not committed: `.venv/`, `settings.json` (detection and field settings), `rooms/<name>/` (one folder per room: `room.json` and a scan per position, `scan_<id>.npy`), `logs/` (`bridge.log` with what the bridge did and what failed, and the quality logs). On the first start an older `background.npy` and surface ends are taken over into the room `Default`. Room files written before 2026-11-16 (screen, Depth Ranges, include areas) are converted when the room is loaded: the screen becomes the front, the first include area (or else the screen trapezoid) becomes the area.
 
@@ -121,6 +124,7 @@ Created at runtime and not committed: `.venv/`, `settings.json` (detection and f
 The window shows the room map on the left and the controls on the right. Every control explains itself when you hover over it; `(?) the view` explains the picture. F11 or the button switches fullscreen; the mouse wheel zooms the view, right-drag pans it, left-drag moves handles.
 
 1. **Room**: pick a room or create one per venue. Everything below is saved in it.
+   - Which port is the sensor? In the section *Sensor*, click *Find sensor*. The bridge listens half a second on every serial port and then lists only the ports that deliver lidar data, e.g. `COM19  STL-27L, 10 turns/s`. Select it and click *Sensor is at selected position*. It only reads; nothing is sent to other devices. *Show all ports* lists every port with its Windows description.
 2. **Sensor positions**:
    - *Learn empty room here*: set the countdown, click, leave the scan plane before the first tone and stay out until the second tone.
    - Another sensor place: put the sensor there, click *Sensor moved: new position* and learn the empty room again. The new position takes over the sensor; the old one keeps its scan.
@@ -207,12 +211,13 @@ All settings are made in the window. Detection and field settings are saved in `
 - Room: positions, rotation, fan, area, front, exclusions, barriers, reference: see Usage.
 - *Fields*: Cell size (100 mm), Motion fade (0.5 s), Motion threshold (0.3, recommended). *Reset to recommended* restores them.
 - Advanced detection, with tooltips: Tolerance (150 mm), Blob gap (250 mm), Min points (6), Merge distance (450 mm). *Reset to defaults* restores them.
-- *Sensor*: the port of the position with the sensor (COM19); quality log (off), UI scale (1.0).
+- *Sensor*: the port of the position with the sensor (COM19), *Find sensor*, *Show all ports*; quality log (off), UI scale (1.0).
 
 ## Troubleshooting
 
 - Anything odd: read `logs/bridge.log`; it says which room and readers were started and what failed.
 - Sensor not connected, no COM port: CP210x driver missing or USB cable. With a port but no data: check the wiring above; the motor must spin audibly.
+- Which port is it? *Find sensor* (Sensor section). It finds nothing: no power, the motor does not spin, or another program holds the port (it then shows as an error in `logs/bridge.log`, `port scan:` lines).
 - Walls or furniture show red: learn the empty room again, or raise *Tolerance*.
 - One body gives two rings: raise *Merge distance*. With two positions: align them better.
 - Objects appear in the wrong place or mirrored: check the front ends (*Swap ends*; the status says when the front faces away from the area) and *Mirrored* of the position.
@@ -227,6 +232,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-20: *Find sensor* in the Sensor section: listens briefly on all serial ports at once and lists only the ports with valid STL-27L packets, with the rotation; the port list shows the Windows description of each port. Read-only, DTR and RTS off, ports that hang are given up after 2 s. Tested with the real sensor and nine ports.
 - 2026-11-17: Tested in Arena with the example Field Viewer (#115): `FLIP = True`, so the band arrives at the top and the front at the bottom, as the contract says. Setup: the patch is a clip effect on the Spout clip, the clip at the texture's size, the layer's *Auto Size* *Stretch* (Usage, "In Arena", with the data flow from the room to the picture). Measured 29 frames per second at the patch, black when the bridge stops, automatic reconnect.
 - 2026-11-16: First test on the show machine (see Status): the texture reaches Arena and built-in effects, a Wire effect gets an empty Texture In; the band arrives at the bottom; Width/Height alone does not stretch. Nothing changed in the code yet.
 - 2026-11-16: Status band instead of a counter pixel (#115): the top sixteenth of the texture counts up every frame, so the sign of life survives Arena's resampling. Patches are effects on the Spout clip with Resize Stretch; a source patch cannot read Spout inside Arena (measured). Untested beyond that.
