@@ -446,7 +446,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Motion Bridge - Fabric Wind: ribbons of fabric blow in the wind, over the floor in front of the projection or flat across the screen. Driven by the Motion Bridge field (Spout): the ribbons flow around what stands there (or towards it) and flutter where something moves, then calm down. Calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Scale sizes everything relative to the output height; Clock (0 to 1000) drives the wind's waves: set its phase source to Timeline, Duration 1000 s; the flutter runs in real time. Ribbons: Ribbon Plane (Floor = perspective over the floor, Screen = flat), Ribbon Density, Ribbon Width, Ribbon Length, Ribbons Opacity. Fabric: Fabric (Rags, Silk, Velvet, Chiffon, Linen, Lamé), Fabric Color, Fabric Sheen, Fabric Weight, Tatter (holes and frayed edges), Light Source (angle, 135 = top left). View: Horizon Y. Field: where the bridge's field lies in the picture. Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (shares of the floor in view or of the frame), Field Rotation (0 = front at the bottom, 90 = right, 180 = top, -90 = left). Physics: Wind Direction (where the ribbons blow; on the floor 270 = towards the viewer), Wind Strength, Avoid Strength (negative = drawn towards), Flutter Strength, Flutter Life, Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field in its plane: red occupancy, green excitation, blue held shadow, white the front, magenta the other edges. Shader: Resource/FabricWind.fs.",
+			"description": "Motion Bridge - Fabric Wind: ribbons of fabric blow in the wind, over the floor in front of the projection or flat across the screen. Driven by the Motion Bridge field (Spout): the ribbons flow around what stands there (or towards it) and flutter where something moves, then calm down. Calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Scale sizes everything relative to the output height; Clock (0 to 1000) drives the wind's waves: set its phase source to Timeline, Duration 1000 s; the flutter runs in real time. Ribbons: Ribbon Plane (Floor = perspective over the floor, Screen = flat), Ribbon Density, Ribbon Width, Ribbon Length, Ribbons Opacity. Fabric: Fabric (Rags, Silk, Velvet, Chiffon, Linen, Lame), Fabric Color, Fabric Sheen, Fabric Weight, Tatter (holes and frayed edges), Light Source (angle, 135 = top left). View: Horizon Y. Field: where the bridge's field lies in the picture. Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (shares of the floor in view or of the frame), Field Rotation (0 = front at the bottom, 90 = right, 180 = top, -90 = left). Physics: Wind Direction (where the ribbons blow; on the floor 270 = towards the viewer), Wind Strength, Avoid Strength (negative = drawn towards), Flutter Strength, Flutter Life, Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field in its plane: red occupancy, green excitation, blue held shadow, white the front, magenta the other edges. Shader: Resource\/FabricWind.fs.",
 			"displayName": "Motion Bridge - Fabric Wind",
 			"identifier": "54794905-1441-412c-8480-7048aeb131d5",
 			"licenseName": "Unlicense",
@@ -480,7 +480,7 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "https://github.com/S-Mazu/WirePatches",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
 		"nextNodeId": 32,
@@ -532,7 +532,7 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "Resource/FabricWind.fs",
+								"main": "Resource\/FabricWind.fs",
 								"sub": ""
 							},
 							"value": {
@@ -563,14 +563,14 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 16,
+										"defaultValue": 5,
 										"max": 200,
 										"min": 0,
 										"name": "ribbonDensity",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.03999999910593033,
+										"defaultValue": 0.2199999988079071,
 										"max": 0.5,
 										"min": 0,
 										"name": "ribbonWidth",
@@ -601,7 +601,7 @@
 										"defaultValue": [
 											0.75,
 											0.11999999731779099,
-											0.1599999964237213,
+											0.15999999642372131,
 											1
 										],
 										"name": "fabricColor",
@@ -636,7 +636,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.699999988079071,
+										"defaultValue": 0.69999998807907104,
 										"max": 10,
 										"min": 0,
 										"name": "horizonY",
@@ -838,7 +838,7 @@
 						"value": [
 							0.75,
 							0.11999999731779099,
-							0.1599999964237213,
+							0.15999999642372131,
 							1
 						]
 					},
@@ -884,7 +884,7 @@
 					},
 					"horizonY": {
 						"type": "float",
-						"value": 0.699999988079071
+						"value": 0.69999998807907104
 					},
 					"inputImage": {
 						"type": "texture2d",
@@ -1267,7 +1267,7 @@
 						"value": [
 							0.75,
 							0.11999999731779099,
-							0.1599999964237213,
+							0.15999999642372131,
 							1
 						]
 					}
@@ -1624,7 +1624,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.699999988079071
+						"value": 0.69999998807907104
 					}
 				},
 				"hidden": [
@@ -3001,7 +3001,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 16
+						"value": 5
 					}
 				},
 				"hidden": [
@@ -3073,7 +3073,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.03999999910593033
+						"value": 0.2199999988079071
 					}
 				},
 				"hidden": [

@@ -26,7 +26,7 @@ The bridge always delivers the same field; how its sensor is set up decides what
 - Resolume Wire / Arena: 7.29
 - Tool: the [Motion Bridge](../../tools/Motion%20Bridge/) with its sensor, running and set up for the room (area and front drawn, empty room learned). Its interface is described under [Output](../../tools/Motion%20Bridge/README.md#output).
 - Inputs: the clip it sits on (`Texture In`), a Spout clip of `Motion Bridge`.
-- Performance: one full-screen shader that evaluates three ribbons per pixel, plus three small passes at 160 × 120. Not measured.
+- Performance: one full-screen shader that evaluates three ribbons per pixel and their shadows, plus three small passes at 160 × 120. Not measured; ran smoothly at 1920 × 1080 on the show machine.
 
 ## Files
 
@@ -65,8 +65,8 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 
 **Ribbons**
 - `Ribbon Plane` (Floor / Screen, default Floor): Floor = the ribbons lie on the floor in perspective, up to the horizon; Screen = flat across the frame.
-- `Ribbon Density` (0 to 200, default 16): ribbons per output height (on the floor at the bottom edge), at `Scale` 1. 0 = none.
-- `Ribbon Width` (0 to 0.5, default 0.04): width of a ribbon in output heights. Wider than the spacing, the ribbons overlap.
+- `Ribbon Density` (0 to 200, default 5): ribbons per output height (on the floor at the bottom edge), at `Scale` 1. 0 = none. High values give narrow bands.
+- `Ribbon Width` (0 to 0.5, default 0.22): width of a ribbon in output heights. Wider than the spacing (default slightly), the ribbons overlap and cast shadows on each other.
 - `Ribbon Length` (0 to 100, default 100): length of a ribbon from where it is fixed, in output heights. 100 fills any frame; short ribbons end in a free, fluttering end.
 - `Ribbons Opacity` (0 to 1, default 1).
 
@@ -118,12 +118,21 @@ What the bridge sends is described in its README (Output; "From the room to the 
 4. **Picture** (pass 5, output size):
    - *Planes*: a pixel is placed in the ribbon plane and, independently, in the field plane. Floor: the bottom edge is near, the floor recedes to the horizon at `Horizon Y`; Screen: the frame itself. The field is a rectangle in its plane (Field controls); at rest it fills the floor from the bottom edge to four times that distance, or the whole frame, with the front at the bottom.
    - *Ribbons*: strips along `Wind Direction`, `Ribbon Density` per output height, fixed at the most upwind point of the visible plane. Three neighbouring ribbons are evaluated per pixel, so they can overlap; they are drawn back to front in a random order.
+   - *Surface*: each ribbon is a height field. Two to three folds run along it (depending on the fabric), unevenly spaced; they wander and fan out towards the free end, with soft creases between them (rounded ridges from a soft absolute value of a sine). The edges roll a little and wave, so the outline is not a straight line. Normals come from the slope of the height field.
    - *Wind*: waves travel along each ribbon with `Clock`; they ripple out of the plane (the light changes), the ribbon twists (it gets narrower and shows its back) and sways sideways. A slow noise adds gusts. The waves grow towards the free end. Heavy fabric makes long, slow waves.
    - *Flow around*: each ribbon is pushed sideways away from occupancy, by the difference of the occupancy on both sides of it across the ribbon, × `Avoid Strength`. Inside an occupied spot the ribbons fade to 30 % (only when they avoid it).
    - *Flutter*: where excitation is high, the ribbons swing sideways in fast waves, ripple and twist, × `Flutter Strength`.
-   - *Fabric*: each fabric has its own light model (matte, a highlight across the threads, sheen at grazing angles, translucency, weave, glitter), lit from `Light Source`, with darker fold troughs.
+   - *Light* (as in fabric shaders, see Sources): diffuse light; an anisotropic highlight (Ward) that is long along the threads and narrow across, so each fold gets a stretched highlight; a soft sheen at grazing angles (Charlie sheen), strong for velvet; creases darker by their depth; on the back side thin fabric lets light through. Each fabric sets its own values (folds, fold depth, highlight, sheen, see-through), lit from `Light Source`. Linen adds a weave, Lamé glitter, Chiffon is sheer.
+   - *Shadows*: a ribbon in front darkens the ribbons behind it, with a soft edge, shifted away from `Light Source`.
    - Edges are smoothed by the size of a pixel on the plane; ribbons fade towards the horizon and where they would get finer than a few pixels.
    - The background stays transparent. The band and the raw field are never shown.
+
+## Sources
+
+How the fabric look is built follows what fabric shaders do elsewhere:
+- [Drapery shader](https://www.shadcn.io/shaders/drapery-shader): folds as rounded ridges with creases, Ward highlight along the threads, Charlie sheen, darker valleys.
+- [3D cloth material](https://www.ui-skills.com/skills/mengto/3d-cloth-material): fold geometry, sheen and translucency values per fabric, rolled hems.
+- Sadeghi et al., [A Practical Microcylinder Appearance Model for Cloth Rendering](https://escholarship.org/uc/item/6v11p5b0) (SIGGRAPH 2013): what dominates the look of silk, velvet and linen (diffuse, anisotropic highlight, shadowing, grazing sheen).
 
 ## Any surface
 
@@ -149,7 +158,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
-- 2026-11-20: Renamed from Bulging Lines to Motion Bridge - Fabric Wind (#124, #120). Ribbons are now fabric strips fixed on the upwind side: waves, twist, gusts, six fabrics with their own light (`Fabric`, `Fabric Color`, `Fabric Sheen`, `Fabric Weight`, `Tatter`, `Light Source`), `Ribbon Length`. `Ribbon Plane` and `Wind Direction` choose where the ribbons blow; `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height`, `Field Rotation` choose where the field lies (floor, curtain, floor projection). `Avoid Strength` may be negative. The visibility channel holds shadows (`Shadow Hold`). The flight of segments is gone; `Clock` now drives the wind. Tested in Arena (1920×1080) with the live sensor: both planes, field rotation, all fabrics, slider extremes. Not tested live: flutter from someone moving (logic unchanged since 2026-11-17).
+- 2026-11-20: Renamed from Bulging Lines to Motion Bridge - Fabric Wind (#124, #120). Ribbons are now fabric strips fixed on the upwind side: waves, twist, gusts, six fabrics with their own light (`Fabric`, `Fabric Color`, `Fabric Sheen`, `Fabric Weight`, `Tatter`, `Light Source`), `Ribbon Length`. `Ribbon Plane` and `Wind Direction` choose where the ribbons blow; `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height`, `Field Rotation` choose where the field lies (floor, curtain, floor projection). `Avoid Strength` may be negative. The visibility channel holds shadows (`Shadow Hold`). The flight of segments is gone; `Clock` now drives the wind. After a first round that still looked like coloured lines, the ribbons were rebuilt after research into fabric shaders (Sources): fewer, wider ribbons (`Ribbon Density` 5, `Ribbon Width` 0.22), folds along each ribbon with creases, rolled wavy edges, Ward highlight, Charlie sheen, crease shading, shadows between ribbons. Tested in Arena (1920×1080) with the live sensor: both planes, field rotation, all fabrics, slider extremes. Not tested live: flutter from someone moving (logic unchanged since 2026-11-17).
 - 2026-11-17: Rebuilt as an effect on the Spout clip of the Motion Bridge field texture (#115), moved from `sources/` to `effects/`: ribbons fly towards the viewer over the floor in perspective, flow around occupancy and flutter where something moves; transparent background, no Backdrop. Replaces the OSC version with its 8 people slots and bulges. Tested in Arena (1920×1080) with the live sensor and simulated objects, slider extremes and bridge stop.
 - 2026-11-16: Marked as not working: the Motion Bridge changed its interface from OSC to a Spout texture (#115); rebuild pending.
 - 2026-11-14: First version (#73, PoC for #69): lines bulge per tracked person (8 slots), depth from the surface weakens the bulge, heartbeat fade-out without the bridge, `Show People` for setting up.
