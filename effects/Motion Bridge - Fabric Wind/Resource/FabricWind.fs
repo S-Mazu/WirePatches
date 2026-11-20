@@ -145,21 +145,33 @@ vec3 toField(vec2 uv, float aspect, float H) {
 // ---------- the ribbons ----------
 // Each ribbon is a strip of fabric fixed at the anchor (t = 0) and blown along the wind.
 // Its surface is a height field over (across, along): a few folds run along the strip,
-// wander and fan out towards the free end, with soft creases between them; the wind's
-// waves travel along it; the strip twists and its edges roll. Normals come from the
-// slope of that height field. Light: diffuse, an anisotropic highlight along the threads
-// (Ward), a soft sheen at grazing angles (Charlie sheen), darker creases by their depth.
+// wander and fan out towards the free end, with soft creases and small wrinkles; the wind's
+// waves travel along it; the strip twists and its edges roll. A fine weave perturbs the
+// normal where it is larger than a pixel and turns into roughness where it is smaller.
+//
+// Light is physically based and computed in linear colour, then tone mapped (ACES) in main():
+//   - silk and lame: anisotropic GGX with height-correlated visibility and Schlick Fresnel
+//   - rags, velvet, chiffon, linen: the cloth model (Charlie sheen, Neubelt visibility,
+//     wrapped diffuse tinted by a subsurface colour)
+//   (formulas after Filament, google.github.io/filament, sections 4.10 and 4.12)
+//   - three lights: the key light from Light Source, a hemisphere of ambient light, and a
+//     light behind the fabric that shines through thin fabric
+//   - a soft reflection of the key light (a large softbox) for the glossy fabrics
 
-// fabric constants: A = (weight, twist, own tatter, folds across),
-// B = (fold depth, highlight width along, highlight width across, highlight strength),
-// D = (sheen roughness, sheen strength, diffuse, see-through on the back)
-void fabricOf(float m, out vec4 A, out vec4 B, out vec4 D) {
-    A = vec4(0.8, 0.45, 0.6, 2.0);  B = vec4(1.0, 0.6, 0.4, 0.05); D = vec4(0.8, 0.5, 0.9, 0.1);   // 0 Rags
-    if (m > 0.5 && m < 1.5) { A = vec4(0.45, 0.6, 0.0, 2.5); B = vec4(0.8, 0.45, 0.10, 1.0);  D = vec4(0.35, 0.5, 0.75, 0.6); }  // 1 Silk
-    if (m > 1.5 && m < 2.5) { A = vec4(2.5, 0.15, 0.0, 2.0); B = vec4(1.3, 0.6, 0.4, 0.0);    D = vec4(0.45, 1.8, 0.7, 0.0); }   // 2 Velvet
-    if (m > 2.5 && m < 3.5) { A = vec4(0.25, 0.9, 0.0, 3.0); B = vec4(0.7, 0.4, 0.15, 0.35);  D = vec4(0.35, 0.5, 0.8, 1.0); }   // 3 Chiffon
-    if (m > 3.5 && m < 4.5) { A = vec4(1.3, 0.3, 0.0, 2.0);  B = vec4(0.9, 0.6, 0.4, 0.08);   D = vec4(0.8, 0.6, 0.95, 0.3); }  // 4 Linen
-    if (m > 4.5)            { A = vec4(1.0, 0.5, 0.0, 2.5);  B = vec4(0.8, 0.35, 0.12, 1.6);  D = vec4(0.3, 0.3, 0.35, 0.0); }  // 5 Lame
+const float PI = 3.14159265;
+
+// fabric constants:
+// A = (weight, twist, own tatter, folds across)
+// B = (fold depth, roughness, anisotropy, highlight strength)
+// D = (sheen roughness, sheen strength, diffuse, light through the fabric)
+// E = (thread spacing in output heights, weave strength, metal 0/1, model: 0 cloth, 1 glossy)
+void fabricOf(float m, out vec4 A, out vec4 B, out vec4 D, out vec4 E) {
+    A = vec4(0.8, 0.45, 0.6, 2.0);  B = vec4(1.0, 0.9, 0.0, 0.0); D = vec4(0.85, 0.5, 1.0, 0.15); E = vec4(0.0025, 0.6, 0.0, 0.0);   // 0 Rags
+    if (m > 0.5 && m < 1.5) { A = vec4(0.45, 0.6, 0.0, 2.5); B = vec4(0.8, 0.38, 0.6, 1.0);  D = vec4(0.35, 0.15, 0.6, 0.6); E = vec4(0.0015, 0.0, 0.0, 1.0); }   // 1 Silk
+    if (m > 1.5 && m < 2.5) { A = vec4(2.5, 0.15, 0.0, 2.0); B = vec4(1.3, 0.9, 0.0, 0.0);   D = vec4(0.45, 1.0, 0.75, 0.0); E = vec4(0.0, 0.0, 0.0, 0.0); }    // 2 Velvet
+    if (m > 2.5 && m < 3.5) { A = vec4(0.25, 0.9, 0.0, 3.0); B = vec4(0.7, 0.5, 0.0, 0.0);   D = vec4(0.4, 0.5, 0.95, 1.0); E = vec4(0.0015, 0.3, 0.0, 0.0); }   // 3 Chiffon
+    if (m > 3.5 && m < 4.5) { A = vec4(1.3, 0.3, 0.0, 2.0);  B = vec4(0.9, 0.9, 0.0, 0.0);   D = vec4(0.8, 0.35, 1.0, 0.3); E = vec4(0.002, 0.8, 0.0, 0.0); }    // 4 Linen
+    if (m > 4.5)            { A = vec4(1.0, 0.5, 0.0, 2.5);  B = vec4(0.8, 0.3, 0.5, 1.0);   D = vec4(0.3, 0.0, 0.0, 0.0); E = vec4(0.002, 0.4, 1.0, 1.0); }     // 5 Lame
 }
 
 // how the wind moves ribbon j at distance t from the anchor:
@@ -184,15 +196,19 @@ void motionOf(float j, float t, float sp, float S, float ct, float rt, float ex,
     th = A.y * a0 * sin(0.6 * ph + hj * 5.0) + fs * 1.1 * sin(rt * 19.0 - t * 6.0 / S + j * 1.7);
 }
 
-// the folds along the strip: rounded ridges, soft creases; u across (-1..1), result 0..1
+// the folds along the strip: rounded ridges, soft creases, small wrinkles; u across (-1..1), result about 0..1
 float foldsOf(float u, float t, float j, float nf, float S, float ct, float wind) {
     float fan = 0.7 + 0.6 * smoothstep(0.0, 3.0 * S, t);             // they fan out towards the free end
     float wander = 0.45 * sin(t * 1.1 / S + j * 2.1 - ct * wind * 0.15) + 0.25 * sin(t * 2.3 / S - j * 1.3);
     float x = (u * 0.5 + 0.5) * nf * fan + wander;
     x += 0.3 * sin(u * 2.3 + j * 4.1 + t * 0.6 / S);                  // folds unevenly spaced
-    float r = sin(x * 3.14159265);
+    float r = sin(x * PI);
     float depth = 0.55 + 0.45 * vnoise(vec2(t * 0.7 / S, j * 1.7 + 3.0));
-    return sqrt(r * r + 0.012) * depth;                               // soft absolute value: creases at the zeros
+    float main_ = sqrt(r * r + 0.012) * depth;                        // soft absolute value: creases at the zeros
+    // wrinkles: finer, shallower, coming and going along the strip
+    float r2 = sin(x * PI * 2.7 + t * 3.1 / S + j);
+    float wr = sqrt(r2 * r2 + 0.02) * 0.22 * smoothstep(0.35, 0.8, vnoise(vec2(t * 1.5 / S, j * 2.3 + 9.0)));
+    return main_ + wr;
 }
 
 // where ribbon j covers the pixel: x coverage, y across (-1..1), z half width as seen
@@ -218,25 +234,30 @@ vec3 shapeOf(float j, float cw, float t, float pxc, float pxs, float sp, float h
     return vec3(cov, a, hwa);
 }
 
-// how much of ribbon j covers the point (for shadows)
+// how much of ribbon j covers the point (for shadows and occlusion)
 float coverOf(float j, float cw, float t, float soft, float sp, float hw, float S, float ct, float rt,
               float ex, float m) {
-    vec4 A, B, D;
-    fabricOf(m, A, B, D);
+    vec4 A, B, D, E;
+    fabricOf(m, A, B, D, E);
     float lat, th, a0, ph, sl;
     motionOf(j, t, sp, S, ct, rt, ex, A, lat, th, a0, ph, sl);
     float tat = clamp(A.z + safe(tatter, 0.0, 1.0), 0.0, 1.0);
     return shapeOf(j, cw, t, soft, soft, sp, hw, S, tat, lat, th).x;
 }
 
-// one ribbon: premultiplied colour at the pixel
+// sky light around the ribbon: brighter towards the key light, darker below
+vec3 ambientOf(vec3 dir, vec3 up) {
+    return mix(vec3(0.015), vec3(0.16), 0.5 + 0.5 * dot(dir, up));
+}
+
+// one ribbon: premultiplied linear colour at the pixel
 //   j lane, cw across coordinate (deflected), t distance from the anchor, pxc/pxs pixel size
 //   across/along, ex excitation, sp spacing, hw half width, S scale, ct Clock, rt real time,
 //   Lp light direction in (along, across), m fabric
 vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float sp, float hw,
             float S, float ct, float rt, vec2 Lp, float m) {
-    vec4 A, B, D;
-    fabricOf(m, A, B, D);
+    vec4 A, B, D, E;
+    fabricOf(m, A, B, D, E);
     float lat, th, a0, ph, sl;
     motionOf(j, t, sp, S, ct, rt, ex, A, lat, th, a0, ph, sl);
     float tat = clamp(A.z + safe(tatter, 0.0, 1.0), 0.0, 1.0);
@@ -247,15 +268,27 @@ vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float sp
     float wind = safe(windStrength, 0.0, 10.0);
 
     // height field of the folds (in output heights) and its slope, by small steps
-    float fdep = B.x * hw * 0.13;
+    // folds squeezed into a few pixels (a strip seen edge-on, far away) fade out instead of flickering
+    float foldPx = hwa / max(A.w, 1.0) / pxc;
+    float foldVis = smoothstep(1.5, 6.0, foldPx);
+    float fdep = B.x * hw * 0.13 * foldVis;
     float du = 0.03, dt = 0.02 * S;
     float f0 = foldsOf(a, t, j, A.w, S, ct, wind);
     float gu = (foldsOf(a + du, t, j, A.w, S, ct, wind) - foldsOf(a - du, t, j, A.w, S, ct, wind)) / (2.0 * du);
     float gt = (foldsOf(a, t + dt, j, A.w, S, ct, wind) - foldsOf(a, t - dt, j, A.w, S, ct, wind)) / (2.0 * dt);
-    // slopes: along = waves + folds; across = folds + rolled edges
     float sAlong = sl + fdep * gt;
-    float roll = 0.9 * sign(a) * smoothstep(0.7, 1.0, abs(a));
+    float roll = 0.9 * sign(a) * smoothstep(0.7, 1.0, abs(a));       // rolled edges
     float sAcross = fdep * gu / hwa + roll;
+
+    // the weave: a plain weave bump; finer than a pixel it becomes roughness (specular anti-aliasing)
+    float pitch = max(E.x * S, 1e-6);
+    float perPx = max(pxs, pxc) / pitch;                              // threads per pixel
+    float wvis = (E.x > 0.0) ? 1.0 - smoothstep(0.12, 0.35, perPx) : 0.0;
+    float wu = t / pitch, wa = a * hwa / pitch;
+    sAlong += E.y * wvis * 0.6 * cos(wu * TAU) * sin(wa * TAU);
+    sAcross += E.y * wvis * 0.6 * sin(wu * TAU) * cos(wa * TAU);
+    // folds finer than a few pixels also turn into roughness
+    float roughAA = E.y * (1.0 - wvis) * 0.25 + 0.35 * (1.0 - smoothstep(2.0, 10.0, foldPx));
 
     // twist: tilts the whole surface across; edge-on the strip is a thin line, so the
     // switch to the back side happens where it is hardly visible
@@ -264,57 +297,88 @@ vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float sp
     float ac = max(abs(cth), 0.02);
     vec3 N = normalize(vec3(-sAlong * ac, -sAcross * ac - sth * sign(cth), ac));
     vec3 V = vec3(0.0, 0.0, 1.0);
-    vec3 Lv = normalize(vec3(Lp * 0.75, 0.66));
-    vec3 Hv = normalize(Lv + V);
+    vec3 Lk = normalize(vec3(Lp * 0.75, 0.66));                       // key light
+    vec3 Lb = normalize(vec3(-Lp * 0.5, -0.6));                       // light behind the fabric
+    vec3 up = normalize(vec3(Lp * 0.6, 0.8));
+    vec3 Hk = normalize(Lk + V);
     vec3 T = normalize(vec3(1.0, 0.0, sAlong));                       // threads along the strip
     vec3 Bt = normalize(cross(N, T));
     T = cross(Bt, N);
-    float nl = max(dot(N, Lv), 0.0);
-    float nv = max(N.z, 0.05);
-    float nh = max(dot(N, Hv), 0.05);
+    float nl = max(dot(N, Lk), 0.0);
+    float nv = max(N.z, 1e-3);
+    float nh = max(dot(N, Hk), 0.0);
+    float vh = max(dot(V, Hk), 0.0);
 
-    // Ward: a long highlight along the threads, narrow across
-    float ht = dot(Hv, T) / B.y, hb = dot(Hv, Bt) / B.z;
-    float ward = exp(-(ht * ht + hb * hb) / (nh * nh)) / (12.566 * B.y * B.z * sqrt(max(nl * nv, 0.01)));
-    float spec = B.w * min(ward, 8.0) * nl * 0.35;
-    // Charlie sheen: soft glow at grazing angles, the look of velvet and of silk's edges
-    float sinh_ = sqrt(max(1.0 - nh * nh, 0.0));
-    float inv = 1.0 / D.x;
-    float charlie = (2.0 + inv) * pow(sinh_, inv) / TAU;
-    float sheenT = D.y * charlie * nl / (4.0 * (nl + nv - nl * nv) + 1e-3);
-    // creases darker by their depth; wave troughs a little darker
-    float ao = mix(0.5, 1.0, smoothstep(0.0, 0.8, f0));
+    float sheenK = safe(fabricSheen, 0.0, 10.0);
+    vec3 C = pow(clamp(fabricColor.rgb, 0.0, 1.0), vec3(2.2));        // linear
+    vec3 dye = C;
+    if (m < 0.5) dye = C * (0.6 + 0.6 * fbm(vec2(t * 2.0 / S, a * 1.5 + j)));        // Rags: uneven, worn
+    if (m > 1.5 && m < 2.5) dye = C * C * 1.2;                                           // Velvet: deep
+    if (back > 0.5) dye *= 0.8;
+    // creases darker by their depth (occlusion of the sky light)
+    float ao = mix(0.2, 1.0, mix(0.6, smoothstep(0.0, 0.8, f0), foldVis));
     ao *= 1.0 - 0.25 * clamp(-sin(ph), 0.0, 1.0) * min(a0, 1.0);
 
-    float sheen = safe(fabricSheen, 0.0, 10.0);
-    vec3 C = clamp(fabricColor.rgb, 0.0, 1.0);
-    float wrap = clamp((dot(N, Lv) + 0.3) / 1.3, 0.0, 1.0);
-    vec3 dye = C;
-    if (m < 0.5) dye = C * (0.65 + 0.5 * fbm(vec2(t * 2.0 / S, a * 1.5 + j)));       // Rags: uneven, worn
-    if (m > 1.5 && m < 2.5) dye = pow(C, vec3(1.4));                                     // Velvet: deep
-    vec3 col = dye * (0.2 + D.z * 1.15 * wrap) * ao;
-    vec3 specCol = (m > 4.5) ? C * 1.3 + 0.15 : mix(C, vec3(1.0), 0.6);                // Lame: metallic
-    col += sheen * (spec * specCol + sheenT * mix(C, vec3(1.0), 0.35)) * mix(1.0, ao, 0.5);
-
-    if (m > 3.5 && m < 4.5) {                                         // Linen: visible weave
-        float F = 250.0 / S;
-        float weave = 0.5 + 0.5 * sin(t * F * TAU) * sin(a * hwa * F * TAU);
-        float amp = 1.0 - smoothstep(0.25, 0.5, max(pxs, pxc) * F);
-        col *= 1.0 - 0.2 * weave * amp;
+    float KEY = 1.25;                                                  // key light, linear
+    vec3 col;
+    if (E.w > 0.5) {
+        // glossy (silk, lame): anisotropic GGX, height-correlated Smith, Schlick Fresnel
+        float metal = E.z;
+        vec3 F0 = mix(vec3(0.04), C, metal);
+        float pr = clamp(B.y + roughAA, 0.089, 1.0);
+        float ar = pr * pr;
+        float at = max(ar * (1.0 + B.z), 0.001), ab = max(ar * (1.0 - B.z), 0.001);
+        float ToH = dot(T, Hk), BoH = dot(Bt, Hk);
+        float a2 = at * ab;
+        vec3 vv = vec3(ab * ToH, at * BoH, a2 * nh);
+        float w2 = a2 / max(dot(vv, vv), 1e-7);
+        float Dg = a2 * w2 * w2 / PI;
+        float lV = nl * length(vec3(at * dot(T, V), ab * dot(Bt, V), nv));
+        float lL = nv * length(vec3(at * dot(T, Lk), ab * dot(Bt, Lk), nl));
+        float Vg = 0.5 / max(lV + lL, 1e-5);
+        float fc = pow(1.0 - vh, 5.0);
+        vec3 F = F0 + (1.0 - F0) * fc;
+        vec3 spec = min(Dg * Vg, 60.0) * F * B.w;
+        vec3 diff = (1.0 - metal) * dye * D.z / PI;
+        col = (diff + spec * sheenK) * nl * KEY * PI;
+        // reflection of the soft key light and the sky
+        vec3 R = reflect(-V, N);
+        float soft = smoothstep(0.55 + 0.4 * pr, 0.98, dot(R, Lk));
+        vec3 Fr = F0 + (1.0 - F0) * pow(1.0 - nv, 5.0);
+        vec3 env = (ambientOf(R, up) + soft * KEY * 0.6) * (1.0 - pr) * (1.0 - pr);
+        col += env * Fr * B.w * sheenK * mix(1.0, ao, 0.5);
+        col += diff * PI * ambientOf(N, up) * ao;
+        col += D.y * sheenK * 0.15 * pow(1.0 - nv, 3.0) * KEY * mix(C, vec3(1.0), 0.4) * nl;   // a little sheen at the edges
+    } else {
+        // cloth: Charlie sheen, Neubelt visibility, wrapped diffuse with a subsurface tint
+        float ra = clamp(D.x + roughAA * 0.5, 0.1, 1.0);
+        float invA = 1.0 / ra;
+        float s2 = max(1.0 - nh * nh, 0.0078125);
+        float Dc = (2.0 + invA) * pow(s2, invA * 0.5) / (2.0 * PI);
+        float Vc = 1.0 / (4.0 * (nl + nv - nl * nv) + 1e-4);
+        vec3 sheenCol = (m > 1.5 && m < 2.5) ? mix(C, vec3(1.0), 0.45) * 0.9 : vec3(0.04) + sqrt(C) * 0.25;
+        vec3 Fr = min(Dc * Vc, 4.0) * sheenCol * D.y * sheenK;
+        vec3 sss = dye * 0.5;                                         // light scattered inside the threads
+        float wrap = clamp((dot(N, Lk) + 0.5) / 2.25, 0.0, 1.0);
+        vec3 Fd = dye * D.z / PI * wrap * clamp(sss + nl, 0.0, 1.0);
+        col = (Fd + Fr * nl) * KEY * PI;
+        col += dye * D.z * ambientOf(N, up) * ao;
+        col += sheenCol * D.y * sheenK * 0.3 * pow(1.0 - nv, 2.0) * ambientOf(N, up) * 2.0;
     }
+    // light through thin fabric: from the light behind, tinted by the dye
+    col += D.w * dye * sqrt(dye) * max(dot(-N, Lb) + 0.25, 0.0) * 1.2 * (0.6 + 0.4 * back);
+
     if (m > 4.5) {                                                    // Lame: glittering threads
         vec2 cell = floor(vec2(t, a * hwa) * 90.0 / S);
         float glit = step(0.97, hash21(cell + floor(rt * 6.0) * vec2(1.3, 7.1)));
-        glit *= pow(nh, 3.0) * 2.0 * sheen * smoothstep(1.0, 2.5, S / (90.0 * max(pxs, pxc)));
-        col += glit * (C + 0.3);
+        glit *= pow(nh, 3.0) * 6.0 * sheenK * smoothstep(1.0, 2.5, S / (90.0 * max(pxs, pxc)));
+        col += glit * (C + 0.2);
     }
-    // the back side: darker, and thin fabric lets the light through
-    if (back > 0.5) col = mix(col * 0.7, dye * (0.35 + 0.6 * wrap), D.w * 0.5);
 
     float alpha = 1.0;
     if (m > 2.5 && m < 3.5) alpha = clamp(0.3 + 0.45 * (1.0 - nv), 0.0, 1.0);          // Chiffon: sheer
     alpha *= cov;
-    return vec4(clamp(col, 0.0, 4.0) * alpha, alpha);
+    return vec4(clamp(col, 0.0, 64.0) * alpha, alpha);
 }
 
 void main() {
@@ -511,9 +575,14 @@ void main() {
         float o0 = coverOf(j0, sc, st, soft, sp, hw, S, ct, rt, ex, m);
         float o1 = coverOf(j1, sc, st, soft, sp, hw, S, ct, rt, ex, m);
         float o2 = coverOf(j2, sc, st, soft, sp, hw, S, ct, rt, ex, m);
-        c0.rgb *= 1.0 - 0.55 * max(k1 > k0 ? o1 : 0.0, k2 > k0 ? o2 : 0.0);
-        c1.rgb *= 1.0 - 0.55 * max(k0 > k1 ? o0 : 0.0, k2 > k1 ? o2 : 0.0);
-        c2.rgb *= 1.0 - 0.55 * max(k0 > k2 ? o0 : 0.0, k1 > k2 ? o1 : 0.0);
+        // and ambient occlusion: right next to a ribbon in front, less light reaches the one behind
+        float wide = 0.9 * hw + pxc;
+        float z0 = coverOf(j0, cw, t, wide, sp, hw, S, ct, rt, ex, m);
+        float z1 = coverOf(j1, cw, t, wide, sp, hw, S, ct, rt, ex, m);
+        float z2 = coverOf(j2, cw, t, wide, sp, hw, S, ct, rt, ex, m);
+        c0.rgb *= (1.0 - 0.6 * max(k1 > k0 ? o1 : 0.0, k2 > k0 ? o2 : 0.0)) * (1.0 - 0.3 * max(k1 > k0 ? z1 : 0.0, k2 > k0 ? z2 : 0.0));
+        c1.rgb *= (1.0 - 0.6 * max(k0 > k1 ? o0 : 0.0, k2 > k1 ? o2 : 0.0)) * (1.0 - 0.3 * max(k0 > k1 ? z0 : 0.0, k2 > k1 ? z2 : 0.0));
+        c2.rgb *= (1.0 - 0.6 * max(k0 > k2 ? o0 : 0.0, k1 > k2 ? o1 : 0.0)) * (1.0 - 0.3 * max(k0 > k2 ? z0 : 0.0, k1 > k2 ? z1 : 0.0));
         vec4 tc; float tk;
         if (k0 > k1) { tc = c0; c0 = c1; c1 = tc; tk = k0; k0 = k1; k1 = tk; }
         if (k1 > k2) { tc = c1; c1 = c2; c2 = tc; tk = k1; k1 = k2; k2 = tk; }
@@ -529,7 +598,10 @@ void main() {
         acc *= fade * clamp(ribbonsOpacity, 0.0, 1.0) * clamp(fabricColor.a, 0.0, 1.0);
     }
 
-    vec4 outC = vec4(acc.a > 1e-5 ? acc.rgb / acc.a : vec3(0.0), acc.a);
+    // linear light -> film-like tone mapping (ACES, Narkowicz fit) -> display
+    vec3 lin = acc.a > 1e-5 ? max(acc.rgb / acc.a, vec3(0.0)) : vec3(0.0);
+    vec3 tm = clamp((lin * (2.51 * lin + 0.03)) / (lin * (2.43 * lin + 0.59) + 0.14), 0.0, 1.0);
+    vec4 outC = vec4(pow(tm, vec3(1.0 / 2.2)), acc.a);
 
     if (showField > 0.5 && F.z > 0.5) {
         // red occupancy, green excitation, blue a held shadow; white the front, magenta the other edges
