@@ -48,6 +48,33 @@ class EngineTest(unittest.TestCase):
         self.assertEqual(eng.counter, 2)
         self.assertEqual(eng.spout.size, (40, 32))
 
+    def test_visibility_goes_into_the_blue_channel(self):
+        """A sensor at the front looks into the area; an obstacle 1 m ahead shades the cells behind it."""
+        import numpy as np
+        from scene import BINS
+        from stl27l import Revolution
+        eng = make_engine()
+        st = eng.room.stations[0]
+        st.x, st.y, st.rot = 2000.0, 0.0, 180.0                       # middle of the front, looking into the area
+        angle = (np.arange(BINS) + 0.5) * (360.0 / BINS)
+        dist = np.full(BINS, 3000.0)
+        dist[(angle < 5.0) | (angle > 355.0)] = 1000.0
+        rev = Revolution(time.time(), angle.astype(np.float32), dist.astype(np.float32),
+                         np.zeros(BINS, np.uint8), 10.0)
+        eng.process({'A': rev})
+        vis = eng.snapshot()['vis']
+        self.assertEqual(vis[20, 20], 0.0)                              # 2 m ahead, behind the obstacle
+        self.assertEqual(vis[5, 20], 1.0)                               # 0.5 m ahead
+        self.assertEqual(vis[10, 5], 1.0)                               # beside it
+        tex = eng.field.texture(0)
+        self.assertEqual((tex[5, 20, 2], tex[20, 20, 2]), (255, 0))     # B = visibility
+
+    def test_without_a_sensor_nothing_is_seen(self):
+        eng = make_engine()
+        eng.sim = [[1000.0, -750.0]]
+        eng.process({})
+        self.assertEqual(float(eng.snapshot()['vis'].max()), 0.0)
+
     def test_object_outside_the_area_is_ignored(self):
         eng = make_engine()
         eng.sim = [[6000.0, -750.0]]

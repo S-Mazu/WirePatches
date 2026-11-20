@@ -8,6 +8,8 @@ import math
 import dearpygui.dearpygui as dpg
 import numpy as np
 
+from visibility import seen
+
 from .theme import (AREA_C, BAR_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, FRONT_C, OBJ_C, OUT_C, REF_C, SCAN_C,
                     SIM_C, station_color)
 
@@ -17,6 +19,8 @@ HEAD_MM = 600.0             # length of the line that shows where a sensor looks
 ARROW_MM, WING_MM = 700.0, 180.0    # the arrow from the front into the area
 SIM_AHEAD_MM = 1500.0       # a new simulated object is put this far in front of the front (or the sensor)
 CLICK_PX = 5                # press and release closer than this is a click, not a drag
+SEEN_PX = 240               # resolution of the seen-region image over the visible part of the map
+SEEN_RGBA = (0.55, 0.75, 1.0, 0.16)     # tint of what the sensors see; shadows stay dark
 
 
 class RoomView:
@@ -34,11 +38,14 @@ class RoomView:
 
     # ------------------------------------------------ build
     def _build(self, width):
+        with dpg.texture_registry():
+            dpg.add_dynamic_texture(SEEN_PX, SEEN_PX, [0.0] * (SEEN_PX * SEEN_PX * 4), tag='seen_tex')
         with dpg.plot(tag='plot', width=width, height=-1, equal_aspects=True, no_menus=True,
                       no_box_select=True, pan_button=dpg.mvMouseButton_Right,
                       fit_button=dpg.mvMouseButton_Middle):
             dpg.add_plot_axis(dpg.mvXAxis, label='x (m)', tag='xaxis')
             with dpg.plot_axis(dpg.mvYAxis, label='y (m)', tag='yaxis'):
+                dpg.add_image_series('seen_tex', (0.0, 0.0), (0.0, 0.0), tag='seen_img')   # under everything
                 dpg.add_line_series([], [], tag='l_field')
                 dpg.add_scatter_series([], [], tag='s_out')
                 dpg.add_scatter_series([], [], tag='s_pts')
@@ -222,7 +229,8 @@ class RoomView:
             dpg.set_value('s_draft', [[], []])
 
     def show(self, snap):
-        """Live points of all positions with a sensor, and the foreground objects."""
+        """Live points of all positions with a sensor, their seen regions, and the foreground objects."""
+        self._draw_seen(snap)
         px, py, fx, fy, gx, gy, ox, oy = [], [], [], [], [], [], [], []
         for v in snap['views'].values():
             ok = v['valid']
@@ -243,6 +251,28 @@ class RoomView:
         dpg.set_value('s_fg', [fx, fy])
         dpg.set_value('s_out', [ox, oy])
         dpg.set_value('s_obj', [[o['x'] / 1000.0 for o in snap['objects']], [o['y'] / 1000.0 for o in snap['objects']]])
+
+    def _draw_seen(self, snap):
+        """Tints what at least one position sees, over the visible part of the map; shadows stay dark."""
+        reaches = {sid: v['reach'] for sid, v in snap['views'].items() if 'reach' in v}
+        if not dpg.get_value('show_seen') or not reaches:
+            dpg.configure_item('seen_img', bounds_min=(0.0, 0.0), bounds_max=(0.0, 0.0))
+            return
+        x0, x1 = dpg.get_axis_limits('xaxis')
+        y0, y1 = dpg.get_axis_limits('yaxis')
+        xs = (x0 + (np.arange(SEEN_PX) + 0.5) * (x1 - x0) / SEEN_PX) * 1000.0
+        ys = (y0 + (np.arange(SEEN_PX) + 0.5) * (y1 - y0) / SEEN_PX) * 1000.0
+        gx, gy = np.meshgrid(xs, ys[::-1])              # texture row 0 is the top of the image
+        mask = np.zeros(gx.shape, bool)
+        room = self.eng.room
+        for sid, r in reaches.items():
+            st = room.station(sid)
+            if st is not None:
+                mask |= seen(st, r, gx, gy)
+        img = np.zeros(gx.shape + (4,), np.float32)
+        img[mask] = SEEN_RGBA
+        dpg.set_value('seen_tex', img.ravel())
+        dpg.configure_item('seen_img', bounds_min=(x0, y0), bounds_max=(x1, y1))
 
     # ------------------------------------------------ mouse
     def on_press(self):

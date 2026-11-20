@@ -6,7 +6,7 @@ Last updated: 2026-11-20
 
 ## Purpose
 
-Makes projections react to motion in the room. The bridge learns the empty room and treats everything closer than the room as foreground. It maps the foreground onto the **area**, a free polygon in the room, seen from a **front** line where the projection is: along the front (`x`) and away from it (`depth`). Patches get one thing: the **field**, a grid over the area, as a texture. *Occupancy* says where something is, *motion* says where the occupancy changes, so standing still fades out, *visibility* will say where a sensor can see at all (#113). The field knows nothing about people: an arm, a group or a running child all just change cells.
+Makes projections react to motion in the room. The bridge learns the empty room and treats everything closer than the room as foreground. It maps the foreground onto the **area**, a free polygon in the room, seen from a **front** line where the projection is: along the front (`x`) and away from it (`depth`). Patches get one thing: the **field**, a grid over the area, as a texture. *Occupancy* says where something is, *motion* says where the occupancy changes, so standing still fades out, *visibility* says where a sensor sees at all: behind a body, behind a barrier and outside every fan lies shadow, where occupancy 0 means "unknown", not "empty". The field knows nothing about people: an arm, a group or a running child all just change cells.
 
 The bridge interprets nothing for a patch: what a value means in the picture is up to the patch.
 
@@ -22,7 +22,8 @@ Patches using it: [Bulging Lines](../../effects/Bulging%20Lines/). The example [
 4. **Filter** (`room.py`): per position a fan (only these directions count), barriers (a sensor does not look through them), the area (only inside it counts) and exclusions (never inside them). Why: rooms are irregular; the person setting up decides what is relevant, not a rectangle in the code.
 5. **Map onto the front** (`room.py`): the front is a line in the map where the projection is, drawn freely; the area is the polygon that counts. Every foreground point gets `x` (0 at the left end … 1 at the right end of the front) and `depth` (0 at the front … 1 at the point of the area farthest from it). Why: patches work in projection terms, independent of room size, room shape and sensor placement. A composed projection (U-shape, mapped objects) later needs a polyline front; the free line keeps that open.
 6. **Field** (`field.py`): the field covers front width × area depth in square cells of *Cell size* (0.1 m); cells outside the area stay 0. Occupancy = share of a cell covered by foreground surface; motion = how fast the occupancy changes, with a threshold against sensor noise and a fade. Why: projections should react to motion, not to "people"; a field carries any motion (an arm, a group, a run) without interpreting it.
-7. **Send** (`field.py`, `spout_out.py`): the field is rendered as an RGBA image and shared as a Spout texture 30 times per second; motion fades between measurements, so the frames are smooth. A status band at the top counts up every frame, so a patch can tell a live field from a frozen one. Why a texture: a field is an image, and a texture is what Wire and Arena read natively. Any resolution, one frame per update, nothing to reassemble in the patch. Why not OSC: a list of numbers forces every patch to hard-wire the grid size and to rebuild the image. Why a band and not a pixel: everything that passes through Arena is resampled (clip resize, interpolation); a band of one sixteenth survives that, a single pixel does not.
+7. **Visibility** (`visibility.py`): per position and revolution, the seen region is, for each 0.5° direction, the distance up to the nearest point hit (without a return: the empty room's distance there, or 8 m), at most up to the first barrier, nothing outside the fan. Behind lies shadow. Several positions add up. A field cell counts as seen when its centre lies in a seen region. Why: a lidar sees only the first surface of each ray; the person setting up must see where the shadows are (a further sensor belongs there), and a patch must be able to tell "empty" from "not seen".
+8. **Send** (`field.py`, `spout_out.py`): the field is rendered as an RGBA image and shared as a Spout texture 30 times per second; motion fades between measurements, so the frames are smooth. A status band at the top counts up every frame, so a patch can tell a live field from a frozen one. Why a texture: a field is an image, and a texture is what Wire and Arena read natively. Any resolution, one frame per update, nothing to reassemble in the patch. Why not OSC: a list of numbers forces every patch to hard-wire the grid size and to rebuild the image. Why a band and not a pixel: everything that passes through Arena is resampled (clip resize, interpolation); a band of one sixteenth survives that, a single pixel does not.
 
 Foreground blobs are also merged into *objects* (`scene.py`) for the window and for setting the ends of the front by standing there. Patches do not get them; a tracker in fixed slots was tried and dropped, it is the wrong model for dancing.
 
@@ -37,6 +38,8 @@ Tested in Arena 7.29.0 on 2026-11-17 with the live sensor, two simulated objects
 - Several clips of the same Spout source, each with its own effect settings, in different columns: each gets the field (Field Viewer and Bulging Lines measured one after the other in the same layer).
 - A Wire patch loaded as a source does not receive Spout inside Arena: `Texture In` gives a black 1 × 1 image (2026-11-16).
 - python.exe of the venv and Arena.exe must run on the same graphics adapter (Windows graphics settings, "high performance"); before, Arena knew the sender's size but showed no image (2026-11-16).
+
+Tested on the show machine on 2026-11-20: visibility with the live sensor. The room map tints what the sensor sees; an object next to the sensor shaded most of the area, further objects in the room cast narrow shadow wedges, and the field image *Seen* showed the same. Unit tests cover shadows behind objects and barriers, the fan and the B channel. Not checked yet: the B channel in a patch in Arena (the Field Viewer shows it with `Channel` *Visibility*), barriers with the live sensor, several physical sensors.
 
 Tested on the show machine on 2026-11-20: *Find sensor* (Sensor section) with nine serial ports. It found the STL-27L on COM19 (958 valid packets in 0.5 s, 10 turns/s), listed only that port, and was done in 2.5 s although four Bluetooth ports (COM11 to COM14) did not answer. With the port in use by the bridge it shows "in use" without opening it.
 
@@ -90,7 +93,8 @@ Learned the hard way (2026-11-15):
 | `ui/` | The window: `window.py` (layout, frame loop), `view.py` (room map, handles, live points), `panel.py` (controls), `status.py` (status lines), `drafting.py` (drawing shapes with clicks), `help.py` (all help texts), `theme.py` |
 | `engine.py` | Processing thread: readers per position, foreground, objects, field, texture frames, room and port management |
 | `settings.py` | Detection and field settings: defaults, limits, `settings.json`, command-line overrides |
-| `field.py` | Occupancy and motion over the area, and the texture with the status band |
+| `field.py` | Occupancy, motion and visibility over the area, and the texture with the status band |
+| `visibility.py` | What each position sees (up to the first point of each ray, barriers, fan) and which field cells are seen |
 | `spout_out.py` | Spout sender around SpoutGL; without SpoutGL the bridge runs and says so |
 | `port_scan.py` | *Find sensor*: lists the serial ports with their description and finds the ones that deliver STL-27L packets |
 | `calibration.py` | Guided measurements with countdown and tones: learn the empty room, set an end of the front |
@@ -140,7 +144,8 @@ The window shows the room map on the left and the controls on the right. Every c
    - *Draw barrier*: two clicks; sensors do not look through it.
    - Esc cancels drawing. Each shape can be removed in the list.
 5. **Advanced detection**: fine-tune detection for the room (see Configuration).
-6. **Check**: the status lines should be green (yellow = keep an eye on it, red = act); hover over a line to see what it means and which values are good. Foreground objects appear as white rings. *Output (Spout)* shows the sender name, the texture size and the frame rate.
+6. **Shadows**: *Show what the sensors see* (Sensor positions) tints, live, what each position with a sensor sees. Everything that stays dark is shadow: behind people and objects, behind barriers, outside the fans. Walk through the area and watch where your shadow falls; where shadows matter, a further sensor position helps (step 2). The field image *Seen* (Fields) shows the same per cell.
+7. **Check**: the status lines should be green (yellow = keep an eye on it, red = act); hover over a line to see what it means and which values are good. Foreground objects appear as white rings. *Output (Spout)* shows the sender name, the texture size and the frame rate.
 
 **Simulation**: *Add object* creates a yellow point in the view that you drag with the mouse. It counts like real foreground and appears in the field, also without a sensor, so patches can be developed and checked anywhere.
 
@@ -155,7 +160,7 @@ Options (this run only, not saved): `--port COM19` (port of the position with th
 | 1 | Sensor | The lidar measures about 2160 distances per turn, 10 turns per second, in one plane at chest height. |
 | 2 | Bridge | Foreground = everything clearly closer than the learned empty room, inside the area and not excluded. |
 | 3 | Bridge | The foreground is mapped onto the area seen from the front: `x` 0..1 along the front, `depth` 0..1 away from it. |
-| 4 | Bridge | Per cell of the field: occupancy (how much is covered) and motion (how fast that changes, fading out). |
+| 4 | Bridge | Per cell of the field: occupancy (how much is covered), motion (how fast that changes, fading out) and visibility (whether a sensor sees the cell or it lies in a shadow). |
 | 5 | Bridge | The field becomes an RGBA image with the status band and is sent as the Spout texture `Motion Bridge`, 30 times per second. |
 | 6 | Arena | A Spout clip receives the texture; the layer's *Auto Size* *Stretch* scales it to the composition. |
 | 7 | Patch | A Wire patch on the clip (clip effect) reads the field with normalized coordinates and draws its own picture; without a live status band it calms down. |
@@ -195,7 +200,7 @@ The interface to the patches is one Spout texture. This is the contract; patches
 - **Channels**, each 0..255 for 0..1:
   - R: occupancy, how much of the cell is covered by a foreground surface. The lidar sees the side of a body facing the sensor, so a body crossing a cell gives about 0.8 to 1; cells hidden behind a body stay 0 (shadow).
   - G: motion, how fast the occupancy changes. A cell taken or freed within 0.25 s gives 1; it fades out over *Motion fade* (0.5 s); changes below *Motion threshold* are ignored (0.3: sensor noise at still objects measured up to 0.28, walking 0.5 to 1).
-  - B: visibility, 1 where a sensor sees the cell (#113, not implemented yet: always 0).
+  - B: visibility, 1 where at least one sensor sees the cell, 0 in the shadow (behind a body or a barrier, outside every fan), outside the area and without a sensor. Where B is 0, R = 0 means "unknown", not "empty". Simulated objects cast no shadow.
   - A: always 255.
 - **Orientation**: column 0 is at the left end of the front, column width − 1 at the right end. Row 0 is at the front, the last field row at the far edge of the area, the band above it. In a patch, normalized y = 0 is the front, at the bottom of the frame (`FLIP = True` in `spout_out.py`; measured in Arena 2026-11-17).
 - **Status band**: the top sixteenth of the texture carries no field data. Every pixel of it holds a counter in R, G and B that changes every frame (0..255, wraps). A patch samples it anywhere in the band, e.g. at 31/32 of the height, and fades out when the value stops changing, so the picture stays calm without the bridge (docs/PATCH_RULES.md, "Patches that use a tool"). The band is a sixteenth so that it survives Arena's resampling at any size. The example [Field Viewer](../../examples/Field%20Viewer/) shows how to keep the last value and measure the time since it changed.
@@ -232,6 +237,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-20: Visibility (#113): the room map tints what each sensor sees, live, so shadows behind people, objects and barriers and outside the fans stay dark (*Show what the sensors see*). The field gets a third image, *Seen*, and the Spout texture carries visibility in B. Tested with the live sensor in the window; B in Arena not checked yet.
 - 2026-11-20: *Find sensor* in the Sensor section: listens briefly on all serial ports at once and lists only the ports with valid STL-27L packets, with the rotation; the port list shows the Windows description of each port. Read-only, DTR and RTS off, ports that hang are given up after 2 s. Tested with the real sensor and nine ports.
 - 2026-11-17: Tested in Arena with the example Field Viewer (#115): `FLIP = True`, so the band arrives at the top and the front at the bottom, as the contract says. Setup: the patch is a clip effect on the Spout clip, the clip at the texture's size, the layer's *Auto Size* *Stretch* (Usage, "In Arena", with the data flow from the room to the picture). Measured 29 frames per second at the patch, black when the bridge stops, automatic reconnect.
 - 2026-11-16: First test on the show machine (see Status): the texture reaches Arena and built-in effects, a Wire effect gets an empty Texture In; the band arrives at the bottom; Width/Height alone does not stretch. Nothing changed in the code yet.

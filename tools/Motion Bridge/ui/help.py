@@ -27,6 +27,11 @@ HELP = {
     'fan': 'Only measurements inside the fan count, the rest is ignored. 360 = all around. Point the fan '
            'with the round handle in the view.',
     'show_scans': 'Shows the empty-room scans of all positions; off shows only the selected one.',
+    'show_seen': 'Fills, live, what each position with a sensor sees: from the sensor up to the first point each '
+                 'ray hits, at most to a barrier, only inside the fan. Everything that stays dark is shadow: '
+                 'behind people and objects, behind barriers, outside the fans. There the bridge does not know '
+                 'whether something is there. Several positions add up; a further sensor belongs where a '
+                 'shadow matters.',
     'ref_place': 'Puts a reference marker in the view with the next click. Place it on the reference object '
                  '(e.g. a pole) in a scan that is already aligned.',
     'ref_snap': 'Moves the selected position so that the reference object in its scan sits on the marker. '
@@ -54,7 +59,9 @@ HELP = {
              'front, top = far edge of the area. Cells outside the area stay 0.\n'
              'Occupancy: where something is (white = a surface crosses the whole cell).\n'
              'Motion: where the occupancy changes (white = a cell is taken or freed within 0.25 s). Standing still '
-             'fades out.\nThe patches receive both as one Spout texture (red = occupancy, green = motion).',
+             'fades out.\nSeen: where a sensor sees the cell (white); black is shadow or outside the area. There '
+             'occupancy 0 means "unknown", not "empty".\nThe patches receive all three as one Spout texture '
+             '(red = occupancy, green = motion, blue = seen).',
     'reset_fields': 'Sets the field settings back to the recommended values: cell size 0.10 m, Motion fade 0.5 s, '
                     'Motion threshold 0.3.',
     'cell_mm': 'Size of one cell in the room, the same along the front and into the area. The texture size follows: '
