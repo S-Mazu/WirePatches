@@ -44,7 +44,9 @@
     { "TARGET": "blurX", "FLOAT": true, "WIDTH": "160", "HEIGHT": "120" },
     { "TARGET": "blurXY", "FLOAT": true, "WIDTH": "160", "HEIGHT": "120" },
     { "TARGET": "field", "PERSISTENT": true, "FLOAT": true, "WIDTH": "160", "HEIGHT": "120" },
-    { "TARGET": "pushT", "PERSISTENT": true, "FLOAT": true, "WIDTH": "$WIDTH/2", "HEIGHT": "$HEIGHT/4" },
+    { "TARGET": "raw", "PERSISTENT": true, "FLOAT": true, "WIDTH": "$WIDTH/2", "HEIGHT": "$HEIGHT/2" },
+    { "TARGET": "env", "PERSISTENT": true, "FLOAT": true, "WIDTH": "$WIDTH/2", "HEIGHT": "$HEIGHT/2" },
+    { "TARGET": "pushT", "PERSISTENT": true, "FLOAT": true, "WIDTH": "$WIDTH/2", "HEIGHT": "$HEIGHT/2" },
     { }
   ]
 }*/
@@ -72,10 +74,15 @@
 //   pixel 1: frame time dt (s), real time (s) for the flutter, visibility in use (0/1)
 // blurX, blurXY (160 x 120 over x and depth): r occupancy, g motion blurred; b visibility unblurred
 // field (160 x 120, persistent): r excitation, g occupancy smoothed, b 1 in a held shadow
-// pushT (output / (2, 4), persistent): one column per ribbon, rows along the wind:
+// raw (output / 2): one column per ribbon, rows along the wind: r the half width of the object
+//   the ribbon meets in this row (x Avoid Strength, plus half a ribbon), g its centre relative to
+//   the ribbon
+// env (output / 2): the same columns and rows, rows along the wind: the half width of
+//   the object the ribbon meets there, spread along the ribbon as a wake behind it (r, centre
+//   relative to the ribbon in g) and ahead of it (b, centre in a); its size carries the aspect
+// pushT (output / 2, persistent), the same columns and rows:
 //   r sideways offset of the ribbon there (output heights, smoothed over time), g excitation,
-//   b the side it passes an object on x the object's size (0 = none), voted over the column;
-//   its size also carries the output's aspect for this pass (width * 2 / (height * 4))
+//   b unused;
 
 const float SIG = 0.67;
 const float LSB = 1.0 / 255.0;
@@ -529,16 +536,17 @@ void main() {
         return;
     }
 
-    // ---------- pass 4: how far each ribbon moves aside, along its length ----------
-    // Like a stream around a post: the occupancy across the ribbon's centre line gives an
-    // object's centre and half width R; the ribbon at the offset y0 from that centre moves, as a
-    // whole strip, to the offset a streamline has around a cylinder, sqrt(y0^2 + R^2). The ribbons
-    // part around the object and crowd at its sides; far away they hardly move. Read a little
-    // up- and downwind too, so the ribbon bends in a smooth arc and stays apart behind it.
-    // Negative Avoid Strength draws the ribbons in instead.
-    if (PASSINDEX == 4) {
-        vec2 TS = max(floor(gl_FragCoord.xy / max(uv, vec2(1e-6)) + 0.5), vec2(1.0));   // this pass's size
-        float aspect = TS.x * 2.0 / (TS.y * 4.0);       // this pass is (width / 2) x (height / 4)
+    // ---------- passes 4 to 6: how far each ribbon moves aside, along its length ----------
+    // Like a stream around a post: the occupancy across the ribbon gives an object's centre and
+    // half width R; the ribbon at the offset y0 from that centre moves, as a whole strip, to the
+    // offset a streamline has around a cylinder, sqrt(y0^2 + R^2). The ribbons part around the
+    // object and crowd at its sides; far away they hardly move. Negative Avoid Strength draws
+    // them in instead.
+    if (PASSINDEX >= 4 && PASSINDEX <= 6) {
+        // rows and columns only through texture coordinates: in Wire, gl_FragCoord.y runs the
+        // other way than the texture's y
+        vec2 TS = max(IMG_SIZE(pushT), vec2(1.0));        // raw, env and pushT have this size
+        float aspect = TS.x / TS.y;                       // this pass is (width / 2) x (height / 2)
         float S = clamp(scale, 0.001, 1000.0);
         float H = clamp(horizonY * S, 0.001, 1000.0);
         bool rFloor = safe(ribbonPlane, 0.0, 1.0) < 0.5;
@@ -547,78 +555,125 @@ void main() {
         vec2 n = vec2(-w.y, w.x);
         float density = safe(ribbonDensity, 0.0, 200.0);
         float avoid = safe(avoidStrength, -10.0, 10.0);
-        vec4 prev = IMG_NORM_PIXEL(pushT, uv);
-        float push = 0.0, e = 0.0, side = 0.0;
-        if (abs(prev.a - SIG) > 0.01) prev = vec4(0.0);
-        if (density > 0.0) {
-            float sp = S / density;
-            vec4 box = planeBox(rFloor, aspect, w, n);
-            float jj = tableJ0(box, sp, TS.x) + floor(gl_FragCoord.x);
-            if (jj > ceil(box.y / sp) + 7.0) { gl_FragColor = vec4(0.0, 0.0, 0.0, SIG); return; }   // beyond the picture
-            float jb = jj * sp;
-            float al = box.z + uv.y * (box.w - box.z);
-            float wake = 0.35 * S, bend = 0.15 * S, stp = 0.12 * S;
-            vec2 ga, gb, gc;
-            float lm = 0.0, lc = 0.0;
-            float exv[9];
+        float sp = S / max(density, 1e-3);
+        vec4 box = planeBox(rFloor, aspect, w, n);
+        float jj = tableJ0(box, sp, TS.x) + floor(uv.x * TS.x);
+        float jb = jj * sp;
+        float al = box.z + uv.y * (box.w - box.z);
+        float dl = (box.w - box.z) / TS.y;                // one row, along the ribbon
+        bool live = density > 0.0 && jj <= ceil(box.y / sp) + 7.0;
+
+        if (PASSINDEX == 4) {
+            // the object here, across the ribbon (9 points, about one output height)
+            if (!live) { gl_FragColor = vec4(0.0); return; }
+            float stp = 0.12 * S;
+            vec2 ga;
+            float lm = 0.0, lc = 0.0, gl = 0.0, gr = 0.0;
             for (int k = 0; k < 9; k++) {
                 float o = (float(k) - 4.0) * stp;
-                vec2 Pk = n * (jb + o) + w * al;
-                // along the ribbon: the object ahead bends it a little early, behind it the
-                // ribbon returns slowly (the wake); the strongest weighted occupancy counts
-                FIELD_AT(Pk, ga)
-                float g = ga.x;
-                for (int d = 1; d <= 14; d++) {
-                    float dd = float(d) * wake / 14.0;
-                    FIELD_AT(Pk - w * dd, gb)                 // upwind of here: this point is in its wake
-                    float q = dd / wake;
-                    g = max(g, gb.x * (1.0 - q * q));
-                }
-                for (int d = 1; d <= 2; d++) {
-                    float dd = float(d) * bend / 2.0;
-                    FIELD_AT(Pk + w * dd, gc)                 // downwind of here: the object ahead
-                    float q = dd / (1.2 * bend);
-                    g = max(g, gc.x * (1.0 - q * q));
-                }
-                g = smoothstep(0.15, 0.5, g);                 // faint traces are no object
+                FIELD_AT(n * (jb + o) + w * al, ga)
+                float g = smoothstep(0.15, 0.5, ga.x);        // faint traces are no object
                 lm += g; lc += g * o;
-                exv[k] = ga.y;
+                if (k == 0) gl = g;
+                if (k == 8) gr = g;
             }
-            float ca = jb + (lm > 1e-3 ? lc / lm : 0.0);
-            float Re = min(0.5 * lm * stp * min(abs(avoid), 10.0), 3.0 * S);
-            // the ribbon's edge, not its middle, clears the object (faded in with the object)
+            // occupied at both ends of the window: wider than a post (a wall, a crowd); the
+            // ribbon cannot go round it and stays where it is
+            float R0 = 0.5 * lm * stp * (1.0 - smoothstep(0.3, 0.8, min(gl, gr)));
+            // the ribbon's edge, not its middle, clears the object: half a ribbon more, faded in
+            // with the object itself (before the spread, so the cone carries it evenly)
             float hwp = 0.5 * safe(ribbonWidth, 0.0, 0.5) * S;
-            Re += hwp * clamp(Re / max(0.3 * hwp, 1e-4), 0.0, 1.0) * sign(avoid);
-            Re = max(Re, 0.0);
+            R0 += hwp * smoothstep(0.0, 0.5 * stp, R0);
+            // Avoid Strength scales the width here, before the spread, so the bend before and
+            // the wake behind grow with it and the ribbons keep their angle
+            R0 = min(R0 * min(abs(avoid), 10.0), 3.0 * S);
+            float c0 = lm > 1e-3 ? lc / lm : 0.0;
+            gl_FragColor = vec4(R0, c0, 0.0, 0.0);
+            return;
+        }
+
+        if (PASSINDEX == 5) {
+            if (!live) { gl_FragColor = vec4(0.0); return; }
+            // Spread along the ribbon, as a cone: behind the object (the wake, r and g) the width
+            // shrinks to 0 over about 1.4 x itself, before it (b and a, where the ribbon starts to
+            // bend) over about 1 x. Directly from the raw width of the rows up- and downwind (128
+            // each, covering the longest possible cone), so it has no memory: no feedback, nothing
+            // lingers when the object goes.
+            float row = floor(uv.y * TS.y);
+            float st = max(ceil(min(TS.y, 4.3 * S / max(dl, 1e-6)) / 128.0), 1.0);   // rows per sample
+            float Ru = 0.0, su = 0.0, cu = 0.0, Rd = 0.0, sd = 0.0, cd = 0.0;
+            for (int k = 0; k < 128; k++) {
+                float fk = float(k) * st;
+                if (row - fk >= 0.0) {                        // upwind: this point is in its wake
+                    vec4 q = IMG_NORM_PIXEL(raw, vec2(uv.x, (row - fk + 0.5) / TS.y));
+                    float r = max(safe(q.r, 0.0, 100.0) - 0.7 * fk * dl, 0.0);
+                    Ru = max(Ru, r); su += r * r; cu += r * r * safe(q.g, -100.0, 100.0);
+                }
+                if (row + fk < TS.y) {                        // downwind: the object ahead
+                    vec4 q = IMG_NORM_PIXEL(raw, vec2(uv.x, (row + fk + 0.5) / TS.y));
+                    float r = max(safe(q.r, 0.0, 100.0) - 1.0 * fk * dl, 0.0);
+                    Rd = max(Rd, r); sd += r * r; cd += r * r * safe(q.g, -100.0, 100.0);
+                }
+            }
+            gl_FragColor = vec4(Ru, su > 1e-20 ? cu / su : 0.0, Rd, sd > 1e-20 ? cd / sd : 0.0);
+            return;
+        }
+
+
+        // pass 6: the offset from the envelope
+        vec4 prev = IMG_NORM_PIXEL(pushT, uv);
+        if (abs(prev.a - SIG) > 0.01) prev = vec4(0.0);
+        float push = 0.0, e = 0.0, side = 0.0;
+        if (live) {
+            // the width and the centre smoothed along the ribbon (rounds the tip of the cone; the
+            // centre is weighted by the width, so where the width ends it does not jump)
+            float ms = clamp(floor(0.02 * S / max(dl, 1e-6) + 0.5), 1.0, 16.0) / TS.y;
+            float R = 0.0, rw = 0.0, cs = 0.0, cw_ = 0.0;
+            for (int k = -4; k <= 4; k++) {
+                float wk = 5.0 - abs(float(k));
+                vec4 q = IMG_NORM_PIXEL(env, vec2(uv.x, clamp(uv.y + float(k) * ms, 0.0, 1.0)));
+                float ru = safe(q.r, 0.0, 100.0), rd = safe(q.b, 0.0, 100.0);
+                float rq = max(ru, rd);
+                R += wk * rq; rw += wk;
+                cs += wk * (ru * safe(q.g, -100.0, 100.0) + rd * safe(q.a, -100.0, 100.0)); cw_ += wk * (ru + rd);
+            }
+            R /= rw;
+            float ca = jb + (cw_ > 1e-12 ? cs / cw_ : 0.0);
+            // motion where the ribbon is now makes it flutter (read below, once the offset is known)
+            float Re = R;                                      // already x Avoid Strength
             float y0 = jb - ca;
             float yy;
             if (avoid >= 0.0) {
-                // the side the ribbon passes on. Away from the centre: the side it is on. Within the
-                // object: one side for the whole ribbon, voted over its length last frame (b holds
-                // side x size), so it does not switch sides along its length or flicker while
-                // someone sways; new: the side it is on, with a small random bias per ribbon
+                // the side the ribbon passes on: for its whole length the side of the centre it is
+                // on where the object is widest (sampled over its column), so it does not switch
+                // sides along its length; a ribbon right at the centre goes to a random side
                 float vote = 0.0;
-                for (int v = 0; v < 16; v++) vote += IMG_NORM_PIXEL(pushT, vec2(uv.x, (float(v) + 0.5) / 16.0)).b;
-                float hb = hash11(jj * 7.13 + 3.0) - 0.5;
-                float sb = y0 + (hb < 0.0 ? -1.0 : 1.0) * (0.15 + 0.4 * abs(hb)) * sp;
-                float sv = abs(vote) > 1e-4 ? (vote < 0.0 ? -1.0 : 1.0) : (sb < 0.0 ? -1.0 : 1.0);
+                for (int v = 0; v < 32; v++) {
+                    vec4 q = IMG_NORM_PIXEL(env, vec2(uv.x, (float(v) + 0.5) / 32.0));
+                    float ru = safe(q.r, 0.0, 100.0), rd = safe(q.b, 0.0, 100.0);
+                    float cv = (ru * safe(q.g, -100.0, 100.0) + rd * safe(q.a, -100.0, 100.0)) / max(ru + rd, 1e-12);
+                    float rv = max(ru, rd);
+                    vote += (cv > 0.0 ? -1.0 : 1.0) * rv * rv;  // the ribbon is on the side opposite to c
+                }
                 float sn = y0 < 0.0 ? -1.0 : 1.0;
+                float sv = abs(vote) > 1e-6 ? (vote < 0.0 ? -1.0 : 1.0) : (hash11(jj * 7.13 + 3.0) < 0.5 ? -1.0 : 1.0);
                 float rr = sqrt(y0 * y0 + Re * Re);
-                float yv = sv * rr;
-                // crossing over to the other side of the centre: only as far as the object is big
-                if (sv * y0 < 0.0) yv = mix(y0, yv, clamp(Re / (abs(y0) + 0.05 * sp), 0.0, 1.0));
-                // towards the object's edge the ribbon takes its own side, smoothly
-                float own = smoothstep(0.5, 1.0, abs(y0) / max(Re, 1e-4));
-                yy = mix(yv, sn * rr, own);
-                side = Re > 1e-3 ? sv * Re * (1.0 - own) : 0.0;
+                yy = sn * rr;
+                if (sv != sn) {
+                    // here on the other side (the centre shifts a little along the ribbon): it
+                    // crosses over gradually while the width grows, at a shallow angle; well
+                    // outside the object it keeps its own side
+                    float yc = mix(y0, sv * rr, smoothstep(0.0, 1.0, Re / (8.0 * abs(y0) + 0.05 * sp)));
+                    yy = mix(yc, yy, smoothstep(0.5 * Re, 0.9 * Re, abs(y0)));
+                }
             } else {
                 yy = (y0 < 0.0 ? -1.0 : 1.0) * max(2.0 * abs(y0) - sqrt(y0 * y0 + Re * Re), 0.0);
             }
-            push = clamp(ca + yy - jb, -5.5 * sp, 5.5 * sp);   // the picture looks 6 ribbons to each side
-            // motion where the ribbon now is makes it flutter
-            for (int k = 0; k < 9; k++) {
-                float o = (float(k) - 4.0) * stp;
-                e = max(e, exv[k] * (1.0 - smoothstep(0.0, 1.5 * stp, abs(o - push))));
+            push = clamp(ca + yy - jb, -3.0 * S, 3.0 * S);
+            vec2 ga;
+            for (int k = -2; k <= 2; k++) {
+                FIELD_AT(n * (jb + push + float(k) * 0.1 * S) + w * al, ga)
+                e = max(e, ga.y * (1.0 - 0.3 * abs(float(k))));
             }
         }
         // fabric has inertia: the ribbon swings over instead of jumping
@@ -627,7 +682,7 @@ void main() {
         return;
     }
 
-    // ---------- pass 5: the picture ----------
+    // ---------- pass 7: the picture ----------
     vec2 res = max(RENDERSIZE, vec2(1.0));
     float aspect = res.x / res.y;
     float S = clamp(scale, 0.001, 1000.0);
@@ -685,21 +740,32 @@ void main() {
         // the ribbon whose centre (pushed aside, with its sway) is nearest to this pixel, from
         // pushT, and three on each side: beside an object the ribbons crowd and overlap
         vec2 TSz = max(IMG_SIZE(pushT), vec2(1.0));
-        float aspT = TSz.x * 2.0 / (TSz.y * 4.0);       // the same aspect as the pass that wrote it
+        float aspT = TSz.x / TSz.y;                       // the same aspect as the pass that wrote it
         vec4 box = planeBox(rFloor, aspT, w, n);
         float jt0 = tableJ0(box, sp, TSz.x);
         float ty = clamp((dot(P.xy, w) - box.z) / max(box.w - box.z, 1e-6), 0.0, 1.0);
         float jc = floor(cw / sp + 0.5);
-        float tyd = 3.0 / TSz.y;                           // smooth along the ribbon: a tent over +-12 rows
+        float tyd = 1.0 / TSz.y;                           // smooth along the ribbon: a tent over +-4 rows
 // pushT is read without filtering: interpolate between rows by hand, smoothed along the ribbon
 #define PUSH_ROW(CX, TY, OUT) { float ry_ = clamp(TY, 0.0, 1.0) * TSz.y - 0.5; float r0_ = clamp(floor(ry_), 0.0, TSz.y - 1.0); float r1_ = min(r0_ + 1.0, TSz.y - 1.0); OUT = mix(IMG_NORM_PIXEL(pushT, vec2(CX, (r0_ + 0.5) / TSz.y)).rg, IMG_NORM_PIXEL(pushT, vec2(CX, (r1_ + 0.5) / TSz.y)).rg, clamp(ry_ - r0_, 0.0, 1.0)); }
 #define PUSH_AT(COL, OUT) { OUT = vec2(0.0); if (COL >= 0.0 && COL < TSz.x) { float cx_ = (COL + 0.5) / TSz.x; vec2 pr_; float ws_ = 0.0; for (int k_ = -4; k_ <= 4; k_++) { float wk_ = 5.0 - abs(float(k_)); PUSH_ROW(cx_, ty + float(k_) * tyd, pr_) OUT += wk_ * pr_; ws_ += wk_; } OUT /= ws_; } }
 #define PUSH_ONE(COL, OUT) { OUT = vec2(0.0); if (COL >= 0.0 && COL < TSz.x) PUSH_ROW((COL + 0.5) / TSz.x, ty, OUT) }
         vec4 fA, fB, fD, fE;
         fabricOf(m, fA, fB, fD, fE);
-        float jn = jc, bd = 1e9;
+        // which ribbon lands here: the pushed positions j x spacing + offset rise with j, so a
+        // binary search over all ribbons that can reach this point (up to 3 x Scale away) finds
+        // it; then the nearest one, with its sway, among its neighbours
+        float sLo = jc - min(ceil(3.0 * S / sp) + 2.0, 4096.0), sHi = jc + min(ceil(3.0 * S / sp) + 2.0, 4096.0);
+        for (int b = 0; b < 14; b++) {
+            float mid = floor(0.5 * (sLo + sHi));
+            vec2 v;
+            PUSH_ONE(mid - jt0, v)
+            if (mid * sp + safe(v.x, -100.0, 100.0) < cw) sLo = mid; else sHi = mid;
+        }
+        float jb0 = sLo;
+        float jn = jb0, bd = 1e9;
         for (int k = -6; k <= 6; k++) {
-            float jj = jc + float(k);
+            float jj = jb0 + float(k);
             float col = jj - jt0;
             vec2 v;
             PUSH_ONE(col, v)
