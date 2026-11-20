@@ -9,7 +9,8 @@ edge of the area). Cells whose centre lies outside the area stay 0. Each cell ho
   of the cell size covered by that surface (a body crossing a cell gives about 0.8 to 1).
 - motion: how fast the occupancy changes. A cell that gets taken or freed within
   REF_S seconds reaches 1; standing still gives 0. Fades out over Motion fade.
-- visibility: 1 where a sensor sees the cell (not implemented yet, always 0).
+- visibility: 1 where at least one sensor sees the cell centre, 0 in the shadow (behind a body or a
+  barrier, outside every fan) and without a sensor (visibility.py). Simulated objects cast no shadow.
 
 The texture (README.md, Output) is RGBA 8 bit: R occupancy, G motion, B visibility, A 255.
 The field takes the lower fifteen sixteenths of the rows; the upper sixteenth is a status

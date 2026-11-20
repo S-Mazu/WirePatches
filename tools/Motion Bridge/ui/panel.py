@@ -78,6 +78,8 @@ class Panel:
                                      format='%.0f deg', callback=self._on_fan), 'fan')
             tip(dpg.add_checkbox(label='Show scans of all positions', tag='show_scans', default_value=True),
                 'show_scans')
+            tip(dpg.add_checkbox(label='Show what the sensors see (shadows stay dark)', tag='show_seen',
+                                 default_value=True), 'show_seen')
             dpg.add_text('Reference object (e.g. a pole):', color=DIM)
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Place marker', callback=lambda: self.draft.start('ref')), 'ref_place')
@@ -113,10 +115,10 @@ class Panel:
             tip(dpg.add_button(label='Reset to defaults', callback=self._on_reset_adv), 'reset_adv')
 
         with dpg.collapsing_header(label='Fields', default_open=True):
-            tip(dpg.add_text('Occupancy                      Motion', color=DIM), 'field')
+            tip(dpg.add_text('Occupancy            Motion               Seen', color=DIM), 'field')
             with dpg.group(horizontal=True):
-                for tag in ('occ', 'mot'):
-                    with dpg.plot(tag=f'fp_{tag}', width=(w - 40) // 2, height=150, no_menus=True,
+                for tag in ('occ', 'mot', 'vis'):
+                    with dpg.plot(tag=f'fp_{tag}', width=(w - 50) // 3, height=150, no_menus=True,
                                   no_mouse_pos=True, no_inputs=True, no_title=True):
                         dpg.add_plot_axis(dpg.mvXAxis, tag=f'fx_{tag}', no_tick_labels=True, no_gridlines=True)
                         with dpg.plot_axis(dpg.mvYAxis, tag=f'fy_{tag}', no_tick_labels=True, no_gridlines=True):
@@ -369,7 +371,7 @@ class Panel:
 
     def show(self, snap):
         """Field heatmaps."""
-        for tag, key in (('occ', 'occ'), ('mot', 'motion')):
+        for tag, key in (('occ', 'occ'), ('mot', 'motion'), ('vis', 'vis')):
             f = snap.get(key)
             if f is not None and f.size:
                 rows, cols = f.shape

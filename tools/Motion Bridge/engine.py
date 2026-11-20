@@ -26,6 +26,7 @@ from scene import MIN_MM, blobs, foreground, merge, to_xy
 from settings import DEFAULT_PORT, Settings
 from spout_out import SpoutOut
 from stl27l import Stl27lReader
+from visibility import field_visibility, reach
 
 log = logging.getLogger(__name__)
 
@@ -268,7 +269,7 @@ class Engine(threading.Thread):
         """One measurement: the newest revolution per position -> foreground, objects, field."""
         s = self.s
         t = max((r.t for r in revs.values()), default=time.time())
-        views, found = {}, []
+        views, found, reaches = {}, [], {}
         with self.lock:
             room = self.room
             for sid, rev in revs.items():
@@ -281,8 +282,10 @@ class Engine(threading.Thread):
                 for b in blobs(rev, fg & keep, s['gap_mm'], int(s['min_pts'])):
                     b['x'], b['y'] = st.to_map(b['x'], b['y'])
                     found.append(b)
+                seen_r = reach(st, rev.angle, rev.dist, room.barriers)
+                reaches[sid] = seen_r
                 views[sid] = {'mx': mx, 'my': my, 'valid': rev.dist >= MIN_MM, 'fg': fg, 'keep': keep,
-                              'dist': rev.dist}
+                              'dist': rev.dist, 'reach': seen_r}
             objects = merge(found, s['merge_mm'])              # foreground objects: blobs merged, plus simulated ones
             sim = [{'x': float(x), 'y': float(y), 'n': 50, 'sim': True} for x, y in self.sim]
             sim = [o for o in sim if room.counts([o['x']], [o['y']])[0]]
@@ -290,6 +293,7 @@ class Engine(threading.Thread):
             self.field.configure_for(room, s['cell_mm'])
             self.field.update(room, list(views.values()), [[o['x'], o['y']] for o in sim], t,
                               s['field_fade_s'], s['field_threshold'])
+            self.field.vis = field_visibility(room, reaches, self.field.cols, self.field.rows)
             self.cal.step(room, self.reader_of(self.cal.sid), objects)
             self.snap = {
                 'views': views, 'objects': objects, 't': t,
