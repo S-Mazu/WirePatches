@@ -9,7 +9,6 @@ Patches that render their own image. In Arena they fill a clip slot.
 | Patch | Description |
 |---|---|
 | [Bass Strings](sources/Bass%20Strings/) | Four double bass strings vibrate with the music, one frequency band per string. |
-| [Bulging Lines](sources/Bulging%20Lines/) | Horizontal lines bulge out where people stand in front of the surface; driven by the Motion Bridge lidar tool. Being rebuilt on the bridge's field texture (#115); the OSC input it reads is no longer sent. |
 | [Flower Sax](sources/Flower%20Sax/) | A Len Lye–style instrument of your choice blows seven kinds of flowers into the room. |
 | [Geo Tiles](sources/Geo%20Tiles/) | Tile collage of 67 flat geometric motifs in three colors. |
 | [Lye Swing](sources/Lye%20Swing/) | Painted big-band score after Len Lye; five shapes follow the music, one per sound band. |
@@ -24,6 +23,7 @@ Patches that process the clip below. In Arena they go onto a clip, layer, group 
 | Patch | Description |
 |---|---|
 | [Autumn Wind](effects/Autumn%20Wind/) | 16 kinds of items (leaves, hats, newspapers, …) drift across the clip with depth, gusts, tumble and eddies. |
+| [Bulging Lines](effects/Bulging%20Lines/) | Ribbons fly over the floor towards the viewer, flow around whatever stands there and flutter where something moves; driven by the Motion Bridge field. |
 | [Deco Fan](effects/Deco%20Fan/) | One Art Deco fan of rays and rings; add it several times for several fans. |
 | [Deco Marquee](effects/Deco%20Marquee/) | Art Deco theatre frame with chasing marquee lamps. |
 | [Fire Edges](effects/Fire%20Edges/) | Flames and smoke grow from the edges of the frame, from a glow to an inferno. |
