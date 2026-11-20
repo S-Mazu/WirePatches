@@ -236,11 +236,12 @@ vec3 shapeOf(float j, float cw, float t, float pxc, float pxs, float sp, float h
 
 // how much of ribbon j covers the point (for shadows and occlusion)
 float coverOf(float j, float cw, float t, float soft, float sp, float hw, float S, float ct, float rt,
-              float ex, float m) {
+              float ex, float push, float m) {
     vec4 A, B, D, E;
     fabricOf(m, A, B, D, E);
     float lat, th, a0, ph, sl;
     motionOf(j, t, sp, S, ct, rt, ex, A, lat, th, a0, ph, sl);
+    lat += push;
     float tat = clamp(A.z + safe(tatter, 0.0, 1.0), 0.0, 1.0);
     return shapeOf(j, cw, t, soft, soft, sp, hw, S, tat, lat, th).x;
 }
@@ -251,15 +252,16 @@ vec3 ambientOf(vec3 dir, vec3 up) {
 }
 
 // one ribbon: premultiplied linear colour at the pixel
-//   j lane, cw across coordinate (deflected), t distance from the anchor, pxc/pxs pixel size
-//   across/along, ex excitation, sp spacing, hw half width, S scale, ct Clock, rt real time,
+//   j lane, cw across coordinate, t distance from the anchor, pxc/pxs pixel size
+//   across/along, ex excitation and push sideways offset of this ribbon, sp spacing, hw half width, S scale, ct Clock, rt real time,
 //   Lp light direction in (along, across), m fabric
-vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float sp, float hw,
+vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float push, float sp, float hw,
             float S, float ct, float rt, vec2 Lp, float m) {
     vec4 A, B, D, E;
     fabricOf(m, A, B, D, E);
     float lat, th, a0, ph, sl;
     motionOf(j, t, sp, S, ct, rt, ex, A, lat, th, a0, ph, sl);
+    lat += push;                                                      // the whole strip moves around what stands there
     float tat = clamp(A.z + safe(tatter, 0.0, 1.0), 0.0, 1.0);
     vec3 sh = shapeOf(j, cw, t, pxc, pxs, sp, hw, S, tat, lat, th);
     float cov = sh.x;
@@ -380,6 +382,10 @@ vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float sp
     alpha *= cov;
     return vec4(clamp(col, 0.0, 64.0) * alpha, alpha);
 }
+
+// reads the processed field at a point of the ribbon plane: x occupancy, y excitation (0 outside).
+// A macro, because Wire's ISF reads images only directly in main().
+#define FIELD_AT(PT, OUT) { vec3 fr_ = toFrame(PT, rFloor, aspect, H); vec3 ff_ = vec3(-1.0, -1.0, 0.0); if (fr_.z > 0.5) ff_ = toField(fr_.xy, aspect, H); vec4 fv_ = IMG_NORM_PIXEL(field, clamp(ff_.xy, 0.0, 1.0)); OUT = ff_.z > 0.5 ? vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)) : vec2(0.0); }
 
 void main() {
     vec2 uv = isf_FragNormCoord;
@@ -508,23 +514,12 @@ void main() {
 
     vec3 P = toPlane(uv, rFloor, aspect, H);
 
-    // the field at this pixel and beside it, across the ribbons
+    // the field at this pixel (fade inside occupancy, Show Field)
     vec3 F = toField(uv, aspect, H);
-    vec3 Fp = vec3(-1.0, -1.0, 0.0);
-    vec3 Fm = vec3(-1.0, -1.0, 0.0);
-    if (P.z > 0.5) {
-        vec3 up = toFrame(P.xy + n * D, rFloor, aspect, H);
-        vec3 um = toFrame(P.xy - n * D, rFloor, aspect, H);
-        if (up.z > 0.5) Fp = toField(up.xy, aspect, H);
-        if (um.z > 0.5) Fm = toField(um.xy, aspect, H);
-    }
     vec4 fc = IMG_NORM_PIXEL(field, clamp(F.xy, 0.0, 1.0));
-    vec4 fp = IMG_NORM_PIXEL(field, clamp(Fp.xy, 0.0, 1.0));
-    vec4 fm = IMG_NORM_PIXEL(field, clamp(Fm.xy, 0.0, 1.0));
     float ex = F.z > 0.5 ? safe(fc.r, 0.0, 1.0) : 0.0;
     float occ = F.z > 0.5 ? safe(fc.g, 0.0, 1.0) : 0.0;
     float shd = F.z > 0.5 ? safe(fc.b, 0.0, 1.0) : 0.0;
-    float grad = (Fp.z > 0.5 ? safe(fp.g, 0.0, 1.0) : 0.0) - (Fm.z > 0.5 ? safe(fm.g, 0.0, 1.0) : 0.0);
 
     vec4 acc = vec4(0.0);
     float density = safe(ribbonDensity, 0.0, 200.0);
@@ -552,10 +547,8 @@ void main() {
         float s0 = min(min(dot(q0, w), dot(q1, w)), min(dot(q2, w), dot(q3, w)));
         float t = dot(P.xy, w) - s0;
 
-        // flow around (or towards, when negative): the ribbons move away from occupancy
         float avoid = safe(avoidStrength, -10.0, 10.0);
-        float cw = dot(P.xy, n) + avoid * D * 1.5 * grad;
-
+        float cw = dot(P.xy, n);
         float sp = S / density;                           // ribbon spacing, output heights
         float hw = 0.5 * width * S;                       // half width
         float la = radians(safe(lightSource, -3600.0, 3600.0));
@@ -564,22 +557,54 @@ void main() {
 
         float j1 = floor(cw / sp + 0.5);
         float j0 = j1 - 1.0, j2 = j1 + 1.0;
-        vec4 c0 = ribbon(j0, cw, t, pxc, pxs, ex, sp, hw, S, ct, rt, Lp, m);
-        vec4 c1 = ribbon(j1, cw, t, pxc, pxs, ex, sp, hw, S, ct, rt, Lp, m);
-        vec4 c2 = ribbon(j2, cw, t, pxc, pxs, ex, sp, hw, S, ct, rt, Lp, m);
+
+        // flow around (or towards, when negative): each ribbon reads the field along its own
+        // centre line, beside it and a little upwind (so it stays out of the way behind an
+        // object), and moves sideways as a whole strip; motion there makes the whole strip flutter
+        float wake = 0.35 * S, bend = 0.15 * S;          // read along the ribbon too, so it bends in a smooth arc
+        vec2 g0, g1, g2, g3, g4, g5, g6, g7, g8;
+#define SOFT_PUSH(X) (0.75 * sp * (X) / (0.75 * sp + abs(X)))      // saturates softly: no zigzag at strong avoid
+#define PUSH_OF (((g1.x - g2.x) + 0.6 * (g3.x - g4.x) + 0.7 * (g5.x - g6.x) + 0.7 * (g7.x - g8.x)) / 1.8)
+        vec2 Pc;
+        float p0, p1, p2, e0, e1, e2;
+        Pc = n * (j0 * sp) + w * (t + s0);
+        FIELD_AT(Pc, g0) FIELD_AT(Pc + n * D, g1) FIELD_AT(Pc - n * D, g2)
+        FIELD_AT(Pc - w * wake + n * D, g3) FIELD_AT(Pc - w * wake - n * D, g4)
+        FIELD_AT(Pc - w * bend + n * D, g5) FIELD_AT(Pc - w * bend - n * D, g6)
+        FIELD_AT(Pc + w * bend + n * D, g7) FIELD_AT(Pc + w * bend - n * D, g8)
+        p0 = SOFT_PUSH(-avoid * sp * PUSH_OF);
+        e0 = max(g0.y, 0.6 * max(g1.y, g2.y));
+        Pc = n * (j1 * sp) + w * (t + s0);
+        FIELD_AT(Pc, g0) FIELD_AT(Pc + n * D, g1) FIELD_AT(Pc - n * D, g2)
+        FIELD_AT(Pc - w * wake + n * D, g3) FIELD_AT(Pc - w * wake - n * D, g4)
+        FIELD_AT(Pc - w * bend + n * D, g5) FIELD_AT(Pc - w * bend - n * D, g6)
+        FIELD_AT(Pc + w * bend + n * D, g7) FIELD_AT(Pc + w * bend - n * D, g8)
+        p1 = SOFT_PUSH(-avoid * sp * PUSH_OF);
+        e1 = max(g0.y, 0.6 * max(g1.y, g2.y));
+        Pc = n * (j2 * sp) + w * (t + s0);
+        FIELD_AT(Pc, g0) FIELD_AT(Pc + n * D, g1) FIELD_AT(Pc - n * D, g2)
+        FIELD_AT(Pc - w * wake + n * D, g3) FIELD_AT(Pc - w * wake - n * D, g4)
+        FIELD_AT(Pc - w * bend + n * D, g5) FIELD_AT(Pc - w * bend - n * D, g6)
+        FIELD_AT(Pc + w * bend + n * D, g7) FIELD_AT(Pc + w * bend - n * D, g8)
+        p2 = SOFT_PUSH(-avoid * sp * PUSH_OF);
+        e2 = max(g0.y, 0.6 * max(g1.y, g2.y));
+
+        vec4 c0 = ribbon(j0, cw, t, pxc, pxs, e0, p0, sp, hw, S, ct, rt, Lp, m);
+        vec4 c1 = ribbon(j1, cw, t, pxc, pxs, e1, p1, sp, hw, S, ct, rt, Lp, m);
+        vec4 c2 = ribbon(j2, cw, t, pxc, pxs, e2, p2, sp, hw, S, ct, rt, Lp, m);
         // overlapping ribbons: back to front by a random depth per ribbon
         float k0 = hash11(j0 * 1.31 + 9.0), k1 = hash11(j1 * 1.31 + 9.0), k2 = hash11(j2 * 1.31 + 9.0);
         // soft shadows: a ribbon in front darkens the ones behind it, shifted away from the light
         float sd = 0.6 * hw + 0.02 * S;
         float sc = cw + Lp.y * sd, st = t + Lp.x * sd, soft = 0.35 * hw + pxc;
-        float o0 = coverOf(j0, sc, st, soft, sp, hw, S, ct, rt, ex, m);
-        float o1 = coverOf(j1, sc, st, soft, sp, hw, S, ct, rt, ex, m);
-        float o2 = coverOf(j2, sc, st, soft, sp, hw, S, ct, rt, ex, m);
+        float o0 = coverOf(j0, sc, st, soft, sp, hw, S, ct, rt, e0, p0, m);
+        float o1 = coverOf(j1, sc, st, soft, sp, hw, S, ct, rt, e1, p1, m);
+        float o2 = coverOf(j2, sc, st, soft, sp, hw, S, ct, rt, e2, p2, m);
         // and ambient occlusion: right next to a ribbon in front, less light reaches the one behind
         float wide = 0.9 * hw + pxc;
-        float z0 = coverOf(j0, cw, t, wide, sp, hw, S, ct, rt, ex, m);
-        float z1 = coverOf(j1, cw, t, wide, sp, hw, S, ct, rt, ex, m);
-        float z2 = coverOf(j2, cw, t, wide, sp, hw, S, ct, rt, ex, m);
+        float z0 = coverOf(j0, cw, t, wide, sp, hw, S, ct, rt, e0, p0, m);
+        float z1 = coverOf(j1, cw, t, wide, sp, hw, S, ct, rt, e1, p1, m);
+        float z2 = coverOf(j2, cw, t, wide, sp, hw, S, ct, rt, e2, p2, m);
         c0.rgb *= (1.0 - 0.6 * max(k1 > k0 ? o1 : 0.0, k2 > k0 ? o2 : 0.0)) * (1.0 - 0.3 * max(k1 > k0 ? z1 : 0.0, k2 > k0 ? z2 : 0.0));
         c1.rgb *= (1.0 - 0.6 * max(k0 > k1 ? o0 : 0.0, k2 > k1 ? o2 : 0.0)) * (1.0 - 0.3 * max(k0 > k1 ? z0 : 0.0, k2 > k1 ? z2 : 0.0));
         c2.rgb *= (1.0 - 0.6 * max(k0 > k2 ? o0 : 0.0, k1 > k2 ? o1 : 0.0)) * (1.0 - 0.3 * max(k0 > k2 ? z0 : 0.0, k1 > k2 ? z1 : 0.0));
