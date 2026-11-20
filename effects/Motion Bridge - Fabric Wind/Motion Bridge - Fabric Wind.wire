@@ -349,17 +349,6 @@
 		],
 		"inputOrder": {
 			"groups": {
-				"1795000000001": {
-					"children": [
-						7,
-						8,
-						9,
-						10,
-						11
-					],
-					"collapsed": false,
-					"name": "Ribbons"
-				},
 				"1795000000002": {
 					"children": [
 						12,
@@ -367,6 +356,11 @@
 						14,
 						15,
 						16,
+						7,
+						8,
+						9,
+						10,
+						11,
 						17
 					],
 					"collapsed": false,
@@ -415,9 +409,6 @@
 					"node": 0
 				},
 				{
-					"group": 1795000000001
-				},
-				{
 					"group": 1795000000002
 				},
 				{
@@ -446,7 +437,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Motion Bridge - Fabric Wind: ribbons of fabric blow in the wind, over the floor in front of the projection or flat across the screen. Driven by the Motion Bridge field (Spout): the ribbons flow around what stands there (or towards it) and flutter where something moves, then calm down. Calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Scale sizes everything relative to the output height; Clock (0 to 1000) drives the wind's waves: set its phase source to Timeline, Duration 1000 s; the flutter runs in real time. Ribbons: Ribbon Plane (Floor = perspective over the floor, Screen = flat), Ribbon Density, Ribbon Width, Ribbon Length, Ribbons Opacity. Fabric: Fabric (Rags, Silk, Velvet, Chiffon, Linen, Lame), Fabric Color, Fabric Sheen, Fabric Weight, Tatter (holes and frayed edges), Light Source (angle, 135 = top left). View: Horizon Y. Field: where the bridge's field lies in the picture. Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (shares of the floor in view or of the frame), Field Rotation (0 = front at the bottom, 90 = right, 180 = top, -90 = left). Physics: Wind Direction (where the ribbons blow; on the floor 270 = towards the viewer), Wind Strength, Avoid Strength (negative = drawn towards), Flutter Strength, Flutter Life, Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field in its plane: red occupancy, green excitation, blue held shadow, white the front, magenta the other edges. Shader: Resource\/FabricWind.fs.",
+			"description": "Motion Bridge - Fabric Wind: ribbons of fabric blow in the wind, over the floor in front of the projection or flat across the screen. Driven by the Motion Bridge field (Spout): the ribbons part around what stands there like a stream around a post (or are drawn towards it) and flutter where something moves, then calm down. Calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Scale sizes everything relative to the output height; Clock (0 to 1000) drives the wind's waves: set its phase source to Timeline, Duration 1000 s; the flutter runs in real time. Fabric: Fabric (Rags, Silk, Velvet, Chiffon, Linen, Lame), Fabric Color, Fabric Sheen, Fabric Weight, Tatter (holes and frayed edges), Ribbon Plane (Floor = perspective over the floor, Screen = flat), Ribbon Density, Ribbon Width, Ribbon Length, Ribbons Opacity, Light Source (angle, 135 = top left). View: Horizon Y. Field: where the bridge's field lies in the picture. Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (shares of the floor in view or of the frame), Field Rotation (0 = front at the bottom, 90 = right, 180 = top, -90 = left). Physics: Wind Direction (where the ribbons blow; on the floor 270 = towards the viewer), Wind Strength, Avoid Strength (negative = drawn towards), Flutter Strength, Flutter Life, Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field in its plane: red occupancy, green excitation, blue held shadow, white the front, magenta the other edges. Shader: Resource\/FabricWind.fs.",
 			"displayName": "Motion Bridge - Fabric Wind",
 			"identifier": "54794905-1441-412c-8480-7048aeb131d5",
 			"licenseName": "Unlicense",

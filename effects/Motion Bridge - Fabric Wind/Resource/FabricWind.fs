@@ -44,6 +44,7 @@
     { "TARGET": "blurX", "FLOAT": true, "WIDTH": "160", "HEIGHT": "120" },
     { "TARGET": "blurXY", "FLOAT": true, "WIDTH": "160", "HEIGHT": "120" },
     { "TARGET": "field", "PERSISTENT": true, "FLOAT": true, "WIDTH": "160", "HEIGHT": "120" },
+    { "TARGET": "pushT", "PERSISTENT": true, "FLOAT": true, "WIDTH": "$WIDTH/2", "HEIGHT": "$HEIGHT/4" },
     { }
   ]
 }*/
@@ -63,14 +64,18 @@
 //
 // Ribbons are strips of fabric anchored at the upwind edge of their plane and blown along the
 // Wind Direction. Waves travel along them with Clock; they ripple out of the plane (shading),
-// twist and swing sideways. Occupancy pushes them aside (the gradient of the field across the
-// ribbon), motion excites a fast flutter that fades over Flutter Life.
+// twist and swing sideways. They part around what stands there like a stream around a post
+// (pushT), motion excites a fast flutter that fades over Flutter Life.
 //
 // state (2 x 1, persistent, signature in alpha):
 //   pixel 0: now (s), last counter, time of the last counter change (s)
 //   pixel 1: frame time dt (s), real time (s) for the flutter, visibility in use (0/1)
 // blurX, blurXY (160 x 120 over x and depth): r occupancy, g motion blurred; b visibility unblurred
 // field (160 x 120, persistent): r excitation, g occupancy smoothed, b 1 in a held shadow
+// pushT (output / (2, 4), persistent): one column per ribbon, rows along the wind:
+//   r sideways offset of the ribbon there (output heights, smoothed over time), g excitation,
+//   b the side it passes an object on x the object's size (0 = none), voted over the column;
+//   its size also carries the output's aspect for this pass (width * 2 / (height * 4))
 
 const float SIG = 0.67;
 const float LSB = 1.0 / 255.0;
@@ -80,6 +85,7 @@ const float BLUR_X = 0.06;         // blur radius of the field, in field units
 const float BLUR_D = 0.06;
 const float BAND_Y = 31.0 / 32.0;  // middle of the status band
 const float FIELD_H = 15.0 / 16.0; // the field rows in the texture
+const vec2 FIELD_RES = vec2(160.0, 120.0);   // size of the field pass
 const float TAU = 6.2831853;
 
 float safe(float v, float lo, float hi) {
@@ -384,8 +390,32 @@ vec4 ribbon(float j, float cw, float t, float pxc, float pxs, float ex, float pu
 }
 
 // reads the processed field at a point of the ribbon plane: x occupancy, y excitation (0 outside).
-// A macro, because Wire's ISF reads images only directly in main().
-#define FIELD_AT(PT, OUT) { vec3 fr_ = toFrame(PT, rFloor, aspect, H); vec3 ff_ = vec3(-1.0, -1.0, 0.0); if (fr_.z > 0.5) ff_ = toField(fr_.xy, aspect, H); vec4 fv_ = IMG_NORM_PIXEL(field, clamp(ff_.xy, 0.0, 1.0)); OUT = ff_.z > 0.5 ? vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)) : vec2(0.0); }
+// Interpolated by hand (Wire reads float textures unfiltered). A macro, because Wire's ISF reads
+// images only directly in main().
+#define FIELD_AT(PT, OUT) { vec3 fr_ = toFrame(PT, rFloor, aspect, H); vec3 ff_ = vec3(-1.0, -1.0, 0.0); if (fr_.z > 0.5) ff_ = toField(fr_.xy, aspect, H); OUT = vec2(0.0); if (ff_.z > 0.5) { vec2 fp_ = clamp(ff_.xy, 0.0, 1.0) * FIELD_RES - 0.5; vec2 fi_ = floor(fp_); vec2 fq_ = fp_ - fi_; vec2 f0_ = (clamp(fi_, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec2 f1_ = (clamp(fi_ + 1.0, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec4 fv_ = mix(mix(IMG_NORM_PIXEL(field, f0_), IMG_NORM_PIXEL(field, vec2(f1_.x, f0_.y)), fq_.x), mix(IMG_NORM_PIXEL(field, vec2(f0_.x, f1_.y)), IMG_NORM_PIXEL(field, f1_), fq_.x), fq_.y); OUT = vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)); } }
+
+// the visible part of the ribbon plane, in ribbon coordinates: (across min, max, along min, max)
+vec4 planeBox(bool onFloor, float aspect, vec2 w, vec2 n) {
+    vec2 q0, q1, q2, q3;
+    if (onFloor) {
+        q0 = vec2(-0.5 * aspect, 1.0); q1 = vec2(0.5 * aspect, 1.0);
+        q2 = vec2(-0.5 * aspect * ZFADE, ZFADE); q3 = vec2(0.5 * aspect * ZFADE, ZFADE);
+    } else {
+        q0 = vec2(-0.5 * aspect, 0.0); q1 = vec2(0.5 * aspect, 0.0);
+        q2 = vec2(-0.5 * aspect, 1.0); q3 = vec2(0.5 * aspect, 1.0);
+    }
+    vec4 c = vec4(dot(q0, n), dot(q1, n), dot(q2, n), dot(q3, n));
+    vec4 a = vec4(dot(q0, w), dot(q1, w), dot(q2, w), dot(q3, w));
+    return vec4(min(min(c.x, c.y), min(c.z, c.w)), max(max(c.x, c.y), max(c.z, c.w)),
+                min(min(a.x, a.y), min(a.z, a.w)), max(max(a.x, a.y), max(a.z, a.w)));
+}
+
+// the ribbon in the first column of pushT; centred on the plane when there are more ribbons
+float tableJ0(vec4 box, float sp, float cols) {
+    float lo = floor(box.x / sp) - 7.0, hi = ceil(box.y / sp) + 7.0;
+    if (hi - lo + 1.0 > cols) lo = floor(0.5 * (box.x + box.y) / sp) - floor(0.5 * cols);
+    return lo;
+}
 
 void main() {
     vec2 uv = isf_FragNormCoord;
@@ -499,7 +529,105 @@ void main() {
         return;
     }
 
-    // ---------- pass 4: the picture ----------
+    // ---------- pass 4: how far each ribbon moves aside, along its length ----------
+    // Like a stream around a post: the occupancy across the ribbon's centre line gives an
+    // object's centre and half width R; the ribbon at the offset y0 from that centre moves, as a
+    // whole strip, to the offset a streamline has around a cylinder, sqrt(y0^2 + R^2). The ribbons
+    // part around the object and crowd at its sides; far away they hardly move. Read a little
+    // up- and downwind too, so the ribbon bends in a smooth arc and stays apart behind it.
+    // Negative Avoid Strength draws the ribbons in instead.
+    if (PASSINDEX == 4) {
+        vec2 TS = max(floor(gl_FragCoord.xy / max(uv, vec2(1e-6)) + 0.5), vec2(1.0));   // this pass's size
+        float aspect = TS.x * 2.0 / (TS.y * 4.0);       // this pass is (width / 2) x (height / 4)
+        float S = clamp(scale, 0.001, 1000.0);
+        float H = clamp(horizonY * S, 0.001, 1000.0);
+        bool rFloor = safe(ribbonPlane, 0.0, 1.0) < 0.5;
+        float wa = radians(safe(windDirection, -3600.0, 3600.0));
+        vec2 w = vec2(cos(wa), sin(wa));
+        vec2 n = vec2(-w.y, w.x);
+        float density = safe(ribbonDensity, 0.0, 200.0);
+        float avoid = safe(avoidStrength, -10.0, 10.0);
+        vec4 prev = IMG_NORM_PIXEL(pushT, uv);
+        float push = 0.0, e = 0.0, side = 0.0;
+        if (abs(prev.a - SIG) > 0.01) prev = vec4(0.0);
+        if (density > 0.0) {
+            float sp = S / density;
+            vec4 box = planeBox(rFloor, aspect, w, n);
+            float jj = tableJ0(box, sp, TS.x) + floor(gl_FragCoord.x);
+            if (jj > ceil(box.y / sp) + 7.0) { gl_FragColor = vec4(0.0, 0.0, 0.0, SIG); return; }   // beyond the picture
+            float jb = jj * sp;
+            float al = box.z + uv.y * (box.w - box.z);
+            float wake = 0.35 * S, bend = 0.15 * S, stp = 0.12 * S;
+            vec2 ga, gb, gc;
+            float lm = 0.0, lc = 0.0;
+            float exv[9];
+            for (int k = 0; k < 9; k++) {
+                float o = (float(k) - 4.0) * stp;
+                vec2 Pk = n * (jb + o) + w * al;
+                // along the ribbon: the object ahead bends it a little early, behind it the
+                // ribbon returns slowly (the wake); the strongest weighted occupancy counts
+                FIELD_AT(Pk, ga)
+                float g = ga.x;
+                for (int d = 1; d <= 14; d++) {
+                    float dd = float(d) * wake / 14.0;
+                    FIELD_AT(Pk - w * dd, gb)                 // upwind of here: this point is in its wake
+                    float q = dd / wake;
+                    g = max(g, gb.x * (1.0 - q * q));
+                }
+                for (int d = 1; d <= 2; d++) {
+                    float dd = float(d) * bend / 2.0;
+                    FIELD_AT(Pk + w * dd, gc)                 // downwind of here: the object ahead
+                    float q = dd / (1.2 * bend);
+                    g = max(g, gc.x * (1.0 - q * q));
+                }
+                g = smoothstep(0.15, 0.5, g);                 // faint traces are no object
+                lm += g; lc += g * o;
+                exv[k] = ga.y;
+            }
+            float ca = jb + (lm > 1e-3 ? lc / lm : 0.0);
+            float Re = min(0.5 * lm * stp * min(abs(avoid), 10.0), 3.0 * S);
+            // the ribbon's edge, not its middle, clears the object (faded in with the object)
+            float hwp = 0.5 * safe(ribbonWidth, 0.0, 0.5) * S;
+            Re += hwp * clamp(Re / max(0.3 * hwp, 1e-4), 0.0, 1.0) * sign(avoid);
+            Re = max(Re, 0.0);
+            float y0 = jb - ca;
+            float yy;
+            if (avoid >= 0.0) {
+                // the side the ribbon passes on. Away from the centre: the side it is on. Within the
+                // object: one side for the whole ribbon, voted over its length last frame (b holds
+                // side x size), so it does not switch sides along its length or flicker while
+                // someone sways; new: the side it is on, with a small random bias per ribbon
+                float vote = 0.0;
+                for (int v = 0; v < 16; v++) vote += IMG_NORM_PIXEL(pushT, vec2(uv.x, (float(v) + 0.5) / 16.0)).b;
+                float hb = hash11(jj * 7.13 + 3.0) - 0.5;
+                float sb = y0 + (hb < 0.0 ? -1.0 : 1.0) * (0.15 + 0.4 * abs(hb)) * sp;
+                float sv = abs(vote) > 1e-4 ? (vote < 0.0 ? -1.0 : 1.0) : (sb < 0.0 ? -1.0 : 1.0);
+                float sn = y0 < 0.0 ? -1.0 : 1.0;
+                float rr = sqrt(y0 * y0 + Re * Re);
+                float yv = sv * rr;
+                // crossing over to the other side of the centre: only as far as the object is big
+                if (sv * y0 < 0.0) yv = mix(y0, yv, clamp(Re / (abs(y0) + 0.05 * sp), 0.0, 1.0));
+                // towards the object's edge the ribbon takes its own side, smoothly
+                float own = smoothstep(0.5, 1.0, abs(y0) / max(Re, 1e-4));
+                yy = mix(yv, sn * rr, own);
+                side = Re > 1e-3 ? sv * Re * (1.0 - own) : 0.0;
+            } else {
+                yy = (y0 < 0.0 ? -1.0 : 1.0) * max(2.0 * abs(y0) - sqrt(y0 * y0 + Re * Re), 0.0);
+            }
+            push = clamp(ca + yy - jb, -5.5 * sp, 5.5 * sp);   // the picture looks 6 ribbons to each side
+            // motion where the ribbon now is makes it flutter
+            for (int k = 0; k < 9; k++) {
+                float o = (float(k) - 4.0) * stp;
+                e = max(e, exv[k] * (1.0 - smoothstep(0.0, 1.5 * stp, abs(o - push))));
+            }
+        }
+        // fabric has inertia: the ribbon swings over instead of jumping
+        push = mix(safe(prev.r, -100.0, 100.0), push, 1.0 - exp(-dt / 0.15));
+        gl_FragColor = vec4(push, e, side, SIG);
+        return;
+    }
+
+    // ---------- pass 5: the picture ----------
     vec2 res = max(RENDERSIZE, vec2(1.0));
     float aspect = res.x / res.y;
     float S = clamp(scale, 0.001, 1000.0);
@@ -510,11 +638,10 @@ void main() {
     float wa = radians(safe(windDirection, -3600.0, 3600.0));
     vec2 w = vec2(cos(wa), sin(wa));                      // where the wind blows, in the ribbon plane
     vec2 n = vec2(-w.y, w.x);                             // across the ribbons
-    float D = 0.1 * S;                                    // gradient step, output heights
 
     vec3 P = toPlane(uv, rFloor, aspect, H);
 
-    // the field at this pixel (fade inside occupancy, Show Field)
+    // the field at this pixel (Show Field)
     vec3 F = toField(uv, aspect, H);
     vec4 fc = IMG_NORM_PIXEL(field, clamp(F.xy, 0.0, 1.0));
     float ex = F.z > 0.5 ? safe(fc.r, 0.0, 1.0) : 0.0;
@@ -555,71 +682,81 @@ void main() {
         vec2 l2 = vec2(cos(la), sin(la));
         vec2 Lp = vec2(dot(l2, w), dot(l2, n));
 
-        float j1 = floor(cw / sp + 0.5);
-        float j0 = j1 - 1.0, j2 = j1 + 1.0;
+        // the ribbon whose centre (pushed aside, with its sway) is nearest to this pixel, from
+        // pushT, and three on each side: beside an object the ribbons crowd and overlap
+        vec2 TSz = max(IMG_SIZE(pushT), vec2(1.0));
+        float aspT = TSz.x * 2.0 / (TSz.y * 4.0);       // the same aspect as the pass that wrote it
+        vec4 box = planeBox(rFloor, aspT, w, n);
+        float jt0 = tableJ0(box, sp, TSz.x);
+        float ty = clamp((dot(P.xy, w) - box.z) / max(box.w - box.z, 1e-6), 0.0, 1.0);
+        float jc = floor(cw / sp + 0.5);
+        float tyd = 3.0 / TSz.y;                           // smooth along the ribbon: a tent over +-12 rows
+// pushT is read without filtering: interpolate between rows by hand, smoothed along the ribbon
+#define PUSH_ROW(CX, TY, OUT) { float ry_ = clamp(TY, 0.0, 1.0) * TSz.y - 0.5; float r0_ = clamp(floor(ry_), 0.0, TSz.y - 1.0); float r1_ = min(r0_ + 1.0, TSz.y - 1.0); OUT = mix(IMG_NORM_PIXEL(pushT, vec2(CX, (r0_ + 0.5) / TSz.y)).rg, IMG_NORM_PIXEL(pushT, vec2(CX, (r1_ + 0.5) / TSz.y)).rg, clamp(ry_ - r0_, 0.0, 1.0)); }
+#define PUSH_AT(COL, OUT) { OUT = vec2(0.0); if (COL >= 0.0 && COL < TSz.x) { float cx_ = (COL + 0.5) / TSz.x; vec2 pr_; float ws_ = 0.0; for (int k_ = -4; k_ <= 4; k_++) { float wk_ = 5.0 - abs(float(k_)); PUSH_ROW(cx_, ty + float(k_) * tyd, pr_) OUT += wk_ * pr_; ws_ += wk_; } OUT /= ws_; } }
+#define PUSH_ONE(COL, OUT) { OUT = vec2(0.0); if (COL >= 0.0 && COL < TSz.x) PUSH_ROW((COL + 0.5) / TSz.x, ty, OUT) }
+        vec4 fA, fB, fD, fE;
+        fabricOf(m, fA, fB, fD, fE);
+        float jn = jc, bd = 1e9;
+        for (int k = -6; k <= 6; k++) {
+            float jj = jc + float(k);
+            float col = jj - jt0;
+            vec2 v;
+            PUSH_ONE(col, v)
+            v = vec2(safe(v.x, -100.0, 100.0), safe(v.y, 0.0, 1.0));
+            float mlat, mth, ma0, mph, msl;
+            motionOf(jj, t, sp, S, ct, rt, v.y, fA, mlat, mth, ma0, mph, msl);
+            float d = abs(jj * sp + v.x + mlat - cw);
+            if (d < bd) { bd = d; jn = jj; }
+        }
 
-        // flow around (or towards, when negative): each ribbon reads the field along its own
-        // centre line, beside it and a little upwind (so it stays out of the way behind an
-        // object), and moves sideways as a whole strip; motion there makes the whole strip flutter
-        float wake = 0.35 * S, bend = 0.15 * S;          // read along the ribbon too, so it bends in a smooth arc
-        vec2 g0, g1, g2, g3, g4, g5, g6, g7, g8;
-#define SOFT_PUSH(X) (0.75 * sp * (X) / (0.75 * sp + abs(X)))      // saturates softly: no zigzag at strong avoid
-#define PUSH_OF (((g1.x - g2.x) + 0.6 * (g3.x - g4.x) + 0.7 * (g5.x - g6.x) + 0.7 * (g7.x - g8.x)) / 1.8)
-        vec2 Pc;
-        float p0, p1, p2, e0, e1, e2;
-        Pc = n * (j0 * sp) + w * (t + s0);
-        FIELD_AT(Pc, g0) FIELD_AT(Pc + n * D, g1) FIELD_AT(Pc - n * D, g2)
-        FIELD_AT(Pc - w * wake + n * D, g3) FIELD_AT(Pc - w * wake - n * D, g4)
-        FIELD_AT(Pc - w * bend + n * D, g5) FIELD_AT(Pc - w * bend - n * D, g6)
-        FIELD_AT(Pc + w * bend + n * D, g7) FIELD_AT(Pc + w * bend - n * D, g8)
-        p0 = SOFT_PUSH(-avoid * sp * PUSH_OF);
-        e0 = max(g0.y, 0.6 * max(g1.y, g2.y));
-        Pc = n * (j1 * sp) + w * (t + s0);
-        FIELD_AT(Pc, g0) FIELD_AT(Pc + n * D, g1) FIELD_AT(Pc - n * D, g2)
-        FIELD_AT(Pc - w * wake + n * D, g3) FIELD_AT(Pc - w * wake - n * D, g4)
-        FIELD_AT(Pc - w * bend + n * D, g5) FIELD_AT(Pc - w * bend - n * D, g6)
-        FIELD_AT(Pc + w * bend + n * D, g7) FIELD_AT(Pc + w * bend - n * D, g8)
-        p1 = SOFT_PUSH(-avoid * sp * PUSH_OF);
-        e1 = max(g0.y, 0.6 * max(g1.y, g2.y));
-        Pc = n * (j2 * sp) + w * (t + s0);
-        FIELD_AT(Pc, g0) FIELD_AT(Pc + n * D, g1) FIELD_AT(Pc - n * D, g2)
-        FIELD_AT(Pc - w * wake + n * D, g3) FIELD_AT(Pc - w * wake - n * D, g4)
-        FIELD_AT(Pc - w * bend + n * D, g5) FIELD_AT(Pc - w * bend - n * D, g6)
-        FIELD_AT(Pc + w * bend + n * D, g7) FIELD_AT(Pc + w * bend - n * D, g8)
-        p2 = SOFT_PUSH(-avoid * sp * PUSH_OF);
-        e2 = max(g0.y, 0.6 * max(g1.y, g2.y));
+        float lj[7];
+        float lp[7];
+        float le[7];
+        for (int l = 0; l < 7; l++) {
+            float jj = jn + float(l) - 3.0;
+            float col = jj - jt0;
+            vec2 v;
+            PUSH_AT(col, v)
+            lj[l] = jj;
+            lp[l] = safe(v.x, -100.0, 100.0);
+            le[l] = safe(v.y, 0.0, 1.0);
+        }
 
-        vec4 c0 = ribbon(j0, cw, t, pxc, pxs, e0, p0, sp, hw, S, ct, rt, Lp, m);
-        vec4 c1 = ribbon(j1, cw, t, pxc, pxs, e1, p1, sp, hw, S, ct, rt, Lp, m);
-        vec4 c2 = ribbon(j2, cw, t, pxc, pxs, e2, p2, sp, hw, S, ct, rt, Lp, m);
-        // overlapping ribbons: back to front by a random depth per ribbon
-        float k0 = hash11(j0 * 1.31 + 9.0), k1 = hash11(j1 * 1.31 + 9.0), k2 = hash11(j2 * 1.31 + 9.0);
-        // soft shadows: a ribbon in front darkens the ones behind it, shifted away from the light
+        // each ribbon, its random depth, how much it covers the shadow point and its surroundings
         float sd = 0.6 * hw + 0.02 * S;
         float sc = cw + Lp.y * sd, st = t + Lp.x * sd, soft = 0.35 * hw + pxc;
-        float o0 = coverOf(j0, sc, st, soft, sp, hw, S, ct, rt, e0, p0, m);
-        float o1 = coverOf(j1, sc, st, soft, sp, hw, S, ct, rt, e1, p1, m);
-        float o2 = coverOf(j2, sc, st, soft, sp, hw, S, ct, rt, e2, p2, m);
-        // and ambient occlusion: right next to a ribbon in front, less light reaches the one behind
         float wide = 0.9 * hw + pxc;
-        float z0 = coverOf(j0, cw, t, wide, sp, hw, S, ct, rt, e0, p0, m);
-        float z1 = coverOf(j1, cw, t, wide, sp, hw, S, ct, rt, e1, p1, m);
-        float z2 = coverOf(j2, cw, t, wide, sp, hw, S, ct, rt, e2, p2, m);
-        c0.rgb *= (1.0 - 0.6 * max(k1 > k0 ? o1 : 0.0, k2 > k0 ? o2 : 0.0)) * (1.0 - 0.3 * max(k1 > k0 ? z1 : 0.0, k2 > k0 ? z2 : 0.0));
-        c1.rgb *= (1.0 - 0.6 * max(k0 > k1 ? o0 : 0.0, k2 > k1 ? o2 : 0.0)) * (1.0 - 0.3 * max(k0 > k1 ? z0 : 0.0, k2 > k1 ? z2 : 0.0));
-        c2.rgb *= (1.0 - 0.6 * max(k0 > k2 ? o0 : 0.0, k1 > k2 ? o1 : 0.0)) * (1.0 - 0.3 * max(k0 > k2 ? z0 : 0.0, k1 > k2 ? z1 : 0.0));
-        vec4 tc; float tk;
-        if (k0 > k1) { tc = c0; c0 = c1; c1 = tc; tk = k0; k0 = k1; k1 = tk; }
-        if (k1 > k2) { tc = c1; c1 = c2; c2 = tc; tk = k1; k1 = k2; k2 = tk; }
-        if (k0 > k1) { tc = c0; c0 = c1; c1 = tc; }
-        acc = c0;
-        acc = c1 + acc * (1.0 - c1.a);
-        acc = c2 + acc * (1.0 - c2.a);
+        vec4 lc[7];
+        float lk[7];
+        float lo[7];
+        float lz[7];
+        for (int l = 0; l < 7; l++) {
+            lc[l] = ribbon(lj[l], cw, t, pxc, pxs, le[l], lp[l], sp, hw, S, ct, rt, Lp, m);
+            lk[l] = hash11(lj[l] * 1.31 + 9.0);
+            lo[l] = coverOf(lj[l], sc, st, soft, sp, hw, S, ct, rt, le[l], lp[l], m);   // soft shadow
+            lz[l] = coverOf(lj[l], cw, t, wide, sp, hw, S, ct, rt, le[l], lp[l], m);    // ambient occlusion
+        }
+        // a ribbon in front darkens the ones behind it (shadow shifted away from the light), and
+        // right next to it less ambient light reaches them; then back to front by depth
+        for (int l = 0; l < 7; l++) {
+            float sh = 0.0, oc = 0.0;
+            for (int q = 0; q < 7; q++) {
+                if (lk[q] > lk[l]) { sh = max(sh, lo[q]); oc = max(oc, lz[q]); }
+            }
+            lc[l].rgb *= (1.0 - 0.6 * sh) * (1.0 - 0.3 * oc);
+        }
+        for (int r = 0; r < 7; r++) {
+            for (int l = 0; l < 7; l++) {
+                float rank = 0.0;
+                for (int q = 0; q < 7; q++) rank += lk[q] < lk[l] ? 1.0 : 0.0;
+                if (abs(rank - float(r)) < 0.5) acc = lc[l] + acc * (1.0 - lc[l].a);
+            }
+        }
 
         float fade = 1.0;
         if (rFloor) fade *= 1.0 - smoothstep(FAR * 0.9, ZFADE, P.y);   // towards the horizon
         fade *= smoothstep(3.0, 7.0, sp / pxc);                         // spacing in screen pixels
-        fade *= 1.0 - 0.7 * smoothstep(0.35, 0.8, occ) * clamp(avoid, 0.0, 1.0);
         acc *= fade * clamp(ribbonsOpacity, 0.0, 1.0) * clamp(fabricColor.a, 0.0, 1.0);
     }
 
