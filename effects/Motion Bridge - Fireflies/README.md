@@ -1,6 +1,6 @@
 # Motion Bridge - Fireflies
 
-Motion Bridge - Fireflies is an effect on the [Motion Bridge](../../tools/Motion%20Bridge/) field: fireflies fly about over a transparent background, blink on and off, swarm around whatever stands still in the room and flee from motion. Fleeing always wins.
+Motion Bridge - Fireflies is an effect on the [Motion Bridge](../../tools/Motion%20Bridge/) field: fireflies fly about over a transparent background, flat over the screen or over the floor in perspective, blink on and off, swarm around whatever stands still in the room and flee from motion. Fleeing always wins.
 
 **It needs the Motion Bridge.** The patch reacts only to the bridge's Spout texture `Motion Bridge`: the bridge with a 2D lidar, set up for the room, must run on the same computer as Arena. Without it the fireflies just fly about.
 
@@ -51,7 +51,8 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 - `Scale` (0 to 10, default 1): size of all elements relative to the output height, also the fireflies' speed and how far they sense.
 
 **Fireflies**
-- `Firefly Density` (0 to 500, default 40): fireflies per output height × output height at `Scale` 1, so a wider surface gets more (16:9: about 71).
+- `Firefly Plane` (Floor / Screen, default Screen): Screen = flat over the whole frame; Floor = hovering over the floor in perspective, from the bottom edge to four times that distance (or to the top edge when the horizon lies above the frame), as round lights that get smaller with the distance and fade out towards the far end. Independent of `Field Plane`.
+- `Firefly Density` (0 to 500, default 40): fireflies per output height × output height at `Scale` 1, so a wider surface gets more (16:9 on the screen: about 71). On the floor it counts per floor area (measured at the bottom edge), and the floor in view is larger: at the default horizon about 7.5 times, so up to `Performance Cap`.
 - `Performance Cap` (0 to 1024, default 512): at most this many fireflies.
 - `Firefly Size` (0 to 0.2, default 0.006): radius of the bright core, in output heights.
 - `Glow Size` (0 to 0.5, default 0.02): radius of the glow around it.
@@ -88,13 +89,13 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 What the bridge sends is described in its README (Output). This patch does the following in one ISF shader (`Resource/Fireflies.fs`):
 
 1. **Field** (passes 1 to 4, as in Motion Bridge - Fabric Wind): the bridge's sign of life from the status band, occupancy and motion blurred over about 6 % of the field, motion fading out over 1.5 s, occupancy smoothed over 0.15 s, held shadows.
-2. **Fireflies** (passes 5 and 6, two steps per frame, each reading the buffer the other one wrote): position, velocity, heading and turning sense of every firefly.
+2. **Fireflies** (passes 5 and 6, two steps per frame, each reading the buffer the other one wrote): position, velocity, heading and turning sense of every firefly, in the coordinates of its plane (on the floor: across and distance, in output heights at the bottom edge), so on the floor everything far away is smaller and slower in the picture.
    - *Wander*: each keeps its own heading, which turns at random per distance flown; the frame is the wall.
    - *Sensing*: each reads the field where it is and in 16 points around it, at 0.15 and 0.4 output heights × `Scale`. *Still* is occupancy without motion; *motion* is the motion channel. `Reverse` swaps the two.
    - *Flee*: away from motion, the closer the harder, with a higher top speed.
    - *Swarm*: towards what stands still, held on its soft edge (where the blurred occupancy is about a third) and circling it in its own direction; while swarming, a firefly follows its own heading much less.
    - *Fleeing wins*: as soon as there is motion nearby, the attraction is switched off.
-3. **Picture** (pass 7): the halo from the blurred field, then every lit firefly as a bright core with a soft glow. Each firefly has its own durations and phase for being lit and dark, with a short fade in and out, and twinkles while lit.
+3. **Picture** (pass 7): the halo from the blurred field, then every lit firefly as a bright core with a soft glow (on the floor at its place in perspective, its size divided by its distance). Each firefly has its own durations and phase for being lit and dark, with a short fade in and out, and twinkles while lit.
    - The output is premultiplied (colour × alpha), so the patch needs no Premultiply Alpha node; Arena's *Alpha* blend adds it over what is below.
 
 ## Any surface
@@ -122,6 +123,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-21: `Firefly Plane` (#127): the fireflies hover over the floor in perspective as well, independent of `Field Plane`, like `Ribbon Plane` in Motion Bridge - Fabric Wind. Tested in Arena (1920×1080): Floor with the field on the floor and on the screen, swarm around a standing object and `Reverse` on the floor, `Scale` 0.3 and 5, `Horizon Y` 0 and 10, the screen plane unchanged.
 - 2026-11-21: First version (#127): fireflies that wander, blink (`Firefly Life`, `Dark Time`, `Firefly Twinkle`), swarm around what stands still (`Swarm Strength`) and flee from motion (`Flee Strength`), fleeing always wins; `Reverse` swaps the roles; `Halo On` shows what stands still as a soft light; field controls as in Motion Bridge - Fabric Wind. Tested in Arena (1920×1080) with the live sensor and a simulated object: swarming, `Reverse` 0 and 1, an Arena Timeline on `Reverse`, halo, screen and floor field, `Field Rotation` 90, bridge stopped and restarted, every slider at its extremes (density 500 with cap 1024, sizes 0 and maximum, `Firefly Life` 0 and 30, `Dark Time` 0 and 30, `Wander`, `Air Drag`, `Swarm Strength`, `Flee Strength` 0 and 10, `Scale` 0.3 and 5). Fleeing from someone walking through the field checked live (the area around the movement stays clear, the swarm at the standing object stays). Not tested: other sizes.
 
 ---
