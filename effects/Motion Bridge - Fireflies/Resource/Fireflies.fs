@@ -8,6 +8,7 @@
   "INPUTS": [
     { "NAME": "inputImage", "TYPE": "image" },
     { "NAME": "scale", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 10.0 },
+    { "NAME": "fireflyPlane", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0 },
     { "NAME": "fireflyDensity", "TYPE": "float", "DEFAULT": 40.0, "MIN": 0.0, "MAX": 500.0 },
     { "NAME": "performanceCap", "TYPE": "float", "DEFAULT": 512.0, "MIN": 0.0, "MAX": 1024.0 },
     { "NAME": "fireflySize", "TYPE": "float", "DEFAULT": 0.006, "MIN": 0.0, "MAX": 0.2 },
@@ -54,9 +55,17 @@
 // depth 0..1 into the area at 15/16 of the height, R occupancy, G motion, B visibility; the top
 // sixteenth is the status band whose counter changes every frame.
 //
-// The fireflies fly flat over the frame, in output heights: x from -aspect/2 to aspect/2, y from
-// 0 (bottom) to 1 (top). The field lies on the floor in perspective or flat on the screen
-// (Field Plane, as in Motion Bridge - Fabric Wind); each firefly reads it where it is.
+// Two planes, chosen independently for the fireflies (Firefly Plane) and for the field (Field
+// Plane), as in Motion Bridge - Fabric Wind:
+//   Screen: the frame, plane coordinates ((u - 0.5) * aspect, v), in output heights; the
+//           fireflies fly over the whole frame.
+//   Floor:  a view over the floor in front of the projection; a pixel at height y below the
+//           horizon H sees the floor at the distance Z = H / (H - y) (1 at the bottom edge),
+//           plane coordinates (X, Z), X = (u - 0.5) * aspect * Z. The fireflies hover over the
+//           floor from the bottom edge (Z = 1) to Z = FAR (or the top edge, when the horizon lies
+//           above the frame), drawn as round lights that get smaller with the distance and fade
+//           out towards the far end.
+// Each firefly reads the field where it is.
 //
 // Passes (pass targets are only read where they are not being written, see Star Globe):
 //   0 state (2 x 1): now, last counter, time of the last counter change | dt, real time, visibility in use
@@ -113,6 +122,13 @@ vec3 toPlane(vec2 uv, bool onFloor, float aspect, float H) {
     if (uv.y >= H - 1e-4) return vec3(0.0, 0.0, 0.0);
     float Z = H / (H - uv.y);
     return vec3((uv.x - 0.5) * aspect * Z, Z, 1.0);
+}
+
+// plane coordinates -> frame position (xy) and whether it exists (z)
+vec3 toFrame(vec2 P, bool onFloor, float aspect, float H) {
+    if (!onFloor) return vec3(P.x / aspect + 0.5, P.y, 1.0);
+    if (P.y < 1e-3) return vec3(0.0, 0.0, 0.0);
+    return vec3(P.x / (aspect * P.y) + 0.5, H - H / P.y, 1.0);
 }
 
 // frame position -> field coordinates (x along the front, y = depth) and whether inside (z)
@@ -280,15 +296,22 @@ void main() {
         return;
     }
 
+    // where the fireflies fly: the frame, or the floor from the bottom edge to FAR, or to the top
+    // edge when the horizon lies above the frame
+    bool fFloor = safe(fireflyPlane, 0.0, 1.0) < 0.5;
+    float zFar = H > 1.0001 ? min(FAR, H / (H - 1.0)) : FAR;
+    float area = fFloor ? aspect * (zFar * zFar - 1.0) * 0.5 : aspect;
     // how many fireflies: Firefly Density per reference area (output height x output height at
-    // Scale 1), so a wider surface gets more; at most Performance Cap and 1024
-    float wantF = safe(fireflyDensity, 0.0, 1e5) * aspect / (S * S);
+    // Scale 1; on the floor its size at the bottom edge), so a wider surface gets more; at most
+    // Performance Cap and 1024
+    float wantF = safe(fireflyDensity, 0.0, 1e5) * area / (S * S);
     float countF = min(min(wantF, floor(safe(performanceCap, 0.0, 1e5))), float(N));
     int count = int(ceil(countF));
     float lastFade = countF - floor(countF);
     if (lastFade < 1e-4) lastFade = 1.0;
     float rad = max(safe(fireflySize, 0.0, 100.0), 0.0) * S;   // radius of the bright core, output heights
     vec2 lo = vec2(-0.5 * aspect, 0.0), hi = vec2(0.5 * aspect, 1.0);
+    if (fFloor) { lo = vec2(-0.5 * aspect * zFar, 1.0); hi = vec2(0.5 * aspect * zFar, zFar); }
 
     // ---------- passes 4 and 5: two simulation steps ----------
     // Each firefly keeps its own meandering heading (Wander). It senses the field around it,
@@ -309,7 +332,13 @@ void main() {
         if (i >= count) { gl_FragColor = rowH ? vec4(SIG, 0.0, 0.0, 1.0) : vec4(OFF, OFF, 0.0, 0.0); return; }
         if (!was) {
             // a new firefly appears somewhere in the frame, at rest
-            vec2 pos = mix(lo, hi, vec2(hash3(vec3(seed, 1.1, rt)), hash3(vec3(seed, 2.3, rt + 3.1))));
+            vec2 rnd = vec2(hash3(vec3(seed, 1.1, rt)), hash3(vec3(seed, 2.3, rt + 3.1)));
+            vec2 pos = mix(lo, hi, rnd);
+            if (fFloor) {
+                // evenly over the floor in view: more of it far away
+                float Z = sqrt(1.0 + rnd.y * (zFar * zFar - 1.0));
+                pos = vec2((rnd.x - 0.5) * aspect * Z, Z);
+            }
             float sense = hash3(vec3(seed, 5.5, 1.7)) < 0.5 ? -1.0 : 1.0;
             gl_FragColor = rowH ? vec4(SIG, hash3(vec3(seed, 7.7, rt)) * TAU, sense, 1.0) : vec4(pos, 0.0, 0.0);
             return;
@@ -323,7 +352,9 @@ void main() {
         // ramp of 30 s, Loop, swaps them every 15 s)
         float rev = smoothstep(0.45, 0.55, safe(reverse, 0.0, 1.0));
         vec2 g;
-        FIELD_UV(vec2(pos.x / aspect + 0.5, pos.y), g)
+        vec3 fu = toFrame(pos, fFloor, aspect, H);
+        g = vec2(0.0);
+        if (fu.z > 0.5) FIELD_UV(fu.xy, g)
         float still0 = g.x * (1.0 - smoothstep(0.1, 0.4, g.y));
         float A0 = mix(still0, g.y, rev), F0 = mix(g.y, still0, rev);
         vec2 gA = vec2(0.0), gF = vec2(0.0);
@@ -336,7 +367,9 @@ void main() {
             vec2 dir = vec2(cos(ang), sin(ang));
             vec2 q = pos + dir * dist;
             vec2 gq;
-            FIELD_UV(vec2(q.x / aspect + 0.5, q.y), gq)
+            vec3 qu = toFrame(q, fFloor, aspect, H);
+            gq = vec2(0.0);
+            if (qu.z > 0.5) FIELD_UV(qu.xy, gq)
             float stillq = gq.x * (1.0 - smoothstep(0.1, 0.4, gq.y));
             float Aq = mix(stillq, gq.y, rev), Fq = mix(gq.y, stillq, rev);
             gA += dir * Aq * wk;
@@ -381,8 +414,14 @@ void main() {
         if (spd > vmax) v *= vmax / spd;
         pos += v * sdt;
 
-        // the frame is the wall: back inside, bounce, and the heading turns back inside too
+        // the frame (or the floor in view) is the wall: back inside, bounce, and the heading
+        // turns back inside too
         vec2 m = vec2(rad);
+        if (fFloor) {
+            pos.y = clamp(pos.y, 1.0, zFar);
+            float xe = 0.5 * aspect * pos.y;            // the floor's edges in view widen with the distance
+            lo.x = -xe; hi.x = xe;
+        }
         if (pos.x < lo.x + m.x) { pos.x = lo.x + m.x; v.x = abs(v.x); if (cos(hd) < 0.0) hd = 3.14159265 - hd; }
         if (pos.x > hi.x - m.x) { pos.x = hi.x - m.x; v.x = -abs(v.x); if (cos(hd) > 0.0) hd = 3.14159265 - hd; }
         if (pos.y < lo.y + m.y) { pos.y = lo.y + m.y; v.y = abs(v.y); if (sin(hd) < 0.0) hd = -hd; }
@@ -422,13 +461,24 @@ void main() {
         vec4 s;
         PART(0, j, s)
         if (!validPart(s)) continue;
-        vec2 d = P - s.xy;
-        if (abs(d.x) > reach || abs(d.y) > reach) continue;
-        float bright = litOf(float(j), rt) * (j == count - 1 ? lastFade : 1.0);
+        // where it is in the picture and how big: on the floor smaller with the distance
+        vec2 sp = s.xy;
+        float k = 1.0, far = 1.0;
+        if (fFloor) {
+            vec3 fr = toFrame(s.xy, true, aspect, H);
+            if (fr.z < 0.5) continue;
+            sp = vec2((fr.x - 0.5) * aspect, fr.y);
+            k = 1.0 / max(s.y, 1.0);
+            far = 1.0 - smoothstep(0.75 * FAR, FAR, s.y);   // fade out towards the far end
+        }
+        vec2 d = P - sp;
+        if (abs(d.x) > reach * k + px || abs(d.y) > reach * k + px) continue;
+        float bright = litOf(float(j), rt) * (j == count - 1 ? lastFade : 1.0) * far;
         if (bright <= 0.0) continue;
         float dd = dot(d, d);
-        if (gr > 0.0) glow += exp(-2.0 * dd / (gr * gr)) * bright;   // Glow Size: where it has faded to 1/8
-        if (rad > 0.0) core = max(core, (1.0 - smoothstep(rad - px, rad + px, sqrt(dd))) * clamp(bright, 0.0, 1.0));
+        float gk = gr * k, rk = rad * k;
+        if (gk > 0.0) glow += exp(-2.0 * dd / (gk * gk)) * bright;   // Glow Size: where it has faded to 1/8
+        if (rk > 0.0) core = max(core, (1.0 - smoothstep(rk - px, rk + px, sqrt(dd))) * clamp(bright, 0.0, 1.0));
     }
     over(col, a, glowColor.rgb, (1.0 - exp(-glow * 0.5)) * clamp(glowColor.a, 0.0, 1.0));
     over(col, a, fireflyColor.rgb, core * clamp(fireflyColor.a, 0.0, 1.0));
