@@ -12,7 +12,7 @@ The bridge interprets nothing for a patch: what a value means in the picture is 
 
 Everything happens in one room map seen from above, in metres. Several sensor positions (several sensors, or one sensor moved around) are aligned in this map; the area, the front, exclusions and barriers are drawn into it with the mouse. Rooms and areas of any size and shape work: nothing assumes a rectangle. Patches only receive the normalized texture, so they work on any surface and with any sensor that delivers it.
 
-Patches using it: [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
+Patches using it: [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/), [Motion Bridge - Fireflies](../../effects/Motion%20Bridge%20-%20Fireflies/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
 
 ## How it works and why
 
@@ -239,6 +239,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-21: New patch using the bridge: Motion Bridge - Fireflies (#127).
 - 2026-11-21: Documentation: the B channel is now checked in a patch in Arena (Motion Bridge - Fabric Wind).
 - 2026-11-20: Visibility (#113): the room map tints what each sensor sees, live, so shadows behind people, objects and barriers and outside the fans stay dark (*Show what the sensors see*). The field gets a third image, *Seen*, and the Spout texture carries visibility in B. Tested with the live sensor in the window; B in Arena not checked yet.
 - 2026-11-20: *Find sensor* in the Sensor section: listens briefly on all serial ports at once and lists only the ports with valid STL-27L packets, with the rotation; the port list shows the Windows description of each port. Read-only, DTR and RTS off, ports that hang are given up after 2 s. Tested with the real sensor and nine ports.

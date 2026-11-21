@@ -1,0 +1,3005 @@
+{
+	"formatVersion": {
+		"major": 1,
+		"minor": 1,
+		"patch": 0
+	},
+	"patch": {
+		"connections": [
+			{
+				"from": [
+					0,
+					"output"
+				],
+				"to": [
+					1,
+					"inputImage"
+				]
+			},
+			{
+				"from": [
+					1,
+					"output"
+				],
+				"to": [
+					3,
+					"input"
+				]
+			},
+			{
+				"from": [
+					4,
+					"hours"
+				],
+				"to": [
+					1,
+					"clockH"
+				]
+			},
+			{
+				"from": [
+					4,
+					"minutes"
+				],
+				"to": [
+					1,
+					"clockM"
+				]
+			},
+			{
+				"from": [
+					4,
+					"seconds"
+				],
+				"to": [
+					1,
+					"clockS"
+				]
+			},
+			{
+				"from": [
+					4,
+					"milliseconds"
+				],
+				"to": [
+					1,
+					"clockMs"
+				]
+			},
+			{
+				"from": [
+					5,
+					"output"
+				],
+				"to": [
+					1,
+					"scale"
+				]
+			},
+			{
+				"from": [
+					6,
+					"output"
+				],
+				"to": [
+					1,
+					"fireflyDensity"
+				]
+			},
+			{
+				"from": [
+					7,
+					"output"
+				],
+				"to": [
+					1,
+					"performanceCap"
+				]
+			},
+			{
+				"from": [
+					8,
+					"output"
+				],
+				"to": [
+					1,
+					"fireflySize"
+				]
+			},
+			{
+				"from": [
+					9,
+					"output"
+				],
+				"to": [
+					1,
+					"glowSize"
+				]
+			},
+			{
+				"from": [
+					10,
+					"output"
+				],
+				"to": [
+					1,
+					"fireflyColor"
+				]
+			},
+			{
+				"from": [
+					11,
+					"output"
+				],
+				"to": [
+					1,
+					"glowColor"
+				]
+			},
+			{
+				"from": [
+					12,
+					"output"
+				],
+				"to": [
+					1,
+					"fireflyTwinkle"
+				]
+			},
+			{
+				"from": [
+					13,
+					"output"
+				],
+				"to": [
+					1,
+					"fireflyLife"
+				]
+			},
+			{
+				"from": [
+					14,
+					"output"
+				],
+				"to": [
+					1,
+					"darkTime"
+				]
+			},
+			{
+				"from": [
+					15,
+					"output"
+				],
+				"to": [
+					1,
+					"wander"
+				]
+			},
+			{
+				"from": [
+					16,
+					"output"
+				],
+				"to": [
+					1,
+					"airDrag"
+				]
+			},
+			{
+				"from": [
+					17,
+					"output"
+				],
+				"to": [
+					1,
+					"swarmStrength"
+				]
+			},
+			{
+				"from": [
+					18,
+					"output"
+				],
+				"to": [
+					1,
+					"fleeStrength"
+				]
+			},
+			{
+				"from": [
+					19,
+					"output"
+				],
+				"to": [
+					1,
+					"reverse"
+				]
+			},
+			{
+				"from": [
+					20,
+					"output"
+				],
+				"to": [
+					1,
+					"haloOn"
+				]
+			},
+			{
+				"from": [
+					21,
+					"output"
+				],
+				"to": [
+					1,
+					"haloColor"
+				]
+			},
+			{
+				"from": [
+					22,
+					"output"
+				],
+				"to": [
+					1,
+					"haloOpacity"
+				]
+			},
+			{
+				"from": [
+					23,
+					"output"
+				],
+				"to": [
+					1,
+					"horizonY"
+				]
+			},
+			{
+				"from": [
+					24,
+					"output"
+				],
+				"to": [
+					1,
+					"fieldPlane"
+				]
+			},
+			{
+				"from": [
+					25,
+					"output"
+				],
+				"to": [
+					1,
+					"fieldX"
+				]
+			},
+			{
+				"from": [
+					26,
+					"output"
+				],
+				"to": [
+					1,
+					"fieldY"
+				]
+			},
+			{
+				"from": [
+					27,
+					"output"
+				],
+				"to": [
+					1,
+					"fieldWidth"
+				]
+			},
+			{
+				"from": [
+					28,
+					"output"
+				],
+				"to": [
+					1,
+					"fieldHeight"
+				]
+			},
+			{
+				"from": [
+					29,
+					"output"
+				],
+				"to": [
+					1,
+					"fieldRotation"
+				]
+			},
+			{
+				"from": [
+					30,
+					"output"
+				],
+				"to": [
+					1,
+					"shadowHold"
+				]
+			},
+			{
+				"from": [
+					31,
+					"output"
+				],
+				"to": [
+					1,
+					"showField"
+				]
+			}
+		],
+		"inputOrder": {
+			"groups": {
+				"1796000000001": {
+					"children": [
+						6,
+						7,
+						8,
+						9,
+						10,
+						11,
+						12,
+						13,
+						14
+					],
+					"collapsed": false,
+					"name": "Fireflies"
+				},
+				"1796000000002": {
+					"children": [
+						15,
+						16,
+						17,
+						18,
+						19
+					],
+					"collapsed": false,
+					"name": "Physics"
+				},
+				"1796000000003": {
+					"children": [
+						20,
+						21,
+						22
+					],
+					"collapsed": false,
+					"name": "Halo"
+				},
+				"1796000000004": {
+					"children": [
+						23
+					],
+					"collapsed": false,
+					"name": "View"
+				},
+				"1796000000005": {
+					"children": [
+						24,
+						25,
+						26,
+						27,
+						28,
+						29,
+						30
+					],
+					"collapsed": false,
+					"name": "Field"
+				}
+			},
+			"roots": [
+				{
+					"node": 5
+				},
+				{
+					"node": 0
+				},
+				{
+					"group": 1796000000001
+				},
+				{
+					"group": 1796000000002
+				},
+				{
+					"group": 1796000000003
+				},
+				{
+					"group": 1796000000004
+				},
+				{
+					"group": 1796000000005
+				},
+				{
+					"node": 31
+				}
+			]
+		},
+		"meta": {
+			"author": "Stefan Mazur",
+			"category": "effect",
+			"deploymentTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 29,
+					"patch": 0
+				}
+			},
+			"description": "Motion Bridge - Fireflies: fireflies fly about, blink on and off, swarm around whatever stands still and flee from motion; fleeing always wins. Reverse (0 to 1) swaps the roles: they swarm around motion and flee from what stands still (animate it in Arena, e.g. Timeline 30 s, Loop, to swap every 15 s). Driven by the Motion Bridge field (Spout); calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Runs in real time. Scale sizes everything relative to the output height. Fireflies: Firefly Density (per output height squared, grows with the surface), Performance Cap (at most this many, up to 1024), Firefly Size, Glow Size, Firefly Color, Glow Color, Firefly Twinkle (flicker while lit), Firefly Life (seconds lit), Dark Time (seconds dark). Physics: Wander, Air Drag, Swarm Strength, Flee Strength, Reverse. Halo: Halo On shows what stands still as a soft light that follows the blurred field; Halo Color, Halo Opacity. View: Horizon Y (for a field on the floor). Field: where the bridge's field lies in the picture, as in Motion Bridge - Fabric Wind: Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height, Field Rotation (0 = front at the bottom), Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field: red occupancy, green excitation, blue held shadow, white the front, magenta the other edges. Shader: Resource/Fireflies.fs.",
+			"displayName": "Motion Bridge - Fireflies",
+			"identifier": "94070c53-702b-4049-b9bc-eb4f4775bbf0",
+			"licenseName": "Unlicense",
+			"mail": "S.Mazur@cati-co.de",
+			"note": {
+				"text": "",
+				"textColorIndex": 1,
+				"textSizeMultiplier": 3
+			},
+			"originalTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 29,
+					"patch": 0
+				}
+			},
+			"quality": 32856,
+			"resolution": {
+				"height": 1080,
+				"width": 1920
+			},
+			"saveTarget": {
+				"branch": "",
+				"name": "Wire",
+				"version": {
+					"major": 7,
+					"minor": 29,
+					"patch": 0
+				}
+			},
+			"thumbnail": "",
+			"url": "https://github.com/S-Mazu/WirePatches",
+			"vendor": ""
+		},
+		"nextNodeId": 32,
+		"nodes": {
+			"0": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 40
+				},
+				"class": {
+					"id": "77697265-B2A2-4C1C-8C4C-2915D78CC8E9",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances"
+				],
+				"name": "Texture In",
+				"thumbnail_visible": true
+			},
+			"1": {
+				"attributes": {
+					"bitdepth": {
+						"type": "integer",
+						"value": 0
+					},
+					"fragment-shader": {
+						"type": "resourceIsf",
+						"value": {
+							"path": {
+								"main": "Resource/Fireflies.fs",
+								"sub": ""
+							},
+							"value": {
+								"inputs": [
+									{
+										"name": "inputImage",
+										"type": "image"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "scale",
+										"type": "float"
+									},
+									{
+										"defaultValue": 40.0,
+										"max": 500.0,
+										"min": 0.0,
+										"name": "fireflyDensity",
+										"type": "float"
+									},
+									{
+										"defaultValue": 512.0,
+										"max": 1024.0,
+										"min": 0.0,
+										"name": "performanceCap",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.006,
+										"max": 0.2,
+										"min": 0.0,
+										"name": "fireflySize",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.02,
+										"max": 0.5,
+										"min": 0.0,
+										"name": "glowSize",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											1.0,
+											0.98,
+											0.75,
+											1.0
+										],
+										"name": "fireflyColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": [
+											0.65,
+											1.0,
+											0.25,
+											1.0
+										],
+										"name": "glowColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0.4,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "fireflyTwinkle",
+										"type": "float"
+									},
+									{
+										"defaultValue": 3.0,
+										"max": 30.0,
+										"min": 0.0,
+										"name": "fireflyLife",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.5,
+										"max": 30.0,
+										"min": 0.0,
+										"name": "darkTime",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "wander",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "airDrag",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "swarmStrength",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "fleeStrength",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "reverse",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "haloOn",
+										"type": "float"
+									},
+									{
+										"defaultValue": [
+											1.0,
+											0.85,
+											0.55,
+											1.0
+										],
+										"name": "haloColor",
+										"type": "color"
+									},
+									{
+										"defaultValue": 0.35,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "haloOpacity",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.7,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "horizonY",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "fieldPlane",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.5,
+										"max": 10.0,
+										"min": -10.0,
+										"name": "fieldX",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.5,
+										"max": 10.0,
+										"min": -10.0,
+										"name": "fieldY",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "fieldWidth",
+										"type": "float"
+									},
+									{
+										"defaultValue": 1.0,
+										"max": 10.0,
+										"min": 0.0,
+										"name": "fieldHeight",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 180.0,
+										"min": -180.0,
+										"name": "fieldRotation",
+										"type": "float"
+									},
+									{
+										"defaultValue": 5.0,
+										"max": 60.0,
+										"min": 0.0,
+										"name": "shadowHold",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1.0,
+										"min": 0.0,
+										"name": "showField",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 24.0,
+										"min": 0.0,
+										"name": "clockH",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 60.0,
+										"min": 0.0,
+										"name": "clockM",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 60.0,
+										"min": 0.0,
+										"name": "clockS",
+										"type": "float"
+									},
+									{
+										"defaultValue": 0.0,
+										"max": 1000.0,
+										"min": 0.0,
+										"name": "clockMs",
+										"type": "float"
+									}
+								]
+							}
+						}
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"resolution-absolute": {
+						"type": "float2",
+						"value": [
+							1920,
+							1080
+						]
+					},
+					"resolution-mode": {
+						"type": "integer",
+						"value": 0
+					},
+					"resolution-relative": {
+						"type": "float2",
+						"value": [
+							1,
+							1
+						]
+					}
+				},
+				"bounds": {
+					"height": 828,
+					"width": 195,
+					"x": 700,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-4576-4C11-899B-6F11F3275D36",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"airDrag": {
+						"type": "float",
+						"value": 1.0
+					},
+					"bypass": {
+						"type": "bool",
+						"value": false
+					},
+					"clockH": {
+						"type": "float",
+						"value": 0.0
+					},
+					"clockM": {
+						"type": "float",
+						"value": 0.0
+					},
+					"clockMs": {
+						"type": "float",
+						"value": 0.0
+					},
+					"clockS": {
+						"type": "float",
+						"value": 0.0
+					},
+					"darkTime": {
+						"type": "float",
+						"value": 1.5
+					},
+					"fieldHeight": {
+						"type": "float",
+						"value": 1.0
+					},
+					"fieldPlane": {
+						"type": "float",
+						"value": 1.0
+					},
+					"fieldRotation": {
+						"type": "float",
+						"value": 0.0
+					},
+					"fieldWidth": {
+						"type": "float",
+						"value": 1.0
+					},
+					"fieldX": {
+						"type": "float",
+						"value": 0.5
+					},
+					"fieldY": {
+						"type": "float",
+						"value": 0.5
+					},
+					"fireflyColor": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.98,
+							0.75,
+							1.0
+						]
+					},
+					"fireflyDensity": {
+						"type": "float",
+						"value": 40.0
+					},
+					"fireflyLife": {
+						"type": "float",
+						"value": 3.0
+					},
+					"fireflySize": {
+						"type": "float",
+						"value": 0.006
+					},
+					"fireflyTwinkle": {
+						"type": "float",
+						"value": 0.4
+					},
+					"fleeStrength": {
+						"type": "float",
+						"value": 1.0
+					},
+					"glowColor": {
+						"type": "color",
+						"value": [
+							0.65,
+							1.0,
+							0.25,
+							1.0
+						]
+					},
+					"glowSize": {
+						"type": "float",
+						"value": 0.02
+					},
+					"haloColor": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.85,
+							0.55,
+							1.0
+						]
+					},
+					"haloOn": {
+						"type": "float",
+						"value": 0.0
+					},
+					"haloOpacity": {
+						"type": "float",
+						"value": 0.35
+					},
+					"horizonY": {
+						"type": "float",
+						"value": 0.7
+					},
+					"inputImage": {
+						"type": "texture2d",
+						"value": null
+					},
+					"performanceCap": {
+						"type": "float",
+						"value": 512.0
+					},
+					"reverse": {
+						"type": "float",
+						"value": 0.0
+					},
+					"scale": {
+						"type": "float",
+						"value": 1.0
+					},
+					"shadowHold": {
+						"type": "float",
+						"value": 5.0
+					},
+					"showField": {
+						"type": "float",
+						"value": 0.0
+					},
+					"swarmStrength": {
+						"type": "float",
+						"value": 1.0
+					},
+					"time": {
+						"type": "float",
+						"value": 0
+					},
+					"wander": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"bitdepth",
+					"bypass",
+					"instances",
+					"resolution-absolute",
+					"resolution-mode",
+					"resolution-relative"
+				],
+				"name": "ISF",
+				"thumbnail_visible": true
+			},
+			"3": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 132,
+					"x": 1300,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances"
+				],
+				"name": "Texture Out",
+				"thumbnail_visible": true
+			},
+			"4": {
+				"attributes": {
+					"type": {
+						"type": "type",
+						"value": "integer"
+					}
+				},
+				"bounds": {
+					"height": 130,
+					"width": 195,
+					"x": 100,
+					"y": 2900
+				},
+				"class": {
+					"id": "77697265-1493-477D-981B-735FE719A4DB",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {},
+				"hidden": [
+					"type"
+				],
+				"name": "System Time",
+				"thumbnail_visible": true
+			},
+			"5": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"6": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 500.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 40.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Density",
+				"thumbnail_visible": true
+			},
+			"7": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1024.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 512.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Performance Cap",
+				"thumbnail_visible": true
+			},
+			"8": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 0.2
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.006
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Size",
+				"thumbnail_visible": true
+			},
+			"9": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 0.5
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.02
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Glow Size",
+				"thumbnail_visible": true
+			},
+			"10": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 700
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.98,
+							0.75,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Firefly Color",
+				"thumbnail_visible": true
+			},
+			"11": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 800
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							0.65,
+							1.0,
+							0.25,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Glow Color",
+				"thumbnail_visible": true
+			},
+			"12": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 900
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.4
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Twinkle",
+				"thumbnail_visible": true
+			},
+			"13": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 30.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1000
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 3.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Life",
+				"thumbnail_visible": true
+			},
+			"14": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 30.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1100
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.5
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Dark Time",
+				"thumbnail_visible": true
+			},
+			"15": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Wander",
+				"thumbnail_visible": true
+			},
+			"16": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Air Drag",
+				"thumbnail_visible": true
+			},
+			"17": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Swarm Strength",
+				"thumbnail_visible": true
+			},
+			"18": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Flee Strength",
+				"thumbnail_visible": true
+			},
+			"19": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Reverse",
+				"thumbnail_visible": true
+			},
+			"20": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "On"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1700
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Halo On",
+				"thumbnail_visible": true
+			},
+			"21": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1800
+				},
+				"class": {
+					"id": "77697265-4C9E-4F75-B4F0-5415B713EA1B",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "color",
+						"value": [
+							1.0,
+							0.85,
+							0.55,
+							1.0
+						]
+					}
+				},
+				"hidden": [
+					"flow",
+					"input",
+					"instances",
+					"options-count",
+					"widget"
+				],
+				"name": "Halo Color",
+				"thumbnail_visible": true
+			},
+			"22": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 1900
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.35
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Halo Opacity",
+				"thumbnail_visible": true
+			},
+			"23": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2000
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.7
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Horizon Y",
+				"thumbnail_visible": true
+			},
+			"24": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Floor"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Screen"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2100
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Plane",
+				"thumbnail_visible": true
+			},
+			"25": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": -10.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.5
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field X",
+				"thumbnail_visible": true
+			},
+			"26": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": -10.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.5
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Y",
+				"thumbnail_visible": true
+			},
+			"27": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Width",
+				"thumbnail_visible": true
+			},
+			"28": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Height",
+				"thumbnail_visible": true
+			},
+			"29": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 180.0
+					},
+					"min": {
+						"type": "float",
+						"value": -180.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Rotation",
+				"thumbnail_visible": true
+			},
+			"30": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 60.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2700
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 5.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Shadow Hold",
+				"thumbnail_visible": true
+			},
+			"31": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1.0
+					},
+					"min": {
+						"type": "float",
+						"value": 0.0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Off"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "On"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2800
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.0
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Show Field",
+				"thumbnail_visible": true
+			}
+		},
+		"ui": {
+			"camera": {
+				"x": 0,
+				"y": 0,
+				"zoom": 1
+			},
+			"selection": []
+		}
+	},
+	"ui": {
+		"audio": {
+			"routing": {
+				"in": {},
+				"out": [
+					null,
+					null
+				]
+			}
+		},
+		"deviceConnections": {
+			"input": {
+				"0": "Motion Bridge"
+			}
+		},
+		"transport": {
+			"bpm": 120,
+			"time-signature": [
+				4,
+				4
+			]
+		},
+		"video": {
+			"routing": {
+				"out": {
+					"Display 1": null,
+					"Display 2": null,
+					"Display 3": null,
+					"virtualOutputs": []
+				}
+			}
+		}
+	}
+}
