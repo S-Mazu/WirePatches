@@ -85,6 +85,7 @@ Every `.wire` file has these fields filled in `patch.meta`:
 - Folder name = patch name = `.wire` file name (`effects/Patch Name/Patch Name.wire`). Patch names keep their spaces.
 - **No version suffixes** (`v2`) and no status (`Discontinued`) in folder or file names. Git history is the version history; tag releases if needed. Work that is no longer developed moves to `archive/` (see "Archive").
 - If two variants really must coexist, give them names that say how they differ.
+- A patch that needs a tool carries the tool's name as a prefix: `<Tool Name> - <Patch Name>` (e.g. `Motion Bridge - Fabric Wind`), so colleagues see the dependency in Arena's effect list. The label follows the usual rule: `patch:motion_bridge_-_fabric_wind`.
 
 ## Patch description inside Wire
 
