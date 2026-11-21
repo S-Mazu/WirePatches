@@ -151,9 +151,11 @@ The window shows the room map on the left and the controls on the right. Every c
 
 **Simulation**: *Add object* creates a yellow point in the view that you drag with the mouse. It counts like real foreground and appears in the field, also without a sensor, so patches can be developed and checked anywhere.
 
+With *Move between A and B* every simulated object walks from its point A to its point B (which appears 2 m to the right) and back, at *Speed* (m/s, default 1, about walking pace), pausing *Pause* seconds at each end (default 5). Standing still (occupancy without motion) and moving (motion) are so tested in one run, without anyone walking in front of the sensor. The walk test with the sensor stays the final check. Switching it on starts every object at A; these settings are for this run only.
+
 For shows without a window: `.venv\Scripts\python.exe bridge.py --headless` uses the saved settings.
 
-Options (this run only, not saved): `--port COM19` (port of the position with the sensor), `--sim 2` (start with simulated objects), `--snapshot file.png` (save a picture of the window after 4 s and quit).
+Options (this run only, not saved): `--port COM19` (port of the position with the sensor), `--sim 2` (start with simulated objects), `--sim-path 0.1,0.2,0.9,0.7` (start with an object that walks between A and B, given in field shares: x 0..1 along the front, y 0..1 into the area; repeat for more objects; needs a room with area and front), `--sim-speed 1` (m/s), `--sim-pause 8` (s), `--snapshot file.png` (save a picture of the window after 4 s and quit).
 
 ### From the room to the picture
 
@@ -239,6 +241,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-21: Moving simulated objects (#130): *Move between A and B*, *Speed* and *Pause* in the Simulation section, `--sim-path`, `--sim-speed` and `--sim-pause` on the command line. Tested on the show machine with the live sensor and Arena (1920 × 1080, Motion Bridge - Autumn Wind with `Show Field`): the object stands at A as occupancy, leaves a motion trail while it walks, stands at B and walks back.
 - 2026-11-21: New patch using the bridge: Motion Bridge - Fireflies (#127).
 - 2026-11-21: Documentation: the B channel is now checked in a patch in Arena (Motion Bridge - Fabric Wind).
 - 2026-11-20: Visibility (#113): the room map tints what each sensor sees, live, so shadows behind people, objects and barriers and outside the fans stay dark (*Show what the sensors see*). The field gets a third image, *Seen*, and the Spout texture carries visibility in B. Tested with the live sensor in the window; B in Arena not checked yet.

@@ -18,8 +18,9 @@ PANEL_W = 450
 SNAPSHOT_AFTER_S = 4.0
 
 
-def run_window(eng, snapshot=None, sim=0):
-    """Runs until the window is closed. snapshot: PNG path to write after a few seconds, then quit."""
+def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_pause=None):
+    """Runs until the window is closed. snapshot: PNG path to write after a few seconds, then quit.
+    sim_paths: ((x, y), (x, y)) per moving object, A and B in field shares (x along the front, y depth)."""
     dpg.create_context()
     font = load_font()
     themes = Themes()
@@ -66,6 +67,20 @@ def run_window(eng, snapshot=None, sim=0):
     view.fit()
     for _ in range(sim):
         view.add_sim()
+    if sim_speed is not None:
+        view.sim_speed_mps = max(float(sim_speed), 0.0)
+        dpg.set_value('sim_speed', view.sim_speed_mps)
+    if sim_pause is not None:
+        view.sim_pause_s = max(float(sim_pause), 0.0)
+        dpg.set_value('sim_pause', view.sim_pause_s)
+    if sim_paths:
+        if eng.room.ready():
+            for a, b in sim_paths:
+                view.add_sim(eng.room.from_field(*a), eng.room.from_field(*b))
+            view.set_sim_move(True)
+            dpg.set_value('sim_move', True)
+        else:
+            log.warning('--sim-path needs a room with area and front; ignored')
     last_snap = None
     t_start = time.time()
     while dpg.is_dearpygui_running():

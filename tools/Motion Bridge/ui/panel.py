@@ -139,6 +139,16 @@ class Panel:
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Add object', callback=lambda: self.view.add_sim()), 'sim_add')
                 tip(dpg.add_button(label='Remove all', callback=lambda: self.view.clear_sim()), 'sim_clear')
+            tip(dpg.add_checkbox(label='Move between A and B', tag='sim_move', default_value=self.view.sim_move,
+                                 callback=lambda s, a: self.view.set_sim_move(a)), 'sim_move')
+            tip(dpg.add_slider_float(label='Speed (m/s)', tag='sim_speed', default_value=self.view.sim_speed_mps,
+                                     min_value=0.1, max_value=5.0, format='%.1f', width=200,
+                                     callback=lambda s, a: setattr(self.view, 'sim_speed_mps', max(float(a), 0.0))),
+                'sim_speed')
+            tip(dpg.add_slider_float(label='Pause (s)', tag='sim_pause', default_value=self.view.sim_pause_s,
+                                     min_value=0.0, max_value=60.0, format='%.0f', width=200,
+                                     callback=lambda s, a: setattr(self.view, 'sim_pause_s', max(float(a), 0.0))),
+                'sim_pause')
 
         with dpg.collapsing_header(label='Sensor', default_open=False):
             live = eng.live_station()
