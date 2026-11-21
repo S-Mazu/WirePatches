@@ -2,7 +2,7 @@
 
 Motion Bridge is a tool: it reads a 2D lidar and sends patches a Spout texture, 30 times per second, that says where in a defined area something is and where something moves. In Arena the texture is a clip, and a patch sits on that clip as a clip effect.
 
-Last updated: 2026-11-20
+Last updated: 2026-11-21
 
 ## Purpose
 
@@ -39,7 +39,9 @@ Tested in Arena 7.29.0 on 2026-11-17 with the live sensor, two simulated objects
 - A Wire patch loaded as a source does not receive Spout inside Arena: `Texture In` gives a black 1 × 1 image (2026-11-16).
 - python.exe of the venv and Arena.exe must run on the same graphics adapter (Windows graphics settings, "high performance"); before, Arena knew the sender's size but showed no image (2026-11-16).
 
-Tested on the show machine on 2026-11-20: visibility with the live sensor. The room map tints what the sensor sees; an object next to the sensor shaded most of the area, further objects in the room cast narrow shadow wedges, and the field image *Seen* showed the same. Unit tests cover shadows behind objects and barriers, the fan and the B channel. Not checked yet: the B channel in a patch in Arena (the Field Viewer shows it with `Channel` *Visibility*), barriers with the live sensor, several physical sensors.
+Tested on the show machine on 2026-11-20: visibility with the live sensor. The room map tints what the sensor sees; an object next to the sensor shaded most of the area, further objects in the room cast narrow shadow wedges, and the field image *Seen* showed the same. Unit tests cover shadows behind objects and barriers, the fan and the B channel. Not checked yet: barriers with the live sensor, several physical sensors.
+
+Tested in Arena on 2026-11-20: the B channel in a patch. [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/) holds the state of cells the sensor does not see (`Shadow Hold`); its `Show Field` showed the held shadows where the room map showed them, with the live sensor at 1920 × 1080.
 
 Tested on the show machine on 2026-11-20: *Find sensor* (Sensor section) with nine serial ports. It found the STL-27L on COM19 (958 valid packets in 0.5 s, 10 turns/s), listed only that port, and was done in 2.5 s although four Bluetooth ports (COM11 to COM14) did not answer. With the port in use by the bridge it shows "in use" without opening it.
 
@@ -237,6 +239,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-21: Documentation: the B channel is now checked in a patch in Arena (Motion Bridge - Fabric Wind).
 - 2026-11-20: Visibility (#113): the room map tints what each sensor sees, live, so shadows behind people, objects and barriers and outside the fans stay dark (*Show what the sensors see*). The field gets a third image, *Seen*, and the Spout texture carries visibility in B. Tested with the live sensor in the window; B in Arena not checked yet.
 - 2026-11-20: *Find sensor* in the Sensor section: listens briefly on all serial ports at once and lists only the ports with valid STL-27L packets, with the rotation; the port list shows the Windows description of each port. Read-only, DTR and RTS off, ports that hang are given up after 2 s. Tested with the real sensor and nine ports.
 - 2026-11-17: Tested in Arena with the example Field Viewer (#115): `FLIP = True`, so the band arrives at the top and the front at the bottom, as the contract says. Setup: the patch is a clip effect on the Spout clip, the clip at the texture's size, the layer's *Auto Size* *Stretch* (Usage, "In Arena", with the data flow from the room to the picture). Measured 29 frames per second at the patch, black when the bridge stops, automatic reconnect.
