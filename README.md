@@ -29,6 +29,7 @@ Patches that process the clip below. In Arena they go onto a clip, layer, group 
 | [Fire Mask](effects/Fire%20Mask/) | The brightness of the clip decides what burns: logos, text, silhouettes. |
 | [Fire Point](effects/Fire%20Point/) | Flames and smoke rise from one burning shape: point, square or heart. |
 | [Iris Diaphragm](effects/Iris%20Diaphragm/) | Mechanical blade iris with overlapping blades that closes over the clip. |
+| [Motion Bridge - Autumn Wind](effects/Motion%20Bridge%20-%20Autumn%20Wind/) | Leaves, maple seeds, chestnuts, twigs and feathers drift in the wind over the screen or the floor, stick to whoever stands still and are stirred up by motion; driven by the Motion Bridge field. |
 | [Motion Bridge - Fabric Wind](effects/Motion%20Bridge%20-%20Fabric%20Wind/) | Ribbons of fabric (rags, silk, velvet, …) blow in the wind over the floor or across the screen, flow around whatever stands there and flutter where something moves; driven by the Motion Bridge field. |
 | [Motion Bridge - Fireflies](effects/Motion%20Bridge%20-%20Fireflies/) | Fireflies blink and fly about, swarm around whoever stands still and flee from motion; `Reverse` swaps the roles; driven by the Motion Bridge field. |
 | [Star Globe](effects/Star%20Globe/) | Glowing points over the clip: fireflies across the frame, or stars in a vessel that fall, collide and simmer. |
