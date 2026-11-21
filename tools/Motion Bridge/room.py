@@ -344,6 +344,13 @@ class Room:
         d = px * n[0] + py * n[1]
         return x01, d / self.depth_mm()
 
+    def from_field(self, x01: float, d01: float) -> tuple[float, float]:
+        """(x 0..1 along the front, depth 0..1 within the field) -> map position (mm); inverse of to_field."""
+        u, n, length = self.frame()
+        l = np.array(self.front['left'], float)
+        p = l + u * (x01 * length) + n * (d01 * self.depth_mm())
+        return float(p[0]), float(p[1])
+
     def field_cells(self, cols: int, rows: int):
         """Map coordinates of the cell centres, arrays of shape (rows, cols)."""
         u, n, length = self.frame()

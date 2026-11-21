@@ -31,6 +31,15 @@ class FrameTest(unittest.TestCase):
         self.assertFalse(make_room(front=None).ready())
         self.assertFalse(make_room(front={'left': [0, 0], 'right': [100, 0]}).ready())   # too short
 
+    def test_from_field_inverts_to_field(self):
+        room = make_room()
+        for x01, d01 in ((0.0, 0.0), (0.25, 0.5), (1.0, 1.0)):
+            mx, my = room.from_field(x01, d01)
+            x, d = room.to_field(mx, my)
+            self.assertAlmostEqual(float(x), x01)
+            self.assertAlmostEqual(float(d), d01)
+        self.assertEqual(room.from_field(0.5, 0.5), (2000.0, -1500.0))
+
     def test_frame_and_depth(self):
         room = make_room()
         u, n, length = room.frame()

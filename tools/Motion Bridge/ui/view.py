@@ -4,10 +4,12 @@ Everything here is in map millimetres on the engine side and metres on the plot.
 changes the room only through Engine.edit().
 """
 import math
+import time
 
 import dearpygui.dearpygui as dpg
 import numpy as np
 
+from simpath import path_position
 from visibility import seen
 
 from .theme import (AREA_C, BAR_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, FRONT_C, OBJ_C, OUT_C, REF_C, SCAN_C,
@@ -18,6 +20,7 @@ FAN_RING_MM = 400.0         # radius of the circle drawn for a position that loo
 HEAD_MM = 600.0             # length of the line that shows where a sensor looks
 ARROW_MM, WING_MM = 700.0, 180.0    # the arrow from the front into the area
 SIM_AHEAD_MM = 1500.0       # a new simulated object is put this far in front of the front (or the sensor)
+SIM_PATH_MM = 2000.0        # its second point B lies this far to the right of A, along the front
 CLICK_PX = 5                # press and release closer than this is a click, not a drag
 SEEN_PX = 240               # resolution of the seen-region image over the visible part of the map
 SEEN_RGBA = (0.55, 0.75, 1.0, 0.16)     # tint of what the sensors see; shadows stay dark
@@ -29,7 +32,11 @@ class RoomView:
         self.handles = {}           # tag -> (get(room) -> (x, y) m, set(room, x, y))
         self.last_set = {}          # tag -> last value given to or read from dearpygui
         self.dynamic = []           # item tags that are rebuilt with the room
-        self.sim_points = []        # drag point tags of simulated objects
+        self.sim_points = []        # (tag of A, tag of B) per simulated object
+        self.sim_move = False       # objects walk between A and B
+        self.sim_speed_mps = 1.0
+        self.sim_pause_s = 5.0
+        self.sim_t0 = time.monotonic()
         self.unlock = 2             # frames until the axis limits are released after a fit
         self.press = None           # (screen pos, plot pos) of the last mouse press on the plot
         self.last_snap = None
@@ -56,11 +63,15 @@ class RoomView:
                 dpg.add_line_series([], [], tag='l_draft')
                 dpg.add_scatter_series([], [], tag='s_draft')
                 dpg.add_scatter_series([], [], tag='s_obj')
+                dpg.add_line_series([], [], tag='l_sim')
+                dpg.add_scatter_series([], [], tag='s_sim')
         for tag, color, size in [('s_out', OUT_C, 1.5), ('s_pts', SCAN_C, 1.5), ('s_fg', FG_C, 2.5),
                                  ('s_fg_out', FG_OUT_C, 2.0), ('l_front', FRONT_C, 4.0), ('l_arrow', FRONT_C, 2.0),
                                  ('l_field', FIELD_C, 1.0), ('l_draft', DRAFT_C, 2.0), ('s_draft', DRAFT_C, 5.0)]:
             dpg.bind_item_theme(tag, self.themes.series(color, size))
         dpg.bind_item_theme('s_obj', self.themes.series(OBJ_C, 16, dpg.mvPlotMarker_Circle, ring=True))
+        dpg.bind_item_theme('l_sim', self.themes.series(tuple(int(v * 0.6) for v in SIM_C), 1.0))
+        dpg.bind_item_theme('s_sim', self.themes.series(SIM_C, 6.0))
 
     # ------------------------------------------------ items that depend on the room
     def _add_series(self, tag, kind, color, size):
@@ -148,7 +159,25 @@ class RoomView:
         self._sync_handles()
         self._draw_room()
         self._draw_draft()
-        self.eng.sim = [[v * 1000.0 for v in dpg.get_value(tag)[:2]] for tag in self.sim_points]
+        self._move_sim()
+
+    def _move_sim(self):
+        """Hands the simulated objects to the engine: at A, or on their way between A and B."""
+        t = time.monotonic() - self.sim_t0
+        pos, lx, ly = [], [], []
+        for ta, tb in self.sim_points:
+            a = [v * 1000.0 for v in dpg.get_value(ta)[:2]]
+            if self.sim_move:
+                b = [v * 1000.0 for v in dpg.get_value(tb)[:2]]
+                pos.append(list(path_position(a, b, self.sim_speed_mps * 1000.0, self.sim_pause_s, t)))
+                lx += [a[0] / 1000.0, b[0] / 1000.0, float('nan')]
+                ly += [a[1] / 1000.0, b[1] / 1000.0, float('nan')]
+            else:
+                pos.append(a)
+        self.eng.sim = pos
+        moving = self.sim_move and pos
+        dpg.set_value('l_sim', [lx, ly] if moving else [[], []])
+        dpg.set_value('s_sim', [[p[0] / 1000.0 for p in pos], [p[1] / 1000.0 for p in pos]] if moving else [[], []])
 
     def _sync_handles(self):
         """Handles the user dragged go into the room; handles the room moved go into the plot."""
@@ -301,25 +330,43 @@ class RoomView:
             self.draft.cancel()
 
     # ------------------------------------------------ simulation
-    def add_sim(self):
+    def add_sim(self, a=None, b=None):
+        """Adds a simulated object: point A (where it stands) and B (where it walks to with Move on), map mm.
+        Without points it goes 1.5 m in front of the front (or the sensor), B 2 m to the right of A."""
         k = len(self.sim_points)
         r = self.eng.room
         if r.has_front():
             u, n, length = r.frame()
-            c = (np.array(r.front['left']) + u * length * (0.3 + 0.2 * (k % 3)) + n * SIM_AHEAD_MM) / 1000.0
-            pos = (float(c[0]), float(c[1]))
         else:
             st = self.state.selected(self.eng)
-            mx, my = st.to_map(np.array([(k - 1) * 500.0]), np.array([SIM_AHEAD_MM]))
-            pos = (float(mx[0]) / 1000.0, float(my[0]) / 1000.0)
-        tag = dpg.add_drag_point(parent='plot', default_value=pos, color=SIM_C + (255,),
-                                 thickness=2, label=f'sim {k + 1}', show_label=True)
-        self.sim_points.append(tag)
+            u = np.array(st.to_map(np.array([1.0]), np.array([0.0]))).ravel() - np.array([st.x, st.y])
+            n = None
+        if a is None:
+            if n is not None:
+                a = np.array(r.front['left']) + u * length * (0.3 + 0.2 * (k % 3)) + n * SIM_AHEAD_MM
+            else:
+                mx, my = st.to_map(np.array([(k - 1) * 500.0]), np.array([SIM_AHEAD_MM]))
+                a = np.array([float(mx[0]), float(my[0])])
+        a = np.array(a, float)
+        b = a + u / max(float(np.hypot(*u)), 1e-9) * SIM_PATH_MM if b is None else np.array(b, float)
+        ta = dpg.add_drag_point(parent='plot', default_value=(a[0] / 1000.0, a[1] / 1000.0), color=SIM_C + (255,),
+                                thickness=2, label=f'sim {k + 1}', show_label=True)
+        tb = dpg.add_drag_point(parent='plot', default_value=(b[0] / 1000.0, b[1] / 1000.0), color=SIM_C + (255,),
+                                thickness=1, label=f'sim {k + 1} B', show_label=True, show=self.sim_move)
+        self.sim_points.append((ta, tb))
 
     def clear_sim(self):
-        for tag in self.sim_points:
-            dpg.delete_item(tag)
+        for ta, tb in self.sim_points:
+            dpg.delete_item(ta)
+            dpg.delete_item(tb)
         self.sim_points.clear()
+
+    def set_sim_move(self, on):
+        """Move on: every object starts at A and walks to B and back; off: it stands at A."""
+        self.sim_move = bool(on)
+        self.sim_t0 = time.monotonic()
+        for _, tb in self.sim_points:
+            dpg.configure_item(tb, show=self.sim_move)
 
     @property
     def sim_count(self):

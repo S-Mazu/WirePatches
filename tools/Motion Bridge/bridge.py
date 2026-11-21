@@ -16,6 +16,7 @@ import sys
 import time
 
 from engine import Engine
+from simpath import parse_path
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 log = logging.getLogger('bridge')
@@ -42,7 +43,16 @@ def main():
     ap.add_argument('--headless', action='store_true', help='no window, run until Ctrl+C')
     ap.add_argument('--snapshot', help='save a PNG of the window after 4 s and quit (documentation, tests)')
     ap.add_argument('--sim', type=int, default=0, help='start with this many simulated objects')
+    ap.add_argument('--sim-path', action='append', default=[], metavar='X1,Y1,X2,Y2',
+                    help='add a simulated object that walks between A (X1,Y1) and B (X2,Y2) and back; field shares: '
+                         'x 0..1 along the front, y 0..1 into the area. Repeat for more objects')
+    ap.add_argument('--sim-speed', type=float, help='walking speed of simulated objects in m/s (default 1)')
+    ap.add_argument('--sim-pause', type=float, help='pause of simulated objects at each end in s (default 5)')
     a = ap.parse_args()
+    try:
+        sim_paths = [parse_path(p) for p in a.sim_path]
+    except ValueError as e:
+        ap.error(str(e))
     setup_logging(HERE)
     overrides = {}
     if a.port:
@@ -59,7 +69,7 @@ def main():
                 time.sleep(1)
         else:
             from ui.window import run_window      # dearpygui is only needed with a window
-            run_window(eng, a.snapshot, a.sim)
+            run_window(eng, a.snapshot, a.sim, sim_paths, a.sim_speed, a.sim_pause)
     except KeyboardInterrupt:
         pass
     eng.stop()

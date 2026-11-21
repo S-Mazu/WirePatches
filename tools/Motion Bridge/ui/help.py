@@ -83,8 +83,13 @@ HELP = {
     'sim': 'Adds objects you can drag in the view with the mouse. They count like real foreground and appear '
            'in the field, so patches can be tested without walking around or without a sensor.',
     'sim_add': 'Adds a simulated object 1.5 m in front of the front (or of the sensor). Drag the yellow point '
-               'in the view.',
+               'in the view. Its point B, where it walks to with Move on, starts 2 m to the right.',
     'sim_clear': 'Removes all simulated objects.',
+    'sim_move': 'Every simulated object walks from its point A to its point B and back, pausing at each end. '
+                'Standing still and moving can so be tested in one run. Drag the points to set the way; '
+                'switching it on starts every object at A. This run only, not saved.',
+    'sim_speed': 'Walking speed of the simulated objects. A person walks at about 1 m/s.',
+    'sim_pause': 'How long a simulated object stands still at A and at B before it walks on.',
     'spout': 'The field leaves the bridge as a Spout texture named "Motion Bridge": one image per frame, 30 per '
              'second. In Arena: load it as a clip (Sources > Spout), set Resize to Stretch, and put the patch on it '
              'as an effect. Red = occupancy, green = motion, blue = visibility. The top sixteenth of the image is '
