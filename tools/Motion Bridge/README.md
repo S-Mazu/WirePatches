@@ -12,7 +12,7 @@ The bridge interprets nothing for a patch: what a value means in the picture is 
 
 Everything happens in one room map seen from above, in metres. Several sensor positions (several sensors, or one sensor moved around) are aligned in this map; the area, the front, exclusions and barriers are drawn into it with the mouse. Rooms and areas of any size and shape work: nothing assumes a rectangle. Patches only receive the normalized texture, so they work on any surface and with any sensor that delivers it.
 
-Patches using it: [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/), [Motion Bridge - Fireflies](../../effects/Motion%20Bridge%20-%20Fireflies/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
+Patches using it: [Motion Bridge - Autumn Wind](../../effects/Motion%20Bridge%20-%20Autumn%20Wind/), [Motion Bridge - Fabric Wind](../../effects/Motion%20Bridge%20-%20Fabric%20Wind/), [Motion Bridge - Fireflies](../../effects/Motion%20Bridge%20-%20Fireflies/). The example [Field Viewer](../../examples/Field%20Viewer/) shows the field as it arrives.
 
 ## How it works and why
 
@@ -241,6 +241,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-21: New patch using the bridge: Motion Bridge - Autumn Wind (#70).
 - 2026-11-21: Moving simulated objects (#130): *Move between A and B*, *Speed* and *Pause* in the Simulation section, `--sim-path`, `--sim-speed` and `--sim-pause` on the command line. Tested on the show machine with the live sensor and Arena (1920 × 1080, Motion Bridge - Autumn Wind with `Show Field`): the object stands at A as occupancy, leaves a motion trail while it walks, stands at B and walks back.
 - 2026-11-21: New patch using the bridge: Motion Bridge - Fireflies (#127).
 - 2026-11-21: Documentation: the B channel is now checked in a patch in Arena (Motion Bridge - Fabric Wind).
