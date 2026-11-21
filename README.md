@@ -30,6 +30,7 @@ Patches that process the clip below. In Arena they go onto a clip, layer, group 
 | [Fire Point](effects/Fire%20Point/) | Flames and smoke rise from one burning shape: point, square or heart. |
 | [Iris Diaphragm](effects/Iris%20Diaphragm/) | Mechanical blade iris with overlapping blades that closes over the clip. |
 | [Motion Bridge - Fabric Wind](effects/Motion%20Bridge%20-%20Fabric%20Wind/) | Ribbons of fabric (rags, silk, velvet, …) blow in the wind over the floor or across the screen, flow around whatever stands there and flutter where something moves; driven by the Motion Bridge field. |
+| [Motion Bridge - Fireflies](effects/Motion%20Bridge%20-%20Fireflies/) | Fireflies blink and fly about, swarm around whoever stands still and flee from motion; `Reverse` swaps the roles; driven by the Motion Bridge field. |
 | [Star Globe](effects/Star%20Globe/) | Glowing points over the clip: fireflies across the frame, or stars in a vessel that fall, collide and simmer. |
 | [Water Drops](effects/Water%20Drops/) | View onto water over the clip: drops, stones or hearts fall in and send out rings that bend the picture. |
 
