@@ -32,7 +32,7 @@ Autumn in the room. The wind carries leaves across the surface; whoever stands s
 3. In Arena, load the Spout source `Motion Bridge` as a clip. It loads at the texture's own size; keep it.
 4. Set the layer's *Auto Size* to *Stretch* and its blend mode to *Alpha*.
 5. Drag this patch onto the clip, after its *Transform*.
-6. With `Show Field` *On*, move the field with `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height` and `Field Rotation` until it lies where the sensed area is seen.
+6. With `Show Field` *On*, move the field with `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height`, `Field Size` and `Field Rotation` until it lies where the sensed area is seen.
 
 ## Timing
 
@@ -42,9 +42,18 @@ The reaction to the room runs in real time too: occupancy is smoothed over 0.15 
 
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe (tested in Arena).
+All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show Field` and the group Field come first, because they are set first when the patch is set up for a room (docs/PATCH_RULES.md).
 
-- `Scale` (0 to 10, default 1): size of all elements relative to the output height, also their speed.
+- `Scale` (0 to 10, default 1): size of everything relative to the output height, following the surface model with the scene coordinates of the example Scaler: a lower `Scale` shows more scene with smaller items (and more of them), a higher one less scene with bigger ones; speeds, gusts and eddies follow. The horizon stays anchored at the bottom edge.
+- `Show Field` (Off / On, default Off): shows where the field lies and what of it is evaluated, as the items see it (on the screen as seen from the base line). Light grey = evaluated: a sensor sees it now, the items react there; on it red = occupancy, green = motion. Hatched = not evaluated, nothing stirs or holds the items there: outside the field, outside the area and in a shadow (the bridge does not tell the two apart); what is held in a shadow still shows in red and green. Without a sensor (no visibility) the whole field is light grey; without the bridge everything is hatched.
+
+**Field**: where the bridge's field lies in the picture.
+- `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective, as in Motion Bridge - Fabric Wind; Screen = the field is read as seen from the base line (issue #70): the position along the base line is the picture's x, the distance from the surface is the item's depth. So motion near the surface stirs near items, far away the far ones, and someone standing still is an invisible column where items of their depth gather.
+- `Field X` (-10 to 10, default 0.5), `Field Width` (0 to 10, default 1): centre and width of the base line, as shares of the frame width.
+- `Field Y` (-10 to 10, default 0.5), `Field Height` (0 to 10, default 1): on the floor the centre and depth of the field; on the screen `Field Height` is the share of the field's depth that the items' depths cover: 1 = the farthest items match the far edge; 2 = they match the middle, and the far half of the field acts on nothing; 0.5 = items of medium depth already match the far edge, farther ones lie beyond the field. On the floor, for true proportions (one metre the same both ways): `Field Height` = `Field Width` × field depth / field width (the bridge status shows both in metres) × frame width / frame height; with the field turned by 90 or -90 degrees, swap the frame width and height.
+- `Field Size` (0 to 10, default 1): scales the field as it is set, around its centre; proportions and rotation stay. It multiplies `Field Width` and `Field Height`.
+- `Field Rotation` (-180 to 180, default 0): on the floor, where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
+- `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it, fading out over this time. 0 = shadows count as empty.
 
 **Physics**
 - `Wind Strength` (0 to 10, default 0.3), `Wind Direction` (0 to 360, default 0 = to the right).
@@ -71,15 +80,6 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 **View**
 - `Horizon Y` (0 to 10, default 0.7): height of the floor's horizon above the bottom edge, in output heights, multiplied by `Scale`. Used where the items or the field lie on the floor.
 
-**Field**: where the bridge's field lies in the picture.
-- `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective, as in Motion Bridge - Fabric Wind; Screen = the field is read as seen from the base line (issue #70): the position along the base line is the picture's x, the distance from the surface is the item's depth. So motion near the surface stirs near items, far away the far ones, and someone standing still is an invisible column where items of their depth gather.
-- `Field X` (-10 to 10, default 0.5), `Field Width` (0 to 10, default 1): centre and width of the base line, as shares of the frame width.
-- `Field Y` (-10 to 10, default 0.5), `Field Height` (0 to 10, default 1): on the floor the centre and depth of the field; on the screen `Field Height` is the share of the field's depth that the items' depths cover: 1 = the farthest items match the far edge; 2 = they match the middle, and the far half of the field acts on nothing; 0.5 = items of medium depth already match the far edge, farther ones lie beyond the field.
-- `Field Rotation` (-180 to 180, default 0): on the floor, where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
-- `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it, fading out over this time. 0 = shadows count as empty.
-
-- `Show Field` (Off / On, default Off): shows the field as the items see it: red = occupancy, green = motion, blue = held shadow. On the screen it is drawn as seen from the base line.
-
 ## How it works
 
 What the bridge sends is described in its README (Output). This patch does the following in one ISF shader (`Resource/AutumnWind.fs`):
@@ -94,7 +94,7 @@ What the bridge sends is described in its README (Output). This patch does the f
 
 ## Any surface
 
-- Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched. Sizes and speeds are in output heights × `Scale`.
+- Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched. All positions, sizes and speeds are in the scene coordinates of the example Scaler (one transform, as in Rolling Landscape); the controls are given in output heights at `Scale` 1.
 - `Scale`: 1 for any single screen; ⅓ for three stacked to keep the size of the items.
 - The densities grow with the surface: a wider surface gets more items (up to `Performance Cap`).
 - Exceptions: the field is a zone that grows with the frame (docs/PATCH_RULES.md).
@@ -117,6 +117,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: `Scale` follows the surface model with the scene coordinates of the example Scaler, as in Rolling Landscape: one transform, everything in scene units; before, single quantities were multiplied by `Scale` by hand (#133). The floor plane is measured in scene units both ways, so at the default horizon about a third fewer items lie on the floor. `Show Field` is the second control after `Scale`, the group Field follows it; `Show Field` shows what is evaluated (light grey) and hatches the rest (all of it without the bridge); `Field Size` scales the field as set; `Field Height` documents true proportions on the floor. Controls and their ranges are unchanged. Tested in Arena (1920×1080) with the live sensor and a simulated object, next to the previous version: at `Scale` 1 items of the same size and number on the screen; `Scale` 0.33 (more, smaller) and 3 (few, big); floor plane; `Show Field` with the field on the screen and on the floor, `Field Size` 0.5; bridge stopped (all hatched, no NaN) and restarted (an item sticks to the standing object). Patch loads in Wire.
 - 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
 - 2026-11-21: First version (#70): leaves, maple seeds, chestnuts, twigs and feathers in the wind, on the screen with depth or on the floor (`Item Plane`); they stick to what stands still (`Stick Strength`) and are stirred up by motion (`Stir Strength`); on the screen the field is read as seen from the front. Tested in Arena (1920×1080):
   - Floor with the field on the floor, with a simulated object walking between two points (bridge `--sim-path`, 30 s pauses): a pile gathers at the standing object within about 10 s and scatters when it walks off.
