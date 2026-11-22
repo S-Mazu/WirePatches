@@ -4,7 +4,7 @@ Motion Bridge - Fireflies is an effect on the [Motion Bridge](../../tools/Motion
 
 **It needs the Motion Bridge.** The patch reacts only to the bridge's Spout texture `Motion Bridge`: the bridge with a 2D lidar, set up for the room, must run on the same computer as Arena. Without it the fireflies just fly about.
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 
 ## Vision
 
@@ -34,7 +34,7 @@ A summer night. Small fireflies drift over the whole surface, light up for a few
 3. In Arena, load the Spout source `Motion Bridge` as a clip. It loads at the texture's own size; keep it.
 4. Set the layer's *Auto Size* to *Stretch* and its blend mode to *Alpha*.
 5. Drag this patch onto the clip, after its *Transform*.
-6. Choose the setup like in [Motion Bridge - Fabric Wind](../Motion%20Bridge%20-%20Fabric%20Wind/): with `Show Field` *On*, move the field with `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height` and `Field Rotation` until it lies where the sensed area is seen; the white edge is the front.
+6. Choose the setup like in [Motion Bridge - Fabric Wind](../Motion%20Bridge%20-%20Fabric%20Wind/): with `Show Field` *On*, move the field with `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height` and `Field Rotation` until it lies where the sensed area is seen; the white edge is the base line.
 
 ## Timing
 
@@ -78,11 +78,11 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 **Field**: where the bridge's field lies in the picture, as in Motion Bridge - Fabric Wind.
 - `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective; Screen = flat on the frame.
 - `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the frame (screen) or of the floor in view (floor).
-- `Field Width`, `Field Height` (0 to 10, default 1): along the front and into the area, as shares of the frame side.
-- `Field Rotation` (-180 to 180, default 0): where the front lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
+- `Field Width`, `Field Height` (0 to 10, default 1): along the base line and into the area, as shares of the frame side.
+- `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
 - `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it, fading out over this time. 0 = shadows count as empty.
 
-- `Show Field` (Off / On, default Off): shows the field: red = occupancy, green = motion, blue = held shadow, white = the front, magenta = the other edges.
+- `Show Field` (Off / On, default Off): shows the field: red = occupancy, green = motion, blue = held shadow, white = the base line, magenta = the other edges.
 
 ## How it works
 
@@ -123,6 +123,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
 - 2026-11-21: `Firefly Plane` (#127): the fireflies hover over the floor in perspective as well, independent of `Field Plane`, like `Ribbon Plane` in Motion Bridge - Fabric Wind. Tested in Arena (1920×1080): Floor with the field on the floor and on the screen, swarm around a standing object and `Reverse` on the floor, `Scale` 0.3 and 5, `Horizon Y` 0 and 10, the screen plane unchanged.
 - 2026-11-21: First version (#127): fireflies that wander, blink (`Firefly Life`, `Dark Time`, `Firefly Twinkle`), swarm around what stands still (`Swarm Strength`) and flee from motion (`Flee Strength`), fleeing always wins; `Reverse` swaps the roles; `Halo On` shows what stands still as a soft light; field controls as in Motion Bridge - Fabric Wind. Tested in Arena (1920×1080) with the live sensor and a simulated object: swarming, `Reverse` 0 and 1, an Arena Timeline on `Reverse`, halo, screen and floor field, `Field Rotation` 90, bridge stopped and restarted, every slider at its extremes (density 500 with cap 1024, sizes 0 and maximum, `Firefly Life` 0 and 30, `Dark Time` 0 and 30, `Wander`, `Air Drag`, `Swarm Strength`, `Flee Strength` 0 and 10, `Scale` 0.3 and 5). Fleeing from someone walking through the field checked live (the area around the movement stays clear, the swarm at the standing object stays). Not tested: other sizes.
 

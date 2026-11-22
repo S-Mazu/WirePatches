@@ -4,7 +4,7 @@ Motion Bridge - Autumn Wind is an effect on the [Motion Bridge](../../tools/Moti
 
 **It needs the Motion Bridge.** The patch reacts only to the bridge's Spout texture `Motion Bridge`: the bridge with a 2D lidar, set up for the room, must run on the same computer as Arena. Without it the items just drift in the wind.
 
-Last updated: 2026-11-21
+Last updated: 2026-11-22
 
 ## Vision
 
@@ -72,13 +72,13 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 - `Horizon Y` (0 to 10, default 0.7): height of the floor's horizon above the bottom edge, in output heights, multiplied by `Scale`. Used where the items or the field lie on the floor.
 
 **Field**: where the bridge's field lies in the picture.
-- `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective, as in Motion Bridge - Fabric Wind; Screen = the field is read as seen from the front (issue #70): the position along the front is the picture's x, the distance from the surface is the item's depth. So motion near the surface stirs near items, far away the far ones, and someone standing still is an invisible column where items of their depth gather.
-- `Field X` (-10 to 10, default 0.5), `Field Width` (0 to 10, default 1): centre and width of the front, as shares of the frame width.
+- `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective, as in Motion Bridge - Fabric Wind; Screen = the field is read as seen from the base line (issue #70): the position along the base line is the picture's x, the distance from the surface is the item's depth. So motion near the surface stirs near items, far away the far ones, and someone standing still is an invisible column where items of their depth gather.
+- `Field X` (-10 to 10, default 0.5), `Field Width` (0 to 10, default 1): centre and width of the base line, as shares of the frame width.
 - `Field Y` (-10 to 10, default 0.5), `Field Height` (0 to 10, default 1): on the floor the centre and depth of the field; on the screen `Field Height` is the share of the field's depth that the items' depths cover: 1 = the farthest items match the far edge; 2 = they match the middle, and the far half of the field acts on nothing; 0.5 = items of medium depth already match the far edge, farther ones lie beyond the field.
-- `Field Rotation` (-180 to 180, default 0): on the floor, where the front lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
+- `Field Rotation` (-180 to 180, default 0): on the floor, where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
 - `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it, fading out over this time. 0 = shadows count as empty.
 
-- `Show Field` (Off / On, default Off): shows the field as the items see it: red = occupancy, green = motion, blue = held shadow. On the screen it is drawn as seen from the front.
+- `Show Field` (Off / On, default Off): shows the field as the items see it: red = occupancy, green = motion, blue = held shadow. On the screen it is drawn as seen from the base line.
 
 ## How it works
 
@@ -117,6 +117,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
 - 2026-11-21: First version (#70): leaves, maple seeds, chestnuts, twigs and feathers in the wind, on the screen with depth or on the floor (`Item Plane`); they stick to what stands still (`Stick Strength`) and are stirred up by motion (`Stir Strength`); on the screen the field is read as seen from the front. Tested in Arena (1920×1080):
   - Floor with the field on the floor, with a simulated object walking between two points (bridge `--sim-path`, 30 s pauses): a pile gathers at the standing object within about 10 s and scatters when it walks off.
   - Screen with the field on the screen: items of the object's depth stop at its column on the windward side and come loose when it walks off.
