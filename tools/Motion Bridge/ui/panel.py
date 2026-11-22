@@ -10,7 +10,7 @@ from room import Room
 from settings import ADVANCED, DEFAULT_PORT, FIELD, LIMITS
 
 from .help import tip
-from .theme import BAR_C, DIM, EXCL_C
+from .theme import BAD, BAR_C, DIM, EXCL_C, OK
 
 log = logging.getLogger(__name__)
 
@@ -371,14 +371,10 @@ class Panel:
         if (st.fan_span < 360.0) != has_handle:
             self.state.rebuild = True
         sp = self.eng.spout
-        if sp is None:
-            dpg.set_value('spout_text', 'Starting.')
-        elif sp.sending:
-            dpg.set_value('spout_text', f'Sender "{sp.name}", {sp.size[0]} x {sp.size[1]} pixels '
-                                        f'(top sixteenth is the status band), {self.eng.frame_rate:.0f} frames/s, '
-                                        f'{sp.frames} frames sent.')
-        else:
-            dpg.set_value('spout_text', f'{sp.status}. The field is shown here but not sent.')
+        ok, text = self.eng.output_status()
+        frames = f' {sp.frames} frames sent.' if sp is not None else ''
+        dpg.set_value('spout_text', text + '.' + frames)
+        dpg.configure_item('spout_text', color=OK if ok else BAD)
 
     def show(self, snap):
         """The texture as it was last sent, row 0 (on the base line) at the bottom, with its true proportions."""

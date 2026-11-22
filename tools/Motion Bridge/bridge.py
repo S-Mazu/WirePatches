@@ -13,6 +13,7 @@ import logging
 import logging.handlers
 import os
 import sys
+import threading
 import time
 
 from engine import Engine
@@ -35,6 +36,12 @@ def setup_logging(folder):
     ch = logging.StreamHandler()
     ch.setFormatter(fmt)
     root.addHandler(ch)
+
+    def thread_failed(args):            # a thread that dies must leave a trace in the log
+        logging.getLogger('bridge').critical('thread %s died', args.thread.name if args.thread else '?',
+                                             exc_info=(args.exc_type, args.exc_value, args.exc_traceback))
+    threading.excepthook = thread_failed
+    sys.excepthook = lambda t, v, tb: logging.getLogger('bridge').critical('uncaught error', exc_info=(t, v, tb))
 
 
 def main():

@@ -25,6 +25,7 @@ from quality import Quality
 from room import Room, create_default
 from scene import MIN_MM, blobs, foreground, merge, to_xy
 from settings import DEFAULT_PORT, Settings
+from spout_check import SpoutCheck
 from spout_out import SpoutOut
 from stl27l import Stl27lReader
 from visibility import field_visibility, reach
@@ -34,6 +35,9 @@ log = logging.getLogger(__name__)
 TICK_S = 0.1                 # without sensor data (simulation only) the field is still measured at 10 Hz
 FRAME_HZ = 30.0              # texture frames per second; motion fades between measurements
 STALE_S = 0.5                # a revolution older than this is not used
+HEAL_S = 2.0                 # sending or the check failing this long: the sender is recreated
+HEAL_GAP_S = 5.0             # at most one recreation per this time
+STOP_S = 1.0                 # no frame for this long: the output counts as stopped
 SAVE_DELAY_S = 1.0           # the room is written at most once per second while it is edited
 UNDO_STEPS = 50              # shape edits that can be undone
 
@@ -67,8 +71,13 @@ class Engine(threading.Thread):
         self.spout = None                   # created in run(): Spout wants one thread
         self.counter = 0                    # frame counter in the texture, 0..255
         self.last_tex = None                # the texture of the last frame (RGBA uint8, row 0 on the base line)
-        self.frame_rate = 0.0               # texture frames per second, measured
+        self.frame_rate = 0.0               # frames really sent per second, measured
         self._frames, self._frames_t = 0, time.time()
+        self.last_frame_t = None            # time of the last texture frame the engine made
+        self.check = None                   # SpoutCheck: reads the sender like Arena does
+        self.loop_errors = 0
+        self._healed_t = 0.0
+        self._minute_t, self._minute_frames = time.time(), 0   # the minute line in the log
         self.cal = Calibration(lambda: self.s['countdown_s'], self.notify, self.save_room)
         self.sim: list = []                 # simulated objects, [x_mm, y_mm] in the map
         self.running = True
@@ -255,44 +264,78 @@ class Engine(threading.Thread):
     # ------------------------------------------------ main loop
     def run(self) -> None:
         self.spout = SpoutOut()
-        seen, last_tick, last_frame = {}, 0.0, 0.0
-        frame_s = 1.0 / FRAME_HZ
+        self.check = SpoutCheck(self.spout.name)
+        self.check.start()
+        self._loop_state = {'seen': {}, 'last_tick': 0.0, 'last_frame': 0.0}
         while self.running:
-            now = time.time()
-            if self._dirty_t is not None and now - self._dirty_t > SAVE_DELAY_S:
-                self.flush_room()
-            with self.lock:
-                pairs = [(st, self.readers.get(st.port)) for st in self.room.stations if st.port]
-                primary = self.reader
-            new, revs = False, {}
-            for st, rd in pairs:
-                if rd is None:
-                    continue
-                c = rd.rev_count
-                if c != seen.get(rd.port):
-                    n = max(1, min(c - seen.get(rd.port, c - 1), 50))
-                    seen[rd.port] = c
-                    new = True
-                    if rd is primary:
-                        n_objects = len(self.snap['objects']) if self.snap else 0
-                        for rev in rd.latest(n):
-                            self.quality.add(rev, n_objects, rd.crc_bad)
-                latest = rd.latest(1)
-                if latest and now - latest[0].t < STALE_S:
-                    revs[st.sid] = latest[0]
-            if new or (now - last_tick >= TICK_S and (self.sim or not revs)):
-                self.process(revs)
-                last_tick = now
-            if now - last_frame >= frame_s:
-                self.frame(now)
-                last_frame = now
-            else:
-                time.sleep(0.002)
+            try:
+                self._loop_once()
+            except Exception:                   # a failure here must never stop the output silently
+                self.loop_errors += 1
+                log.exception('engine loop failed (%d so far)', self.loop_errors)
+                time.sleep(0.1)
+        self.check.stop()
         self.spout.close()
         self.flush_room()
         for rd in self.readers.values():
             rd.stop()
         self.quality.set_logging(False)
+
+    def _loop_once(self) -> None:
+        """One pass of the main loop: read the sensors, measure, send a frame when due, watch the output."""
+        st_ = self._loop_state
+        seen = st_['seen']
+        frame_s = 1.0 / FRAME_HZ
+        now = time.time()
+        if self._dirty_t is not None and now - self._dirty_t > SAVE_DELAY_S:
+            self.flush_room()
+        with self.lock:
+            pairs = [(st, self.readers.get(st.port)) for st in self.room.stations if st.port]
+            primary = self.reader
+        new, revs = False, {}
+        for st, rd in pairs:
+            if rd is None:
+                continue
+            c = rd.rev_count
+            if c != seen.get(rd.port):
+                n = max(1, min(c - seen.get(rd.port, c - 1), 50))
+                seen[rd.port] = c
+                new = True
+                if rd is primary:
+                    n_objects = len(self.snap['objects']) if self.snap else 0
+                    for rev in rd.latest(n):
+                        self.quality.add(rev, n_objects, rd.crc_bad)
+            latest = rd.latest(1)
+            if latest and now - latest[0].t < STALE_S:
+                revs[st.sid] = latest[0]
+        if new or (now - st_['last_tick'] >= TICK_S and (self.sim or not revs)):
+            self.process(revs)
+            st_['last_tick'] = now
+        if now - st_['last_frame'] >= frame_s:
+            self.frame(now)
+            st_['last_frame'] = now
+            self.watch(now)
+        else:
+            time.sleep(0.002)
+
+    def watch(self, now: float) -> None:
+        """Self-healing and the minute log: recreate the sender when sending or the check has failed for
+        HEAL_S, at most every HEAL_GAP_S; one line per minute with what went out."""
+        sp, ck = self.spout, self.check
+        send_bad = sp.sending is False or (sp.last_ok_t is not None and now - sp.last_ok_t > HEAL_S)
+        check_bad = ck is not None and ck.bad_for(now) > HEAL_S
+        if (send_bad or check_bad) and now - self._healed_t > HEAL_GAP_S and sp.available:
+            log.warning('output not reaching receivers (send %s, check %s for %.1f s): recreating the sender',
+                        'failing' if send_bad else 'ok', ck.state if ck else '-', ck.bad_for(now) if ck else 0.0)
+            self._healed_t = now
+            sp.recreate()
+        if now - self._minute_t >= 60.0:
+            frames = sp.frames - self._minute_frames
+            rd = self.reader
+            log.info('minute: %d frames sent (%.1f/s), check %s, sensor %d revolutions total, %d recreations, '
+                     '%d loop errors', frames, frames / (now - self._minute_t), ck.state if ck else '-',
+                     rd.rev_count if rd else 0, sp.recreations, self.loop_errors)
+            self._minute_t, self._minute_frames = now, sp.frames
 
     def stop(self) -> None:
         self.running = False
@@ -342,10 +385,10 @@ class Engine(threading.Thread):
         self.last_tex = tex                 # the window shows it as the preview of what is sent
         self.counter = (self.counter + 1) % 256
         self.spout.send(tex)
-        self._frames += 1
-        if now - self._frames_t >= 1.0:
-            self.frame_rate = self._frames / (now - self._frames_t)
-            self._frames, self._frames_t = 0, now
+        self.last_frame_t = now
+        if now - self._frames_t >= 1.0:              # frames that were really sent
+            self.frame_rate = (self.spout.frames - self._frames) / (now - self._frames_t)
+            self._frames, self._frames_t = self.spout.frames, now
 
     # ------------------------------------------------ for the user interface
     def snapshot(self):
@@ -354,9 +397,19 @@ class Engine(threading.Thread):
 
     def output_status(self):
         """(ok, text) for the status line: what leaves the bridge."""
-        sp = self.spout
-        if sp is None:
+        sp, ck = self.spout, self.check
+        now = time.time()
+        if sp is None or self.last_frame_t is None:
             return False, 'Output: starting'
+        if now - self.last_frame_t > STOP_S:
+            return False, f'Output STOPPED: no frame for {now - self.last_frame_t:.0f} s (see logs/bridge.log)'
         if not sp.sending:
             return False, f'Output: {sp.status}; nothing is sent'
-        return True, f'Output: {sp.status}, {self.frame_rate:.0f} frames/s'
+        if sp.last_ok_t is None or now - sp.last_ok_t > STOP_S:
+            return False, 'Output STOPPED: frames are made but not sent (see logs/bridge.log)'
+        heal = f', sender recreated {sp.recreations}x' if sp.recreations else ''
+        if ck is not None and ck.state in ('stalled', 'unreadable'):
+            return False, (f'Output NOT READABLE for {ck.bad_for(now):.0f} s: Arena would see '
+                           f'{"a frozen" if ck.state == "stalled" else "no"} picture{heal}')
+        check = {'ok': 'checked', 'starting': 'check starting'}.get(ck.state if ck else '', 'not checked')
+        return True, f'Output: {sp.status}, {self.frame_rate:.0f} frames/s, {check}{heal}'
