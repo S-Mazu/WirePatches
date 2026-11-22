@@ -69,6 +69,7 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show
 - `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the reference area: on the screen the frame (0 = left / bottom edge, 1 = right / top edge); on the floor its width at the bottom edge and the depth from the bottom edge to four times that distance.
 - `Field Width` (0 to 10, default 1): along the base line, as a share of the frame side the base line lies on.
 - `Field Height` (0 to 10, default 1): into the area, as a share of the frame side the depth runs along. For true proportions (one metre the same both ways, e.g. a floor projection): `Field Height` = `Field Width` × field depth / field width (the bridge status shows both in metres) × frame width / frame height; with the field turned by 90 or -90 degrees, swap the frame width and height.
+- `Field Size` (0 to 10, default 1): scales the field as it is set, around its centre (`Field X`, `Field Y`); proportions and rotation stay. It multiplies `Field Width` and `Field Height`.
 - `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left. Turns counter-clockwise.
 
 **Fabric**
@@ -161,6 +162,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: `Field Size` in the group Field scales the field as it is set, proportions and rotation kept (built in Wire: it multiplies `Field Width` and `Field Height`; the shader is unchanged). Tested in Arena (1920×1080) with the live sensor: 0.5 halves the field around its centre with rotation and proportions kept, 0 leaves no field (all hatched, ribbons calm, no NaN), 10 covers the frame; the patch loads in Wire.
 - 2026-11-22: `Show Field` shows what is evaluated: the part a sensor sees is light grey, everything else (outside the field, outside the area, in a shadow) is hatched. Held shadows are no longer shown in blue. Tested in Arena (1920×1080) with the live sensor and a simulated object: Field Plane Screen and Floor, ribbons on and off, field smaller than the frame, `Show Field` Off unchanged, bridge stopped (whole field light grey, outside hatched, no NaN) and restarted.
 - 2026-11-22: `Show Field` is the third control after `Scale` and `Clock`, the group Field follows it (agreed for all Motion Bridge patches). `Field Height` documents how to get true proportions. Tested in Arena (1920×1080) with the bridge after #135 (texture 38 × 64, area 3.80 × 6.00 m) in the floor projection setup (`Ribbon Plane` and `Field Plane` Screen): order of the controls in the clip panel; field, motion and held shadow arrive; the ribbons part around a standing simulated object and flutter where it walks; with `Field Width` 0.5 and `Field Height` 1.40 (formula) the standing object is round, with both at 1 it was about three times wider than high.
 - 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
