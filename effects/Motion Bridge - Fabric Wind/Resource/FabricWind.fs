@@ -92,6 +92,7 @@ const float BLUR_X = 0.06;         // blur radius of the field, in field units
 const float BLUR_D = 0.06;
 const float BAND_Y = 31.0 / 32.0;  // middle of the status band
 const float FIELD_H = 15.0 / 16.0; // the field rows in the texture
+const float HATCH_H = 0.013;         // Show Field: period of the hatching where nothing is evaluated, output heights
 const vec2 FIELD_RES = vec2(160.0, 120.0);   // size of the field pass
 const float TAU = 6.2831853;
 
@@ -701,7 +702,6 @@ void main() {
     vec4 fc = IMG_NORM_PIXEL(field, clamp(F.xy, 0.0, 1.0));
     float ex = F.z > 0.5 ? safe(fc.r, 0.0, 1.0) : 0.0;
     float occ = F.z > 0.5 ? safe(fc.g, 0.0, 1.0) : 0.0;
-    float shd = F.z > 0.5 ? safe(fc.b, 0.0, 1.0) : 0.0;
 
     vec4 acc = vec4(0.0);
     float density = safe(ribbonDensity, 0.0, 200.0);
@@ -831,10 +831,26 @@ void main() {
     vec3 tm = clamp((lin * (2.51 * lin + 0.03)) / (lin * (2.43 * lin + 0.59) + 0.14), 0.0, 1.0);
     vec4 outC = vec4(pow(tm, vec3(1.0 / 2.2)), acc.a);
 
+    // Show Field, outside the field and where no sensor sees: hatched, nothing can excite the ribbons
+    // there (outside the area, in a shadow). Live visibility from the texture; without a sensor
+    // (visibility not in use) only the outside of the field is hatched.
+    bool seenNow = true;
+    if (F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5 && alive > 0.5)
+        seenNow = IMG_NORM_PIXEL(inputImage, vec2(clamp(F.x, 0.0, 1.0), clamp(F.y, 0.0, 1.0) * FIELD_H)).b > 0.5;
+    if (showField > 0.5 && (F.z < 0.5 || !seenNow)) {
+        float hp = mod((gl_FragCoord.x + gl_FragCoord.y) / max(HATCH_H * res.y, 2.0), 1.0);
+        float line = 1.0 - smoothstep(0.18, 0.26, abs(hp - 0.5));          // a soft diagonal stripe
+        float ha = 0.8;
+        vec3 hcol = mix(vec3(0.0), vec3(0.28), line);
+        outC.rgb = mix(outC.rgb, hcol, ha);
+        outC.a = max(outC.a, ha);
+    }
+
     if (showField > 0.5 && F.z > 0.5) {
-        // red occupancy, green excitation, blue a held shadow; white the front, magenta the other edges
-        vec3 fcol = vec3(occ, ex, shd * 0.8);
-        float fa = max(max(max(occ, ex), shd * 0.5) * 0.8, 0.12);
+        // seen cells brightened, red occupancy, green excitation; in the hatched part only what is held
+        // there (red, green); white the base line, magenta the other edges
+        vec3 fcol = seenNow ? mix(vec3(0.85), vec3(occ, ex, 0.0), max(occ, ex)) : vec3(occ, ex, 0.0);
+        float fa = seenNow ? max(max(occ, ex) * 0.8, 0.45) : max(occ, ex) * 0.8;
         vec3 Fx = toField(uv + vec2(1.0 / res.x, 0.0), aspect, H);
         vec3 Fy = toField(uv + vec2(0.0, 1.0 / res.y), aspect, H);
         float dfx = max(length(vec2(Fx.x - F.x, Fy.x - F.x)), 1e-6);

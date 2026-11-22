@@ -248,26 +248,6 @@
 			},
 			{
 				"from": [
-					22,
-					"output"
-				],
-				"to": [
-					1,
-					"fieldWidth"
-				]
-			},
-			{
-				"from": [
-					23,
-					"output"
-				],
-				"to": [
-					1,
-					"fieldHeight"
-				]
-			},
-			{
-				"from": [
 					24,
 					"output"
 				],
@@ -345,6 +325,66 @@
 					1,
 					"showField"
 				]
+			},
+			{
+				"from": [
+					22,
+					"output"
+				],
+				"to": [
+					33,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					32,
+					"output"
+				],
+				"to": [
+					33,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					23,
+					"output"
+				],
+				"to": [
+					34,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					32,
+					"output"
+				],
+				"to": [
+					34,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					33,
+					"output0"
+				],
+				"to": [
+					1,
+					"fieldWidth"
+				]
+			},
+			{
+				"from": [
+					34,
+					"output0"
+				],
+				"to": [
+					1,
+					"fieldHeight"
+				]
 			}
 		],
 		"inputOrder": {
@@ -380,6 +420,7 @@
 						21,
 						22,
 						23,
+						32,
 						24
 					],
 					"collapsed": false,
@@ -409,19 +450,19 @@
 					"node": 0
 				},
 				{
+					"node": 31
+				},
+				{
+					"group": 1795000000004
+				},
+				{
 					"group": 1795000000002
 				},
 				{
 					"group": 1795000000003
 				},
 				{
-					"group": 1795000000004
-				},
-				{
 					"group": 1795000000005
-				},
-				{
-					"node": 31
 				}
 			]
 		},
@@ -437,7 +478,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Motion Bridge - Fabric Wind: ribbons of fabric blow in the wind, over the floor in front of the projection or flat across the screen. Driven by the Motion Bridge field (Spout): the ribbons part around what stands there like a stream around a post (or are drawn towards it) and flutter where something moves, then calm down. Calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Scale sizes everything relative to the output height; Clock (0 to 1000) drives the wind's waves: set its phase source to Timeline, Duration 1000 s; the flutter runs in real time. Fabric: Fabric (Rags, Silk, Velvet, Chiffon, Linen, Lame), Fabric Color, Fabric Sheen, Fabric Weight, Tatter (holes and frayed edges), Ribbon Plane (Floor = perspective over the floor, Screen = flat), Ribbon Density, Ribbon Width, Ribbon Length, Ribbons Opacity, Light Source (angle, 135 = top left). View: Horizon Y. Field: where the bridge's field lies in the picture. Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (shares of the floor in view or of the frame), Field Rotation (0 = base line at the bottom, 90 = right, 180 = top, -90 = left). Physics: Wind Direction (where the ribbons blow; on the floor 270 = towards the viewer), Wind Strength, Avoid Strength (negative = drawn towards), Flutter Strength, Flutter Life, Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field in its plane: red occupancy, green excitation, blue held shadow, white the base line, magenta the other edges. Shader: Resource\/FabricWind.fs.",
+			"description": "Motion Bridge - Fabric Wind: ribbons of fabric blow in the wind, over the floor in front of the projection or flat across the screen. Driven by the Motion Bridge field (Spout): the ribbons part around what stands there like a stream around a post (or are drawn towards it) and flutter where something moves, then calm down. Calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Scale sizes everything relative to the output height; Clock (0 to 1000) drives the wind's waves: set its phase source to Timeline, Duration 1000 s; the flutter runs in real time. Show Field shows what is evaluated: light grey where a sensor sees (red occupancy, green excitation), hatched where nothing excites the ribbons (outside the field or the area, in a shadow); white the base line, magenta the other edges. Field: where the bridge's field lies in the picture. Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (shares of the floor in view or of the frame), Field Size (scales the field as set, around its centre, proportions and rotation kept), Field Rotation (0 = base line at the bottom, 90 = right, 180 = top, -90 = left); for true proportions Field Height = Field Width x field depth \/ field width x frame width \/ frame height. Fabric: Fabric (Rags, Silk, Velvet, Chiffon, Linen, Lame), Fabric Color, Fabric Sheen, Fabric Weight, Tatter (holes and frayed edges), Ribbon Plane (Floor = perspective over the floor, Screen = flat), Ribbon Density, Ribbon Width, Ribbon Length, Ribbons Opacity, Light Source (angle, 135 = top left). View: Horizon Y. Physics: Wind Direction (where the ribbons blow; on the floor 270 = towards the viewer), Wind Strength, Avoid Strength (negative = drawn towards), Flutter Strength, Flutter Life, Shadow Hold (seconds a spot the sensors cannot see keeps its state). Shader: Resource\/FabricWind.fs.",
 			"displayName": "Motion Bridge - Fabric Wind",
 			"identifier": "54794905-1441-412c-8480-7048aeb131d5",
 			"licenseName": "Unlicense",
@@ -474,7 +515,7 @@
 			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 32,
+		"nextNodeId": 35,
 		"nodes": {
 			"0": {
 				"attributes": {
@@ -2676,6 +2717,198 @@
 				"name": "Show Field",
 				"thumbnail_visible": true
 			},
+			"32": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2080
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Size",
+				"thumbnail_visible": true
+			},
+			"33": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 2
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 300,
+					"y": 1900
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 1
+					},
+					"input1": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"size",
+					"type0",
+					"type1"
+				],
+				"name": "Multiply",
+				"thumbnail_visible": true
+			},
+			"34": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 2
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 300,
+					"y": 2000
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 1
+					},
+					"input1": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"size",
+					"type0",
+					"type1"
+				],
+				"name": "Multiply",
+				"thumbnail_visible": true
+			},
 			"4": {
 				"attributes": {
 					"type": {
@@ -3090,7 +3323,7 @@
 				"zoom": 1
 			},
 			"selection": [
-				"31"
+				"34"
 			]
 		}
 	},
