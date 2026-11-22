@@ -18,7 +18,7 @@ The bridge always delivers the same field; how its sensor is set up decides what
 |---|---|---|---|---|
 | **Dance floor**: sensor scans the floor in front of the projection | Floor | 270 (towards the viewer) | Floor | 0 |
 | **Curtain**: sensor scans a plane just in front of the projection surface, front at the top edge | Screen | 270 (from the top) | Screen | 180 |
-| **Floor projection**: sensor scans just above the projected floor | Screen | any | Screen | as the base line lies in the picture |
+| **Floor projection**: sensor scans just above the projected floor | Screen | any | Screen | as the base line lies in the picture; `Field Height` for true proportions (Parameters) |
 | **Shadow from the room**: people on the floor, fabric falling from the top | Screen | 270 | Floor | 0 |
 
 ## Requirements
@@ -58,10 +58,18 @@ The reaction to the room runs in real time and does not follow `Clock`: occupanc
 
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe (tested in Arena).
+All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show Field` and the group Field come first, because they are set first when the patch is set up for a room.
 
 - `Scale` (0 to 10, default 1): size of all elements relative to the output height.
 - `Clock` (0 to 1000, default 0): the wind's waves, see Timing.
+- `Show Field` (Off / On, default Off): shows the field in its plane: red = occupancy, green = excitation, blue = held shadow, white = the base line, magenta = the other edges.
+
+**Field**: where the bridge's field lies in the picture.
+- `Field Plane` (Floor / Screen, default Floor): Floor = on the floor in perspective; Screen = flat on the frame.
+- `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the reference area: on the screen the frame (0 = left / bottom edge, 1 = right / top edge); on the floor its width at the bottom edge and the depth from the bottom edge to four times that distance.
+- `Field Width` (0 to 10, default 1): along the base line, as a share of the frame side the base line lies on.
+- `Field Height` (0 to 10, default 1): into the area, as a share of the frame side the depth runs along. For true proportions (one metre the same both ways, e.g. a floor projection): `Field Height` = `Field Width` × field depth / field width (the bridge status shows both in metres) × frame width / frame height; with the field turned by 90 or -90 degrees, swap the frame width and height.
+- `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left. Turns counter-clockwise.
 
 **Fabric**
 - `Fabric` (default Silk):
@@ -85,13 +93,6 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 **View**
 - `Horizon Y` (0 to 10, default 0.7): height of the floor's horizon above the bottom edge, in output heights, multiplied by `Scale`. Used where a plane is Floor.
 
-**Field**: where the bridge's field lies in the picture.
-- `Field Plane` (Floor / Screen, default Floor): Floor = on the floor in perspective; Screen = flat on the frame.
-- `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the reference area: on the screen the frame (0 = left / bottom edge, 1 = right / top edge); on the floor its width at the bottom edge and the depth from the bottom edge to four times that distance.
-- `Field Width` (0 to 10, default 1): along the base line, as a share of the frame side the base line lies on.
-- `Field Height` (0 to 10, default 1): into the area, as a share of the frame side the depth runs along.
-- `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left. Turns counter-clockwise.
-
 **Physics**
 - `Wind Direction` (0 to 360, default 270): where the ribbons blow to. The ribbons are fixed on the opposite side. On the screen 270 = from the top down; on the floor 270 = towards the viewer, 90 = into the depth.
 - `Wind Strength` (0 to 10, default 1): size and speed of the waves. 0 = still.
@@ -99,8 +100,6 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 - `Flutter Strength` (0 to 10, default 1): how strongly the ribbons flutter and twist where something moves.
 - `Flutter Life` (0 to 30, default 1.5): seconds until the flutter has calmed down.
 - `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it (behind a person, a barrier, outside the fans), fading out over this time. 0 = shadows count as empty.
-
-- `Show Field` (Off / On, default Off): shows the field in its plane: red = occupancy, green = excitation, blue = held shadow, white = the base line, magenta = the other edges.
 
 ## How it works
 
@@ -162,6 +161,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: `Show Field` is the third control after `Scale` and `Clock`, the group Field follows it (agreed for all Motion Bridge patches). `Field Height` documents how to get true proportions. Tested in Arena (1920×1080) with the bridge after #135 (texture 38 × 64, area 3.80 × 6.00 m) in the floor projection setup (`Ribbon Plane` and `Field Plane` Screen): order of the controls in the clip panel; field, motion and held shadow arrive; the ribbons part around a standing simulated object and flutter where it walks; with `Field Width` 0.5 and `Field Height` 1.40 (formula) the standing object is round, with both at 1 it was about three times wider than high. Not tested: the field over a real projected floor (needs the projector and a walk test).
 - 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
 - 2026-11-20: Renamed from Bulging Lines to Motion Bridge - Fabric Wind (#124, #120). Ribbons are now fabric strips fixed on the upwind side: waves, twist, gusts, six fabrics with their own light (`Fabric`, `Fabric Color`, `Fabric Sheen`, `Fabric Weight`, `Tatter`, `Light Source`), `Ribbon Length`. `Ribbon Plane` and `Wind Direction` choose where the ribbons blow; `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height`, `Field Rotation` choose where the field lies (floor, curtain, floor projection). `Avoid Strength` may be negative. The visibility channel holds shadows (`Shadow Hold`). The flight of segments is gone; `Clock` now drives the wind. After a first round that still looked like coloured lines, the ribbons were rebuilt after research into fabric shaders (Sources): fewer, wider ribbons (`Ribbon Density` 5, `Ribbon Width` 0.22), folds along each ribbon with creases, rolled wavy edges, shadows between ribbons. A third round lifted the light to current game standards: physically based shading in linear colour with ACES tone mapping, anisotropic GGX for silk and lamé, the Filament cloth model for the others, sky light, light through thin fabric, ambient occlusion, wrinkles, weave, and specular anti-aliasing. A fourth round replaced the avoidance, which warped the picture like a glass ball: each ribbon now moves as a whole strip around what stands there, with a smooth arc and a wake; flutter is read along the ribbon too. Tested in Arena (1920×1080) with the live sensor: both planes, field rotation, all fabrics, slider extremes. Not tested live: flutter from someone moving. A fifth round: someone standing still parts the fabric like a post in a stream (passes 5 to 7, see How it works); the hole that used to be cut where someone stands is gone; the groups Ribbons and Fabric are one group Fabric. Tested in Arena (1920×1080) with the live sensor and a simulated object, dragged and with the field moving: screen and floor plane, ribbons on the screen with the field on the floor, `Avoid Strength` -10, -1, 0, 1, 5, 10, `Scale` 0.3, 1, 1.6, 5, `Ribbon Density` 5, 50, 200, `Wind Direction` 0, 135, 270, `Field Rotation` 90, bridge stopped and restarted. GPU load at 1920×1080 on an RTX 5080 Laptop: about 17 % without the effect, 26 to 30 % with it.
 - 2026-11-17: Rebuilt as an effect on the Spout clip of the Motion Bridge field texture (#115), moved from `sources/` to `effects/`: ribbons fly towards the viewer over the floor in perspective, flow around occupancy and flutter where something moves; transparent background, no Backdrop. Replaces the OSC version with its 8 people slots and bulges. Tested in Arena (1920×1080) with the live sensor and simulated objects, slider extremes and bridge stop.
