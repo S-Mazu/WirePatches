@@ -516,8 +516,10 @@ void main() {
         vec3 F = toField(uv, aspect, S, hS);
         // hatched where nothing is evaluated: outside the field, outside the area and in a shadow
         // (live visibility from the texture; without a sensor only the outside of the field)
-        bool seenNow = true;
-        if (F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5 && alive > 0.5)
+        // without the bridge (no live band) nothing is evaluated: all hatched; without a sensor
+        // (visibility not in use) the whole field counts as seen
+        bool seenNow = alive > 0.5;
+        if (seenNow && F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5)
             seenNow = IMG_NORM_PIXEL(inputImage, vec2(clamp(F.x, 0.0, 1.0), clamp(F.y, 0.0, 1.0) * FIELD_H)).b > 0.5;
         if (F.z < 0.5 || !seenNow) {
             float hp = mod((gl_FragCoord.x + gl_FragCoord.y) / max(HATCH_H * res.y, 2.0), 1.0);
