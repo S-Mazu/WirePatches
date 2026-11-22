@@ -298,26 +298,6 @@
 			},
 			{
 				"from": [
-					28,
-					"output"
-				],
-				"to": [
-					1,
-					"fieldWidth"
-				]
-			},
-			{
-				"from": [
-					29,
-					"output"
-				],
-				"to": [
-					1,
-					"fieldHeight"
-				]
-			},
-			{
-				"from": [
 					30,
 					"output"
 				],
@@ -344,6 +324,66 @@
 				"to": [
 					1,
 					"showField"
+				]
+			},
+			{
+				"from": [
+					28,
+					"output"
+				],
+				"to": [
+					34,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					33,
+					"output"
+				],
+				"to": [
+					34,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					29,
+					"output"
+				],
+				"to": [
+					35,
+					"input0"
+				]
+			},
+			{
+				"from": [
+					33,
+					"output"
+				],
+				"to": [
+					35,
+					"input1"
+				]
+			},
+			{
+				"from": [
+					34,
+					"output0"
+				],
+				"to": [
+					1,
+					"fieldWidth"
+				]
+			},
+			{
+				"from": [
+					35,
+					"output0"
+				],
+				"to": [
+					1,
+					"fieldHeight"
 				]
 			}
 		],
@@ -399,6 +439,7 @@
 						27,
 						28,
 						29,
+						33,
 						30,
 						31
 					],
@@ -414,6 +455,12 @@
 					"node": 0
 				},
 				{
+					"node": 32
+				},
+				{
+					"group": 1796000000005
+				},
+				{
 					"group": 1796000000001
 				},
 				{
@@ -424,12 +471,6 @@
 				},
 				{
 					"group": 1796000000004
-				},
-				{
-					"group": 1796000000005
-				},
-				{
-					"node": 32
 				}
 			]
 		},
@@ -445,7 +486,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Motion Bridge - Fireflies: fireflies fly about, over the screen or over the floor in perspective, blink on and off, swarm around whatever stands still and flee from motion; fleeing always wins. Reverse (0 to 1) swaps the roles: they swarm around motion and flee from what stands still (animate it in Arena, e.g. Timeline 30 s, Loop, to swap every 15 s). Driven by the Motion Bridge field (Spout); calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Runs in real time. Scale sizes everything relative to the output height. Fireflies: Firefly Plane (Screen = flat over the frame, Floor = hovering over the floor in perspective, smaller with the distance), Firefly Density (per output height squared, grows with the surface), Performance Cap (at most this many, up to 1024), Firefly Size, Glow Size, Firefly Color, Glow Color, Firefly Twinkle (flicker while lit), Firefly Life (seconds lit), Dark Time (seconds dark). Physics: Wander, Air Drag, Swarm Strength, Flee Strength, Reverse. Halo: Halo On shows what stands still as a soft light that follows the blurred field; Halo Color, Halo Opacity. View: Horizon Y (for a field on the floor). Field: where the bridge's field lies in the picture, as in Motion Bridge - Fabric Wind: Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height, Field Rotation (0 = base line at the bottom), Shadow Hold (seconds a spot the sensors cannot see keeps its state). Show Field shows the field: red occupancy, green excitation, blue held shadow, white the base line, magenta the other edges. Shader: Resource/Fireflies.fs.",
+			"description": "Motion Bridge - Fireflies: fireflies fly about, over the screen or over the floor in perspective, blink on and off, swarm around whatever stands still and flee from motion; fleeing always wins. Reverse (0 to 1) swaps the roles: they swarm around motion and flee from what stands still (animate it in Arena, e.g. Timeline 30 s, Loop, to swap every 15 s). Driven by the Motion Bridge field (Spout); calm without the bridge; transparent background. Needs the Motion Bridge tool. In Arena, load the Spout source 'Motion Bridge' as a clip at its own size, set the layer's Auto Size to Stretch, put this patch on the clip (after its Transform) and set the layer's blend mode to Alpha. Runs in real time. Scale sizes everything relative to the output height (surface model, scene coordinates of the example Scaler). Show Field shows what is evaluated: light grey where a sensor sees (red occupancy, green motion), hatched where nothing reaches the fireflies (outside the field or the area, in a shadow); white the base line, magenta the other edges. Fireflies: Firefly Plane (Screen = flat over the frame, Floor = hovering over the floor in perspective, smaller with the distance), Firefly Density (per output height squared, grows with the surface), Performance Cap (at most this many, up to 1024), Firefly Size, Glow Size, Firefly Color, Glow Color, Firefly Twinkle (flicker while lit), Firefly Life (seconds lit), Dark Time (seconds dark). Physics: Wander, Air Drag, Swarm Strength, Flee Strength, Reverse. Halo: Halo On shows what stands still as a soft light that follows the blurred field; Halo Color, Halo Opacity. View: Horizon Y (for a field on the floor). Field: where the bridge's field lies in the picture, as in Motion Bridge - Fabric Wind: Field Plane (Floor or Screen), Field X, Field Y, Field Width, Field Height (true proportions: Field Height = Field Width x field depth / field width x frame width / frame height), Field Size (scales the field as set), Field Rotation (0 = base line at the bottom), Shadow Hold (seconds a spot the sensors cannot see keeps its state). Shader: Resource\/Fireflies.fs.",
 			"displayName": "Motion Bridge - Fireflies",
 			"identifier": "94070c53-702b-4049-b9bc-eb4f4775bbf0",
 			"licenseName": "Unlicense",
@@ -479,10 +520,10 @@
 				}
 			},
 			"thumbnail": "",
-			"url": "https://github.com/S-Mazu/WirePatches",
+			"url": "https:\/\/github.com\/S-Mazu\/WirePatches",
 			"vendor": ""
 		},
-		"nextNodeId": 33,
+		"nextNodeId": 36,
 		"nodes": {
 			"0": {
 				"attributes": {
@@ -531,7 +572,7 @@
 						"type": "resourceIsf",
 						"value": {
 							"path": {
-								"main": "Resource/Fireflies.fs",
+								"main": "Resource\/Fireflies.fs",
 								"sub": ""
 							},
 							"value": {
@@ -541,235 +582,235 @@
 										"type": "image"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "scale",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 1,
+										"min": 0,
 										"name": "fireflyPlane",
 										"type": "float"
 									},
 									{
-										"defaultValue": 40.0,
-										"max": 500.0,
-										"min": 0.0,
+										"defaultValue": 40,
+										"max": 500,
+										"min": 0,
 										"name": "fireflyDensity",
 										"type": "float"
 									},
 									{
-										"defaultValue": 512.0,
-										"max": 1024.0,
-										"min": 0.0,
+										"defaultValue": 512,
+										"max": 1024,
+										"min": 0,
 										"name": "performanceCap",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.006,
-										"max": 0.2,
-										"min": 0.0,
+										"defaultValue": 0.00600000005215406,
+										"max": 0.20000000298023224,
+										"min": 0,
 										"name": "fireflySize",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.02,
+										"defaultValue": 0.01999999955296516,
 										"max": 0.5,
-										"min": 0.0,
+										"min": 0,
 										"name": "glowSize",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											1.0,
-											0.98,
+											1,
+											0.98000001907348633,
 											0.75,
-											1.0
+											1
 										],
 										"name": "fireflyColor",
 										"type": "color"
 									},
 									{
 										"defaultValue": [
-											0.65,
-											1.0,
+											0.64999997615814209,
+											1,
 											0.25,
-											1.0
+											1
 										],
 										"name": "glowColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.4,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0.40000000596046448,
+										"max": 1,
+										"min": 0,
 										"name": "fireflyTwinkle",
 										"type": "float"
 									},
 									{
-										"defaultValue": 3.0,
-										"max": 30.0,
-										"min": 0.0,
+										"defaultValue": 3,
+										"max": 30,
+										"min": 0,
 										"name": "fireflyLife",
 										"type": "float"
 									},
 									{
 										"defaultValue": 1.5,
-										"max": 30.0,
-										"min": 0.0,
+										"max": 30,
+										"min": 0,
 										"name": "darkTime",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "wander",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "airDrag",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "swarmStrength",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "fleeStrength",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
 										"name": "reverse",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
 										"name": "haloOn",
 										"type": "float"
 									},
 									{
 										"defaultValue": [
-											1.0,
-											0.85,
-											0.55,
-											1.0
+											1,
+											0.85000002384185791,
+											0.55000001192092896,
+											1
 										],
 										"name": "haloColor",
 										"type": "color"
 									},
 									{
-										"defaultValue": 0.35,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0.34999999403953552,
+										"max": 1,
+										"min": 0,
 										"name": "haloOpacity",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.7,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 0.69999998807907104,
+										"max": 10,
+										"min": 0,
 										"name": "horizonY",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 1,
+										"min": 0,
 										"name": "fieldPlane",
 										"type": "float"
 									},
 									{
 										"defaultValue": 0.5,
-										"max": 10.0,
-										"min": -10.0,
+										"max": 10,
+										"min": -10,
 										"name": "fieldX",
 										"type": "float"
 									},
 									{
 										"defaultValue": 0.5,
-										"max": 10.0,
-										"min": -10.0,
+										"max": 10,
+										"min": -10,
 										"name": "fieldY",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "fieldWidth",
 										"type": "float"
 									},
 									{
-										"defaultValue": 1.0,
-										"max": 10.0,
-										"min": 0.0,
+										"defaultValue": 1,
+										"max": 10,
+										"min": 0,
 										"name": "fieldHeight",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 180.0,
-										"min": -180.0,
+										"defaultValue": 0,
+										"max": 180,
+										"min": -180,
 										"name": "fieldRotation",
 										"type": "float"
 									},
 									{
-										"defaultValue": 5.0,
-										"max": 60.0,
-										"min": 0.0,
+										"defaultValue": 5,
+										"max": 60,
+										"min": 0,
 										"name": "shadowHold",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1,
+										"min": 0,
 										"name": "showField",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 24.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 24,
+										"min": 0,
 										"name": "clockH",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 60.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 60,
+										"min": 0,
 										"name": "clockM",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 60.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 60,
+										"min": 0,
 										"name": "clockS",
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.0,
-										"max": 1000.0,
-										"min": 0.0,
+										"defaultValue": 0,
+										"max": 1000,
+										"min": 0,
 										"name": "clockMs",
 										"type": "float"
 									}
@@ -801,7 +842,7 @@
 					}
 				},
 				"bounds": {
-					"height": 852,
+					"height": 850,
 					"width": 195,
 					"x": 700,
 					"y": 300
@@ -815,7 +856,7 @@
 				"constants": {
 					"airDrag": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"bypass": {
 						"type": "bool",
@@ -823,19 +864,19 @@
 					},
 					"clockH": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"clockM": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"clockMs": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"clockS": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"darkTime": {
 						"type": "float",
@@ -843,19 +884,19 @@
 					},
 					"fieldHeight": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"fieldPlane": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"fieldRotation": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"fieldWidth": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"fieldX": {
 						"type": "float",
@@ -868,69 +909,69 @@
 					"fireflyColor": {
 						"type": "color",
 						"value": [
-							1.0,
-							0.98,
+							1,
+							0.98000001907348633,
 							0.75,
-							1.0
+							1
 						]
 					},
 					"fireflyDensity": {
 						"type": "float",
-						"value": 40.0
+						"value": 40
 					},
 					"fireflyLife": {
 						"type": "float",
-						"value": 3.0
+						"value": 3
 					},
 					"fireflyPlane": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"fireflySize": {
 						"type": "float",
-						"value": 0.006
+						"value": 0.00600000005215406
 					},
 					"fireflyTwinkle": {
 						"type": "float",
-						"value": 0.4
+						"value": 0.40000000596046448
 					},
 					"fleeStrength": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"glowColor": {
 						"type": "color",
 						"value": [
-							0.65,
-							1.0,
+							0.64999997615814209,
+							1,
 							0.25,
-							1.0
+							1
 						]
 					},
 					"glowSize": {
 						"type": "float",
-						"value": 0.02
+						"value": 0.01999999955296516
 					},
 					"haloColor": {
 						"type": "color",
 						"value": [
-							1.0,
-							0.85,
-							0.55,
-							1.0
+							1,
+							0.85000002384185791,
+							0.55000001192092896,
+							1
 						]
 					},
 					"haloOn": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"haloOpacity": {
 						"type": "float",
-						"value": 0.35
+						"value": 0.34999999403953552
 					},
 					"horizonY": {
 						"type": "float",
-						"value": 0.7
+						"value": 0.69999998807907104
 					},
 					"inputImage": {
 						"type": "texture2d",
@@ -938,27 +979,27 @@
 					},
 					"performanceCap": {
 						"type": "float",
-						"value": 512.0
+						"value": 512
 					},
 					"reverse": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"scale": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"shadowHold": {
 						"type": "float",
-						"value": 5.0
+						"value": 5
 					},
 					"showField": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"swarmStrength": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"time": {
 						"type": "float",
@@ -966,7 +1007,7 @@
 					},
 					"wander": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -978,443 +1019,6 @@
 					"resolution-relative"
 				],
 				"name": "ISF",
-				"thumbnail_visible": true
-			},
-			"3": {
-				"attributes": {
-					"instances": {
-						"type": "integer",
-						"value": 1
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 132,
-					"x": 1300,
-					"y": 300
-				},
-				"class": {
-					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
-					"version": 2
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "texture2d",
-						"value": null
-					}
-				},
-				"hidden": [
-					"instances"
-				],
-				"name": "Texture Out",
-				"thumbnail_visible": true
-			},
-			"4": {
-				"attributes": {
-					"type": {
-						"type": "type",
-						"value": "integer"
-					}
-				},
-				"bounds": {
-					"height": 130,
-					"width": 195,
-					"x": 100,
-					"y": 3000
-				},
-				"class": {
-					"id": "77697265-1493-477D-981B-735FE719A4DB",
-					"version": 1
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {},
-				"hidden": [
-					"type"
-				],
-				"name": "System Time",
-				"thumbnail_visible": true
-			},
-			"5": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 10.0
-					},
-					"min": {
-						"type": "float",
-						"value": 0.0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 200
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1.0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Scale",
-				"thumbnail_visible": true
-			},
-			"6": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1.0
-					},
-					"min": {
-						"type": "float",
-						"value": 0.0
-					},
-					"option0-label": {
-						"type": "string",
-						"value": "Floor"
-					},
-					"option0-value": {
-						"type": "float",
-						"value": 0
-					},
-					"option1-label": {
-						"type": "string",
-						"value": "Screen"
-					},
-					"option1-value": {
-						"type": "float",
-						"value": 1
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 2
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 300
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 1.0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"option0-label",
-					"option0-value",
-					"option1-label",
-					"option1-value",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Firefly Plane",
-				"thumbnail_visible": true
-			},
-			"7": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 500.0
-					},
-					"min": {
-						"type": "float",
-						"value": 0.0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 400
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 40.0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Firefly Density",
-				"thumbnail_visible": true
-			},
-			"8": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 1024.0
-					},
-					"min": {
-						"type": "float",
-						"value": 0.0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 500
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 512.0
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Performance Cap",
-				"thumbnail_visible": true
-			},
-			"9": {
-				"attributes": {
-					"flow": {
-						"type": "flow",
-						"value": "signal"
-					},
-					"has-max": {
-						"type": "bool",
-						"value": true
-					},
-					"has-min": {
-						"type": "bool",
-						"value": true
-					},
-					"instances": {
-						"type": "integer",
-						"value": 1
-					},
-					"max": {
-						"type": "float",
-						"value": 0.2
-					},
-					"min": {
-						"type": "float",
-						"value": 0.0
-					},
-					"options-count": {
-						"type": "integer",
-						"value": 0
-					},
-					"unit": {
-						"type": "integer",
-						"value": 0
-					},
-					"widget": {
-						"type": "integer",
-						"value": 0
-					}
-				},
-				"bounds": {
-					"height": 82,
-					"width": 130,
-					"x": 100,
-					"y": 600
-				},
-				"class": {
-					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
-					"version": 4
-				},
-				"clock": "video",
-				"color": "ffff6a00",
-				"constants": {
-					"input": {
-						"type": "float",
-						"value": 0.006
-					}
-				},
-				"hidden": [
-					"flow",
-					"has-max",
-					"has-min",
-					"input",
-					"instances",
-					"max",
-					"min",
-					"options-count",
-					"unit",
-					"widget"
-				],
-				"name": "Firefly Size",
 				"thumbnail_visible": true
 			},
 			"10": {
@@ -1441,7 +1045,7 @@
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -1471,7 +1075,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.02
+						"value": 0.01999999955296516
 					}
 				},
 				"hidden": [
@@ -1524,10 +1128,10 @@
 					"input": {
 						"type": "color",
 						"value": [
-							1.0,
-							0.98,
+							1,
+							0.98000001907348633,
 							0.75,
-							1.0
+							1
 						]
 					}
 				},
@@ -1576,10 +1180,10 @@
 					"input": {
 						"type": "color",
 						"value": [
-							0.65,
-							1.0,
+							0.64999997615814209,
+							1,
 							0.25,
-							1.0
+							1
 						]
 					}
 				},
@@ -1613,11 +1217,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -1647,7 +1251,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.4
+						"value": 0.40000000596046448
 					}
 				},
 				"hidden": [
@@ -1685,11 +1289,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 30.0
+						"value": 30
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -1719,7 +1323,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 3.0
+						"value": 3
 					}
 				},
 				"hidden": [
@@ -1757,11 +1361,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 30.0
+						"value": 30
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -1829,11 +1433,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -1863,7 +1467,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -1901,11 +1505,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -1935,7 +1539,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -1973,11 +1577,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2007,7 +1611,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -2045,11 +1649,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2079,7 +1683,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -2117,11 +1721,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2151,7 +1755,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -2189,11 +1793,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"option0-label": {
 						"type": "string",
@@ -2239,7 +1843,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -2296,10 +1900,10 @@
 					"input": {
 						"type": "color",
 						"value": [
-							1.0,
-							0.85,
-							0.55,
-							1.0
+							1,
+							0.85000002384185791,
+							0.55000001192092896,
+							1
 						]
 					}
 				},
@@ -2333,11 +1937,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2367,7 +1971,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.35
+						"value": 0.34999999403953552
 					}
 				},
 				"hidden": [
@@ -2405,11 +2009,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2439,7 +2043,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.7
+						"value": 0.69999998807907104
 					}
 				},
 				"hidden": [
@@ -2477,11 +2081,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"option0-label": {
 						"type": "string",
@@ -2527,7 +2131,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -2569,11 +2173,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": -10.0
+						"value": -10
 					},
 					"options-count": {
 						"type": "integer",
@@ -2641,11 +2245,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": -10.0
+						"value": -10
 					},
 					"options-count": {
 						"type": "integer",
@@ -2713,11 +2317,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2747,7 +2351,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -2785,11 +2389,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 10.0
+						"value": 10
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2819,7 +2423,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					}
 				},
 				"hidden": [
@@ -2835,6 +2439,37 @@
 					"widget"
 				],
 				"name": "Field Height",
+				"thumbnail_visible": true
+			},
+			"3": {
+				"attributes": {
+					"instances": {
+						"type": "integer",
+						"value": 1
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 132,
+					"x": 1300,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-BEEA-4D38-8EE5-0EBA4CBD0AEE",
+					"version": 2
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "texture2d",
+						"value": null
+					}
+				},
+				"hidden": [
+					"instances"
+				],
+				"name": "Texture Out",
 				"thumbnail_visible": true
 			},
 			"30": {
@@ -2857,11 +2492,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 180.0
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": -180.0
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -2891,7 +2526,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -2929,11 +2564,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 60.0
+						"value": 60
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"options-count": {
 						"type": "integer",
@@ -2963,7 +2598,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 5.0
+						"value": 5
 					}
 				},
 				"hidden": [
@@ -3001,11 +2636,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 1.0
+						"value": 1
 					},
 					"min": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					},
 					"option0-label": {
 						"type": "string",
@@ -3051,7 +2686,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.0
+						"value": 0
 					}
 				},
 				"hidden": [
@@ -3072,6 +2707,604 @@
 				],
 				"name": "Show Field",
 				"thumbnail_visible": true
+			},
+			"33": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 2900
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Field Size",
+				"thumbnail_visible": true
+			},
+			"34": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 2
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 300,
+					"y": 2800
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 1
+					},
+					"input1": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"size",
+					"type0",
+					"type1"
+				],
+				"name": "Multiply",
+				"thumbnail_visible": true
+			},
+			"35": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"input0-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"input1-dimensions": {
+						"type": "integer",
+						"value": 1
+					},
+					"size": {
+						"type": "integer",
+						"value": 2
+					},
+					"type0": {
+						"type": "type",
+						"value": "float"
+					},
+					"type1": {
+						"type": "type",
+						"value": "float"
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 195,
+					"x": 300,
+					"y": 2900
+				},
+				"class": {
+					"id": "77697265-A0D8-429A-A558-69BC58D0D425",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input0": {
+						"type": "float",
+						"value": 1
+					},
+					"input1": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"input0-dimensions",
+					"input1-dimensions",
+					"size",
+					"type0",
+					"type1"
+				],
+				"name": "Multiply",
+				"thumbnail_visible": true
+			},
+			"4": {
+				"attributes": {
+					"type": {
+						"type": "type",
+						"value": "integer"
+					}
+				},
+				"bounds": {
+					"height": 130,
+					"width": 195,
+					"x": 100,
+					"y": 3000
+				},
+				"class": {
+					"id": "77697265-1493-477D-981B-735FE719A4DB",
+					"version": 1
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {},
+				"hidden": [
+					"type"
+				],
+				"name": "System Time",
+				"thumbnail_visible": true
+			},
+			"5": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 10
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 200
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Scale",
+				"thumbnail_visible": true
+			},
+			"6": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"option0-label": {
+						"type": "string",
+						"value": "Floor"
+					},
+					"option0-value": {
+						"type": "float",
+						"value": 0
+					},
+					"option1-label": {
+						"type": "string",
+						"value": "Screen"
+					},
+					"option1-value": {
+						"type": "float",
+						"value": 1
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 2
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 300
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 1
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"option0-label",
+					"option0-value",
+					"option1-label",
+					"option1-value",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Plane",
+				"thumbnail_visible": true
+			},
+			"7": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 500
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 400
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 40
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Density",
+				"thumbnail_visible": true
+			},
+			"8": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 1024
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 500
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 512
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Performance Cap",
+				"thumbnail_visible": true
+			},
+			"9": {
+				"attributes": {
+					"flow": {
+						"type": "flow",
+						"value": "signal"
+					},
+					"has-max": {
+						"type": "bool",
+						"value": true
+					},
+					"has-min": {
+						"type": "bool",
+						"value": true
+					},
+					"instances": {
+						"type": "integer",
+						"value": 1
+					},
+					"max": {
+						"type": "float",
+						"value": 0.20000000298023224
+					},
+					"min": {
+						"type": "float",
+						"value": 0
+					},
+					"options-count": {
+						"type": "integer",
+						"value": 0
+					},
+					"unit": {
+						"type": "integer",
+						"value": 0
+					},
+					"widget": {
+						"type": "integer",
+						"value": 0
+					}
+				},
+				"bounds": {
+					"height": 82,
+					"width": 130,
+					"x": 100,
+					"y": 600
+				},
+				"class": {
+					"id": "77697265-D235-4A6A-B661-02ABE55C72FF",
+					"version": 4
+				},
+				"clock": "video",
+				"color": "ffff6a00",
+				"constants": {
+					"input": {
+						"type": "float",
+						"value": 0.00600000005215406
+					}
+				},
+				"hidden": [
+					"flow",
+					"has-max",
+					"has-min",
+					"input",
+					"instances",
+					"max",
+					"min",
+					"options-count",
+					"unit",
+					"widget"
+				],
+				"name": "Firefly Size",
+				"thumbnail_visible": true
 			}
 		},
 		"ui": {
@@ -3080,7 +3313,9 @@
 				"y": 0,
 				"zoom": 1
 			},
-			"selection": []
+			"selection": [
+				"35"
+			]
 		}
 	},
 	"ui": {
