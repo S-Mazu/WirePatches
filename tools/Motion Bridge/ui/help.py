@@ -141,8 +141,7 @@ HELP = {
               'Green: both set; field size, cell size and texture size in pixels.\n'
               'Red: no area or no base line; zeros are sent. See step 4.',
     'st_output': 'The field texture leaving the bridge over Spout: sender name, size in pixels, frames really sent per '
-                 'second (30 is normal) and whether the bridge can read its own sender back, as Arena does ("checked").
-'
+                 'second (30 is normal) and whether the bridge can read its own sender back, as Arena does ("checked").\n'
                  'Red: nothing is sent (install SpoutGL: pip install SpoutGL), the output STOPPED (no frames, or frames '
                  'not sent), or it is NOT READABLE (the check sees a frozen or no picture). The bridge then recreates the '
                  'sender by itself; logs/bridge.log says when it began. The same red line appears in the map.',

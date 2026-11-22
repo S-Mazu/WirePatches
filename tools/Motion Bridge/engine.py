@@ -78,6 +78,7 @@ class Engine(threading.Thread):
         self.loop_errors = 0
         self._healed_t = 0.0
         self._minute_t, self._minute_frames = time.time(), 0   # the minute line in the log
+        self._minute_revs = 0
         self.cal = Calibration(lambda: self.s['countdown_s'], self.notify, self.save_room)
         self.sim: list = []                 # simulated objects, [x_mm, y_mm] in the map
         self.running = True
@@ -332,10 +333,12 @@ class Engine(threading.Thread):
         if now - self._minute_t >= 60.0:
             frames = sp.frames - self._minute_frames
             rd = self.reader
-            log.info('minute: %d frames sent (%.1f/s), check %s, sensor %d revolutions total, %d recreations, '
-                     '%d loop errors', frames, frames / (now - self._minute_t), ck.state if ck else '-',
-                     rd.rev_count if rd else 0, sp.recreations, self.loop_errors)
+            revs = (rd.rev_count if rd else 0) - self._minute_revs
+            log.info('minute: %d frames sent (%.1f/s), check %s, sensor %d revolutions (%s), %d recreations, '
+                     '%d loop errors', frames, frames / (now - self._minute_t), ck.state if ck else '-', revs,
+                     'connected' if rd and rd.connected else 'not connected', sp.recreations, self.loop_errors)
             self._minute_t, self._minute_frames = now, sp.frames
+            self._minute_revs = rd.rev_count if rd else 0
 
     def stop(self) -> None:
         self.running = False

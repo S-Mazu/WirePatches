@@ -5,6 +5,7 @@ Packet: 0x54 0x2C, speed (deg/s), start angle (0.01 deg), 12 x (distance mm, int
 end angle (0.01 deg), timestamp (ms), CRC8 (polynomial 0x4D).
 Angles: 0 = sensor front, increasing clockwise.
 """
+import logging
 import struct
 import threading
 import time
@@ -12,6 +13,8 @@ from collections import deque
 
 import numpy as np
 import serial
+
+log = logging.getLogger(__name__)
 
 BAUD = 921600
 PKT_LEN = 47
@@ -85,6 +88,7 @@ class Stl27lReader(threading.Thread):
         while self.running:
             try:
                 with serial.Serial(self.port, self.baud, timeout=0.1) as s:
+                    log.info('sensor on %s connected', self.port)
                     self.connected, self.last_error = True, ''
                     s.reset_input_buffer()
                     buf = bytearray()
@@ -98,6 +102,8 @@ class Stl27lReader(threading.Thread):
                         buf += chunk
                         buf = self._parse(buf)
             except (serial.SerialException, OSError) as e:
+                if self.connected or self.last_error != str(e):     # each new state once, not every second
+                    log.warning('sensor on %s lost: %s', self.port, e)
                 self.connected, self.last_error = False, str(e)
                 time.sleep(1.0)
 
