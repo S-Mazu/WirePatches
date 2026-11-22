@@ -13,6 +13,7 @@ Threads:
 `lock` guards the room, the readers, the field and the snapshot. Settings are plain values
 that are replaced, not mutated, so reading them needs no lock.
 """
+import copy
 import logging
 import os
 import threading
@@ -34,6 +35,7 @@ TICK_S = 0.1                 # without sensor data (simulation only) the field i
 FRAME_HZ = 30.0              # texture frames per second; motion fades between measurements
 STALE_S = 0.5                # a revolution older than this is not used
 SAVE_DELAY_S = 1.0           # the room is written at most once per second while it is edited
+UNDO_STEPS = 50              # shape edits that can be undone
 
 
 class Engine(threading.Thread):
@@ -47,6 +49,7 @@ class Engine(threading.Thread):
         self.lock = threading.RLock()
         self.readers: dict = {}             # port -> Stl27lReader
         self._dirty_t = None                # time of the first unsaved room edit
+        self._undo: list = []               # shapes before each edit, newest last
         self._port_override = None          # (position, saved port) while --port is in effect
         if not Room.names(self.rooms_dir):
             create_default(self.rooms_dir, self.s.raw, os.path.join(folder, 'background.npy'))
@@ -63,6 +66,7 @@ class Engine(threading.Thread):
         self.quality.set_logging(self.s['log_quality'])
         self.spout = None                   # created in run(): Spout wants one thread
         self.counter = 0                    # frame counter in the texture, 0..255
+        self.last_tex = None                # the texture of the last frame (RGBA uint8, row 0 on the base line)
         self.frame_rate = 0.0               # texture frames per second, measured
         self._frames, self._frames_t = 0, time.time()
         self.cal = Calibration(lambda: self.s['countdown_s'], self.notify, self.save_room)
@@ -89,6 +93,7 @@ class Engine(threading.Thread):
             self.flush_room()
             self._port_override = None
             self.room = Room.load(os.path.join(self.rooms_dir, name))
+            self._undo = []
             self.sync_readers()
         self.s.set('room', name)
         log.info('room %s loaded', name)
@@ -105,12 +110,39 @@ class Engine(threading.Thread):
         self.load_room(name)
         return True
 
-    def edit(self, fn):
-        """Runs fn(room) under the lock, schedules the room to be written, returns fn's result."""
+    def edit(self, fn, undo=False):
+        """Runs fn(room) under the lock, schedules the room to be written, returns fn's result.
+        undo: the shapes before the edit go onto the undo stack if the edit changed them."""
         with self.lock:
+            before = self.shapes() if undo else None
             result = fn(self.room)
+            if undo:
+                self.push_undo(before)
             self.room_changed()
         return result
+
+    # ------------------------------------------------ undo of shape edits
+    def shapes(self):
+        """The drawn shapes of the room: area, base line, exclusions, barriers, reference marker."""
+        r = self.room
+        return copy.deepcopy((r.area, r.base, r.exclusions, r.barriers, r.ref))
+
+    def push_undo(self, before) -> None:
+        """Keeps `before` for Undo if the shapes differ from it now."""
+        with self.lock:
+            if before is not None and before != self.shapes() and not (self._undo and self._undo[-1] == before):
+                self._undo.append(before)
+                del self._undo[:-UNDO_STEPS]
+
+    def undo(self) -> bool:
+        """Puts the shapes back to before the last change; False if there is nothing to undo."""
+        with self.lock:
+            if not self._undo:
+                return False
+            r = self.room
+            r.area, r.base, r.exclusions, r.barriers, r.ref = self._undo.pop()
+            self.room_changed()
+        return True
 
     def save_room(self) -> None:
         """Writes the room; a port given on the command line is not written."""
@@ -208,7 +240,7 @@ class Engine(threading.Thread):
 
     # ------------------------------------------------ guided measurements
     def request(self, kind: str, sid=None) -> None:
-        """kind: 'background' (for position sid), 'left' or 'right' (end of the front). Starts the countdown."""
+        """kind: 'background' (learn the empty room at position sid). Starts the countdown."""
         with self.lock:
             self.cal.request(kind, sid)
 
@@ -293,11 +325,12 @@ class Engine(threading.Thread):
             self.field.configure_for(room, s['cell_mm'])
             self.field.update(room, list(views.values()), [[o['x'], o['y']] for o in sim], t,
                               s['field_fade_s'], s['field_threshold'])
-            self.field.vis = field_visibility(room, reaches, self.field.cols, self.field.rows)
+            self.field.vis = field_visibility(room, reaches, self.field.grid, self.field.cols, self.field.rows)
             self.cal.step(room, self.reader_of(self.cal.sid), objects)
             self.snap = {
                 'views': views, 'objects': objects, 't': t,
                 'occ': self.field.occ.copy(), 'motion': self.field.motion.copy(), 'vis': self.field.vis.copy(),
+                'grid': self.field.grid, 'band': self.field.band,
             }
 
     def frame(self, now: float) -> None:
@@ -306,6 +339,7 @@ class Engine(threading.Thread):
             self.field.configure_for(self.room, self.s['cell_mm'])
             self.field.decay(now, self.s['field_fade_s'])
             tex = self.field.texture(self.counter)
+        self.last_tex = tex                 # the window shows it as the preview of what is sent
         self.counter = (self.counter + 1) % 256
         self.spout.send(tex)
         self._frames += 1

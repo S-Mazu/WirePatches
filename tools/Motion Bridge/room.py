@@ -1,12 +1,12 @@
-"""Room map: sensor positions, area, front, exclusions and barriers in one top view.
+"""Room map: sensor positions, area with its base line, exclusions and barriers in one top view.
 
 Map frame: millimetres, x to the right, y up, seen from above. The first sensor position
 starts at the origin. Sensor frame (scene.py): x to the right, y = sensor front.
 
 - The area is a polygon: only foreground inside it counts, and the field covers it.
-- The front is a line (left end, right end as seen from the area): it gives the field its
-  frame. x runs along the front from 0 to 1, depth from 0 at the front to 1 at the point
-  of the area farthest from it.
+- One edge of the area is the base line. The field is the smallest rectangle aligned with it
+  that holds the whole area: row 0 lies on the base line, columns run from its left end to its
+  right end as seen from the area (README.md, Output).
 - Exclusions are polygons inside which nothing counts; barriers are walls a sensor does
   not look through.
 
@@ -24,9 +24,9 @@ import numpy as np
 
 from scene import Background, to_xy
 
-MIN_FRONT_MM = 300.0            # a front shorter than this is not a front
-MIN_DEPTH_MM = 300.0            # the field is at least this deep
-START_DEPTH_MM = 3000.0         # depth of the area made from the front, and of migrated rooms
+MIN_BASE_MM = 300.0             # a base line shorter than this is not a base line
+MIN_SIZE_MM = 300.0             # the field is at least this wide and deep
+START_DEPTH_MM = 3000.0         # depth of the area made from an old front (rooms before 2026-11-16)
 
 
 def _rot(x, y, deg):
@@ -110,6 +110,43 @@ def inside_polygon(px, py, poly):
     return res
 
 
+def polygon_area(poly):
+    """Signed area (mm2): positive for counter-clockwise corners (map frame, y up)."""
+    p = np.asarray(poly, float)
+    x, y = p[:, 0], p[:, 1]
+    return 0.5 * float(np.dot(x, np.roll(y, -1)) - np.dot(y, np.roll(x, -1)))
+
+
+def seg_dist(p, a, b):
+    """Distance (mm) of point p from the segment a-b."""
+    px, py = p
+    ax, ay = a
+    ex, ey = b[0] - ax, b[1] - ay
+    ll = ex * ex + ey * ey
+    t = 0.0 if ll <= 0.0 else min(max(((px - ax) * ex + (py - ay) * ey) / ll, 0.0), 1.0)
+    return math.hypot(px - ax - t * ex, py - ay - t * ey)
+
+
+def nearest_edge(poly, p):
+    """(index, distance mm) of the polygon edge nearest to p; edge k runs from corner k to corner k + 1."""
+    best = (None, math.inf)
+    for k in range(len(poly)):
+        d = seg_dist(p, poly[k], poly[(k + 1) % len(poly)])
+        if d < best[1]:
+            best = (k, d)
+    return best
+
+
+def nearest_corner(poly, p):
+    """(index, distance mm) of the polygon corner nearest to p."""
+    best = (None, math.inf)
+    for k, c in enumerate(poly):
+        d = math.hypot(c[0] - p[0], c[1] - p[1])
+        if d < best[1]:
+            best = (k, d)
+    return best
+
+
 def blocked(sx, sy, px, py, barriers):
     """True where the line of sight from (sx, sy) to the point crosses a barrier."""
     px, py = np.asarray(px, float), np.asarray(py, float)
@@ -145,11 +182,10 @@ class Room:
         self.folder, self.name = folder, name
         self.stations = []
         self.area = None                        # [[x, y], ...] polygon (mm): only foreground inside counts
-        self.front = None                       # {'left': [x, y], 'right': [x, y]} (mm), ends seen from the area
+        self.base = None                        # index k of the base line: the area edge from corner k to k + 1
         self.exclusions = []                    # [[[x, y], ...], ...] polygons inside which nothing counts
         self.barriers = []                      # [[[x, y], [x, y]], ...]
         self.ref = None                         # reference marker [x, y] (e.g. a pole)
-        self._mask = None                       # (key, mask): cache of field_mask
 
     # ------------------------------------------------ files
     @staticmethod
@@ -172,10 +208,13 @@ class Room:
             d = json.load(f)
         room.stations = [Station(**s) for s in d.get('stations', [])]
         if 'screen' in d or 'areas' in d:
-            room.area, room.front, room.exclusions = cls._legacy(d)
+            room.area, front, room.exclusions = cls._legacy(d)
         else:
-            room.area, room.front = d.get('area'), d.get('front')
+            room.area, front = d.get('area'), d.get('front')
             room.exclusions = d.get('exclusions', [])
+        room.base = d.get('base')
+        if room.base is None and room.has_area():
+            room.base = cls._base_from_front(room.area, front)
         room.barriers = d.get('barriers', [])
         room.ref = d.get('ref')
         for st in room.stations:
@@ -199,14 +238,22 @@ class Room:
         area = inc[0] if inc else None
         if area is None and front and front.get('left') and front.get('right'):
             l, r = np.array(front['left'], float), np.array(front['right'], float)
-            if np.linalg.norm(r - l) > MIN_FRONT_MM:
+            if np.linalg.norm(r - l) > MIN_BASE_MM:
                 _, n, _ = _line_frame(l, r)
                 area = [list(map(float, p)) for p in (l, r, r + n * dr, l + n * dl)]
         return area, front, exc
 
+    @staticmethod
+    def _base_from_front(area, front):
+        """Rooms before 2026-11-22 had a front line: the area edge closest to its middle becomes the base line."""
+        if not front or not front.get('left') or not front.get('right'):
+            return 0
+        mid = ((front['left'][0] + front['right'][0]) / 2.0, (front['left'][1] + front['right'][1]) / 2.0)
+        return nearest_edge(area, mid)[0]
+
     def save(self) -> None:
         os.makedirs(self.folder, exist_ok=True)
-        d = {'stations': [s.to_dict() for s in self.stations], 'area': self.area, 'front': self.front,
+        d = {'stations': [s.to_dict() for s in self.stations], 'area': self.area, 'base': self.base,
              'exclusions': self.exclusions, 'barriers': self.barriers, 'ref': self.ref}
         tmp = os.path.join(self.folder, 'room.json.tmp')
         with open(tmp, 'w') as f:
@@ -296,91 +343,67 @@ class Room:
         st.y += self.ref[1] - c[1]
         return True
 
-    # ------------------------------------------------ area and front
+    # ------------------------------------------------ area and base line
     def has_area(self) -> bool:
         return bool(self.area) and len(self.area) >= 3
 
-    def has_front(self) -> bool:
-        f = self.front
-        return bool(f and f.get('left') and f.get('right')
-                    and math.hypot(f['right'][0] - f['left'][0], f['right'][1] - f['left'][1]) > MIN_FRONT_MM)
+    def has_base(self) -> bool:
+        """The area has a base line of usable length."""
+        if not self.has_area() or self.base is None or not 0 <= self.base < len(self.area):
+            return False
+        a, b = self.area[self.base], self.area[(self.base + 1) % len(self.area)]
+        return math.hypot(b[0] - a[0], b[1] - a[1]) > MIN_BASE_MM
 
     def ready(self) -> bool:
-        """Area and front are set: the field has a frame and something counts."""
-        return self.has_area() and self.has_front()
+        """Area and base line are set: the field has a frame and something counts."""
+        return self.has_base() and abs(polygon_area(self.area)) > 1.0
+
+    def base_ends(self):
+        """(left, right) ends of the base line as arrays, seen from the area looking at it (README, Output)."""
+        n = len(self.area)
+        a, b = np.array(self.area[self.base], float), np.array(self.area[(self.base + 1) % n], float)
+        # The inside of a counter-clockwise polygon lies left of a -> b. The frame puts the area on the side
+        # n = (u.y, -u.x), right of left -> right; so for a counter-clockwise polygon left = b, right = a.
+        return (b, a) if polygon_area(self.area) > 0.0 else (a, b)
 
     def frame(self):
-        """Unit vector along the front (left -> right), unit normal into the area, length (mm)."""
-        return _line_frame(self.front['left'], self.front['right'])
+        """The field rectangle: (origin, u, n, width, depth).
 
-    def depth_mm(self) -> float:
-        """How far the area reaches from the front (mm), at least MIN_DEPTH_MM."""
-        if not self.has_area():
-            return MIN_DEPTH_MM
-        _, n, _ = self.frame()
-        pts = np.array(self.area, float) - np.array(self.front['left'], float)
-        return max(MIN_DEPTH_MM, float((pts @ n).max()))
+        origin is the corner at row 0, column 0; u the unit vector along the base line (left -> right),
+        n the unit normal into the area; width and depth in mm. The rectangle is the smallest one aligned
+        with the base line that holds the whole area, so nothing of the area is cut off.
+        """
+        left, right = self.base_ends()
+        u, n, _ = _line_frame(left, right)
+        pts = np.array(self.area, float) - left
+        s, d = pts @ u, pts @ n
+        origin = left + u * s.min() + n * d.min()
+        return (origin, u, n, max(float(s.max() - s.min()), MIN_SIZE_MM),
+                max(float(d.max() - d.min()), MIN_SIZE_MM))
 
-    def front_faces_area(self) -> bool:
-        """False when the area lies behind the front (its ends are swapped)."""
-        if not self.ready():
-            return True
-        _, n, _ = self.frame()
-        c = np.array(self.area, float).mean(axis=0) - np.array(self.front['left'], float)
-        return float(c @ n) > 0.0
+    def set_base(self, k) -> None:
+        """Makes edge k (corner k to corner k + 1) the base line."""
+        if self.has_area():
+            self.base = int(k) % len(self.area)
 
-    def to_front(self, mx: float, my: float) -> tuple[float, float]:
-        """Map position -> (x along the front 0..1, distance from the front in mm)."""
-        u, n, length = self.frame()
-        p = np.array([mx, my], float) - np.array(self.front['left'], float)
-        return float(np.dot(p, u) / length), float(np.dot(p, n))
+    def insert_corner(self, k, p) -> None:
+        """Inserts a corner into edge k of the area (after corner k); the base line stays the same edge part."""
+        self.area.insert(k + 1, [float(p[0]), float(p[1])])
+        if self.base is not None and self.base > k:
+            self.base += 1
 
-    def to_field(self, mx, my):
-        """Map points -> (x 0..1 along the front, depth 0..1 within the field), vectorised."""
-        u, n, length = self.frame()
-        l = np.array(self.front['left'], float)
-        px, py = np.asarray(mx, float) - l[0], np.asarray(my, float) - l[1]
-        x01 = (px * u[0] + py * u[1]) / length
-        d = px * n[0] + py * n[1]
-        return x01, d / self.depth_mm()
-
-    def from_field(self, x01: float, d01: float) -> tuple[float, float]:
-        """(x 0..1 along the front, depth 0..1 within the field) -> map position (mm); inverse of to_field."""
-        u, n, length = self.frame()
-        l = np.array(self.front['left'], float)
-        p = l + u * (x01 * length) + n * (d01 * self.depth_mm())
-        return float(p[0]), float(p[1])
-
-    def field_cells(self, cols: int, rows: int):
-        """Map coordinates of the cell centres, arrays of shape (rows, cols)."""
-        u, n, length = self.frame()
-        l = np.array(self.front['left'], float)
-        xm = (np.arange(cols) + 0.5) / cols * length
-        dm = (np.arange(rows) + 0.5) / rows * self.depth_mm()
-        X, D = np.meshgrid(xm, dm)
-        return l[0] + u[0] * X + n[0] * D, l[1] + u[1] * X + n[1] * D
-
-    def field_mask(self, cols: int, rows: int) -> np.ndarray:
-        """1 for cells whose centre lies inside the area, 0 outside; shape (rows, cols)."""
-        key = (cols, rows, tuple(map(tuple, self.area)), tuple(self.front['left']), tuple(self.front['right']))
-        if self._mask is None or self._mask[0] != key:
-            cx, cy = self.field_cells(cols, rows)
-            self._mask = (key, inside_polygon(cx, cy, self.area).astype(np.float32))
-        return self._mask[1]
-
-    def field_outline(self):
-        """Closed outline of the field (front width x area depth), mm."""
-        u, n, _ = self.frame()
-        l, r = np.array(self.front['left'], float), np.array(self.front['right'], float)
-        d = self.depth_mm()
-        fl, fr = l + n * d, r + n * d
-        return [l[0], r[0], fr[0], fl[0], l[0]], [l[1], r[1], fr[1], fl[1], l[1]]
-
-    def area_from_front(self, depth_mm: float = START_DEPTH_MM) -> None:
-        """A rectangle in front of the front, as a starting point for editing."""
-        u, n, _ = self.frame()
-        l, r = np.array(self.front['left'], float), np.array(self.front['right'], float)
-        self.area = [list(map(float, p)) for p in (l, r, r + n * depth_mm, l + n * depth_mm)]
+    def delete_corner(self, k) -> bool:
+        """Removes corner k of the area if three remain. The base line keeps its edge if it can."""
+        n = len(self.area)
+        if n <= 3:
+            return False
+        del self.area[k]
+        if self.base is not None:
+            if self.base == k:                  # the base line started here: the edge before takes over
+                self.base = (k - 1) % (n - 1)
+            elif self.base > k:
+                self.base -= 1
+        return True
 
     # ------------------------------------------------ filters
     def keep_points(self, st, angle, mx, my):
@@ -403,7 +426,7 @@ class Room:
         """A copy for drawing, without the scans."""
         c = Room(self.folder, self.name)
         c.stations = [copy.copy(s) for s in self.stations]
-        c.area, c.front = copy.deepcopy(self.area), copy.deepcopy(self.front)
+        c.area, c.base = copy.deepcopy(self.area), self.base
         c.exclusions, c.barriers, c.ref = (copy.deepcopy(self.exclusions), copy.deepcopy(self.barriers),
                                            copy.deepcopy(self.ref))
         return c
@@ -413,15 +436,18 @@ def create_default(rooms_dir, old_settings, old_background):
     """First start: a room 'Default' with one position at the origin.
 
     Takes over the old single-sensor setup if there is one: port, surface ends (they were
-    measured in the sensor frame, which equals the map frame of position A) as the front
-    with a rectangle in front of it as the area, and the learned empty room.
+    measured in the sensor frame, which equals the map frame of position A) as the base line
+    of a rectangular area in front of it, and the learned empty room.
     """
     room = Room(os.path.join(rooms_dir, 'Default'), 'Default')
     st = room.add_station(port=old_settings.get('port') or 'COM19')
     if old_settings.get('left') and old_settings.get('right'):
-        room.front = {'left': list(old_settings['left']), 'right': list(old_settings['right'])}
-        if room.has_front():
-            room.area_from_front(float(old_settings.get('depth_mm') or START_DEPTH_MM))
+        l, r = np.array(old_settings['left'], float), np.array(old_settings['right'], float)
+        if np.linalg.norm(r - l) > MIN_BASE_MM:
+            _, n, _ = _line_frame(l, r)
+            depth = float(old_settings.get('depth_mm') or START_DEPTH_MM)
+            room.area = [list(map(float, p)) for p in (l, r, r + n * depth, l + n * depth)]
+            room.base = 0
     room.save()
     if old_background and os.path.exists(old_background):
         bg = Background(old_background)

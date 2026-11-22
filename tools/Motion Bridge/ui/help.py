@@ -4,7 +4,7 @@ import dearpygui.dearpygui as dpg
 
 HELP = {
     'room': 'A room holds everything measured and drawn for one venue: sensor positions, their scans, '
-            'area, front, exclusions and barriers. Switch rooms here; each is kept in rooms/<name>/.',
+            'area with its base line, exclusions and barriers. Switch rooms here; each is kept in rooms/<name>/.',
     'new_room': 'Creates an empty room with one position. The connected sensor moves into it.',
     'positions': 'Each position is one place where a sensor stood or stands and its scan of the empty room. '
                  'The position marked "sensor" delivers live data.\nClick a position to select it; its controls '
@@ -39,33 +39,32 @@ HELP = {
                 'free, at least 0.5 m away from walls, and be in the room while each position learns its scan. '
                 'A tube of 10 cm or more is found reliably.',
     'area_draw': 'Draws the area: click its corners in the view, then "Finish" (or click the first corner). '
-                 'Only foreground inside the area counts, and the field covers it. Tick "Edit points" to drag the '
-                 'corners later.\nWithout an area everything in view counts in the window, but zeros are sent.',
-    'area_front': 'Makes the area a rectangle in front of the front, 3 m deep, as a start. Tick "Edit points" and '
-                  'drag its corners.',
-    'area_clear': 'Removes the area. Zeros are sent until a new one is drawn.',
-    'front_draw': 'Draws the front in the view: click the LEFT end, then the RIGHT end, as seen from the area. '
-                  'The front is where the projection is. For the patches, x runs along it from 0 (left) to 1 '
-                  '(right) and depth from 0 at the front to 1 at the far edge of the area.\nThe ends can be '
-                  'dragged afterwards.',
-    'front_left': 'Stand alone at the LEFT end of the front (seen from the area), close to it, and stay still '
-                  'until the second tone.',
-    'front_right': 'Stand alone at the RIGHT end of the front (seen from the area), close to it, and stay still '
-                   'until the second tone.',
-    'front_swap': 'Swaps the ends. The arrow must point into the area; use this when it points away from it or '
-                  'the picture is mirrored.',
-    'front_clear': 'Removes the front. Zeros are sent until a new one is drawn.',
-    'field': 'What the patches get, seen from the area: left to right along the front, bottom = at the '
-             'front, top = far edge of the area. Cells outside the area stay 0.\n'
-             'Occupancy: where something is (white = a surface crosses the whole cell).\n'
-             'Motion: where the occupancy changes (white = a cell is taken or freed within 0.25 s). Standing still '
-             'fades out.\nSeen: where a sensor sees the cell (white); black is shadow or outside the area. There '
-             'occupancy 0 means "unknown", not "empty".\nThe patches receive all three as one Spout texture '
-             '(red = occupancy, green = motion, blue = seen).',
+                 'Only foreground inside the area counts, and the field covers it. The edge from the first to the '
+                 'second corner becomes the base line; "Choose base line" changes it. Double-click an edge to add a corner, '
+                 'double-click a corner to delete it.\nWithout an area everything '
+                 'in view counts in the window, but zeros are sent.',
+    'base_pick': 'Click an edge of the area: it becomes the base line, row 0 of the texture. The texture is the '
+                 'smallest rectangle along the base line that holds the whole area (grey outline in the view); '
+                 'columns run from the left end (marked 0) to the right end, seen from the area looking at the base '
+                 'line. The arrow points into the area. Cells outside the area stay 0.',
+    'panel_toggle': 'Opens or closes the settings column (also F2). Closed, the map fills the window: for the '
+                    'performance. The bridge keeps running and sending either way.',
+    'undo': 'Takes back the last change to the area, the base line, exclusions, barriers or the reference marker '
+            '(drawn, dragged, added or deleted by double click, removed). Also Ctrl+Z. While drawing, it cancels the drawing.',
+    'area_clear': 'Removes the area and its base line. Zeros are sent until a new one is drawn.',
+    'show_field': 'Shows the field in the view as it is sent: red = occupied, green = moving, yellow = both. '
+                  'Occupied and still stays red; motion fades out over Motion fade.',
+    'show_fg': 'Diagnosis: shows the single foreground points (red: counts, dark red: outside the area or in an '
+               'exclusion) and the foreground objects (white rings) instead of joining them to the live scan.',
+    'field': 'The image the patches get, enlarged: bottom = base line (row 0), left = left end of the base line. '
+             'Red = occupancy, green = motion, blue = seen by a sensor (black is shadow or outside the area; there '
+             'occupancy 0 means "unknown", not "empty"). The grey band on top is the status band; it counts up '
+             'every frame.\nThe cells are square: one metre is the same number of pixels in both directions.',
     'reset_fields': 'Sets the field settings back to the recommended values: cell size 0.10 m, Motion fade 0.5 s, '
                     'Motion threshold 0.3.',
-    'cell_mm': 'Size of one cell in the room, the same along the front and into the area. The texture size follows: '
-               'a 4 m front at 0.10 m is 40 pixels wide. Patches do not depend on it.',
+    'cell_mm': 'Size of one cell in the room, the same along the base line and into the area. The texture size '
+               'follows: a 4 m wide field at 0.10 m is 40 pixels wide. Patches do not depend on it. After a '
+               'change, reload the Spout clip in Arena so it takes the new size.',
     'field_fade_s': 'How long motion takes to fade out after it stops.',
     'field_threshold': 'Motion below this value is ignored: sensor noise at the edges of still objects. '
                        'Recommended and default: 0.3 (measured noise up to 0.28, walking 0.5 to 1). '
@@ -77,13 +76,13 @@ HELP = {
     'finish': 'Closes the polygon being drawn.',
     'cancel_draw': 'Stops drawing; nothing is added.',
     'edit_points': 'Shows the corners of the area and the exclusions, and the ends of barriers, as handles you '
-                   'can drag.',
-    'countdown_s': 'Time between the click and the measurement, so you can walk to your place '
-                 '(out of the room, or to an end of the front). A tone marks the start and the end.',
+                   'can drag. Double-click an edge to add a corner, double-click a corner to delete it.',
+    'countdown_s': 'Time between the click and the measurement, so you can leave the scan plane. A tone marks the '
+                   'start and the end.',
     'sim': 'Adds objects you can drag in the view with the mouse. They count like real foreground and appear '
            'in the field, so patches can be tested without walking around or without a sensor.',
-    'sim_add': 'Adds a simulated object 1.5 m in front of the front (or of the sensor). Drag the yellow point '
-               'in the view. Its point B, where it walks to with Move on, starts 2 m to the right.',
+    'sim_add': 'Adds a simulated object 1.5 m into the area from the base line (or in front of the sensor). Drag '
+               'the yellow point in the view. Its point B, where it walks to with Move on, starts 2 m to the right.',
     'sim_clear': 'Removes all simulated objects.',
     'sim_move': 'Every simulated object walks from its point A to its point B and back, pausing at each end. '
                 'Standing still and moving can so be tested in one run. Drag the points to set the way; '
@@ -99,9 +98,8 @@ HELP = {
               'Raise it if walls or furniture flicker red.',
     'gap_mm': 'Foreground points further apart than this start a new blob.',
     'min_pts': 'Blobs with fewer points are ignored (noise, small objects).',
-    'merge_mm': 'Blobs closer than this count as one object (arm and body; the same body seen by two sensors). '
-                'Objects are shown in the view and used when you stand at an end of the front; the patches get '
-                'the field, not objects.',
+    'merge_mm': 'Blobs closer than this count as one object. Objects are shown in the view with "Foreground '
+                'points" on; the patches get the field, not objects.',
     'reset_adv': 'Restores the detection defaults.',
     'port': 'Serial port of the lidar adapter (Silicon Labs CP210x). After "Find sensor" only ports with lidar '
             'data are listed, with the rotation the sensor reports.',
@@ -111,7 +109,7 @@ HELP = {
     'log': 'Writes one line per revolution to logs/quality_*.csv (speed, points, valid share, CRC errors, objects).',
     'scale': 'Size of text and controls.',
     'fullscreen': 'Fullscreen on or off (also F11).',
-    'fit': 'Shows the whole room: all scans, the area and the front.',
+    'fit': 'Shows the whole room: all scans, the area and the field.',
     'cancel': 'Stops the countdown or measurement.',
     'find': 'Listens about half a second on every serial port and lists only the ports that deliver lidar data '
             '(valid STL-27L packets). It only reads: nothing is sent to any device. The port the bridge reads '
@@ -139,23 +137,23 @@ HELP = {
                'lower it; that is fine.\n'
                'noise: typical jitter of the room measurement; below 20 mm is good.\n\n'
                'Yellow: not learned yet. Learn again whenever the sensor or the room changes.',
-    'st_map': 'The area says what counts; the front turns positions into x and depth for the patches.\n'
-              'Green: both set.\n'
-              'Yellow: the front faces away from the area; click "Swap ends".\n'
-              'Red: no area or no front; zeros are sent. See step 3.',
+    'st_map': 'The area says what counts; its base line gives the texture its frame.\n'
+              'Green: both set; field size, cell size and texture size in pixels.\n'
+              'Red: no area or no base line; zeros are sent. See step 4.',
     'st_output': 'The field texture leaving the bridge over Spout: sender name, size in pixels and frames per '
                  'second (30 is normal).\nRed: nothing is sent. Install SpoutGL (pip install SpoutGL) or read '
                  'logs/bridge.log.',
     'st_objects': 'Foreground objects seen right now, including simulated ones. Grey: nothing there.',
     'view': 'The room from above, metres. Mouse wheel zooms, right-drag pans.\n\n'
-            'Coloured dots: empty-room scan of each position; square: the sensor, line: its front; '
-            'outline: its fan, round handle: points the fan.\n'
-            'Grey: live scan, red: foreground (closer than the empty room), dark red: foreground that does not '
-            'count (outside the area, in an exclusion), dark: ignored (outside the fan, behind a barrier).\n'
-            'White: the front with its ends L and R; the arrow points into the area. Thin grey outline: the '
-            'field, front width x area depth.\n'
-            'Green: the area, red: exclusions, orange: barriers, yellow cross: reference marker.\n'
-            'White rings: foreground objects (blobs merged by Merge distance).',
+            'Coloured lines: the measured empty room of each position; square: the sensor, short line: where it '
+            'looks; outline: its fan, round handle: points the fan.\n'
+            'Grey dots: what the sensor sees now; dark dots: ignored (outside the fan, behind a barrier, outside '
+            'the area).\n'
+            'Light blue: what the sensors see. Dark: shadow.\n'
+            'Red / green / yellow cells: the field as it is sent (occupied / moving / both).\n'
+            'Green line: the area. White line: its base line, 0 at its left end, the arrow points into the area. '
+            'Thin grey outline: the texture rectangle.\n'
+            'Red: exclusions, orange: barriers, yellow cross: reference marker.',
 }
 
 

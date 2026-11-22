@@ -1,7 +1,9 @@
-"""The control panel on the right: room, positions, area and front, shapes, detection, fields, output, sensor."""
+"""The control panel on the right: room, positions, area and base line, shapes, detection, field, output, sensor."""
+import contextlib
 import logging
 
 import dearpygui.dearpygui as dpg
+import numpy as np
 
 import port_scan
 from room import Room
@@ -17,6 +19,7 @@ ADVANCED_SLIDERS = [('tol_mm', 'Tolerance', '%.0f mm'), ('gap_mm', 'Blob gap', '
 FIELD_SLIDERS = [('cell_mm', 'Cell size', '%.0f mm'),
                  ('field_fade_s', 'Motion fade', '%.2f s'), ('field_threshold', 'Motion threshold', '%.2f')]
 NUDGES = (-5.0, -1.0, -0.1, 0.1, 1.0, 5.0)
+PREVIEW_MAX_H = 260         # pixels: the texture preview is at most this high
 
 
 class Panel:
@@ -45,14 +48,33 @@ class Panel:
     def _build(self):
         w = self.panel_w
         eng = self.eng
-        with dpg.collapsing_header(label='1  Room', default_open=True):
+        dpg.add_text('SET UP THE ROOM  (once per venue, before the show)', color=DIM)
+        with self._section('1  Room', 'One room per venue. Everything below is saved in it.'):
             tip(dpg.add_combo(Room.names(eng.rooms_dir), tag='room_combo', default_value=eng.room.name,
                               width=-1, callback=self._on_room), 'room')
             with dpg.group(horizontal=True):
                 dpg.add_input_text(tag='new_room_name', hint='name of a new room', width=220)
                 tip(dpg.add_button(label='New room', callback=self._on_new_room), 'new_room')
 
-        with dpg.collapsing_header(label='2  Sensor positions', default_open=True):
+        with self._section('2  Sensor', 'Which serial port the lidar is on, and which position it stands at.'):
+            live = eng.live_station()
+            tip(dpg.add_combo(self._port_items(), tag='port', default_value=self._label_of(live.port if live
+                                                                                           else DEFAULT_PORT),
+                              width=-1), 'port')
+            with dpg.group(horizontal=True):
+                tip(dpg.add_button(label='Find sensor', tag='find_sensor', callback=self._on_find_sensor), 'find')
+                tip(dpg.add_checkbox(label='Show all ports', tag='show_all', callback=self._fill_ports), 'show_all')
+            dpg.add_text('Find sensor listens briefly on every port and lists those that deliver lidar data.',
+                         tag='scan_text', color=DIM, wrap=w - 30)
+            with dpg.group(horizontal=True):
+                tip(dpg.add_button(label='Sensor is at selected position', callback=self._on_assign), 'assign')
+                tip(dpg.add_button(label='Release', callback=self._on_release_port), 'release')
+            tip(dpg.add_checkbox(label='Write quality log (CSV)', default_value=bool(eng.s['log_quality']),
+                                 callback=self._on_setting, user_data='log_quality'), 'log')
+            dpg.add_text('', tag='log_path', color=DIM, wrap=w - 30)
+
+        with self._section('3  Sensor positions', 'Learn the empty room at each place the sensor stands, then '
+                                                  'align the scans so that they lie on each other.'):
             tip(dpg.add_radio_button([], tag='pos_list', callback=self._on_select), 'positions')
             self._slider('countdown_s', 'Countdown', '%.0f s')
             tip(dpg.add_button(label='Learn empty room here', width=-1,
@@ -76,65 +98,58 @@ class Panel:
                 tip(dpg.add_checkbox(label='Mirrored', tag='flip', callback=self._on_flip), 'flip')
             tip(dpg.add_slider_float(label='Fan', tag='fan', min_value=10, max_value=360,
                                      format='%.0f deg', callback=self._on_fan), 'fan')
-            tip(dpg.add_checkbox(label='Show scans of all positions', tag='show_scans', default_value=True),
-                'show_scans')
-            tip(dpg.add_checkbox(label='Show what the sensors see (shadows stay dark)', tag='show_seen',
-                                 default_value=True), 'show_seen')
             dpg.add_text('Reference object (e.g. a pole):', color=DIM)
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Place marker', callback=lambda: self.draft.start('ref')), 'ref_place')
                 tip(dpg.add_button(label='Snap position to marker', callback=self._on_snap), 'ref_snap')
 
-        with dpg.collapsing_header(label='3  Area and front', default_open=True):
-            dpg.add_text('Area: what counts', color=DIM)
+        with self._section('4  Area and base line', 'The area is what counts; its base line is row 0 of the '
+                                                    'texture. In the view: drag a corner to move it, double-click '
+                                                    'an edge to add a corner, double-click a corner to delete it.'):
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Draw area', callback=lambda: self.draft.start('area')), 'area_draw')
-                tip(dpg.add_button(label='Area from front', callback=self._on_area_front), 'area_front')
+                tip(dpg.add_button(label='Choose base line', callback=lambda: self.draft.start('base')), 'base_pick')
                 tip(dpg.add_button(label='Remove', callback=self._on_area_clear), 'area_clear')
-            dpg.add_text('Front: where the projection is', color=DIM)
             with dpg.group(horizontal=True):
-                tip(dpg.add_button(label='Draw front', callback=lambda: self.draft.start('front')), 'front_draw')
-                tip(dpg.add_button(label='Swap ends', callback=self._on_swap), 'front_swap')
-                tip(dpg.add_button(label='Remove', callback=self._on_front_clear), 'front_clear')
-            with dpg.group(horizontal=True):
-                tip(dpg.add_button(label='Stand at left end', callback=lambda: eng.request('left')), 'front_left')
-                tip(dpg.add_button(label='Stand at right end', callback=lambda: eng.request('right')), 'front_right')
-            tip(dpg.add_checkbox(label='Edit points', tag='edit_points',
-                                 callback=lambda: setattr(self.state, 'rebuild', True)), 'edit_points')
+                tip(dpg.add_button(label='Undo (Ctrl+Z)', callback=self.undo), 'undo')
+                tip(dpg.add_checkbox(label='Move corners', tag='edit_points', default_value=True,
+                                     callback=lambda: setattr(self.state, 'rebuild', True)), 'edit_points')
 
-        with dpg.collapsing_header(label='4  Exclusions and barriers', default_open=True):
+        with self._section('5  Exclusions and barriers', 'Optional: places where nothing counts, and walls the '
+                                                         'sensors do not look through.'):
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Draw exclusion', callback=lambda: self.draft.start('exclude')), 'draw_excl')
                 tip(dpg.add_button(label='Draw barrier', callback=lambda: self.draft.start('barrier')), 'draw_bar')
             dpg.add_group(tag='shapes')
 
-        with dpg.collapsing_header(label='5  Advanced detection', default_open=False):
-            for key, label, fmt in ADVANCED_SLIDERS:
-                self._slider(key, label, fmt)
-            self._slider('min_pts', 'Min points', None)
-            tip(dpg.add_button(label='Reset to defaults', callback=self._on_reset_adv), 'reset_adv')
-
-        with dpg.collapsing_header(label='Fields', default_open=True):
-            tip(dpg.add_text('Occupancy            Motion               Seen', color=DIM), 'field')
-            with dpg.group(horizontal=True):
-                for tag in ('occ', 'mot', 'vis'):
-                    with dpg.plot(tag=f'fp_{tag}', width=(w - 50) // 3, height=150, no_menus=True,
-                                  no_mouse_pos=True, no_inputs=True, no_title=True):
-                        dpg.add_plot_axis(dpg.mvXAxis, tag=f'fx_{tag}', no_tick_labels=True, no_gridlines=True)
-                        with dpg.plot_axis(dpg.mvYAxis, tag=f'fy_{tag}', no_tick_labels=True, no_gridlines=True):
-                            dpg.add_heat_series([0.0], 1, 1, tag=f'fh_{tag}', scale_min=0.0, scale_max=1.0,
-                                                bounds_min=(0.0, 0.0), bounds_max=(1.0, 1.0), format='')
-                    dpg.bind_colormap(f'fp_{tag}', 'cm_field')
-                    dpg.set_axis_limits(f'fx_{tag}', 0.0, 1.0)
-                    dpg.set_axis_limits(f'fy_{tag}', 0.0, 1.0)
+        with self._section('6  Field', 'What the patches get: the texture as it is sent, and how motion is '
+                                       'measured.', open=True):
+            tip(dpg.add_text('Texture as sent (bottom = base line):', tag='tex_title', color=DIM), 'field')
+            with dpg.texture_registry():
+                dpg.add_dynamic_texture(1, 1, [0.0, 0.0, 0.0, 1.0], tag='tex_prev')
+            self._prev_size = (1, 1)
+            dpg.add_group(tag='tex_holder')
+            dpg.add_image('tex_prev', parent='tex_holder', tag='tex_img', width=1, height=1)
             for key, label, fmt in FIELD_SLIDERS:
                 self._slider(key, label, fmt)
             tip(dpg.add_button(label='Reset to recommended', callback=self._on_reset_fields), 'reset_fields')
-
-        with dpg.collapsing_header(label='Output (Spout)', default_open=True):
             tip(dpg.add_text('', tag='spout_text', wrap=w - 30), 'spout')
 
-        with dpg.collapsing_header(label='Simulation', default_open=False):
+        dpg.add_spacer(height=6)
+        dpg.add_text('VIEW AND TESTS', color=DIM)
+        with self._section('View', 'What the map shows.'):
+            tip(dpg.add_checkbox(label='Show the field', tag='show_field', default_value=True), 'show_field')
+            tip(dpg.add_checkbox(label='Show what the sensors see (shadows stay dark)', tag='show_seen',
+                                 default_value=True), 'show_seen')
+            tip(dpg.add_checkbox(label='Show scans of all positions', tag='show_scans', default_value=True),
+                'show_scans')
+            tip(dpg.add_checkbox(label='Foreground points (diagnosis)', tag='show_fg', default_value=False),
+                'show_fg')
+            tip(dpg.add_slider_float(label='UI scale', min_value=LIMITS['ui_scale'][0], max_value=LIMITS['ui_scale'][1],
+                                     default_value=float(eng.s['ui_scale']), format='%.2f',
+                                     callback=self._on_scale), 'scale')
+
+        with self._section('Simulation', 'Objects you drag in the view; they count like real foreground.'):
             tip(dpg.add_text('Drag the yellow points in the view.', color=DIM), 'sim')
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Add object', callback=lambda: self.view.add_sim()), 'sim_add')
@@ -150,27 +165,20 @@ class Panel:
                                      callback=lambda s, a: setattr(self.view, 'sim_pause_s', max(float(a), 0.0))),
                 'sim_pause')
 
-        with dpg.collapsing_header(label='Sensor', default_open=False):
-            live = eng.live_station()
-            tip(dpg.add_combo(self._port_items(), tag='port', default_value=self._label_of(live.port if live
-                                                                                           else DEFAULT_PORT),
-                              width=-1), 'port')
-            with dpg.group(horizontal=True):
-                tip(dpg.add_button(label='Find sensor', tag='find_sensor', callback=self._on_find_sensor), 'find')
-                tip(dpg.add_checkbox(label='Show all ports', tag='show_all', callback=self._fill_ports), 'show_all')
-            dpg.add_text('Find sensor listens briefly on every port and lists those that deliver lidar data.',
-                         tag='scan_text', color=DIM, wrap=w - 30)
-            with dpg.group(horizontal=True):
-                tip(dpg.add_button(label='Sensor is at selected position', callback=self._on_assign), 'assign')
-                tip(dpg.add_button(label='Release', callback=self._on_release_port), 'release')
-            tip(dpg.add_checkbox(label='Write quality log (CSV)', default_value=bool(eng.s['log_quality']),
-                                 callback=self._on_setting, user_data='log_quality'), 'log')
-            dpg.add_text('', tag='log_path', color=DIM, wrap=w - 30)
+        with self._section('Advanced detection', 'Fine-tuning of what counts as foreground. Rarely needed.'):
+            for key, label, fmt in ADVANCED_SLIDERS:
+                self._slider(key, label, fmt)
+            self._slider('min_pts', 'Min points', None)
+            tip(dpg.add_button(label='Reset to defaults', callback=self._on_reset_adv), 'reset_adv')
 
-        with dpg.collapsing_header(label='Display', default_open=False):
-            tip(dpg.add_slider_float(label='UI scale', min_value=LIMITS['ui_scale'][0], max_value=LIMITS['ui_scale'][1],
-                                     default_value=float(eng.s['ui_scale']), format='%.2f',
-                                     callback=self._on_scale), 'scale')
+    @contextlib.contextmanager
+    def _section(self, label, intro, open=False):
+        """A collapsible section that starts with one line saying what it is for."""
+        with dpg.collapsing_header(label=label, default_open=open):
+            with dpg.group(indent=8):
+                dpg.add_text(intro, color=DIM, wrap=self.panel_w - 40)
+                yield
+            dpg.add_spacer(height=4)
 
     # ------------------------------------------------ callbacks: rooms and positions
     def _on_room(self, sender, value):
@@ -236,31 +244,24 @@ class Panel:
             self.eng.notify('No free-standing object found near the marker in this scan. Drag the position '
                             'closer and try again.', 'error')
 
-    # ------------------------------------------------ callbacks: area, front, shapes
-    def _on_swap(self):
-        if self.eng.room.front:
-            self.eng.edit(lambda r: setattr(r, 'front', {'left': r.front.get('right'), 'right': r.front.get('left')}))
-            self.state.rebuild = True
-
-    def _on_front_clear(self):
-        self.eng.edit(lambda r: setattr(r, 'front', None))
-        self.state.rebuild = True
-
+    # ------------------------------------------------ callbacks: area, base line, shapes
     def _on_area_clear(self):
-        self.eng.edit(lambda r: setattr(r, 'area', None))
-        self.state.rebuild = True
-
-    def _on_area_front(self):
-        if not self.eng.room.has_front():
-            self.eng.notify('Draw the front first.', 'error')
-            return
-        self.eng.edit(lambda r: r.area_from_front())
+        self.eng.edit(lambda r: (setattr(r, 'area', None), setattr(r, 'base', None)), undo=True)
         self.state.rebuild = True
 
     def _on_remove_shape(self, sender, app_data, what):
         kind, i = what
-        self.eng.edit(lambda r: (r.exclusions if kind == 'excl' else r.barriers).__delitem__(i))
+        self.eng.edit(lambda r: (r.exclusions if kind == 'excl' else r.barriers).__delitem__(i), undo=True)
         self.state.rebuild = True
+
+    def undo(self, *_):
+        if self.draft.active:
+            self.draft.cancel()
+            return
+        if self.eng.undo():
+            self.state.rebuild = True
+        else:
+            self.eng.notify('Nothing to undo.')
 
     # ------------------------------------------------ callbacks: settings, output, sensor, display
     def _on_setting(self, sender, value, key):
@@ -380,10 +381,21 @@ class Panel:
             dpg.set_value('spout_text', f'{sp.status}. The field is shown here but not sent.')
 
     def show(self, snap):
-        """Field heatmaps."""
-        for tag, key in (('occ', 'occ'), ('mot', 'motion'), ('vis', 'vis')):
-            f = snap.get(key)
-            if f is not None and f.size:
-                rows, cols = f.shape
-                dpg.configure_item(f'fh_{tag}', rows=rows, cols=cols)
-                dpg.set_value(f'fh_{tag}', [[float(v) for v in f[::-1].ravel()]])   # row 0 (at the front) at the bottom
+        """The texture as it was last sent, row 0 (on the base line) at the bottom, with its true proportions."""
+        tex = self.eng.last_tex
+        if tex is None:
+            return
+        h, w = tex.shape[:2]
+        if (w, h) != self._prev_size:                   # a new size needs a new texture of that size
+            self._prev_size = (w, h)
+            scale = min((self.panel_w - 40) / w, PREVIEW_MAX_H / h)
+            dw, dh = max(int(w * scale), 1), max(int(h * scale), 1)
+            self._prev_idx = ((np.arange(dh) * h // dh)[::-1], np.arange(dw) * w // dw)   # nearest, row 0 at the bottom
+            dpg.delete_item('tex_img')
+            dpg.delete_item('tex_prev')
+            with dpg.texture_registry():
+                dpg.add_dynamic_texture(dw, dh, [0.0] * (dw * dh * 4), tag='tex_prev')
+            dpg.add_image('tex_prev', parent='tex_holder', tag='tex_img', width=dw, height=dh)
+            dpg.set_value('tex_title', f'Texture as sent, {w} x {h} pixels (bottom = base line):')
+        rows, cols = self._prev_idx
+        dpg.set_value('tex_prev', (tex[rows][:, cols].astype(np.float32) / 255.0).ravel())

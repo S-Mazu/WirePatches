@@ -2,7 +2,7 @@
 
 An example effect patch that shows the field texture of the [Motion Bridge](../../tools/Motion%20Bridge/) exactly as it arrives in a patch. It also measures what the bridge promises: the size the patch gets, where the status band is, whether its counter keeps changing, and how many bridge frames per second arrive. It has no show content. Load it to check the bridge in Arena, and copy its reading of the texture into your own patch.
 
-Last updated: 2026-11-17
+Last updated: 2026-11-22
 
 ## Vision
 
@@ -68,7 +68,7 @@ With the bridge running and two simulated objects (`bridge.py --sim 2`):
 Your patch is an effect on the Spout clip, like the viewer. In its shader:
 
 ```glsl
-vec4 field = IMG_NORM_PIXEL(inputImage, vec2(x, depth * 15.0 / 16.0));   // x: 0 left .. 1 right end of the front; depth: 0 front .. 1 far edge
+vec4 field = IMG_NORM_PIXEL(inputImage, vec2(x, depth * 15.0 / 16.0));   // x: 0 left .. 1 right end of the base line; depth: 0 base line .. 1 far edge
 float counter = IMG_NORM_PIXEL(inputImage, vec2(0.5, 31.0 / 32.0)).r;   // the band; changes every bridge frame
 ```
 
@@ -97,10 +97,11 @@ Tested sizes:
 ## Known issues
 
 - Not tested: whether the clip follows when the texture size changes (another area or cell size): the clip keeps its *Width* and *Height*.
-- Not tested: whether column 0 really is the left end of the front (needs an object at a known place).
+- Not tested: whether column 0 really is the left end of the base line (needs an object at a known place).
 
 ## Changelog
 
+- 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here follows. Nothing else changed.
 - 2026-11-17: Rebuilt in Wire (#115). The first version, written by hand, missed `Texture In` in the patch's input list, so Arena gave it a black 1 × 1 texture. Now an effect on the Spout clip that measures the contract: input and render size, band position, counter steps per second, time since the last change. Tested in Arena (1920×1080) with the bridge's live sensor and simulated objects, including stopping and restarting the bridge.
 - 2026-11-16: First version (#115): channels, status band with counter bar and orientation lines, size bars. Untested.
 

@@ -8,19 +8,19 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+from field import Grid  # noqa: E402
 from room import Room, Station  # noqa: E402
 from scene import BINS  # noqa: E402
 from visibility import CENTRES, field_visibility, reach, seen  # noqa: E402
 
-FRONT = {'left': [0.0, 0.0], 'right': [4000.0, 0.0]}
 RECT = [[0.0, 0.0], [4000.0, 0.0], [4000.0, -3000.0], [0.0, -3000.0]]
 
 
 def make_room():
     room = Room(tempfile.mkdtemp(), 'T')
-    st = Station('A', 'Position A', x=2000.0, y=0.0, rot=180.0)     # at the front, looking into the area (-y)
+    st = Station('A', 'Position A', x=2000.0, y=0.0, rot=180.0)     # on the base line, looking into the area (-y)
     room.stations = [st]
-    room.area, room.front = RECT, FRONT
+    room.area, room.base = RECT, 0
     return room, st
 
 
@@ -65,7 +65,7 @@ class Reach(unittest.TestCase):
 class FieldVisibility(unittest.TestCase):
     def test_cells_behind_the_obstacle_are_not_seen(self):
         room, st = make_room()
-        vis = field_visibility(room, {'A': reach(st, *revolution())}, 40, 30)
+        vis = field_visibility(room, {'A': reach(st, *revolution())}, Grid.of(room, 100.0)[0], 40, 30)
         self.assertEqual(vis.shape, (30, 40))
         self.assertEqual(vis[20, 20], 0.0)                    # 2 m straight ahead, behind the obstacle at 1 m
         self.assertEqual(vis[5, 20], 1.0)                     # 0.5 m ahead
@@ -73,7 +73,7 @@ class FieldVisibility(unittest.TestCase):
 
     def test_without_a_sensor_nothing_is_seen(self):
         room, _ = make_room()
-        self.assertFalse(field_visibility(room, {}, 40, 30).any())
+        self.assertFalse(field_visibility(room, {}, Grid.of(room, 100.0)[0], 40, 30).any())
 
 
 if __name__ == '__main__':

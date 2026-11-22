@@ -6,7 +6,7 @@ Motion Bridge - Fabric Wind is an effect on the [Motion Bridge](../../tools/Moti
 
 Formerly *Bulging Lines*; renamed because the look changed from lines to fabric and the prefix says that it needs the Motion Bridge.
 
-Last updated: 2026-11-20
+Last updated: 2026-11-22
 
 ## Vision
 
@@ -18,13 +18,13 @@ The bridge always delivers the same field; how its sensor is set up decides what
 |---|---|---|---|---|
 | **Dance floor**: sensor scans the floor in front of the projection | Floor | 270 (towards the viewer) | Floor | 0 |
 | **Curtain**: sensor scans a plane just in front of the projection surface, front at the top edge | Screen | 270 (from the top) | Screen | 180 |
-| **Floor projection**: sensor scans just above the projected floor | Screen | any | Screen | as the front lies in the picture |
+| **Floor projection**: sensor scans just above the projected floor | Screen | any | Screen | as the base line lies in the picture |
 | **Shadow from the room**: people on the floor, fabric falling from the top | Screen | 270 | Floor | 0 |
 
 ## Requirements
 
 - Resolume Wire / Arena: 7.29
-- Tool: the [Motion Bridge](../../tools/Motion%20Bridge/) with its sensor, running and set up for the room (area and front drawn, empty room learned). Its interface is described under [Output](../../tools/Motion%20Bridge/README.md#output).
+- Tool: the [Motion Bridge](../../tools/Motion%20Bridge/) with its sensor, running and set up for the room (area with its base line drawn, empty room learned). Its interface is described under [Output](../../tools/Motion%20Bridge/README.md#output).
 - Inputs: the clip it sits on (`Texture In`), a Spout clip of `Motion Bridge`.
 - Performance: one full-screen pass that evaluates seven ribbons per pixel and their shadows, three passes at half the output size for the flow around objects (only the columns of ribbons in view are computed), and three small passes at 160 × 120. At 1920 × 1080 on an RTX 5080 Laptop it adds about 10 % GPU load.
 
@@ -45,7 +45,7 @@ The bridge always delivers the same field; how its sensor is set up decides what
    3. Drag `Motion Bridge - Fabric Wind` onto the clip (a clip effect, after the clip's Transform).
    4. Set the layer's blend mode to *Alpha*, so the ribbons lie over the layers below.
    5. Set the phase source of `Clock` to *Timeline*, *Duration* 1000 s (see Timing).
-   6. Choose the setup (table under Vision). With `Show Field` *On*, move the field with `Field X`, `Field Y`, `Field Width`, `Field Height` and `Field Rotation` until it lies where the sensed area is seen; the white edge is the front.
+   6. Choose the setup (table under Vision). With `Show Field` *On*, move the field with `Field X`, `Field Y`, `Field Width`, `Field Height` and `Field Rotation` until it lies where the sensed area is seen; the white edge is the base line.
    7. More looks: duplicate the clip into other columns and change its settings. Each clip is an ordinary clip.
 
 If anything looks wrong, check the field with a Spout clip carrying the example [Field Viewer](../../examples/Field%20Viewer/).
@@ -88,9 +88,9 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 **Field**: where the bridge's field lies in the picture.
 - `Field Plane` (Floor / Screen, default Floor): Floor = on the floor in perspective; Screen = flat on the frame.
 - `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the reference area: on the screen the frame (0 = left / bottom edge, 1 = right / top edge); on the floor its width at the bottom edge and the depth from the bottom edge to four times that distance.
-- `Field Width` (0 to 10, default 1): along the front, as a share of the frame side the front lies on.
+- `Field Width` (0 to 10, default 1): along the base line, as a share of the frame side the base line lies on.
 - `Field Height` (0 to 10, default 1): into the area, as a share of the frame side the depth runs along.
-- `Field Rotation` (-180 to 180, default 0): where the front lies: 0 = bottom, 90 = right, 180 = top, -90 = left. Turns counter-clockwise.
+- `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left. Turns counter-clockwise.
 
 **Physics**
 - `Wind Direction` (0 to 360, default 270): where the ribbons blow to. The ribbons are fixed on the opposite side. On the screen 270 = from the top down; on the floor 270 = towards the viewer, 90 = into the depth.
@@ -100,7 +100,7 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 - `Flutter Life` (0 to 30, default 1.5): seconds until the flutter has calmed down.
 - `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it (behind a person, a barrier, outside the fans), fading out over this time. 0 = shadows count as empty.
 
-- `Show Field` (Off / On, default Off): shows the field in its plane: red = occupancy, green = excitation, blue = held shadow, white = the front, magenta = the other edges.
+- `Show Field` (Off / On, default Off): shows the field in its plane: red = occupancy, green = excitation, blue = held shadow, white = the base line, magenta = the other edges.
 
 ## How it works
 
@@ -119,7 +119,7 @@ What the bridge sends is described in its README (Output; "From the room to the 
    - *Offset* (pass 7): like a streamline around a cylinder, a ribbon at the distance y from the centre moves to √(y² + R²). The ribbons part around the object and crowd at its sides; far away they hardly move. Each ribbon passes on one side for its whole length: the side it is on where the object is widest. Negative `Avoid Strength` draws the ribbons in instead. The offset follows with a delay of 0.15 s, so the fabric swings over instead of jumping. Motion where the ribbon now is gives its excitation.
    - Wire reads these float textures unfiltered; the field and the tables are interpolated by hand. Rows and columns are addressed only through texture coordinates (in Wire, `gl_FragCoord.y` runs the other way).
 5. **Picture** (pass 8, output size):
-   - *Planes*: a pixel is placed in the ribbon plane and, independently, in the field plane. Floor: the bottom edge is near, the floor recedes to the horizon at `Horizon Y`; Screen: the frame itself. The field is a rectangle in its plane (Field controls); at rest it fills the floor from the bottom edge to four times that distance, or the whole frame, with the front at the bottom.
+   - *Planes*: a pixel is placed in the ribbon plane and, independently, in the field plane. Floor: the bottom edge is near, the floor recedes to the horizon at `Horizon Y`; Screen: the frame itself. The field is a rectangle in its plane (Field controls); at rest it fills the floor from the bottom edge to four times that distance, or the whole frame, with the base line at the bottom.
    - *Ribbons*: strips along `Wind Direction`, `Ribbon Density` per output height, fixed at the most upwind point of the visible plane. Per pixel a binary search over the moved ribbons finds the one that lands there; it and three on each side are evaluated, so they can overlap and crowd beside an object; they are drawn back to front in a random order.
    - *Surface*: each ribbon is a height field. Two to three folds run along it (depending on the fabric), unevenly spaced; they wander and fan out towards the free end, with soft creases between them (rounded ridges from a soft absolute value of a sine). The edges roll a little and wave, so the outline is not a straight line. Normals come from the slope of the height field.
    - *Wind*: waves travel along each ribbon with `Clock`; they ripple out of the plane (the light changes), the ribbon twists (it gets narrower and shows its back) and sways sideways. A slow noise adds gusts. The waves grow towards the free end. Heavy fabric makes long, slow waves.
@@ -142,7 +142,7 @@ How the fabric look is built follows what fabric shaders do elsewhere:
 
 - Follows the surface model: height is the reference, width shows more or less, nothing is stretched. Ribbon spacing, width, length and wave length are in output heights, multiplied by `Scale`.
 - `Scale`: 1 for any single screen; ⅓ for three stacked to keep the ribbon size and put the horizon low.
-- Exception: the field is a zone that grows with the frame (docs/PATCH_RULES.md): at rest it spans the whole width, because the bridge contract maps the front onto the whole projection width. `Field Width` and `Field Height` are shares of the frame.
+- Exception: the field is a zone that grows with the frame (docs/PATCH_RULES.md): at rest it spans the whole width, because the patch stretches the bridge texture, base line along the bottom, over the whole width. `Field Width` and `Field Height` are shares of the frame.
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. Here the clip must keep the texture's own size and the layer stretches it (Installation).
 
 Tested sizes:
@@ -162,6 +162,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
 - 2026-11-20: Renamed from Bulging Lines to Motion Bridge - Fabric Wind (#124, #120). Ribbons are now fabric strips fixed on the upwind side: waves, twist, gusts, six fabrics with their own light (`Fabric`, `Fabric Color`, `Fabric Sheen`, `Fabric Weight`, `Tatter`, `Light Source`), `Ribbon Length`. `Ribbon Plane` and `Wind Direction` choose where the ribbons blow; `Field Plane`, `Field X`, `Field Y`, `Field Width`, `Field Height`, `Field Rotation` choose where the field lies (floor, curtain, floor projection). `Avoid Strength` may be negative. The visibility channel holds shadows (`Shadow Hold`). The flight of segments is gone; `Clock` now drives the wind. After a first round that still looked like coloured lines, the ribbons were rebuilt after research into fabric shaders (Sources): fewer, wider ribbons (`Ribbon Density` 5, `Ribbon Width` 0.22), folds along each ribbon with creases, rolled wavy edges, shadows between ribbons. A third round lifted the light to current game standards: physically based shading in linear colour with ACES tone mapping, anisotropic GGX for silk and lamé, the Filament cloth model for the others, sky light, light through thin fabric, ambient occlusion, wrinkles, weave, and specular anti-aliasing. A fourth round replaced the avoidance, which warped the picture like a glass ball: each ribbon now moves as a whole strip around what stands there, with a smooth arc and a wake; flutter is read along the ribbon too. Tested in Arena (1920×1080) with the live sensor: both planes, field rotation, all fabrics, slider extremes. Not tested live: flutter from someone moving. A fifth round: someone standing still parts the fabric like a post in a stream (passes 5 to 7, see How it works); the hole that used to be cut where someone stands is gone; the groups Ribbons and Fabric are one group Fabric. Tested in Arena (1920×1080) with the live sensor and a simulated object, dragged and with the field moving: screen and floor plane, ribbons on the screen with the field on the floor, `Avoid Strength` -10, -1, 0, 1, 5, 10, `Scale` 0.3, 1, 1.6, 5, `Ribbon Density` 5, 50, 200, `Wind Direction` 0, 135, 270, `Field Rotation` 90, bridge stopped and restarted. GPU load at 1920×1080 on an RTX 5080 Laptop: about 17 % without the effect, 26 to 30 % with it.
 - 2026-11-17: Rebuilt as an effect on the Spout clip of the Motion Bridge field texture (#115), moved from `sources/` to `effects/`: ribbons fly towards the viewer over the floor in perspective, flow around occupancy and flutter where something moves; transparent background, no Backdrop. Replaces the OSC version with its 8 people slots and bulges. Tested in Arena (1920×1080) with the live sensor and simulated objects, slider extremes and bridge stop.
 - 2026-11-16: Marked as not working: the Motion Bridge changed its interface from OSC to a Spout texture (#115); rebuild pending.

@@ -1,4 +1,5 @@
-"""The room map: scans, live points, area, front, shapes, drag handles, drafts and simulated objects.
+"""The room map: the measured room, the live scan, the field, area and base line, shapes, drag handles,
+drafts and simulated objects.
 
 Everything here is in map millimetres on the engine side and metres on the plot. The view
 changes the room only through Engine.edit().
@@ -9,21 +10,47 @@ import time
 import dearpygui.dearpygui as dpg
 import numpy as np
 
+from field import Grid
 from simpath import path_position
 from visibility import seen
 
-from .theme import (AREA_C, BAR_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, FRONT_C, OBJ_C, OUT_C, REF_C, SCAN_C,
+from .drafting import toggle_corner
+from .theme import (AREA_C, BAR_C, BASE_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, OBJ_C, OUT_C, REF_C, SCAN_C,
                     SIM_C, station_color)
 
 FAN_HANDLE_MM = 1200.0      # distance of the fan handle from the sensor
 FAN_RING_MM = 400.0         # radius of the circle drawn for a position that looks all around
 HEAD_MM = 600.0             # length of the line that shows where a sensor looks
-ARROW_MM, WING_MM = 700.0, 180.0    # the arrow from the front into the area
-SIM_AHEAD_MM = 1500.0       # a new simulated object is put this far in front of the front (or the sensor)
-SIM_PATH_MM = 2000.0        # its second point B lies this far to the right of A, along the front
+ARROW_MM, WING_MM = 700.0, 180.0    # the arrow from the base line into the area
+SIM_AHEAD_MM = 1500.0       # a new simulated object is put this far into the area from the base line (or the sensor)
+SIM_PATH_MM = 2000.0        # its second point B lies this far to the right of A, along the base line
 CLICK_PX = 5                # press and release closer than this is a click, not a drag
-SEEN_PX = 240               # resolution of the seen-region image over the visible part of the map
+PICK_PX = 14                # a double click this close to a corner or an edge (screen pixels) edits it
+OVERLAY_PX = 240            # resolution of the seen and field images over the visible part of the map
 SEEN_RGBA = (0.55, 0.75, 1.0, 0.16)     # tint of what the sensors see; shadows stay dark
+FIELD_ALPHA = 0.8           # opacity of the field image where a cell is fully taken or moving
+SCAN_GAP_MM, SCAN_GAP_SHARE = 200.0, 0.035  # the room line breaks where neighbouring scan points lie further apart
+
+
+def scan_line(mx, my, sx, sy):
+    """The empty-room scan as a line (metres): neighbouring points are joined, gaps (open sides, jumps between
+    objects at different distances) break it with NaN. sx, sy: the sensor in the map (mm)."""
+    if len(mx) < 2:
+        return [list(mx / 1000.0), list(my / 1000.0)]
+    step = np.hypot(np.diff(mx, append=mx[:1]), np.diff(my, append=my[:1]))     # to the next point, wrapping
+    r = np.hypot(mx - sx, my - sy)
+    brk = step > np.maximum(SCAN_GAP_MM, r * SCAN_GAP_SHARE)
+    xs, ys = [], []
+    for k in range(len(mx)):
+        xs.append(mx[k] / 1000.0)
+        ys.append(my[k] / 1000.0)
+        if brk[k]:
+            xs.append(math.nan)
+            ys.append(math.nan)
+    if not brk[-1]:                                     # closed all around: back to the first point
+        xs.append(xs[0])
+        ys.append(ys[0])
+    return [xs, ys]
 
 
 class RoomView:
@@ -39,34 +66,41 @@ class RoomView:
         self.sim_t0 = time.monotonic()
         self.unlock = 2             # frames until the axis limits are released after a fit
         self.press = None           # (screen pos, plot pos) of the last mouse press on the plot
-        self.last_snap = None
-        self._scans = {}            # sid -> (key, lists): scan points in metres, converted once
+        self.before = None          # shapes at the last mouse press, for Undo
+        self.check_undo = False     # the mouse was released: compare the shapes in the next frame
+        self._scans = {}            # sid -> (key, line): scan lines in metres, converted once
+        self.handles_for_draft = False  # the handles were built while a draft was active (then there are none)
         self._build(width)
 
     # ------------------------------------------------ build
     def _build(self, width):
+        blank = [0.0] * (OVERLAY_PX * OVERLAY_PX * 4)
         with dpg.texture_registry():
-            dpg.add_dynamic_texture(SEEN_PX, SEEN_PX, [0.0] * (SEEN_PX * SEEN_PX * 4), tag='seen_tex')
+            dpg.add_dynamic_texture(OVERLAY_PX, OVERLAY_PX, blank, tag='seen_tex')
+            dpg.add_dynamic_texture(OVERLAY_PX, OVERLAY_PX, blank, tag='field_tex')
         with dpg.plot(tag='plot', width=width, height=-1, equal_aspects=True, no_menus=True,
                       no_box_select=True, pan_button=dpg.mvMouseButton_Right,
                       fit_button=dpg.mvMouseButton_Middle):
             dpg.add_plot_axis(dpg.mvXAxis, label='x (m)', tag='xaxis')
             with dpg.plot_axis(dpg.mvYAxis, label='y (m)', tag='yaxis'):
-                dpg.add_image_series('seen_tex', (0.0, 0.0), (0.0, 0.0), tag='seen_img')   # under everything
+                dpg.add_image_series('seen_tex', (0.0, 0.0), (0.0, 0.0), tag='seen_img')     # under everything
+                dpg.add_image_series('field_tex', (0.0, 0.0), (0.0, 0.0), tag='field_img')
                 dpg.add_line_series([], [], tag='l_field')
                 dpg.add_scatter_series([], [], tag='s_out')
                 dpg.add_scatter_series([], [], tag='s_pts')
                 dpg.add_scatter_series([], [], tag='s_fg_out')
                 dpg.add_scatter_series([], [], tag='s_fg')
-                dpg.add_line_series([], [], tag='l_front')
+                dpg.add_line_series([], [], tag='l_base')
                 dpg.add_line_series([], [], tag='l_arrow')
                 dpg.add_line_series([], [], tag='l_draft')
                 dpg.add_scatter_series([], [], tag='s_draft')
                 dpg.add_scatter_series([], [], tag='s_obj')
                 dpg.add_line_series([], [], tag='l_sim')
                 dpg.add_scatter_series([], [], tag='s_sim')
+        dpg.add_plot_annotation(tag='ann_left', parent='plot', default_value=(0.0, 0.0), label='0',
+                                offset=(-12, 12), color=BASE_C + (255,), show=False)
         for tag, color, size in [('s_out', OUT_C, 1.5), ('s_pts', SCAN_C, 1.5), ('s_fg', FG_C, 2.5),
-                                 ('s_fg_out', FG_OUT_C, 2.0), ('l_front', FRONT_C, 4.0), ('l_arrow', FRONT_C, 2.0),
+                                 ('s_fg_out', FG_OUT_C, 2.0), ('l_base', BASE_C, 4.0), ('l_arrow', BASE_C, 2.0),
                                  ('l_field', FIELD_C, 1.0), ('l_draft', DRAFT_C, 2.0), ('s_draft', DRAFT_C, 5.0)]:
             dpg.bind_item_theme(tag, self.themes.series(color, size))
         dpg.bind_item_theme('s_obj', self.themes.series(OBJ_C, 16, dpg.mvPlotMarker_Circle, ring=True))
@@ -74,9 +108,12 @@ class RoomView:
         dpg.bind_item_theme('s_sim', self.themes.series(SIM_C, 6.0))
 
     # ------------------------------------------------ items that depend on the room
-    def _add_series(self, tag, kind, color, size):
+    def _add_series(self, tag, kind, color, size, before=None):
         fn = dpg.add_scatter_series if kind == 'scatter' else dpg.add_line_series
-        fn([], [], tag=tag, parent='yaxis')
+        if before:
+            fn([], [], tag=tag, parent='yaxis', before=before)
+        else:
+            fn([], [], tag=tag, parent='yaxis')
         dpg.bind_item_theme(tag, self.themes.series(color, size))
         self.dynamic.append(tag)
 
@@ -103,7 +140,9 @@ class RoomView:
                 dpg.delete_item(tag)
         self.dynamic, self.handles, self.last_set = [], {}, {}
         r = self.eng.room
-        edit = dpg.get_value('edit_points')
+        self.handles_for_draft = self.draft.active
+        edit = dpg.get_value('edit_points') and not self.draft.active    # handles would take the clicks of a draft
+        self._add_series('s_corners', 'scatter', AREA_C, 3.0)
         if r.has_area():
             self._add_series('l_area', 'line', AREA_C, 2.0)
             if edit:
@@ -127,7 +166,7 @@ class RoomView:
                                      BAR_C, '')
         for st in r.stations:
             c = station_color(r, st.sid)
-            self._add_series(f'scan_{st.sid}', 'scatter', c, 1.5)
+            self._add_series(f'scan_{st.sid}', 'line', c, 1.5, before='s_out')     # the room, under the live points
             self._add_series(f'fan_{st.sid}', 'line', tuple(int(v * 0.7) for v in c), 1.0)
             self._add_series(f'head_{st.sid}', 'line', c, 3.0)
             self._add_handle(f'h_st_{st.sid}',
@@ -140,11 +179,6 @@ class RoomView:
                                  lambda room, sid=st.sid: self._m(room.station(sid).fan_handle(FAN_HANDLE_MM)),
                                  lambda room, x, y, sid=st.sid: room.station(sid).set_fan_towards(x * 1000.0, y * 1000.0),
                                  c, '', select=st.sid)
-        if r.front and r.front.get('left') and r.front.get('right'):
-            for end, lab in (('left', 'L'), ('right', 'R')):
-                self._add_handle(f'h_{end}', lambda room, end=end: self._m(room.front[end]),
-                                 lambda room, x, y, end=end: room.front.__setitem__(end, [x * 1000.0, y * 1000.0]),
-                                 FRONT_C, lab)
         if r.ref:
             self._add_handle('h_ref', lambda room: self._m(room.ref),
                              lambda room, x, y: setattr(room, 'ref', [x * 1000.0, y * 1000.0]), REF_C, 'ref')
@@ -156,7 +190,13 @@ class RoomView:
             if self.unlock == 0:
                 dpg.set_axis_limits_auto('xaxis')
                 dpg.set_axis_limits_auto('yaxis')
+        if self.draft.active != self.handles_for_draft:
+            self.state.rebuild = True                   # handles off while a draft takes clicks, on again after
         self._sync_handles()
+        if self.check_undo:
+            self.check_undo = False
+            self.eng.push_undo(self.before)
+            self.before = None
         self._draw_room()
         self._draw_draft()
         self._move_sim()
@@ -201,12 +241,12 @@ class RoomView:
                     setf(room, x, y)
             self.eng.edit(apply)
 
-    def _scan_lists(self, r, st):
+    def _scan_lines(self, r, st):
         key = (st.x, st.y, st.rot, st.flip, st.bg.learned_at if st.bg else None)
         cached = self._scans.get(st.sid)
         if cached is None or cached[0] != key:
             mx, my = r.scan_map(st)
-            self._scans[st.sid] = (key, [list(mx / 1000.0), list(my / 1000.0)])
+            self._scans[st.sid] = (key, scan_line(mx, my, st.x, st.y))
         return self._scans[st.sid][1]
 
     def _draw_room(self):
@@ -214,7 +254,8 @@ class RoomView:
         cur = self.state.selected(self.eng)
         all_scans = dpg.get_value('show_scans')
         for st in r.stations:
-            dpg.set_value(f'scan_{st.sid}', self._scan_lists(r, st) if all_scans or st.sid == cur.sid else [[], []])
+            if dpg.does_item_exist(f'scan_{st.sid}'):
+                dpg.set_value(f'scan_{st.sid}', self._scan_lines(r, st) if all_scans or st.sid == cur.sid else [[], []])
             fx, fy = st.fan_outline(FAN_HANDLE_MM if st.fan_span < 360.0 else FAN_RING_MM)
             dpg.set_value(f'fan_{st.sid}', [[v / 1000.0 for v in fx], [v / 1000.0 for v in fy]])
             hx, hy = st.to_map(np.array([0.0, 0.0]), np.array([0.0, HEAD_MM]))
@@ -222,95 +263,127 @@ class RoomView:
         if r.has_area() and dpg.does_item_exist('l_area'):
             pts = r.area + r.area[:1]
             dpg.set_value('l_area', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
+        corners = (r.area or []) + [p for e in r.exclusions for p in e]
+        if dpg.does_item_exist('s_corners'):
+            dpg.set_value('s_corners', [[p[0] / 1000.0 for p in corners], [p[1] / 1000.0 for p in corners]])
         for i, e in enumerate(r.exclusions):
-            pts = e + e[:1]
-            dpg.set_value(f'excl_{i}', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
+            if dpg.does_item_exist(f'excl_{i}'):
+                pts = e + e[:1]
+                dpg.set_value(f'excl_{i}', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
         for i, b in enumerate(r.barriers):
-            dpg.set_value(f'bar_{i}', [[b[0][0] / 1000.0, b[1][0] / 1000.0], [b[0][1] / 1000.0, b[1][1] / 1000.0]])
-        if r.has_front():
-            l, rr = r.front['left'], r.front['right']
-            dpg.set_value('l_front', [[l[0] / 1000.0, rr[0] / 1000.0], [l[1] / 1000.0, rr[1] / 1000.0]])
-            u, n, _ = r.frame()
-            mid = (np.array(l) + np.array(rr)) / 2.0
+            if dpg.does_item_exist(f'bar_{i}'):
+                dpg.set_value(f'bar_{i}', [[b[0][0] / 1000.0, b[1][0] / 1000.0], [b[0][1] / 1000.0, b[1][1] / 1000.0]])
+        if r.ready():
+            left, right = r.base_ends()
+            _, u, n, _, _ = r.frame()
+            dpg.set_value('l_base', [[left[0] / 1000.0, right[0] / 1000.0], [left[1] / 1000.0, right[1] / 1000.0]])
+            mid = (left + right) / 2.0
             tipp = mid + n * ARROW_MM
             pts = [mid, tipp, tipp - n * WING_MM + u * WING_MM, tipp, tipp - n * WING_MM - u * WING_MM]
             dpg.set_value('l_arrow', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
-        else:
-            for tag in ('l_front', 'l_arrow'):
-                dpg.set_value(tag, [[], []])
-        if r.ready():
-            bx, by = r.field_outline()
+            dpg.configure_item('ann_left', default_value=self._m(left), show=True)
+            bx, by = Grid.of(r, self.eng.s['cell_mm'])[0].outline()
             dpg.set_value('l_field', [[v / 1000.0 for v in bx], [v / 1000.0 for v in by]])
         else:
-            dpg.set_value('l_field', [[], []])
+            for tag in ('l_base', 'l_arrow', 'l_field'):
+                dpg.set_value(tag, [[], []])
+            dpg.configure_item('ann_left', show=False)
 
     def _draw_draft(self):
         d = self.draft.points
-        if self.draft.active and d:
+        if self.draft.active and self.draft.needs_finish and d:
             pts = list(d)
             if dpg.is_item_hovered('plot'):
                 mp = dpg.get_plot_mouse_pos()
                 pts = pts + [[mp[0] * 1000.0, mp[1] * 1000.0]]
             dpg.set_value('l_draft', [[p[0] / 1000.0 for p in pts], [p[1] / 1000.0 for p in pts]])
             dpg.set_value('s_draft', [[p[0] / 1000.0 for p in d], [p[1] / 1000.0 for p in d]])
+        elif self.draft.active and d:
+            dpg.set_value('l_draft', [[d[0][0] / 1000.0], [d[0][1] / 1000.0]])
+            dpg.set_value('s_draft', [[p[0] / 1000.0 for p in d], [p[1] / 1000.0 for p in d]])
         else:
             dpg.set_value('l_draft', [[], []])
             dpg.set_value('s_draft', [[], []])
 
     def show(self, snap):
-        """Live points of all positions with a sensor, their seen regions, and the foreground objects."""
-        self._draw_seen(snap)
+        """Live points of all positions with a sensor, what they see, and the field."""
+        self._draw_overlays(snap)
+        diag = dpg.get_value('show_fg')
         px, py, fx, fy, gx, gy, ox, oy = [], [], [], [], [], [], [], []
         for v in snap['views'].values():
             ok = v['valid']
             a = ok & ~v['fg'] & v['keep']           # background that counts: grey
-            b = ok & v['fg'] & v['keep']            # foreground that counts: red
-            g = ok & v['fg'] & ~v['keep']           # foreground that does not count: dark red
+            b = ok & v['fg'] & v['keep']            # foreground that counts: red (diagnosis)
+            g = ok & v['fg'] & ~v['keep']           # foreground that does not count: dark red (diagnosis)
             c = ok & ~v['fg'] & ~v['keep']          # ignored: dark
+            if not diag:                            # foreground is shown as the field; its points join the scan
+                a, c = a | b, c | g
             px += list(v['mx'][a] / 1000.0)
             py += list(v['my'][a] / 1000.0)
-            fx += list(v['mx'][b] / 1000.0)
-            fy += list(v['my'][b] / 1000.0)
-            gx += list(v['mx'][g] / 1000.0)
-            gy += list(v['my'][g] / 1000.0)
             ox += list(v['mx'][c] / 1000.0)
             oy += list(v['my'][c] / 1000.0)
+            if diag:
+                fx += list(v['mx'][b] / 1000.0)
+                fy += list(v['my'][b] / 1000.0)
+                gx += list(v['mx'][g] / 1000.0)
+                gy += list(v['my'][g] / 1000.0)
         dpg.set_value('s_pts', [px, py])
         dpg.set_value('s_fg_out', [gx, gy])
         dpg.set_value('s_fg', [fx, fy])
         dpg.set_value('s_out', [ox, oy])
-        dpg.set_value('s_obj', [[o['x'] / 1000.0 for o in snap['objects']], [o['y'] / 1000.0 for o in snap['objects']]])
+        objs = snap['objects'] if diag else []
+        dpg.set_value('s_obj', [[o['x'] / 1000.0 for o in objs], [o['y'] / 1000.0 for o in objs]])
 
-    def _draw_seen(self, snap):
-        """Tints what at least one position sees, over the visible part of the map; shadows stay dark."""
-        reaches = {sid: v['reach'] for sid, v in snap['views'].items() if 'reach' in v}
-        if not dpg.get_value('show_seen') or not reaches:
-            dpg.configure_item('seen_img', bounds_min=(0.0, 0.0), bounds_max=(0.0, 0.0))
-            return
+    def _draw_overlays(self, snap):
+        """Two images over the visible part of the map: what the sensors see (shadows stay dark) and the field
+        as it is sent, red = occupancy, green = motion (both: yellow)."""
         x0, x1 = dpg.get_axis_limits('xaxis')
         y0, y1 = dpg.get_axis_limits('yaxis')
-        xs = (x0 + (np.arange(SEEN_PX) + 0.5) * (x1 - x0) / SEEN_PX) * 1000.0
-        ys = (y0 + (np.arange(SEEN_PX) + 0.5) * (y1 - y0) / SEEN_PX) * 1000.0
+        xs = (x0 + (np.arange(OVERLAY_PX) + 0.5) * (x1 - x0) / OVERLAY_PX) * 1000.0
+        ys = (y0 + (np.arange(OVERLAY_PX) + 0.5) * (y1 - y0) / OVERLAY_PX) * 1000.0
         gx, gy = np.meshgrid(xs, ys[::-1])              # texture row 0 is the top of the image
-        mask = np.zeros(gx.shape, bool)
         room = self.eng.room
-        for sid, r in reaches.items():
-            st = room.station(sid)
-            if st is not None:
-                mask |= seen(st, r, gx, gy)
-        img = np.zeros(gx.shape + (4,), np.float32)
-        img[mask] = SEEN_RGBA
-        dpg.set_value('seen_tex', img.ravel())
-        dpg.configure_item('seen_img', bounds_min=(x0, y0), bounds_max=(x1, y1))
+
+        reaches = {sid: v['reach'] for sid, v in snap['views'].items() if 'reach' in v}
+        if dpg.get_value('show_seen') and reaches:
+            mask = np.zeros(gx.shape, bool)
+            for sid, r in reaches.items():
+                st = room.station(sid)
+                if st is not None:
+                    mask |= seen(st, r, gx, gy)
+            img = np.zeros(gx.shape + (4,), np.float32)
+            img[mask] = SEEN_RGBA
+            dpg.set_value('seen_tex', img.ravel())
+            dpg.configure_item('seen_img', bounds_min=(x0, y0), bounds_max=(x1, y1))
+        else:
+            dpg.configure_item('seen_img', bounds_min=(0.0, 0.0), bounds_max=(0.0, 0.0))
+
+        g, occ, mot = snap.get('grid'), snap.get('occ'), snap.get('motion')
+        if dpg.get_value('show_field') and g is not None and occ is not None and occ.shape == (g.rows, g.cols):
+            cf, rf = g.to_cells(gx, gy)
+            inside = (cf >= 0.0) & (cf < g.cols) & (rf >= 0.0) & (rf < g.rows)
+            c = np.clip(cf.astype(int), 0, g.cols - 1)
+            r = np.clip(rf.astype(int), 0, g.rows - 1)
+            o = np.where(inside, occ[r, c], 0.0)
+            m = np.where(inside, mot[r, c], 0.0)
+            img = np.zeros(gx.shape + (4,), np.float32)
+            img[..., 0], img[..., 1] = o, m
+            img[..., 3] = np.maximum(o, m) * FIELD_ALPHA
+            dpg.set_value('field_tex', img.ravel())
+            dpg.configure_item('field_img', bounds_min=(x0, y0), bounds_max=(x1, y1))
+        else:
+            dpg.configure_item('field_img', bounds_min=(0.0, 0.0), bounds_max=(0.0, 0.0))
 
     # ------------------------------------------------ mouse
     def on_press(self):
+        self.before = self.eng.shapes()             # also on a drag handle, which takes the plot's hover
         if dpg.is_item_hovered('plot'):
             self.press = (dpg.get_mouse_pos(local=False), dpg.get_plot_mouse_pos())
         else:
             self.press = None
 
     def on_release(self):
+        self.check_undo = True                      # a drag may have changed a shape: compared next frame
         pr = self.press
         self.press = None
         if pr is None or not dpg.is_item_hovered('plot'):
@@ -321,29 +394,52 @@ class RoomView:
             if self.draft.click(x_m * 1000.0, y_m * 1000.0):
                 self.finish()
 
+    def on_double_click(self):
+        """Double click on a corner of the area or an exclusion deletes it; on an edge adds a corner there."""
+        if self.draft.active or not dpg.is_item_shown('plot'):
+            return
+        (x0, y0), (w, h) = dpg.get_item_rect_min('plot'), dpg.get_item_rect_size('plot')
+        mx, my = dpg.get_mouse_pos(local=False)
+        if not (x0 <= mx < x0 + w and y0 <= my < y0 + h):
+            return
+        # The plot position is the last one the plot saw; over a corner handle it stops a few pixels short.
+        px, py = dpg.get_plot_mouse_pos()
+        ax0, ax1 = dpg.get_axis_limits('xaxis')
+        pick = PICK_PX * (ax1 - ax0) * 1000.0 / max(w, 1.0)
+        changed, why = self.eng.edit(lambda r: toggle_corner(r, (px * 1000.0, py * 1000.0), pick), undo=True)
+        if changed:
+            self.state.rebuild = True
+        elif why:
+            self.eng.notify(why, 'error')
+
     def finish(self):
         """Ends the draft: writes the shape into the room if it is complete."""
         if self.draft.complete():
-            self.eng.edit(self.draft.apply)
-            self.state.rebuild = True
+            if self.eng.edit(self.draft.apply, undo=True):
+                self.state.rebuild = True
+            elif self.draft.error:
+                self.eng.notify(self.draft.error, 'error')
         else:
             self.draft.cancel()
 
     # ------------------------------------------------ simulation
     def add_sim(self, a=None, b=None):
         """Adds a simulated object: point A (where it stands) and B (where it walks to with Move on), map mm.
-        Without points it goes 1.5 m in front of the front (or the sensor), B 2 m to the right of A."""
+        Without points it goes 1.5 m into the area from the base line (or in front of the sensor), B 2 m to the
+        right of A."""
         k = len(self.sim_points)
         r = self.eng.room
-        if r.has_front():
-            u, n, length = r.frame()
+        if r.ready():
+            left, right = r.base_ends()
+            _, u, n, _, _ = r.frame()
+            length = float(np.hypot(*(right - left)))
         else:
             st = self.state.selected(self.eng)
             u = np.array(st.to_map(np.array([1.0]), np.array([0.0]))).ravel() - np.array([st.x, st.y])
             n = None
         if a is None:
             if n is not None:
-                a = np.array(r.front['left']) + u * length * (0.3 + 0.2 * (k % 3)) + n * SIM_AHEAD_MM
+                a = left + u * length * (0.3 + 0.2 * (k % 3)) + n * SIM_AHEAD_MM
             else:
                 mx, my = st.to_map(np.array([(k - 1) * 500.0]), np.array([SIM_AHEAD_MM]))
                 a = np.array([float(mx[0]), float(my[0])])
@@ -385,7 +481,7 @@ class RoomView:
             xs.append(st.x / 1000.0)
             ys.append(st.y / 1000.0)
         if r.ready():
-            bx, by = r.field_outline()
+            bx, by = Grid.of(r, self.eng.s['cell_mm'])[0].outline()
             xs += [v / 1000.0 for v in bx]
             ys += [v / 1000.0 for v in by]
         if r.has_area():

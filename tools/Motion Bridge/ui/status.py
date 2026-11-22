@@ -4,6 +4,8 @@ import time
 
 import dearpygui.dearpygui as dpg
 
+from field import Grid
+
 from .help import tip
 from .theme import BAD, DIM, OK, WARN
 
@@ -110,7 +112,7 @@ class StatusLines:
             self._set('st_room', OK, f'{st.sid}: empty room learned {when}, {cover:.0f} % coverage, '
                                      f'noise {n_med:.1f} mm')
         else:
-            self._set('st_room', WARN, f'{st.sid}: empty room not learned (step 2)')
+            self._set('st_room', WARN, f'{st.sid}: empty room not learned (step 3)')
 
     def _map(self):
         r = self.eng.room
@@ -118,12 +120,11 @@ class StatusLines:
             n_e, n_b = len(r.exclusions), len(r.barriers)
             extra = (f', {n_e} exclusion{"" if n_e == 1 else "s"}' if n_e else '') + \
                     (f', {n_b} barrier{"" if n_b == 1 else "s"}' if n_b else '')
-            txt = (f'Area {len(r.area)} corners, front {r.frame()[2] / 1000:.2f} m wide, '
-                   f'depth {r.depth_mm() / 1000:.1f} m{extra}')
-            if r.front_faces_area():
-                self._set('st_map', OK, txt)
-            else:
-                self._set('st_map', WARN, txt + '. The front faces away from the area: Swap ends')
+            g, band = Grid.of(r, self.eng.s['cell_mm'])
+            txt = (f'Area {len(r.area)} corners{extra}. Field {g.cols * g.cell / 1000:.2f} x '
+                   f'{g.rows * g.cell / 1000:.2f} m, cells {g.cell / 1000:.2f} m, texture {g.cols} x {g.rows + band}')
+            self._set('st_map', OK, txt)
+        elif r.has_area():
+            self._set('st_map', BAD, 'No base line: a black field is sent (step 4, Choose base line)')
         else:
-            missing = ' and '.join(w for w, ok in (('area', r.has_area()), ('front', r.has_front())) if not ok)
-            self._set('st_map', BAD, f'No {missing}: a black field is sent (step 3)')
+            self._set('st_map', BAD, 'No area: a black field is sent (step 4)')

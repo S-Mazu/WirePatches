@@ -15,6 +15,7 @@ Several positions see the union of their regions. Simulated objects cast no shad
 """
 import numpy as np
 
+from field import area_mask
 from scene import BINS, FAR_MM, MIN_MM, bin_of, to_xy
 
 CENTRES = (np.arange(BINS) + 0.5) * (360.0 / BINS)     # sensor angle of each bin, degrees
@@ -66,19 +67,20 @@ def seen(st, r, mx, my, margin_mm=0.0):
     return d <= np.asarray(r)[bin_of(ang)] + margin_mm
 
 
-def field_visibility(room, reaches, cols, rows):
+def field_visibility(room, reaches, grid, cols, rows):
     """1 for field cells that at least one position sees, else 0; shape (rows, cols).
 
-    `reaches` maps station ids to reach() arrays. A cell counts as seen when its centre is seen; the
-    surface that ends a ray lies in a seen cell (margin of half a cell).
+    `reaches` maps station ids to reach() arrays; `grid` is the field's Grid (None without a ready room).
+    A cell counts as seen when its centre is seen; the surface that ends a ray lies in a seen cell
+    (margin of half a cell).
     """
     vis = np.zeros((rows, cols), np.float32)
-    if not room.ready() or not reaches:
+    if grid is None or not room.ready() or not reaches:
         return vis
-    cx, cy = room.field_cells(cols, rows)
-    half = 0.5 * min(room.frame()[2] / cols, room.depth_mm() / rows)
+    cx, cy = grid.centres()
+    half = 0.5 * grid.cell
     for sid, r in reaches.items():
         st = room.station(sid)
         if st is not None:
             vis = np.maximum(vis, seen(st, r, cx, cy, half).astype(np.float32))
-    return vis * room.field_mask(cols, rows)
+    return vis * area_mask(room, grid)
