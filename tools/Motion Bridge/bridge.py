@@ -6,7 +6,7 @@ Usage:
   Options: --port COM19
 
 Settings are made in the window: detection and output in settings.json, everything about
-the room (positions, area, front, exclusions, barriers) in rooms/<name>/. Interface to the patches: README.md.
+the room (positions, area with base line, exclusions, barriers) in rooms/<name>/. Interface to the patches: README.md.
 """
 import argparse
 import logging
@@ -45,7 +45,7 @@ def main():
     ap.add_argument('--sim', type=int, default=0, help='start with this many simulated objects')
     ap.add_argument('--sim-path', action='append', default=[], metavar='X1,Y1,X2,Y2',
                     help='add a simulated object that walks between A (X1,Y1) and B (X2,Y2) and back; field shares: '
-                         'x 0..1 along the front, y 0..1 into the area. Repeat for more objects')
+                         'x 0..1 along the base line, y 0..1 into the area. Repeat for more objects')
     ap.add_argument('--sim-speed', type=float, help='walking speed of simulated objects in m/s (default 1)')
     ap.add_argument('--sim-pause', type=float, help='pause of simulated objects at each end in s (default 5)')
     a = ap.parse_args()

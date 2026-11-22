@@ -1,4 +1,4 @@
-"""Guided measurements: learning the empty room from a fake reader, setting an end of the front."""
+"""Guided measurement: learning the empty room from a fake reader."""
 import os
 import sys
 import tempfile
@@ -8,7 +8,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from calibration import CAL_REVS, END_SAMPLES, Calibration  # noqa: E402
+from calibration import CAL_REVS, Calibration  # noqa: E402
 from room import Room, Station  # noqa: E402
 from stl27l import Revolution  # noqa: E402
 
@@ -61,28 +61,11 @@ class CalibrationTest(unittest.TestCase):
         self.assertIsNone(self.cal.task)
         self.assertEqual(self.messages[-1][1], 'error')
 
-    def test_front_end_from_one_object(self):
-        self.cal.request('left')
-        for _ in range(END_SAMPLES):
-            self.cal.step(self.room, None, [{'x': 100.0, 'y': -200.0, 'n': 20}])
-        self.assertIsNone(self.cal.task)
-        self.assertEqual(self.room.front['left'], [100.0, -200.0])
-        self.assertEqual(self.saved, 1)
-
-    def test_front_end_fails_with_two_objects(self):
-        self.cal.request('right')
-        two = [{'x': 0.0, 'y': 0.0, 'n': 20}, {'x': 1000.0, 'y': 0.0, 'n': 20}]
-        for _ in range(END_SAMPLES):
-            self.cal.step(self.room, None, two)
-        self.assertIsNone(self.cal.task)
-        self.assertIsNone(self.room.front)
-        self.assertEqual(self.messages[-1][1], 'error')
-
     def test_state_text_and_progress(self):
         self.assertIsNone(self.cal.state(self.room, None))
-        self.cal.request('left')
+        self.cal.request('background', 'A')
         text, progress = self.cal.state(self.room, None)
-        self.assertIn('Setting the left end', text)
+        self.assertIn('Learning the empty room at Position A', text)
         self.assertEqual(progress, 0.0)
         self.cal.cancel()
         self.assertIsNone(self.cal.task)

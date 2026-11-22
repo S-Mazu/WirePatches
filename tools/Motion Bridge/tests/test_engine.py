@@ -12,16 +12,15 @@ from engine import Engine  # noqa: E402
 from room import Station  # noqa: E402
 from spout_out import SpoutOut  # noqa: E402
 
-FRONT = {'left': [0.0, 0.0], 'right': [4000.0, 0.0]}
 RECT = [[0.0, 0.0], [4000.0, 0.0], [4000.0, -3000.0], [0.0, -3000.0]]
 
 
-def make_engine(area=RECT, front=FRONT):
+def make_engine(area=RECT, base=0):
     folder = tempfile.mkdtemp()
     room_dir = os.path.join(folder, 'rooms', 'T')
     os.makedirs(room_dir)
     with open(os.path.join(room_dir, 'room.json'), 'w') as f:        # no port: no serial reader
-        json.dump({'stations': [Station('A', 'Position A').to_dict()], 'area': area, 'front': front,
+        json.dump({'stations': [Station('A', 'Position A').to_dict()], 'area': area, 'base': base,
                    'exclusions': [], 'barriers': [], 'ref': None}, f)
     with open(os.path.join(folder, 'settings.json'), 'w') as f:
         json.dump({'room': 'T'}, f)
@@ -39,7 +38,7 @@ class EngineTest(unittest.TestCase):
         snap = eng.snapshot()
         self.assertEqual(len(snap['objects']), 1)
         self.assertEqual(snap['occ'].shape, (30, 40))                   # 4 x 3 m at 0.1 m cells
-        self.assertGreater(snap['occ'][7, 10], 0.9)                     # 0.75 m into the area, 1 m along the front
+        self.assertGreater(snap['occ'][7, 10], 0.9)                     # 0.75 m into the area, 1 m along the base line
         eng.frame(time.time())
         eng.frame(time.time())
         tex = eng.field.texture(eng.counter)
@@ -49,13 +48,13 @@ class EngineTest(unittest.TestCase):
         self.assertEqual(eng.spout.size, (40, 32))
 
     def test_visibility_goes_into_the_blue_channel(self):
-        """A sensor at the front looks into the area; an obstacle 1 m ahead shades the cells behind it."""
+        """A sensor on the base line looks into the area; an obstacle 1 m ahead shades the cells behind it."""
         import numpy as np
         from scene import BINS
         from stl27l import Revolution
         eng = make_engine()
         st = eng.room.stations[0]
-        st.x, st.y, st.rot = 2000.0, 0.0, 180.0                       # middle of the front, looking into the area
+        st.x, st.y, st.rot = 2000.0, 0.0, 180.0                       # middle of the base line, looking into the area
         angle = (np.arange(BINS) + 0.5) * (360.0 / BINS)
         dist = np.full(BINS, 3000.0)
         dist[(angle < 5.0) | (angle > 355.0)] = 1000.0
@@ -83,27 +82,39 @@ class EngineTest(unittest.TestCase):
         self.assertEqual(len(snap['objects']), 0)
         self.assertEqual(float(snap['occ'].max()), 0.0)
 
-    def test_without_front_a_black_field_is_sent(self):
-        eng = make_engine(front=None)
+    def test_without_area_a_black_field_is_sent(self):
+        eng = make_engine(area=None)
         eng.sim = [[1000.0, -750.0]]
         eng.process({})
         snap = eng.snapshot()
-        self.assertEqual(len(snap['objects']), 1)                       # still shown in the window
+        self.assertEqual(len(snap['objects']), 1)                       # without an area everything counts
         self.assertEqual(float(snap['occ'].max()), 0.0)
         tex = eng.field.texture(7)
         self.assertEqual(tex.shape, (16, 8, 4))                         # 15 black rows + band of 1
         self.assertEqual(int(tex[:15, :, :3].max()), 0)                # black field
         self.assertEqual(tuple(tex[15, 3, :3]), (7, 7, 7))              # counter in the band
 
-    def test_front_end_set_by_standing_there(self):
-        eng = make_engine(front=None)
-        eng.set('countdown_s', 0.0)
-        eng.sim = [[3900.0, -200.0]]
-        eng.request('right')
-        for _ in range(12):
-            eng.process({})
-        self.assertIsNone(eng.cal.task)
-        self.assertEqual(eng.room.front['right'], [3900.0, -200.0])
+
+class UndoTest(unittest.TestCase):
+    def test_undo_restores_the_shapes_step_by_step(self):
+        eng = make_engine()
+        eng.edit(lambda r: r.set_base(2), undo=True)
+        eng.edit(lambda r: r.insert_corner(0, [2000.0, 100.0]), undo=True)
+        eng.edit(lambda r: None, undo=True)                             # no change: nothing to undo
+        self.assertEqual((len(eng.room.area), eng.room.base), (5, 3))
+        self.assertTrue(eng.undo())
+        self.assertEqual((len(eng.room.area), eng.room.base), (4, 2))
+        self.assertTrue(eng.undo())
+        self.assertEqual(eng.room.base, 0)
+        self.assertFalse(eng.undo())
+
+    def test_the_same_state_is_kept_once(self):
+        eng = make_engine()
+        before = eng.shapes()
+        eng.edit(lambda r: r.set_base(1), undo=True)
+        eng.push_undo(before)                                           # the window's mouse check adds it again
+        self.assertTrue(eng.undo())
+        self.assertFalse(eng.undo())
 
 
 if __name__ == '__main__':

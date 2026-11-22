@@ -1,7 +1,8 @@
-"""The control panel on the right: room, positions, area and front, shapes, detection, fields, output, sensor."""
+"""The control panel on the right: room, positions, area and base line, shapes, detection, field, output, sensor."""
 import logging
 
 import dearpygui.dearpygui as dpg
+import numpy as np
 
 import port_scan
 from room import Room
@@ -17,6 +18,7 @@ ADVANCED_SLIDERS = [('tol_mm', 'Tolerance', '%.0f mm'), ('gap_mm', 'Blob gap', '
 FIELD_SLIDERS = [('cell_mm', 'Cell size', '%.0f mm'),
                  ('field_fade_s', 'Motion fade', '%.2f s'), ('field_threshold', 'Motion threshold', '%.2f')]
 NUDGES = (-5.0, -1.0, -0.1, 0.1, 1.0, 5.0)
+PREVIEW_MAX_H = 260         # pixels: the texture preview is at most this high
 
 
 class Panel:
@@ -85,21 +87,17 @@ class Panel:
                 tip(dpg.add_button(label='Place marker', callback=lambda: self.draft.start('ref')), 'ref_place')
                 tip(dpg.add_button(label='Snap position to marker', callback=self._on_snap), 'ref_snap')
 
-        with dpg.collapsing_header(label='3  Area and front', default_open=True):
-            dpg.add_text('Area: what counts', color=DIM)
+        with dpg.collapsing_header(label='3  Area and base line', default_open=True):
+            dpg.add_text('Area: what counts. Base line: row 0 of the texture.', color=DIM)
             with dpg.group(horizontal=True):
                 tip(dpg.add_button(label='Draw area', callback=lambda: self.draft.start('area')), 'area_draw')
-                tip(dpg.add_button(label='Area from front', callback=self._on_area_front), 'area_front')
+                tip(dpg.add_button(label='Choose base line', callback=lambda: self.draft.start('base')), 'base_pick')
                 tip(dpg.add_button(label='Remove', callback=self._on_area_clear), 'area_clear')
-            dpg.add_text('Front: where the projection is', color=DIM)
             with dpg.group(horizontal=True):
-                tip(dpg.add_button(label='Draw front', callback=lambda: self.draft.start('front')), 'front_draw')
-                tip(dpg.add_button(label='Swap ends', callback=self._on_swap), 'front_swap')
-                tip(dpg.add_button(label='Remove', callback=self._on_front_clear), 'front_clear')
-            with dpg.group(horizontal=True):
-                tip(dpg.add_button(label='Stand at left end', callback=lambda: eng.request('left')), 'front_left')
-                tip(dpg.add_button(label='Stand at right end', callback=lambda: eng.request('right')), 'front_right')
-            tip(dpg.add_checkbox(label='Edit points', tag='edit_points',
+                tip(dpg.add_button(label='Add corner', callback=lambda: self.draft.start('insert')), 'corner_add')
+                tip(dpg.add_button(label='Delete corner', callback=lambda: self.draft.start('delete')), 'corner_del')
+                tip(dpg.add_button(label='Undo (Ctrl+Z)', callback=self.undo), 'undo')
+            tip(dpg.add_checkbox(label='Move corners', tag='edit_points', default_value=True,
                                  callback=lambda: setattr(self.state, 'rebuild', True)), 'edit_points')
 
         with dpg.collapsing_header(label='4  Exclusions and barriers', default_open=True):
@@ -114,19 +112,17 @@ class Panel:
             self._slider('min_pts', 'Min points', None)
             tip(dpg.add_button(label='Reset to defaults', callback=self._on_reset_adv), 'reset_adv')
 
-        with dpg.collapsing_header(label='Fields', default_open=True):
-            tip(dpg.add_text('Occupancy            Motion               Seen', color=DIM), 'field')
+        with dpg.collapsing_header(label='Field', default_open=True):
             with dpg.group(horizontal=True):
-                for tag in ('occ', 'mot', 'vis'):
-                    with dpg.plot(tag=f'fp_{tag}', width=(w - 50) // 3, height=150, no_menus=True,
-                                  no_mouse_pos=True, no_inputs=True, no_title=True):
-                        dpg.add_plot_axis(dpg.mvXAxis, tag=f'fx_{tag}', no_tick_labels=True, no_gridlines=True)
-                        with dpg.plot_axis(dpg.mvYAxis, tag=f'fy_{tag}', no_tick_labels=True, no_gridlines=True):
-                            dpg.add_heat_series([0.0], 1, 1, tag=f'fh_{tag}', scale_min=0.0, scale_max=1.0,
-                                                bounds_min=(0.0, 0.0), bounds_max=(1.0, 1.0), format='')
-                    dpg.bind_colormap(f'fp_{tag}', 'cm_field')
-                    dpg.set_axis_limits(f'fx_{tag}', 0.0, 1.0)
-                    dpg.set_axis_limits(f'fy_{tag}', 0.0, 1.0)
+                tip(dpg.add_checkbox(label='Show field in the view', tag='show_field', default_value=True),
+                    'show_field')
+                tip(dpg.add_checkbox(label='Foreground points', tag='show_fg', default_value=False), 'show_fg')
+            tip(dpg.add_text('Texture as sent (bottom = base line):', tag='tex_title', color=DIM), 'field')
+            with dpg.texture_registry():
+                dpg.add_dynamic_texture(1, 1, [0.0, 0.0, 0.0, 1.0], tag='tex_prev')
+            self._prev_size = (1, 1)
+            dpg.add_group(tag='tex_holder')
+            dpg.add_image('tex_prev', parent='tex_holder', tag='tex_img', width=1, height=1)
             for key, label, fmt in FIELD_SLIDERS:
                 self._slider(key, label, fmt)
             tip(dpg.add_button(label='Reset to recommended', callback=self._on_reset_fields), 'reset_fields')
@@ -236,31 +232,24 @@ class Panel:
             self.eng.notify('No free-standing object found near the marker in this scan. Drag the position '
                             'closer and try again.', 'error')
 
-    # ------------------------------------------------ callbacks: area, front, shapes
-    def _on_swap(self):
-        if self.eng.room.front:
-            self.eng.edit(lambda r: setattr(r, 'front', {'left': r.front.get('right'), 'right': r.front.get('left')}))
-            self.state.rebuild = True
-
-    def _on_front_clear(self):
-        self.eng.edit(lambda r: setattr(r, 'front', None))
-        self.state.rebuild = True
-
+    # ------------------------------------------------ callbacks: area, base line, shapes
     def _on_area_clear(self):
-        self.eng.edit(lambda r: setattr(r, 'area', None))
-        self.state.rebuild = True
-
-    def _on_area_front(self):
-        if not self.eng.room.has_front():
-            self.eng.notify('Draw the front first.', 'error')
-            return
-        self.eng.edit(lambda r: r.area_from_front())
+        self.eng.edit(lambda r: (setattr(r, 'area', None), setattr(r, 'base', None)), undo=True)
         self.state.rebuild = True
 
     def _on_remove_shape(self, sender, app_data, what):
         kind, i = what
-        self.eng.edit(lambda r: (r.exclusions if kind == 'excl' else r.barriers).__delitem__(i))
+        self.eng.edit(lambda r: (r.exclusions if kind == 'excl' else r.barriers).__delitem__(i), undo=True)
         self.state.rebuild = True
+
+    def undo(self, *_):
+        if self.draft.active:
+            self.draft.cancel()
+            return
+        if self.eng.undo():
+            self.state.rebuild = True
+        else:
+            self.eng.notify('Nothing to undo.')
 
     # ------------------------------------------------ callbacks: settings, output, sensor, display
     def _on_setting(self, sender, value, key):
@@ -380,10 +369,21 @@ class Panel:
             dpg.set_value('spout_text', f'{sp.status}. The field is shown here but not sent.')
 
     def show(self, snap):
-        """Field heatmaps."""
-        for tag, key in (('occ', 'occ'), ('mot', 'motion'), ('vis', 'vis')):
-            f = snap.get(key)
-            if f is not None and f.size:
-                rows, cols = f.shape
-                dpg.configure_item(f'fh_{tag}', rows=rows, cols=cols)
-                dpg.set_value(f'fh_{tag}', [[float(v) for v in f[::-1].ravel()]])   # row 0 (at the front) at the bottom
+        """The texture as it was last sent, row 0 (on the base line) at the bottom, with its true proportions."""
+        tex = self.eng.last_tex
+        if tex is None:
+            return
+        h, w = tex.shape[:2]
+        if (w, h) != self._prev_size:                   # a new size needs a new texture of that size
+            self._prev_size = (w, h)
+            scale = min((self.panel_w - 40) / w, PREVIEW_MAX_H / h)
+            dw, dh = max(int(w * scale), 1), max(int(h * scale), 1)
+            self._prev_idx = ((np.arange(dh) * h // dh)[::-1], np.arange(dw) * w // dw)   # nearest, row 0 at the bottom
+            dpg.delete_item('tex_img')
+            dpg.delete_item('tex_prev')
+            with dpg.texture_registry():
+                dpg.add_dynamic_texture(dw, dh, [0.0] * (dw * dh * 4), tag='tex_prev')
+            dpg.add_image('tex_prev', parent='tex_holder', tag='tex_img', width=dw, height=dh)
+            dpg.set_value('tex_title', f'Texture as sent, {w} x {h} pixels (bottom = base line):')
+        rows, cols = self._prev_idx
+        dpg.set_value('tex_prev', (tex[rows][:, cols].astype(np.float32) / 255.0).ravel())

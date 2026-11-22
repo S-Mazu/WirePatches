@@ -11,6 +11,7 @@ import numpy as np
 BINS = 720                  # 0.5 degree bins for the background
 MIN_MM = 120                # ignore anything closer (mount, cables, a hand on the sensor)
 FAR_MM = 8000               # where the empty room had no return, closer points count as foreground
+EDGE_BINS = 2               # a point is compared with the empty room within +-1 degree (edges of fixed objects)
 
 
 def bin_of(angle):
@@ -30,10 +31,17 @@ class Background:
         self.dist = np.full(BINS, np.nan, np.float32)   # nan = no return in that direction
         self.noise = np.full(BINS, np.nan, np.float32)  # robust standard deviation
         self.learned_at = None                          # time.time() of the capture
+        self._edges = None                              # cache of edge_reference()
 
     @property
     def ok(self):
         return bool(np.isfinite(self.dist).any())
+
+    def edges(self):
+        """edge_reference() of this empty room, computed once per capture (learn and load reset it)."""
+        if self._edges is None:
+            self._edges = edge_reference(self)
+        return self._edges
 
     def learn(self, revs):
         a = np.concatenate([r.angle for r in revs])
@@ -49,6 +57,7 @@ class Background:
                 dist[k] = med
                 noise[k] = 1.4826 * np.median(np.abs(v - med))
         self.dist, self.noise, self.learned_at = dist, noise, time.time()
+        self._edges = None
 
     def save(self):
         np.save(self.path, np.stack([self.dist, self.noise]))
@@ -56,6 +65,7 @@ class Background:
     def load(self):
         if os.path.exists(self.path):
             self.dist, self.noise = np.load(self.path).astype(np.float32)
+            self._edges = None
             self.learned_at = os.path.getmtime(self.path)
 
     def stats(self):
@@ -72,16 +82,35 @@ class Background:
         return to_xy(ang[ok], self.dist[ok])
 
 
+def edge_reference(bg, width=EDGE_BINS):
+    """Per bin the nearest empty-room distance and the largest noise within +-width bins (nan = no return).
+
+    At the edge of a fixed object the beam hits the object in one turn and the wall behind it in the next,
+    or both at once (a mixed point between the two). Measured against its own bin only, such a point looks
+    closer than the empty room and flickers. Against the nearest distance around it, it belongs to the
+    object it flickers at.
+    """
+    d = np.where(np.isfinite(bg.dist), bg.dist, np.inf)
+    n = np.nan_to_num(bg.noise, nan=0.0)
+    near, noise = d.copy(), n.copy()
+    for k in range(1, width + 1):
+        for s in (k, -k):
+            near = np.minimum(near, np.roll(d, s))
+            noise = np.maximum(noise, np.roll(n, s))
+    return np.where(np.isfinite(near), near, np.nan).astype(np.float32), noise.astype(np.float32)
+
+
 def foreground(rev, bg, tol_mm):
-    """True for points that are clearly closer than the empty room."""
+    """True for points that are clearly closer than the empty room around them (edge_reference)."""
     d, b = rev.dist, bin_of(rev.angle)
     valid = d >= MIN_MM
     if not bg.ok:
         return np.zeros_like(valid)
-    ref, noise = bg.dist[b], bg.noise[b]
-    thr = np.maximum(tol_mm, 4.0 * np.nan_to_num(noise, nan=0.0))
-    near = np.where(np.isfinite(ref), d < ref - thr, d < FAR_MM)
-    return valid & near
+    near, noise = bg.edges()
+    ref, noise = near[b], noise[b]
+    thr = np.maximum(tol_mm, 4.0 * noise)
+    closer = np.where(np.isfinite(ref), d < ref - thr, d < FAR_MM)
+    return valid & closer
 
 
 def blobs(rev, fg, gap_mm=250.0, min_pts=6):

@@ -4,6 +4,8 @@ import time
 
 import dearpygui.dearpygui as dpg
 
+from field import Grid
+
 from .drafting import Draft
 from .help import tip
 from .panel import Panel
@@ -20,13 +22,11 @@ SNAPSHOT_AFTER_S = 4.0
 
 def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_pause=None):
     """Runs until the window is closed. snapshot: PNG path to write after a few seconds, then quit.
-    sim_paths: ((x, y), (x, y)) per moving object, A and B in field shares (x along the front, y depth)."""
+    sim_paths: ((x, y), (x, y)) per moving object, A and B in field shares (x along the base line, y depth)."""
     dpg.create_context()
     font = load_font()
     themes = Themes()
     state, draft = UiState(), Draft()
-    with dpg.colormap_registry():
-        dpg.add_colormap([[20, 20, 28, 255], [255, 255, 255, 255]], False, tag='cm_field')   # 0 dark .. 1 white
 
     with dpg.window(tag='main', no_scrollbar=True):
         with dpg.group(horizontal=True):
@@ -46,6 +46,8 @@ def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_paus
     with dpg.handler_registry():
         dpg.add_key_press_handler(dpg.mvKey_F11, callback=lambda: dpg.toggle_viewport_fullscreen())
         dpg.add_key_press_handler(dpg.mvKey_Escape, callback=lambda: draft.cancel())
+        dpg.add_key_press_handler(dpg.mvKey_Z, callback=lambda: panel.undo() if dpg.is_key_down(dpg.mvKey_LControl)
+                                  or dpg.is_key_down(dpg.mvKey_RControl) else None)
         dpg.add_mouse_click_handler(button=dpg.mvMouseButton_Left, callback=lambda: view.on_press())
         dpg.add_mouse_release_handler(button=dpg.mvMouseButton_Left, callback=lambda: view.on_release())
 
@@ -75,12 +77,13 @@ def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_paus
         dpg.set_value('sim_pause', view.sim_pause_s)
     if sim_paths:
         if eng.room.ready():
+            grid = Grid.of(eng.room, eng.s['cell_mm'])[0]
             for a, b in sim_paths:
-                view.add_sim(eng.room.from_field(*a), eng.room.from_field(*b))
+                view.add_sim(grid.from_field(*a), grid.from_field(*b))
             view.set_sim_move(True)
             dpg.set_value('sim_move', True)
         else:
-            log.warning('--sim-path needs a room with area and front; ignored')
+            log.warning('--sim-path needs a room with area and base line; ignored')
     last_snap = None
     t_start = time.time()
     while dpg.is_dearpygui_running():
