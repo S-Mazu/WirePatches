@@ -31,7 +31,7 @@ Foreground blobs are also merged into *objects* (`scene.py`) for the window (*Fo
 
 Tested on the show machine on 2026-11-22 with the live sensor and a moving simulated object (base line and editing, #135):
 - The room `Default` with the old front was converted on load: the area edge along the front became the base line; field 3.15 × 4.85 m, cells 0.08 m, texture 39 × 64.
-- In the window: *Choose base line* on another edge (field 4.90 × 4.50 m, texture 49 × 48, the 0 at the correct end, the arrow into the area), Ctrl+Z back; *Add corner* on an edge, *Delete corner*, a corner dragged and the drag undone; *Foreground points* on and off; the field (red = occupied, green = moving) over the map follows the object; the texture preview shows the field with the band on top and the base line at the bottom.
+- In the window: *Choose base line* on another edge (field 4.90 × 4.50 m, texture 49 × 48, the 0 at the correct end, the arrow into the area), Ctrl+Z back; a corner added and deleted by double click (10 → 11 → 10 corners) and both undone, a corner dragged and the drag undone; the settings column closed and opened (strip, F2); *Foreground points* on and off; the field (red = occupied, green = moving) over the map follows the object; the texture preview shows the field with the band on top and the base line at the bottom.
 - Arena 7.29 received the new texture as a Spout clip (39 × 64, band at the top, the area in blue, the object in it), like the preview.
 - Edge flicker against the empty room, 20 s live, the same revolutions with both tests: directions that flicker (foreground in 2 to 60 % of the turns) 4 before, 0 after.
 
@@ -132,29 +132,30 @@ Created at runtime and not committed: `.venv/`, `settings.json` (detection and f
 .venv\Scripts\python.exe bridge.py
 ```
 
-The window shows the room map on the left and the controls on the right. Every control explains itself when you hover over it; `(?) the view` explains the picture. F11 or the button switches fullscreen; the mouse wheel zooms the view, right-drag pans it, left-drag moves handles.
+The window shows the room map on the left and the settings column on the right. The thin strip between them (or F2) closes the column: during the performance the map fills the window, the bridge keeps sending. The column is grouped in the order of the setup (steps 1 to 6), then *View*, *Simulation* and *Advanced detection*; each section says in one line what it is for, and every control explains itself when you hover over it; `(?) the view` explains the picture. F11 or the button switches fullscreen; the mouse wheel zooms the view, right-drag pans it, left-drag moves handles.
 
 1. **Room**: pick a room or create one per venue. Everything below is saved in it.
-   - Which port is the sensor? In the section *Sensor*, click *Find sensor*. The bridge listens half a second on every serial port and then lists only the ports that deliver lidar data, e.g. `COM19  STL-27L, 10 turns/s`. Select it and click *Sensor is at selected position*. It only reads; nothing is sent to other devices. *Show all ports* lists every port with its Windows description.
-2. **Sensor positions**:
+2. **Sensor**:
+   - Which port is the sensor? Click *Find sensor*. The bridge listens half a second on every serial port and then lists only the ports that deliver lidar data, e.g. `COM19  STL-27L, 10 turns/s`. Select it and click *Sensor is at selected position*. It only reads; nothing is sent to other devices. *Show all ports* lists every port with its Windows description.
+3. **Sensor positions**:
    - *Learn empty room here*: set the countdown, click, leave the scan plane before the first tone and stay out until the second tone.
    - Another sensor place: put the sensor there, click *Sensor moved: new position* and learn the empty room again. The new position takes over the sensor; the old one keeps its scan.
    - Align the positions so that their scans overlap: drag the coloured square, set *Rotation* (buttons for fine steps).
    - With a reference object (a free-standing pole or tube, 10 cm or more, standing in the room while each position learns): *Place marker* and click it in an aligned scan, select the other position, *Snap position to marker*, tick *Turn around reference* and turn until the walls match. Afterwards remove the object and learn the empty room of the live position again.
    - *Fan*: how wide this position looks (360 = all around); point it with the round handle in the view. Tick *Mirrored* if the map shows the room mirrored.
-3. **Area and base line** (done once per venue, before the show):
+4. **Area and base line** (done once per venue, before the show):
    - *Draw area*: click the corners, then *Finish* or click the first corner. The edge from the first to the second corner becomes the base line.
    - *Choose base line*: click another edge of the area. The white line is the base line, `0` marks its left end (seen from the area), the arrow points into the area; the thin grey outline is the texture rectangle.
-   - Edit afterwards: drag corners (*Move corners* on), *Add corner* (click an edge), *Delete corner* (click a corner). *Undo* or Ctrl+Z takes back each change to the shapes.
+   - Edit afterwards in the view: drag a corner (*Move corners* on), double-click an edge to add a corner, double-click a corner to delete it. *Undo* or Ctrl+Z takes back each change to the shapes.
    - Without area and base line, a black field is sent. The status line says what is missing, and gives the field size, the cell size and the texture size.
    - After changing the area or the cell size, reload the Spout clip in Arena (Usage, "In Arena", step 2): the texture has a new size.
-4. **Exclusions and barriers** (optional):
+5. **Exclusions and barriers** (optional):
    - *Draw exclusion*: nothing inside counts.
    - *Draw barrier*: two clicks; sensors do not look through it.
    - Esc cancels drawing. Each shape can be removed in the list. Exclusion corners are added, deleted and dragged like the area's.
-5. **Advanced detection**: fine-tune detection for the room (see Configuration).
-6. **Shadows**: *Show what the sensors see* (Sensor positions) tints, live, what each position with a sensor sees. Everything that stays dark is shadow: behind people and objects, behind barriers, outside the fans. Walk through the area and watch where your shadow falls; where shadows matter, a further sensor position helps (step 2). The blue channel of the texture preview (*Field*) shows the same per cell.
-7. **Check**: the status lines should be green (yellow = keep an eye on it, red = act); hover over a line to see what it means and which values are good. The view shows the measured room as solid lines, the live scan as dots and the field as it is sent: red = occupied, green = moving, yellow = both. *Field* shows the texture as it is sent, enlarged, base line at the bottom. *Foreground points* shows the single foreground points and objects instead, for diagnosis. *Output (Spout)* shows the sender name, the texture size and the frame rate.
+6. **Field**: the texture as it is sent, cell size and motion settings (see Configuration). *Advanced detection* fine-tunes detection for the room.
+7. **Shadows**: *Show what the sensors see* (View) tints, live, what each position with a sensor sees. Everything that stays dark is shadow: behind people and objects, behind barriers, outside the fans. Walk through the area and watch where your shadow falls; where shadows matter, a further sensor position helps (step 3). The blue channel of the texture preview (*Field*) shows the same per cell.
+8. **Check**: the status lines should be green (yellow = keep an eye on it, red = act); hover over a line to see what it means and which values are good. The view shows the measured room as solid lines, the live scan as dots and the field as it is sent: red = occupied, green = moving, yellow = both. *Field* shows the texture as it is sent, enlarged, base line at the bottom. *Foreground points* (View) shows the single foreground points and objects instead, for diagnosis. *Output (Spout)* shows the sender name, the texture size and the frame rate.
 
 **Simulation**: *Add object* creates a yellow point in the view that you drag with the mouse. It counts like real foreground and appears in the field, also without a sensor, so patches can be developed and checked anywhere.
 
@@ -227,13 +228,13 @@ All settings are made in the window. Detection and field settings are saved in `
 - Room: positions, rotation, fan, area with base line, exclusions, barriers, reference: see Usage.
 - *Field*: Cell size (100 mm), Motion fade (0.5 s), Motion threshold (0.3, recommended). *Reset to recommended* restores them.
 - Advanced detection, with tooltips: Tolerance (150 mm), Blob gap (250 mm), Min points (6), Merge distance (450 mm). *Reset to defaults* restores them.
-- *Sensor*: the port of the position with the sensor (COM19), *Find sensor*, *Show all ports*; quality log (off), UI scale (1.0).
+- *Sensor*: the port of the position with the sensor (COM19), *Find sensor*, *Show all ports*; quality log (off). *View*: UI scale (1.0). The settings column remembers whether it was open.
 
 ## Troubleshooting
 
 - Anything odd: read `logs/bridge.log`; it says which room and readers were started and what failed.
 - Sensor not connected, no COM port: CP210x driver missing or USB cable. With a port but no data: check the wiring above; the motor must spin audibly.
-- Which port is it? *Find sensor* (Sensor section). It finds nothing: no power, the motor does not spin, or another program holds the port (it then shows as an error in `logs/bridge.log`, `port scan:` lines).
+- Which port is it? *Find sensor* (step 2, Sensor). It finds nothing: no power, the motor does not spin, or another program holds the port (it then shows as an error in `logs/bridge.log`, `port scan:` lines).
 - Walls or furniture show up in the field: learn the empty room again, or raise *Tolerance*.
 - One body gives two rings: raise *Merge distance*. With two positions: align them better.
 - The field appears in the wrong place or mirrored in the patch: check the base line (*Choose base line*; the `0` marks column 0) and *Mirrored* of the position; the patch turns the field as it needs.
@@ -248,6 +249,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-22: Corners are added and deleted by double click in the view (on an edge: new corner, on a corner: deleted), undoable; the buttons are gone. The settings column can be closed (strip or F2) for the performance and is grouped in the order of the setup, each section with a line saying what it is for; view options are collected in *View*. Tested with the live sensor in the window.
 - 2026-11-22: The bridge window is a setup tool (#135). The front is replaced by a base line, one edge of the area (*Choose base line*); the field is the smallest rectangle along it that holds the whole area, with square cells, so nothing is cut off and one metre is the same in both directions. Corners can be added, deleted and dragged; Undo (Ctrl+Z) for every change to the shapes. The view shows the measured room as solid lines, the live scan as dots and the field as it is sent (red = occupied, green = moving); foreground points only with *Foreground points*. *Field* shows the texture as it is sent instead of three images. Points at the edges of fixed objects no longer flicker as foreground (comparison within ±1°). *Stand at left/right end* and *Area from front* are removed. Older rooms are converted. Tested with the live sensor, in the window and in Arena (see Status).
 - 2026-11-21: New patch using the bridge: Motion Bridge - Autumn Wind (#70).
 - 2026-11-21: Moving simulated objects (#130): *Move between A and B*, *Speed* and *Pause* in the Simulation section, `--sim-path`, `--sim-speed` and `--sim-pause` on the command line. Tested on the show machine with the live sensor and Arena (1920 × 1080, Motion Bridge - Autumn Wind with `Show Field`): the object stands at A as occupancy, leaves a motion trail while it walks, stands at B and walks back.

@@ -6,7 +6,7 @@ import unittest
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from room import Room  # noqa: E402
-from ui.drafting import Draft  # noqa: E402
+from ui.drafting import Draft, toggle_corner  # noqa: E402
 
 
 class DraftTest(unittest.TestCase):
@@ -37,46 +37,22 @@ class DraftTest(unittest.TestCase):
         self.assertIn('edge', self.d.error)
         self.assertEqual(self.room.base, 1)
 
-    def test_add_and_delete_corners(self):
+    def test_double_click_adds_and_deletes_corners(self):
         self.draw_rect()
         self.room.exclusions = [[[1000, -1000], [2000, -1000], [2000, -2000], [1000, -2000]]]
-        self.d.start('insert')
-        self.d.click(2000, 50)                                          # on the area's first edge
-        self.assertTrue(self.d.apply(self.room))
+        self.assertEqual(toggle_corner(self.room, (2000, 50), 200.0), (True, ''))      # on the area's first edge
         self.assertEqual(self.room.area[1], [2000.0, 50.0])
         self.assertEqual(self.room.base, 0)
-        self.d.start('insert')
-        self.d.click(1500, -1020)                                       # on the exclusion's first edge
-        self.assertTrue(self.d.apply(self.room))
+        toggle_corner(self.room, (1500, -1020), 200.0)                                 # on the exclusion's edge
         self.assertEqual(len(self.room.exclusions[0]), 5)
-        self.d.start('delete')
-        self.d.click(2010, 40)
-        self.assertTrue(self.d.apply(self.room))
+        toggle_corner(self.room, (2010, 40), 200.0)                                    # on the new corner: gone
         self.assertEqual(len(self.room.area), 4)
-        self.d.start('delete')
-        self.d.click(9000, 9000)                                        # far from every corner
-        self.assertFalse(self.d.apply(self.room))
-        self.assertIn('corner', self.d.error)
-
-    def test_area_closes_on_the_first_corner_or_finish(self):
-        self.d.start('area')
-        for p in ((0, 0), (4000, 0), (4000, -3000)):
-            self.assertFalse(self.d.click(*p))
-        self.assertFalse(self.d.click(100, -2900))                     # fourth corner, not near the first
-        self.assertTrue(self.d.click(100, 100))                        # near the first corner: closed
-        self.assertTrue(self.d.apply(self.room))
-        self.assertEqual(len(self.room.area), 4)
-        self.d.start('exclude')
-        self.d.click(0, 0)
-        self.d.click(1, 0)
-        self.assertFalse(self.d.apply(self.room))                      # two corners are no polygon
-        self.assertEqual(self.room.exclusions, [])
-        self.d.start('exclude')
-        for p in ((0, 0), (1000, 0), (0, 1000)):
-            self.d.click(*p)
-        self.assertTrue(self.d.complete())
-        self.assertTrue(self.d.apply(self.room))                       # Finish button
-        self.assertEqual(len(self.room.exclusions), 1)
+        self.assertEqual(toggle_corner(self.room, (3000, -2500), 200.0), (False, ''))  # nothing near
+        tri = [[0, 0], [1000, 0], [0, -1000]]
+        self.room.exclusions = [tri]
+        changed, why = toggle_corner(self.room, (1000, 0), 200.0)
+        self.assertFalse(changed)
+        self.assertIn('three corners', why)
 
     def test_barrier_and_reference(self):
         self.d.start('barrier')

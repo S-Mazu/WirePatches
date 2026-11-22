@@ -40,17 +40,17 @@ HELP = {
                 'A tube of 10 cm or more is found reliably.',
     'area_draw': 'Draws the area: click its corners in the view, then "Finish" (or click the first corner). '
                  'Only foreground inside the area counts, and the field covers it. The edge from the first to the '
-                 'second corner becomes the base line; "Choose base line" changes it.\nWithout an area everything '
+                 'second corner becomes the base line; "Choose base line" changes it. Double-click an edge to add a corner, '
+                 'double-click a corner to delete it.\nWithout an area everything '
                  'in view counts in the window, but zeros are sent.',
     'base_pick': 'Click an edge of the area: it becomes the base line, row 0 of the texture. The texture is the '
                  'smallest rectangle along the base line that holds the whole area (grey outline in the view); '
                  'columns run from the left end (marked 0) to the right end, seen from the area looking at the base '
                  'line. The arrow points into the area. Cells outside the area stay 0.',
-    'corner_add': 'Click an edge of the area or of an exclusion: a new corner is put there. Then drag it.',
-    'corner_del': 'Click a corner of the area or of an exclusion to delete it. A shape keeps at least three '
-                  'corners.',
+    'panel_toggle': 'Opens or closes the settings column (also F2). Closed, the map fills the window: for the '
+                    'performance. The bridge keeps running and sending either way.',
     'undo': 'Takes back the last change to the area, the base line, exclusions, barriers or the reference marker '
-            '(drawn, dragged, added, deleted or removed). Also Ctrl+Z. While drawing, it cancels the drawing.',
+            '(drawn, dragged, added or deleted by double click, removed). Also Ctrl+Z. While drawing, it cancels the drawing.',
     'area_clear': 'Removes the area and its base line. Zeros are sent until a new one is drawn.',
     'show_field': 'Shows the field in the view as it is sent: red = occupied, green = moving, yellow = both. '
                   'Occupied and still stays red; motion fades out over Motion fade.',
@@ -76,7 +76,7 @@ HELP = {
     'finish': 'Closes the polygon being drawn.',
     'cancel_draw': 'Stops drawing; nothing is added.',
     'edit_points': 'Shows the corners of the area and the exclusions, and the ends of barriers, as handles you '
-                   'can drag.',
+                   'can drag. Double-click an edge to add a corner, double-click a corner to delete it.',
     'countdown_s': 'Time between the click and the measurement, so you can leave the scan plane. A tone marks the '
                    'start and the end.',
     'sim': 'Adds objects you can drag in the view with the mouse. They count like real foreground and appear '
@@ -139,7 +139,7 @@ HELP = {
                'Yellow: not learned yet. Learn again whenever the sensor or the room changes.',
     'st_map': 'The area says what counts; its base line gives the texture its frame.\n'
               'Green: both set; field size, cell size and texture size in pixels.\n'
-              'Red: no area or no base line; zeros are sent. See step 3.',
+              'Red: no area or no base line; zeros are sent. See step 4.',
     'st_output': 'The field texture leaving the bridge over Spout: sender name, size in pixels and frames per '
                  'second (30 is normal).\nRed: nothing is sent. Install SpoutGL (pip install SpoutGL) or read '
                  'logs/bridge.log.',

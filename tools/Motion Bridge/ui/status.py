@@ -112,7 +112,7 @@ class StatusLines:
             self._set('st_room', OK, f'{st.sid}: empty room learned {when}, {cover:.0f} % coverage, '
                                      f'noise {n_med:.1f} mm')
         else:
-            self._set('st_room', WARN, f'{st.sid}: empty room not learned (step 2)')
+            self._set('st_room', WARN, f'{st.sid}: empty room not learned (step 3)')
 
     def _map(self):
         r = self.eng.room
@@ -125,6 +125,6 @@ class StatusLines:
                    f'{g.rows * g.cell / 1000:.2f} m, cells {g.cell / 1000:.2f} m, texture {g.cols} x {g.rows + band}')
             self._set('st_map', OK, txt)
         elif r.has_area():
-            self._set('st_map', BAD, 'No base line: a black field is sent (step 3, Choose base line)')
+            self._set('st_map', BAD, 'No base line: a black field is sent (step 4, Choose base line)')
         else:
-            self._set('st_map', BAD, 'No area: a black field is sent (step 3)')
+            self._set('st_map', BAD, 'No area: a black field is sent (step 4)')

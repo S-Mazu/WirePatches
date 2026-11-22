@@ -23,6 +23,7 @@ DEFAULTS = {
     'field_threshold': 0.3,             # measured: sensor noise at still objects reaches 0.28
     'log_quality': False,
     'ui_scale': 1.0,
+    'panel_open': True,                 # the settings column is open (closed during a performance)
 }
 
 # Numeric settings are clamped to these ranges when set; the window's sliders use the same.

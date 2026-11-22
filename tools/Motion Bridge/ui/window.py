@@ -17,6 +17,7 @@ from .view import RoomView
 log = logging.getLogger(__name__)
 
 PANEL_W = 450
+TOGGLE_W = 18               # the strip that opens and closes the settings column
 SNAPSHOT_AFTER_S = 4.0
 
 
@@ -28,9 +29,18 @@ def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_paus
     themes = Themes()
     state, draft = UiState(), Draft()
 
+    def set_panel(open_):
+        """Opens or closes the settings column; closed, the map takes the whole window (performance)."""
+        dpg.configure_item('panel', show=open_)
+        dpg.configure_item('plot', width=-(PANEL_W + TOGGLE_W + 16) if open_ else -(TOGGLE_W + 8))
+        dpg.configure_item('panel_toggle', label='>' if open_ else '<')
+        eng.set('panel_open', bool(open_))
+
     with dpg.window(tag='main', no_scrollbar=True):
         with dpg.group(horizontal=True):
-            view = RoomView(eng, state, draft, themes, width=-PANEL_W - 10)
+            view = RoomView(eng, state, draft, themes, width=-PANEL_W - TOGGLE_W - 16)
+            tip(dpg.add_button(label='>', tag='panel_toggle', width=TOGGLE_W, height=-1,
+                               callback=lambda: set_panel(not dpg.is_item_shown('panel'))), 'panel_toggle')
             with dpg.child_window(width=PANEL_W, height=-1, tag='panel'):
                 with dpg.group(horizontal=True):
                     dpg.add_text('Motion Bridge', color=(255, 255, 255))
@@ -45,11 +55,13 @@ def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_paus
 
     with dpg.handler_registry():
         dpg.add_key_press_handler(dpg.mvKey_F11, callback=lambda: dpg.toggle_viewport_fullscreen())
+        dpg.add_key_press_handler(dpg.mvKey_F2, callback=lambda: set_panel(not dpg.is_item_shown('panel')))
         dpg.add_key_press_handler(dpg.mvKey_Escape, callback=lambda: draft.cancel())
         dpg.add_key_press_handler(dpg.mvKey_Z, callback=lambda: panel.undo() if dpg.is_key_down(dpg.mvKey_LControl)
                                   or dpg.is_key_down(dpg.mvKey_RControl) else None)
         dpg.add_mouse_click_handler(button=dpg.mvMouseButton_Left, callback=lambda: view.on_press())
         dpg.add_mouse_release_handler(button=dpg.mvMouseButton_Left, callback=lambda: view.on_release())
+        dpg.add_mouse_double_click_handler(button=dpg.mvMouseButton_Left, callback=lambda: view.on_double_click())
 
     dpg.create_viewport(title='Motion Bridge', width=1550, height=1000, resizable=True)
     dpg.setup_dearpygui()
@@ -66,6 +78,7 @@ def run_window(eng, snapshot=None, sim=0, sim_paths=(), sim_speed=None, sim_paus
         state.rebuild = False
 
     rebuild()
+    set_panel(bool(eng.s['panel_open']))
     view.fit()
     for _ in range(sim):
         view.add_sim()

@@ -14,6 +14,7 @@ from field import Grid
 from simpath import path_position
 from visibility import seen
 
+from .drafting import toggle_corner
 from .theme import (AREA_C, BAR_C, BASE_C, DRAFT_C, EXCL_C, FG_C, FG_OUT_C, FIELD_C, OBJ_C, OUT_C, REF_C, SCAN_C,
                     SIM_C, station_color)
 
@@ -24,6 +25,7 @@ ARROW_MM, WING_MM = 700.0, 180.0    # the arrow from the base line into the area
 SIM_AHEAD_MM = 1500.0       # a new simulated object is put this far into the area from the base line (or the sensor)
 SIM_PATH_MM = 2000.0        # its second point B lies this far to the right of A, along the base line
 CLICK_PX = 5                # press and release closer than this is a click, not a drag
+PICK_PX = 14                # a double click this close to a corner or an edge (screen pixels) edits it
 OVERLAY_PX = 240            # resolution of the seen and field images over the visible part of the map
 SEEN_RGBA = (0.55, 0.75, 1.0, 0.16)     # tint of what the sensors see; shadows stay dark
 FIELD_ALPHA = 0.8           # opacity of the field image where a cell is fully taken or moving
@@ -391,6 +393,24 @@ class RoomView:
             x_m, y_m = pr[1]
             if self.draft.click(x_m * 1000.0, y_m * 1000.0):
                 self.finish()
+
+    def on_double_click(self):
+        """Double click on a corner of the area or an exclusion deletes it; on an edge adds a corner there."""
+        if self.draft.active or not dpg.is_item_shown('plot'):
+            return
+        (x0, y0), (w, h) = dpg.get_item_rect_min('plot'), dpg.get_item_rect_size('plot')
+        mx, my = dpg.get_mouse_pos(local=False)
+        if not (x0 <= mx < x0 + w and y0 <= my < y0 + h):
+            return
+        # The plot position is the last one the plot saw; over a corner handle it stops a few pixels short.
+        px, py = dpg.get_plot_mouse_pos()
+        ax0, ax1 = dpg.get_axis_limits('xaxis')
+        pick = PICK_PX * (ax1 - ax0) * 1000.0 / max(w, 1.0)
+        changed, why = self.eng.edit(lambda r: toggle_corner(r, (px * 1000.0, py * 1000.0), pick), undo=True)
+        if changed:
+            self.state.rebuild = True
+        elif why:
+            self.eng.notify(why, 'error')
 
     def finish(self):
         """Ends the draft: writes the shape into the room if it is complete."""

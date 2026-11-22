@@ -1,5 +1,5 @@
 """Clicks in the room map that draw or change a shape: area, exclusion, barrier, reference marker,
-base line, corners added or deleted.
+base line; a double click adds or deletes a corner.
 
 No dearpygui here, so it can be tested: the view feeds clicks in map millimetres, the draft
 says when the shape is complete, and `apply` writes it into the room.
@@ -9,18 +9,16 @@ import math
 from room import nearest_corner, nearest_edge
 
 CLOSE_MM = 250.0            # a click this close to the first corner closes a polygon
-PICK_MM = 600.0             # a click this close to an edge or corner picks it
+PICK_MM = 600.0             # a click this close to an edge picks it (base line)
 POLYGONS = ('area', 'exclude')
-LINES = {'barrier': 2, 'ref': 1, 'base': 1, 'insert': 1, 'delete': 1}      # clicks that complete these
+LINES = {'barrier': 2, 'ref': 1, 'base': 1}     # clicks that complete these
 
 LABELS = {'area': 'Drawing the area: click its corners in the view, then Finish (or click the first corner). '
                   'The edge from the first to the second corner becomes the base line.',
           'exclude': 'Drawing an exclusion: click the corners in the view, then Finish.',
           'barrier': 'Drawing a barrier: click its two ends in the view.',
           'ref': 'Click the reference object in the view.',
-          'base': 'Click the edge of the area that becomes the base line.',
-          'insert': 'Click an edge of the area or of an exclusion where the new corner goes.',
-          'delete': 'Click the corner of the area or of an exclusion to delete.'}
+          'base': 'Click the edge of the area that becomes the base line.'}
 
 
 class Draft:
@@ -85,10 +83,6 @@ class Draft:
             room.ref = pts[0]
         elif mode == 'base':
             ok = self._base(room, pts[0])
-        elif mode == 'insert':
-            ok = self._insert(room, pts[0])
-        elif mode == 'delete':
-            ok = self._delete(room, pts[0])
         self.cancel()
         return ok
 
@@ -103,38 +97,35 @@ class Draft:
         room.set_base(k)
         return True
 
-    @staticmethod
-    def _polygons(room):
-        """(kind, index, corners) of every polygon that can be edited: the area first, then the exclusions."""
-        out = [('area', 0, room.area)] if room.has_area() else []
-        return out + [('excl', i, e) for i, e in enumerate(room.exclusions)]
 
-    def _insert(self, room, p):
-        best = min(((nearest_edge(poly, p), kind, i) for kind, i, poly in self._polygons(room)),
-                   key=lambda b: b[0][1], default=None)
-        if best is None or best[0][1] > PICK_MM:
-            self.error = 'No edge there: click closer to an edge of the area or of an exclusion.'
-            return False
-        (k, _), kind, i = best
-        if kind == 'area':
-            room.insert_corner(k, p)
-        else:
-            room.exclusions[i].insert(k + 1, list(p))
-        return True
+def _polygons(room):
+    """(kind, index, corners) of every polygon that can be edited: the area first, then the exclusions."""
+    out = [('area', 0, room.area)] if room.has_area() else []
+    return out + [('excl', i, e) for i, e in enumerate(room.exclusions)]
 
-    def _delete(self, room, p):
-        best = min(((nearest_corner(poly, p), kind, i) for kind, i, poly in self._polygons(room)),
-                   key=lambda b: b[0][1], default=None)
-        if best is None or best[0][1] > PICK_MM:
-            self.error = 'No corner there: click closer to a corner.'
-            return False
+
+def toggle_corner(room, p, pick_mm):
+    """A double click at p: deletes the corner of the area or an exclusion there, or else adds a corner to the
+    edge there. Corners win over edges. Returns (changed, message why not)."""
+    corners = [(nearest_corner(poly, p), kind, i) for kind, i, poly in _polygons(room)]
+    best = min(corners, key=lambda b: b[0][1], default=None)
+    if best is not None and best[0][1] <= pick_mm:
         (k, _), kind, i = best
         poly = room.area if kind == 'area' else room.exclusions[i]
         if len(poly) <= 3:
-            self.error = 'A shape keeps at least three corners; remove it instead.'
-            return False
+            return False, 'A shape keeps at least three corners; remove it instead.'
         if kind == 'area':
             room.delete_corner(k)
         else:
             del poly[k]
-        return True
+        return True, ''
+    edges = [(nearest_edge(poly, p), kind, i) for kind, i, poly in _polygons(room)]
+    best = min(edges, key=lambda b: b[0][1], default=None)
+    if best is not None and best[0][1] <= pick_mm:
+        (k, _), kind, i = best
+        if kind == 'area':
+            room.insert_corner(k, p)
+        else:
+            room.exclusions[i].insert(k + 1, [float(p[0]), float(p[1])])
+        return True, ''
+    return False, ''
