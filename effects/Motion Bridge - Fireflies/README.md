@@ -46,13 +46,22 @@ The reaction to the room runs in real time too: occupancy is smoothed over 0.15 
 
 ## Parameters
 
-All ranges are deliberately wide; the extremes are safe (tested in Arena).
+All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show Field` and the group Field come first, because they are set first when the patch is set up for a room (docs/PATCH_RULES.md).
 
-- `Scale` (0 to 10, default 1): size of all elements relative to the output height, also the fireflies' speed and how far they sense.
+- `Scale` (0 to 10, default 1): size of everything relative to the output height, following the surface model with the scene coordinates of the example Scaler: a lower `Scale` shows more scene with smaller fireflies (and more of them), a higher one less scene with bigger ones; speeds and how far they sense follow. The horizon stays anchored at the bottom edge.
+- `Show Field` (Off / On, default Off): shows where the field lies and what of it is evaluated. Light grey = evaluated: a sensor sees it now, the fireflies react there; on it red = occupancy, green = motion. Hatched = not evaluated, nothing can attract or drive away the fireflies there: outside the field, outside the area and in a shadow (the bridge does not tell the two apart); what is held in a shadow still shows in red and green. Without a sensor (no visibility) the whole field is light grey; without the bridge everything is hatched, because nothing is evaluated. White = the base line, magenta = the other edges.
+
+**Field**: where the bridge's field lies in the picture, as in Motion Bridge - Fabric Wind.
+- `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective; Screen = flat on the frame.
+- `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the frame (screen) or of the floor in view (floor).
+- `Field Width`, `Field Height` (0 to 10, default 1): along the base line and into the area, as shares of the frame side. For true proportions (one metre the same both ways): `Field Height` = `Field Width` × field depth / field width (the bridge status shows both in metres) × frame width / frame height; with the field turned by 90 or -90 degrees, swap the frame width and height.
+- `Field Size` (0 to 10, default 1): scales the field as it is set, around its centre; proportions and rotation stay. It multiplies `Field Width` and `Field Height`.
+- `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
+- `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it, fading out over this time. 0 = shadows count as empty.
 
 **Fireflies**
 - `Firefly Plane` (Floor / Screen, default Screen): Screen = flat over the whole frame; Floor = hovering over the floor in perspective, from the bottom edge to four times that distance (or to the top edge when the horizon lies above the frame), as round lights that get smaller with the distance and fade out towards the far end. Independent of `Field Plane`.
-- `Firefly Density` (0 to 500, default 40): fireflies per output height × output height at `Scale` 1, so a wider surface gets more (16:9 on the screen: about 71). On the floor it counts per floor area (measured at the bottom edge), and the floor in view is larger: at the default horizon about 7.5 times, so up to `Performance Cap`.
+- `Firefly Density` (0 to 500, default 40): fireflies per output height × output height at `Scale` 1, so a wider surface gets more (16:9 on the screen: about 71). On the floor it counts per floor area (measured at the bottom edge), and the floor in view is larger: at the default horizon about 5 times, so up to `Performance Cap`.
 - `Performance Cap` (0 to 1024, default 512): at most this many fireflies.
 - `Firefly Size` (0 to 0.2, default 0.006): radius of the bright core, in output heights.
 - `Glow Size` (0 to 0.5, default 0.02): radius of the glow around it.
@@ -75,23 +84,14 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 **View**
 - `Horizon Y` (0 to 10, default 0.7): height of the floor's horizon above the bottom edge, in output heights, multiplied by `Scale`. Used where the field lies on the floor.
 
-**Field**: where the bridge's field lies in the picture, as in Motion Bridge - Fabric Wind.
-- `Field Plane` (Floor / Screen, default Screen): Floor = on the floor in perspective; Screen = flat on the frame.
-- `Field X`, `Field Y` (-10 to 10, default 0.5): centre of the field, as a share of the frame (screen) or of the floor in view (floor).
-- `Field Width`, `Field Height` (0 to 10, default 1): along the base line and into the area, as shares of the frame side.
-- `Field Rotation` (-180 to 180, default 0): where the base line lies: 0 = bottom, 90 = right, 180 = top, -90 = left.
-- `Shadow Hold` (0 to 60, default 5): seconds a spot keeps its state while no sensor can see it, fading out over this time. 0 = shadows count as empty.
-
-- `Show Field` (Off / On, default Off): shows the field: red = occupancy, green = motion, blue = held shadow, white = the base line, magenta = the other edges.
-
 ## How it works
 
 What the bridge sends is described in its README (Output). This patch does the following in one ISF shader (`Resource/Fireflies.fs`):
 
 1. **Field** (passes 1 to 4, as in Motion Bridge - Fabric Wind): the bridge's sign of life from the status band, occupancy and motion blurred over about 6 % of the field, motion fading out over 1.5 s, occupancy smoothed over 0.15 s, held shadows.
-2. **Fireflies** (passes 5 and 6, two steps per frame, each reading the buffer the other one wrote): position, velocity, heading and turning sense of every firefly, in the coordinates of its plane (on the floor: across and distance, in output heights at the bottom edge), so on the floor everything far away is smaller and slower in the picture.
+2. **Fireflies** (passes 5 and 6, two steps per frame, each reading the buffer the other one wrote): position, velocity, heading and turning sense of every firefly, in the scene coordinates of its plane (Scaler: origin in the centre, y ±1/`Scale`; on the floor: across and distance, both in scene units, the distance measured from the camera as if it stood at the horizon height), so on the floor everything far away is smaller and slower in the picture.
    - *Wander*: each keeps its own heading, which turns at random per distance flown; the frame is the wall.
-   - *Sensing*: each reads the field where it is and in 16 points around it, at 0.15 and 0.4 output heights × `Scale`. *Still* is occupancy without motion; *motion* is the motion channel. `Reverse` swaps the two.
+   - *Sensing*: each reads the field where it is and in 16 points around it, at 0.15 and 0.4 output heights (in scene units, so they follow `Scale`). *Still* is occupancy without motion; *motion* is the motion channel. `Reverse` swaps the two.
    - *Flee*: away from motion, the closer the harder, with a higher top speed.
    - *Swarm*: towards what stands still, held on its soft edge (where the blurred occupancy is about a third) and circling it in its own direction; while swarming, a firefly follows its own heading much less.
    - *Fleeing wins*: as soon as there is motion nearby, the attraction is switched off.
@@ -100,10 +100,10 @@ What the bridge sends is described in its README (Output). This patch does the f
 
 ## Any surface
 
-- Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched. Sizes, speeds and the sensing distance are in output heights × `Scale`.
+- Follows the surface model: height is the reference, width shows more or less scene, nothing is stretched. All positions, sizes, speeds and the sensing distance are in the scene coordinates of the example Scaler (one transform, as in Rolling Landscape); the controls are given in output heights at `Scale` 1.
 - `Scale`: 1 for any single screen; ⅓ for three stacked to keep the size of the fireflies.
 - `Firefly Density` grows with the surface: a wider surface gets more fireflies (up to `Performance Cap`).
-- Exceptions: the field is a zone that grows with the frame (docs/PATCH_RULES.md); the halo's blur is in frame heights, not × `Scale`.
+- Exceptions: the field is a zone that grows with the frame (docs/PATCH_RULES.md); the halo's blur is in frame heights, as the field it blurs.
 - Notes: a clip takes the composition size when it is loaded and keeps its size when the composition changes. Here the clip must keep the texture's own size and the layer stretches it (Installation).
 
 Tested sizes:
@@ -123,6 +123,8 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-22: `Show Field` without the bridge hatches everything (before: the whole field light grey, as if it were evaluated). Tested in Arena (1920×1080): bridge stopped, all hatched; bridge started, the seen area light grey again.
+- 2026-11-22: `Scale` follows the surface model with the scene coordinates of the example Scaler, as in Rolling Landscape: one transform, everything in scene units; before, single quantities were multiplied by `Scale` by hand (#133). The floor plane is measured in scene units both ways, so at the default horizon about a third fewer fireflies are on the floor. `Show Field` is the second control after `Scale`, the group Field follows it; `Show Field` shows what is evaluated (light grey) and hatches the rest; `Field Size` scales the field as set; `Field Height` documents true proportions. Controls and their ranges are unchanged. Tested in Arena (1920×1080) with the live sensor and a simulated object, next to the previous version: at `Scale` 1 fireflies of the same size and number on the screen and on the floor; `Scale` 0.33 (more, smaller; on the floor the horizon lower) and 3 (few, big); field placement as before; `Show Field` on the screen and on the floor, `Field Size` 0.5; bridge stopped (no NaN) and restarted; the fireflies gather at a standing object. Patch loads in Wire.
 - 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
 - 2026-11-21: `Firefly Plane` (#127): the fireflies hover over the floor in perspective as well, independent of `Field Plane`, like `Ribbon Plane` in Motion Bridge - Fabric Wind. Tested in Arena (1920×1080): Floor with the field on the floor and on the screen, swarm around a standing object and `Reverse` on the floor, `Scale` 0.3 and 5, `Horizon Y` 0 and 10, the screen plane unchanged.
 - 2026-11-21: First version (#127): fireflies that wander, blink (`Firefly Life`, `Dark Time`, `Firefly Twinkle`), swarm around what stands still (`Swarm Strength`) and flee from motion (`Flee Strength`), fleeing always wins; `Reverse` swaps the roles; `Halo On` shows what stands still as a soft light; field controls as in Motion Bridge - Fabric Wind. Tested in Arena (1920×1080) with the live sensor and a simulated object: swarming, `Reverse` 0 and 1, an Arena Timeline on `Reverse`, halo, screen and floor field, `Field Rotation` 90, bridge stopped and restarted, every slider at its extremes (density 500 with cap 1024, sizes 0 and maximum, `Firefly Life` 0 and 30, `Dark Time` 0 and 30, `Wander`, `Air Drag`, `Swarm Strength`, `Flee Strength` 0 and 10, `Scale` 0.3 and 5). Fleeing from someone walking through the field checked live (the area around the movement stays clear, the swarm at the standing object stays). Not tested: other sizes.

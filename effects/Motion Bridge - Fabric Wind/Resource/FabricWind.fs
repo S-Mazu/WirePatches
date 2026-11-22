@@ -834,8 +834,10 @@ void main() {
     // Show Field, outside the field and where no sensor sees: hatched, nothing can excite the ribbons
     // there (outside the area, in a shadow). Live visibility from the texture; without a sensor
     // (visibility not in use) only the outside of the field is hatched.
-    bool seenNow = true;
-    if (F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5 && alive > 0.5)
+    // without the bridge (no live band) nothing is evaluated: all hatched; without a sensor
+    // (visibility not in use) the whole field counts as seen
+    bool seenNow = alive > 0.5;
+    if (seenNow && F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5)
         seenNow = IMG_NORM_PIXEL(inputImage, vec2(clamp(F.x, 0.0, 1.0), clamp(F.y, 0.0, 1.0) * FIELD_H)).b > 0.5;
     if (showField > 0.5 && (F.z < 0.5 || !seenNow)) {
         float hp = mod((gl_FragCoord.x + gl_FragCoord.y) / max(HATCH_H * res.y, 2.0), 1.0);

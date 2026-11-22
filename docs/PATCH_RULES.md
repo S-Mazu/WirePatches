@@ -40,7 +40,9 @@ Every patch must work on any surface:
 4. **Elements are anchored.** Each element has an anchor (bottom, top, left, right or center). Its offset from the anchor is in reference units, multiplied by `Scale`. Example: the horizon sits at a fixed offset above the bottom edge, so with `Scale` ⅓ the city stays at the bottom and the sky grows.
    - Percent of the actual frame only for zones and paths that are meant to grow with the frame (e.g. edge zones, the moon's path across the surface).
 
-The example patch [Scaler](../examples/Scaler/) shows the model live.
+The example patch [Scaler](../examples/Scaler/) shows the model live. **Using it is binding** for every patch:
+- Wire nodes: the camera nodes of the Scaler, connected to every render node that draws the final picture.
+- ISF shaders: the same scene coordinates, from one transform at the start of `main()`, as in [Rolling Landscape](../sources/Rolling%20Landscape/): `ppu = 0.5 × RENDERSIZE.y × safeScale`, `p = (gl_FragCoord.xy − 0.5 × RENDERSIZE) / ppu`; the visible area is y ±1/`safeScale`, x ±aspect/`safeScale`. All sizes, distances and speeds are given in these scene units. Do not multiply single quantities by `Scale` by hand.
 
 Rules:
 - Read the output size at runtime (`Patch Info` node in Wire, `RENDERSIZE` in ISF); no hard-coded resolutions.
@@ -66,6 +68,7 @@ Rules:
 
 - A patch that receives data from a tool (e.g. a sensor via Spout or OSC) stays stable when the tool is not running: no motion, but no black output, no frozen output and no NaN.
 - The interface (Spout name, OSC address, data format) is defined in the tool README under `Output`. The patch README links to it.
+- Patches that use the Motion Bridge: `Show Field` is the third control, directly after `Scale` and `Clock` (second after `Scale` without `Clock`); the group `Field` is the first group after it.
 
 ## Metadata
 

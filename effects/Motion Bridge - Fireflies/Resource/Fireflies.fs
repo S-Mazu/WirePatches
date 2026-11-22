@@ -55,16 +55,24 @@
 // depth 0..1 into the area at 15/16 of the height, R occupancy, G motion, B visibility; the top
 // sixteenth is the status band whose counter changes every frame.
 //
+// Scale follows the surface model with the scene coordinates of the Scaler (examples/Scaler,
+// docs/PATCH_RULES.md), as in Rolling Landscape: one transform, origin in the frame centre, the
+// visible area y +-1/Scale, x +-aspect/Scale. One output height is REF scene units at Scale 1; the
+// controls keep their units (output heights) and are converted with REF, never multiplied by Scale.
+//
 // Two planes, chosen independently for the fireflies (Firefly Plane) and for the field (Field
 // Plane), as in Motion Bridge - Fabric Wind:
-//   Screen: the frame, plane coordinates ((u - 0.5) * aspect, v), in output heights; the
-//           fireflies fly over the whole frame.
-//   Floor:  a view over the floor in front of the projection; a pixel at height y below the
-//           horizon H sees the floor at the distance Z = H / (H - y) (1 at the bottom edge),
-//           plane coordinates (X, Z), X = (u - 0.5) * aspect * Z. The fireflies hover over the
+//   Screen: the frame, plane coordinates = scene coordinates; the fireflies fly over the frame.
+//   Floor:  a view over the floor in front of the projection. The horizon lies hS scene units
+//           above the bottom edge (Horizon Y x REF, anchored at the bottom); a pixel y' scene
+//           units above the bottom edge sees the floor at Z = hS / (hS - y') (1 at the bottom
+//           edge). Floor coordinates (X, D): X = x * Z, D = Z * hS, both in scene units, so a
+//           step is the same length both ways at the bottom edge. The fireflies hover over the
 //           floor from the bottom edge (Z = 1) to Z = FAR (or the top edge, when the horizon lies
 //           above the frame), drawn as round lights that get smaller with the distance and fade
 //           out towards the far end.
+// The field is a zone that grows with the frame (docs/PATCH_RULES.md): Field X, Y, Width and
+// Height are shares of the frame (on the floor: of its width at the bottom edge and of Z 1..FAR).
 // Each firefly reads the field where it is.
 //
 // Passes (pass targets are only read where they are not being written, see Star Globe):
@@ -77,7 +85,9 @@
 
 const float SIG = 0.67;
 const float LSB = 1.0 / 255.0;
-const float FAR = 4.0;             // floor distance of the far edge of the field at rest
+const float FAR = 4.0;             // floor distance (Z) of the far edge of the field at rest
+const float REF = 2.0;             // scene units per output height at Scale 1 (Scaler: y +-1)
+const float HATCH_H = 0.013;       // Show Field: period of the hatching where nothing is evaluated, output heights
 const float BLUR_X = 0.06;         // blur radius of the field, in field units
 const float BLUR_D = 0.06;
 const float BAND_Y = 31.0 / 32.0;  // middle of the status band
@@ -116,30 +126,43 @@ void over(inout vec3 col, inout float a, vec3 c, float ca) {
     a = na;
 }
 
-// frame position -> plane coordinates (xy) and whether the plane is there (z)
-vec3 toPlane(vec2 uv, bool onFloor, float aspect, float H) {
-    if (!onFloor) return vec3((uv.x - 0.5) * aspect, uv.y, 1.0);
-    if (uv.y >= H - 1e-4) return vec3(0.0, 0.0, 0.0);
-    float Z = H / (H - uv.y);
-    return vec3((uv.x - 0.5) * aspect * Z, Z, 1.0);
+// frame position <-> scene coordinates (Scaler): origin in the centre, y +-1/S, x +-aspect/S
+vec2 toScene(vec2 uv, float aspect, float S) {
+    return vec2((uv.x - 0.5) * 2.0 * aspect / S, (uv.y - 0.5) * 2.0 / S);
+}
+vec2 fromScene(vec2 p, float aspect, float S) {
+    return vec2(p.x * S / (2.0 * aspect) + 0.5, p.y * S * 0.5 + 0.5);
 }
 
-// plane coordinates -> frame position (xy) and whether it exists (z)
-vec3 toFrame(vec2 P, bool onFloor, float aspect, float H) {
-    if (!onFloor) return vec3(P.x / aspect + 0.5, P.y, 1.0);
+// frame position -> plane coordinates (xy) and whether the plane is there (z). Screen: scene
+// coordinates. Floor: (X, Z), X in scene units, Z the distance (1 at the bottom edge).
+vec3 toPlane(vec2 uv, bool onFloor, float aspect, float S, float hS) {
+    vec2 p = toScene(uv, aspect, S);
+    if (!onFloor) return vec3(p, 1.0);
+    float yb = p.y + 1.0 / S;                          // scene units above the bottom edge
+    if (yb >= hS - 1e-4) return vec3(0.0, 0.0, 0.0);
+    float Z = hS / (hS - yb);
+    return vec3(p.x * Z, Z, 1.0);
+}
+
+// plane coordinates (as toPlane) -> frame position (xy) and whether it exists (z)
+vec3 toFrame(vec2 P, bool onFloor, float aspect, float S, float hS) {
+    if (!onFloor) return vec3(fromScene(P, aspect, S), 1.0);
     if (P.y < 1e-3) return vec3(0.0, 0.0, 0.0);
-    return vec3(P.x / (aspect * P.y) + 0.5, H - H / P.y, 1.0);
+    vec2 p = vec2(P.x / P.y, hS - hS / P.y - 1.0 / S);
+    return vec3(fromScene(p, aspect, S), 1.0);
 }
 
-// frame position -> field coordinates (x along the front, y = depth) and whether inside (z)
-vec3 toField(vec2 uv, float aspect, float H) {
+// frame position -> field coordinates (x along the base line, y = depth) and whether inside (z)
+vec3 toField(vec2 uv, float aspect, float S, float hS) {
     bool onFloor = safe(fieldPlane, 0.0, 1.0) < 0.5;
-    vec3 P = toPlane(uv, onFloor, aspect, H);
+    vec3 P = toPlane(uv, onFloor, aspect, S, hS);
     if (P.z < 0.5) return vec3(-1.0, -1.0, 0.0);
     float fxp = safe(fieldX, -100.0, 100.0);
     float fyp = safe(fieldY, -100.0, 100.0);
-    vec2 c = onFloor ? vec2((fxp - 0.5) * aspect, 1.0 + fyp * (FAR - 1.0)) : vec2((fxp - 0.5) * aspect, fyp);
-    vec2 E = onFloor ? vec2(aspect, FAR - 1.0) : vec2(aspect, 1.0);
+    float W = 2.0 * aspect / S;                        // the frame (on the floor: at the bottom edge), scene units
+    vec2 c = onFloor ? vec2((fxp - 0.5) * W, 1.0 + fyp * (FAR - 1.0)) : vec2((fxp - 0.5) * W, (fyp - 0.5) * 2.0 / S);
+    vec2 E = onFloor ? vec2(W, FAR - 1.0) : vec2(W, 2.0 / S);
     float r = radians(safe(fieldRotation, -3600.0, 3600.0));
     vec2 dl = rot(P.xy - c, -r);
     float cr = abs(cos(r)), sr = abs(sin(r));
@@ -153,7 +176,7 @@ vec3 toField(vec2 uv, float aspect, float H) {
 // The processed field at a frame position: x occupancy, y excitation (0 outside the field).
 // Interpolated by hand (Wire reads float textures unfiltered). Macros, because Wire's ISF reads
 // images only directly in main().
-#define FIELD_UV(UVP, OUT) { vec3 ff_ = toField(UVP, aspect, H); OUT = vec2(0.0); if (ff_.z > 0.5) { vec2 fp_ = clamp(ff_.xy, 0.0, 1.0) * FIELD_RES - 0.5; vec2 fi_ = floor(fp_); vec2 fq_ = fp_ - fi_; vec2 f0_ = (clamp(fi_, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec2 f1_ = (clamp(fi_ + 1.0, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec4 fv_ = mix(mix(IMG_NORM_PIXEL(field, f0_), IMG_NORM_PIXEL(field, vec2(f1_.x, f0_.y)), fq_.x), mix(IMG_NORM_PIXEL(field, vec2(f0_.x, f1_.y)), IMG_NORM_PIXEL(field, f1_), fq_.x), fq_.y); OUT = vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)); } }
+#define FIELD_UV(UVP, OUT) { vec3 ff_ = toField(UVP, aspect, S, hS); OUT = vec2(0.0); if (ff_.z > 0.5) { vec2 fp_ = clamp(ff_.xy, 0.0, 1.0) * FIELD_RES - 0.5; vec2 fi_ = floor(fp_); vec2 fq_ = fp_ - fi_; vec2 f0_ = (clamp(fi_, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec2 f1_ = (clamp(fi_ + 1.0, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec4 fv_ = mix(mix(IMG_NORM_PIXEL(field, f0_), IMG_NORM_PIXEL(field, vec2(f1_.x, f0_.y)), fq_.x), mix(IMG_NORM_PIXEL(field, vec2(f0_.x, f1_.y)), IMG_NORM_PIXEL(field, f1_), fq_.x), fq_.y); OUT = vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)); } }
 // a firefly j from the buffer that is not being written in this pass: SRC 0 = partsA, 1 = partsB
 #define PART(SRC, J, OUT) { vec2 t_ = vec2((float(J) + 0.5) / float(N), 0.25); vec2 t2_ = vec2(t_.x, 0.75); vec4 sg_ = SRC == 0 ? IMG_NORM_PIXEL(partsA, t2_) : IMG_NORM_PIXEL(partsB, t2_); OUT = abs(sg_.r - SIG) < 0.01 ? (SRC == 0 ? IMG_NORM_PIXEL(partsA, t_) : IMG_NORM_PIXEL(partsB, t_)) : vec4(OFF, OFF, 0.0, 0.0); }
 #define PART_ROW1(SRC, J, OUT) { vec2 t2_ = vec2((float(J) + 0.5) / float(N), 0.75); OUT = SRC == 0 ? IMG_NORM_PIXEL(partsA, t2_) : IMG_NORM_PIXEL(partsB, t2_); }
@@ -186,8 +209,8 @@ void main() {
     // in a pass, RENDERSIZE is the size of the pass; the input has the output's size
     vec2 res = max(inSize.x > 0.5 && inSize.y > 0.5 ? inSize : RENDERSIZE, vec2(1.0));
     float aspect = res.x / res.y;
-    float S = clamp(scale, 0.001, 1000.0);
-    float H = clamp(horizonY * S, 0.001, 1000.0);
+    float S = clamp(scale, 0.001, 1000.0);                  // safeScale
+    float hS = clamp(horizonY * REF, 0.001, 1e5);          // horizon above the bottom edge, scene units
 
     // ---------- pass 0: time, the bridge's sign of life, visibility in use ----------
     if (PASSINDEX == 0) {
@@ -299,23 +322,27 @@ void main() {
     // where the fireflies fly: the frame, or the floor from the bottom edge to FAR, or to the top
     // edge when the horizon lies above the frame
     bool fFloor = safe(fireflyPlane, 0.0, 1.0) < 0.5;
-    float zFar = H > 1.0001 ? min(FAR, H / (H - 1.0)) : FAR;
-    float area = fFloor ? aspect * (zFar * zFar - 1.0) * 0.5 : aspect;
+    float fh = 2.0 / S;                                    // frame height, scene units
+    float zFar = hS > fh * 1.0001 ? min(FAR, hS / (hS - fh)) : FAR;
+    float xw = aspect / S;                                 // half the frame width, scene units
+    // the area the fireflies fly in, scene units squared: the frame, or the floor in view
+    // (X from -xw Z to xw Z, D = Z hS from hS to zFar hS)
+    float area = fFloor ? xw * hS * (zFar * zFar - 1.0) : 4.0 * aspect / (S * S);
     // how many fireflies: Firefly Density per reference area (output height x output height at
-    // Scale 1; on the floor its size at the bottom edge), so a wider surface gets more; at most
+    // Scale 1 = REF x REF scene units), so a wider surface and a lower Scale get more; at most
     // Performance Cap and 1024
-    float wantF = safe(fireflyDensity, 0.0, 1e5) * area / (S * S);
+    float wantF = safe(fireflyDensity, 0.0, 1e5) * area / (REF * REF);
     float countF = min(min(wantF, floor(safe(performanceCap, 0.0, 1e5))), float(N));
     int count = int(ceil(countF));
     float lastFade = countF - floor(countF);
     if (lastFade < 1e-4) lastFade = 1.0;
-    float rad = max(safe(fireflySize, 0.0, 100.0), 0.0) * S;   // radius of the bright core, output heights
-    vec2 lo = vec2(-0.5 * aspect, 0.0), hi = vec2(0.5 * aspect, 1.0);
-    if (fFloor) { lo = vec2(-0.5 * aspect * zFar, 1.0); hi = vec2(0.5 * aspect * zFar, zFar); }
+    float rad = max(safe(fireflySize, 0.0, 100.0), 0.0) * REF; // radius of the bright core, scene units
+    vec2 lo = vec2(-xw, -1.0 / S), hi = vec2(xw, 1.0 / S);
+    if (fFloor) { lo = vec2(-xw * zFar, hS); hi = vec2(xw * zFar, hS * zFar); }
 
     // ---------- passes 4 and 5: two simulation steps ----------
     // Each firefly keeps its own meandering heading (Wander). It senses the field around it,
-    // in 16 points at two distances (0.15 and 0.4 output heights x Scale): what stands still attracts it (Swarm Strength), and it
+    // in 16 points at two distances (0.15 and 0.4 output heights): what stands still attracts it (Swarm Strength), and it
     // circles the edge of that object in its own turning sense; motion repels it (Flee Strength).
     // Fleeing always wins: near motion the attraction is switched off. Reverse swaps the roles.
     if (PASSINDEX == 4 || PASSINDEX == 5) {
@@ -337,7 +364,7 @@ void main() {
             if (fFloor) {
                 // evenly over the floor in view: more of it far away
                 float Z = sqrt(1.0 + rnd.y * (zFar * zFar - 1.0));
-                pos = vec2((rnd.x - 0.5) * aspect * Z, Z);
+                pos = vec2((rnd.x - 0.5) * 2.0 * xw * Z, Z * hS);
             }
             float sense = hash3(vec3(seed, 5.5, 1.7)) < 0.5 ? -1.0 : 1.0;
             gl_FragColor = rowH ? vec4(SIG, hash3(vec3(seed, 7.7, rt)) * TAU, sense, 1.0) : vec4(pos, 0.0, 0.0);
@@ -352,7 +379,7 @@ void main() {
         // ramp of 30 s, Loop, swaps them every 15 s)
         float rev = smoothstep(0.45, 0.55, safe(reverse, 0.0, 1.0));
         vec2 g;
-        vec3 fu = toFrame(pos, fFloor, aspect, H);
+        vec3 fu = toFrame(fFloor ? vec2(pos.x, pos.y / hS) : pos, fFloor, aspect, S, hS);
         g = vec2(0.0);
         if (fu.z > 0.5) FIELD_UV(fu.xy, g)
         float still0 = g.x * (1.0 - smoothstep(0.1, 0.4, g.y));
@@ -362,12 +389,12 @@ void main() {
         float turn = hash3(vec3(seed, 3.9, 6.1)) * TAU;    // its own rotation of the sensing star
         for (int k = 0; k < 16; k++) {
             float ang = turn + float(k) * TAU / 8.0;
-            float dist = (k < 8 ? 0.15 : 0.4) * S;
+            float dist = (k < 8 ? 0.15 : 0.4) * REF;
             float wk = k < 8 ? 1.0 : 0.6;
             vec2 dir = vec2(cos(ang), sin(ang));
             vec2 q = pos + dir * dist;
             vec2 gq;
-            vec3 qu = toFrame(q, fFloor, aspect, H);
+            vec3 qu = toFrame(fFloor ? vec2(q.x, q.y / hS) : q, fFloor, aspect, S, hS);
             gq = vec2(0.0);
             if (qu.z > 0.5) FIELD_UV(qu.xy, gq)
             float stillq = gq.x * (1.0 - smoothstep(0.1, 0.4, gq.y));
@@ -377,7 +404,7 @@ void main() {
             fear = max(fear, Fq * wk);
         }
         gA /= 8.0; gF /= 8.0;
-        float base = 0.6 * S;                              // typical speed, output heights per second
+        float base = 0.6 * REF;                            // typical speed, scene units per second
 
         // flee from motion: away from it, the harder the closer
         float fl = max(safe(fleeStrength, 0.0, 100.0), 0.0);
@@ -399,12 +426,12 @@ void main() {
 
         // wander: its own heading meanders per distance flown (as in Star Globe)
         float wnd = max(safe(wander, 0.0, 100.0), 0.0);
-        float wspeed = wnd * 0.15 * S;
+        float wspeed = wnd * 0.15 * REF;
         float flown = max(length(v), wspeed) * sdt;
         float g1 = hash3(vec3(seed + 0.25, rt * 389.0, float(PASSINDEX) + 3.0));
         float g2 = hash3(vec3(seed + 0.75, rt * 211.0, float(PASSINDEX) + 5.0));
         float gauss = sqrt(-2.0 * log(max(g1, 1e-6))) * cos(TAU * g2);
-        hd += gauss * sqrt(2.0 * flown / (0.25 * S));
+        hd += gauss * sqrt(2.0 * flown / (0.25 * REF));
         float wanderW = 1.0 - 0.85 * near * calm;          // while swarming it follows the swarm, not its own way
         v += (vec2(cos(hd), sin(hd)) * wspeed - v) * (1.0 - exp(-1.5 * sdt)) * min(wnd, 1.0) * wanderW;
         v += acc * sdt;
@@ -418,23 +445,23 @@ void main() {
         // turns back inside too
         vec2 m = vec2(rad);
         if (fFloor) {
-            pos.y = clamp(pos.y, 1.0, zFar);
-            float xe = 0.5 * aspect * pos.y;            // the floor's edges in view widen with the distance
+            pos.y = clamp(pos.y, hS, hS * zFar);
+            float xe = xw * pos.y / hS;                    // the floor's edges in view widen with the distance
             lo.x = -xe; hi.x = xe;
         }
         if (pos.x < lo.x + m.x) { pos.x = lo.x + m.x; v.x = abs(v.x); if (cos(hd) < 0.0) hd = 3.14159265 - hd; }
         if (pos.x > hi.x - m.x) { pos.x = hi.x - m.x; v.x = -abs(v.x); if (cos(hd) > 0.0) hd = 3.14159265 - hd; }
         if (pos.y < lo.y + m.y) { pos.y = lo.y + m.y; v.y = abs(v.y); if (sin(hd) < 0.0) hd = -hd; }
         if (pos.y > hi.y - m.y) { pos.y = hi.y - m.y; v.y = -abs(v.y); if (sin(hd) > 0.0) hd = -hd; }
-        if (!(pos.x == pos.x && pos.y == pos.y && v.x == v.x && v.y == v.y)) { pos = vec2(0.0, 0.5); v = vec2(0.0); }
+        if (!(pos.x == pos.x && pos.y == pos.y && v.x == v.x && v.y == v.y)) { pos = fFloor ? vec2(0.0, hS) : vec2(0.0); v = vec2(0.0); }
         hd = mod(safe(hd, -1e4, 1e4), TAU);
         gl_FragColor = rowH ? vec4(SIG, hd, sense, 1.0) : vec4(pos, v);
         return;
     }
 
     // ---------- pass 6: the picture ----------
-    vec2 P = vec2((uv.x - 0.5) * aspect, uv.y);
-    float px = 1.0 / res.y;                                // one output pixel in output heights
+    vec2 P = toScene(uv, aspect, S);
+    float px = 2.0 / (S * res.y);                          // one output pixel in scene units
     vec3 col = vec3(0.0);
     float a = 0.0;
 
@@ -453,7 +480,7 @@ void main() {
     }
 
     // fireflies: a bright core and a soft glow
-    float gr = max(safe(glowSize, 0.0, 100.0), 0.0) * S;
+    float gr = max(safe(glowSize, 0.0, 100.0), 0.0) * REF;
     float glow = 0.0, core = 0.0;
     float reach = max(gr * 3.0, rad + px);
     for (int j = 0; j < N; j++) {
@@ -465,11 +492,12 @@ void main() {
         vec2 sp = s.xy;
         float k = 1.0, far = 1.0;
         if (fFloor) {
-            vec3 fr = toFrame(s.xy, true, aspect, H);
+            float Zs = s.y / hS;
+            vec3 fr = toFrame(vec2(s.x, Zs), true, aspect, S, hS);
             if (fr.z < 0.5) continue;
-            sp = vec2((fr.x - 0.5) * aspect, fr.y);
-            k = 1.0 / max(s.y, 1.0);
-            far = 1.0 - smoothstep(0.75 * FAR, FAR, s.y);   // fade out towards the far end
+            sp = toScene(fr.xy, aspect, S);
+            k = 1.0 / max(Zs, 1.0);
+            far = 1.0 - smoothstep(0.75 * FAR, FAR, Zs);    // fade out towards the far end
         }
         vec2 d = P - sp;
         if (abs(d.x) > reach * k + px || abs(d.y) > reach * k + px) continue;
@@ -485,14 +513,30 @@ void main() {
 
     vec4 outC = vec4(col, a);
     if (safe(showField, 0.0, 1.0) > 0.5) {
-        vec3 F = toField(uv, aspect, H);
+        vec3 F = toField(uv, aspect, S, hS);
+        // hatched where nothing is evaluated: outside the field, outside the area and in a shadow
+        // (live visibility from the texture; without a sensor only the outside of the field)
+        // without the bridge (no live band) nothing is evaluated: all hatched; without a sensor
+        // (visibility not in use) the whole field counts as seen
+        bool seenNow = alive > 0.5;
+        if (seenNow && F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5)
+            seenNow = IMG_NORM_PIXEL(inputImage, vec2(clamp(F.x, 0.0, 1.0), clamp(F.y, 0.0, 1.0) * FIELD_H)).b > 0.5;
+        if (F.z < 0.5 || !seenNow) {
+            float hp = mod((gl_FragCoord.x + gl_FragCoord.y) / max(HATCH_H * res.y, 2.0), 1.0);
+            float line = 1.0 - smoothstep(0.18, 0.26, abs(hp - 0.5));      // a soft diagonal stripe
+            float ha = 0.8;
+            outC.rgb = mix(outC.rgb, mix(vec3(0.0), vec3(0.28), line), ha * (1.0 - outC.a * 0.5));
+            outC.a = max(outC.a, ha);
+        }
         if (F.z > 0.5) {
-            // red occupancy, green excitation, blue a held shadow; white the front, magenta the other edges
+            // seen cells brightened, red occupancy, green excitation; in the hatched part only what is
+            // held there (red, green); white the base line, magenta the other edges
             vec4 fc = IMG_NORM_PIXEL(field, clamp(F.xy, 0.0, 1.0));
-            vec3 fcol = vec3(safe(fc.g, 0.0, 1.0), safe(fc.r, 0.0, 1.0), safe(fc.b, 0.0, 1.0) * 0.8);
-            float fa = max(max(max(fcol.r, fcol.g), fcol.b * 0.6) * 0.8, 0.12);
-            vec3 Fx = toField(uv + vec2(1.0 / res.x, 0.0), aspect, H);
-            vec3 Fy = toField(uv + vec2(0.0, 1.0 / res.y), aspect, H);
+            float occ = safe(fc.g, 0.0, 1.0), ex = safe(fc.r, 0.0, 1.0);
+            vec3 fcol = seenNow ? mix(vec3(0.85), vec3(occ, ex, 0.0), max(occ, ex)) : vec3(occ, ex, 0.0);
+            float fa = seenNow ? max(max(occ, ex) * 0.8, 0.45) : max(occ, ex) * 0.8;
+            vec3 Fx = toField(uv + vec2(1.0 / res.x, 0.0), aspect, S, hS);
+            vec3 Fy = toField(uv + vec2(0.0, 1.0 / res.y), aspect, S, hS);
             float dfx = max(length(vec2(Fx.x - F.x, Fy.x - F.x)), 1e-6);
             float dfd = max(length(vec2(Fx.y - F.y, Fy.y - F.y)), 1e-6);
             float side = min(F.x, 1.0 - F.x) / dfx;
