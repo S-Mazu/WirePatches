@@ -140,9 +140,11 @@ HELP = {
     'st_map': 'The area says what counts; its base line gives the texture its frame.\n'
               'Green: both set; field size, cell size and texture size in pixels.\n'
               'Red: no area or no base line; zeros are sent. See step 4.',
-    'st_output': 'The field texture leaving the bridge over Spout: sender name, size in pixels and frames per '
-                 'second (30 is normal).\nRed: nothing is sent. Install SpoutGL (pip install SpoutGL) or read '
-                 'logs/bridge.log.',
+    'st_output': 'The field texture leaving the bridge over Spout: sender name, size in pixels, frames really sent per '
+                 'second (30 is normal) and whether the bridge can read its own sender back, as Arena does ("checked").\n'
+                 'Red: nothing is sent (install SpoutGL: pip install SpoutGL), the output STOPPED (no frames, or frames '
+                 'not sent), or it is NOT READABLE (the check sees a frozen or no picture). The bridge then recreates the '
+                 'sender by itself; logs/bridge.log says when it began. The same red line appears in the map.',
     'st_objects': 'Foreground objects seen right now, including simulated ones. Grey: nothing there.',
     'view': 'The room from above, metres. Mouse wheel zooms, right-drag pans.\n\n'
             'Coloured lines: the measured empty room of each position; square: the sensor, short line: where it '

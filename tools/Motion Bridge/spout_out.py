@@ -4,6 +4,7 @@ Create and use the sender in one thread (the engine thread). Without SpoutGL the
 runs and shows the field in the window, but sends nothing; `status` says so.
 """
 import logging
+import time
 
 log = logging.getLogger(__name__)
 
@@ -26,17 +27,27 @@ class SpoutOut:
         self.frames = 0
         self.size = (0, 0)
         self.error = ''
+        self.last_ok_t = None           # time of the last frame that was really sent
+        self.recreations = 0
         self._sender = None
         if AVAILABLE:
-            try:
-                self._sender = SpoutGL.SpoutSender()
-                self._sender.setSenderName(name)
-                log.info('Spout sender %s created', name)
-            except Exception as e:          # any failure here must not stop the bridge
-                self.error = str(e)
-                log.error('Spout sender failed: %s', e)
+            self._create()
         else:
             log.warning('SpoutGL not installed: no Spout output (pip install SpoutGL)')
+
+    def _create(self) -> None:
+        try:
+            self._sender = SpoutGL.SpoutSender()
+            self._sender.setSenderName(self.name)
+            log.info('Spout sender %s created', self.name)
+        except Exception as e:          # any failure here must not stop the bridge
+            self._sender = None
+            self.error = str(e)
+            log.error('Spout sender failed: %s', e)
+
+    @property
+    def available(self) -> bool:
+        return AVAILABLE
 
     @property
     def sending(self) -> bool:
@@ -57,14 +68,31 @@ class SpoutOut:
         if self._sender is None:
             return
         try:
-            self._sender.sendImage(rgba, w, h, GL_RGBA, FLIP, 0)
+            ok = self._sender.sendImage(rgba, w, h, GL_RGBA, FLIP, 0)
             self._sender.setFrameSync(self.name)
-            self.frames += 1
-            self.error = ''
         except Exception as e:
+            ok = False
+            msg = str(e)
+        else:
+            msg = 'sendImage returned False'
+        if ok:
+            self.frames += 1
+            self.last_ok_t = time.time()
+            if self.error:
+                log.info('Spout send works again')
+            self.error = ''
+        else:
             if not self.error:
-                log.error('Spout send failed: %s', e)
-            self.error = str(e)
+                log.error('Spout send failed: %s', msg)
+            self.error = msg
+
+    def recreate(self) -> None:
+        """Releases the sender and creates it again (self-healing after failed sends or a failed check)."""
+        self.close()
+        self.recreations += 1
+        self.error = ''
+        self._create()
+        log.warning('Spout sender %s recreated (%d so far)', self.name, self.recreations)
 
     def close(self) -> None:
         if self._sender is not None:

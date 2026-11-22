@@ -29,6 +29,12 @@ Foreground blobs are also merged into *objects* (`scene.py`) for the window (*Fo
 
 ## Status (2026-11-22)
 
+Output watch (#139), tested on the show machine on 2026-11-22 with the live sensor and Arena:
+- On 2026-11-22 the output once stopped without a trace: the process ran, Arena got a black texture, the window showed frames sent and the log was empty. The cause is not known yet.
+- Now the bridge checks itself: frames count only when `sendImage` reports success; a receiver in the bridge reads its own sender once per second like Arena and checks that the status band changes; an error in the engine loop is logged with its traceback and the loop goes on; a thread that dies is logged. When sending or the check fails for 2 s, the sender is released and created again (at most every 5 s). Once per minute `logs/bridge.log` gets a line with frames sent, the check, the sensor's revolutions, recreations and loop errors.
+- The status line *Output* and a red line in the top left corner of the map (seen also with the settings column closed) say when nothing goes out or nothing can be read.
+- Tested: the check reads the live sender (state ok, Arena receives); with sending made to fail on purpose, the map and the status turned red and the sender was recreated twice, each logged. Tried as triggers without effect: a second sender with the same name, opening a patch with a Spout `Texture In` in Wire, minimising the bridge window, triggering the Arena clip again, pulling the sensor's USB cable for about 20 s (twice; the output and the check stayed ok, the sensor connected again by itself after about 27 s, both logged: "sensor on COM19 lost", "connected"). A long run with the minute log is running to find the cause.
+
 Tested on the show machine on 2026-11-22 with the live sensor and a moving simulated object (base line and editing, #135):
 - The room `Default` with the old front was converted on load: the area edge along the front became the base line; field 3.15 × 4.85 m, cells 0.08 m, texture 39 × 64.
 - In the window: *Choose base line* on another edge (field 4.90 × 4.50 m, texture 49 × 48, the 0 at the correct end, the arrow into the area), Ctrl+Z back; a corner added and deleted by double click (10 → 11 → 10 corners) and both undone, a corner dragged and the drag undone; the settings column closed and opened (strip, F2); *Foreground points* on and off; the field (red = occupied, green = moving) over the map follows the object; the texture preview shows the field with the band on top and the base line at the bottom.
@@ -102,7 +108,8 @@ Learned the hard way (2026-11-15):
 | `settings.py` | Detection and field settings: defaults, limits, `settings.json`, command-line overrides |
 | `field.py` | The grid over the field rectangle; occupancy, motion and visibility, and the texture with the status band |
 | `visibility.py` | What each position sees (up to the first point of each ray, barriers, fan) and which field cells are seen |
-| `spout_out.py` | Spout sender around SpoutGL; without SpoutGL the bridge runs and says so |
+| `spout_out.py` | Spout sender around SpoutGL; counts only frames really sent, can recreate the sender; without SpoutGL the bridge runs and says so |
+| `spout_check.py` | Reads the bridge's own sender like Arena once per second and checks that the status band changes |
 | `port_scan.py` | *Find sensor*: lists the serial ports with their description and finds the ones that deliver STL-27L packets |
 | `calibration.py` | Guided measurement with countdown and tones: learn the empty room |
 | `quality.py` | Scan quality statistics and the optional CSV log |
@@ -239,6 +246,7 @@ All settings are made in the window. Detection and field settings are saved in `
 - One body gives two rings: raise *Merge distance*. With two positions: align them better.
 - The field appears in the wrong place or mirrored in the patch: check the base line (*Choose base line*; the `0` marks column 0) and *Mirrored* of the position; the patch turns the field as it needs.
 - *Output* is red: SpoutGL is not installed (`pip install SpoutGL` in the venv) or the sender failed; the log says which.
+- *Output STOPPED* or *Output NOT READABLE* (also as a red line in the map): the bridge makes no frames, cannot send them, or its own check cannot read them. It recreates the sender by itself; `logs/bridge.log` says when it began and what happened (minute lines, tracebacks). If it stays red, restart the bridge and report the log.
 - The texture does not appear in Arena or Wire, or is 0 × 0: the bridge and Arena may run on different graphics adapters; set both to the same one in the Windows graphics settings.
 - The picture in the patch stands still although the status shows frames: the patch reads a frozen texture; check the status band in the patch.
 - The patch shows nothing or a tiny field although the Spout clip shows the field: the patch is a source, the clip is not at the texture's size, or the layer's *Auto Size* is not *Stretch* (Usage, "In Arena"). The example Field Viewer shows what arrives.
@@ -249,6 +257,7 @@ See [open issues for this tool](https://github.com/S-Mazu/WirePatches/issues?q=i
 
 ## Changelog
 
+- 2026-11-22: Output watch (#139): only frames really sent count; a receiver in the bridge checks once per second that its sender can be read and the status band changes; errors in the engine loop and in threads go into the log, the loop keeps running; after 2 s of failure the sender is recreated; a minute line in the log; *Output* and a red line in the map say when nothing goes out. Tested with the live sensor and Arena (see Status); the cause of the stop on 2026-11-22 is not found yet.
 - 2026-11-22: Corners are added and deleted by double click in the view (on an edge: new corner, on a corner: deleted), undoable; the buttons are gone. The settings column can be closed (strip or F2) for the performance and is grouped in the order of the setup, each section with a line saying what it is for; view options are collected in *View*. Tested with the live sensor in the window.
 - 2026-11-22: The bridge window is a setup tool (#135). The front is replaced by a base line, one edge of the area (*Choose base line*); the field is the smallest rectangle along it that holds the whole area, with square cells, so nothing is cut off and one metre is the same in both directions. Corners can be added, deleted and dragged; Undo (Ctrl+Z) for every change to the shapes. The view shows the measured room as solid lines, the live scan as dots and the field as it is sent (red = occupied, green = moving); foreground points only with *Foreground points*. *Field* shows the texture as it is sent instead of three images. Points at the edges of fixed objects no longer flicker as foreground (comparison within ±1°). *Stand at left/right end* and *Area from front* are removed. Older rooms are converted. Tested with the live sensor, in the window and in Arena (see Status).
 - 2026-11-21: New patch using the bridge: Motion Bridge - Autumn Wind (#70).

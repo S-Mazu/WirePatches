@@ -97,6 +97,8 @@ class RoomView:
                 dpg.add_scatter_series([], [], tag='s_obj')
                 dpg.add_line_series([], [], tag='l_sim')
                 dpg.add_scatter_series([], [], tag='s_sim')
+        dpg.add_plot_annotation(tag='ann_output', parent='plot', default_value=(0.0, 0.0), label='',
+                                offset=(10, 10), color=(200, 40, 40, 255), clamped=True, show=False)
         dpg.add_plot_annotation(tag='ann_left', parent='plot', default_value=(0.0, 0.0), label='0',
                                 offset=(-12, 12), color=BASE_C + (255,), show=False)
         for tag, color, size in [('s_out', OUT_C, 1.5), ('s_pts', SCAN_C, 1.5), ('s_fg', FG_C, 2.5),
@@ -200,6 +202,18 @@ class RoomView:
         self._draw_room()
         self._draw_draft()
         self._move_sim()
+        self._draw_output_warning()
+
+    def _draw_output_warning(self):
+        """A red line in the top left corner of the map when the output is not reaching receivers, so it is seen
+        also with the settings column closed (performance)."""
+        ok, text = self.eng.output_status()
+        if ok or text == 'Output: starting':
+            dpg.configure_item('ann_output', show=False)
+            return
+        x0, _ = dpg.get_axis_limits('xaxis')
+        _, y1 = dpg.get_axis_limits('yaxis')
+        dpg.configure_item('ann_output', default_value=(x0, y1), label=text, show=True)
 
     def _move_sim(self):
         """Hands the simulated objects to the engine: at A, or on their way between A and B."""
