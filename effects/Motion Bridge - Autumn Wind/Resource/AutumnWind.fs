@@ -65,19 +65,29 @@
 // depth 0..1 into the area at 15/16 of the height, R occupancy, G motion, B visibility; the top
 // sixteenth is the status band whose counter changes every frame.
 //
+// Scale follows the surface model with the scene coordinates of the Scaler (examples/Scaler,
+// docs/PATCH_RULES.md), as in Rolling Landscape and Fireflies: one transform, origin in the frame
+// centre, the visible area y +-1/Scale, x +-aspect/Scale. One output height is REF scene units at
+// Scale 1; the controls keep their units (output heights) and are converted with REF, never
+// multiplied by Scale.
+//
 // Two planes for the items (Item Plane), as in Motion Bridge - Fabric Wind and Fireflies:
-//   Screen: the frame, in output heights, x from -aspect/2 to aspect/2, y from 0 to 1. Every item
+//   Screen: the frame, in scene coordinates. Every item
 //           has its own depth d (0 near, 1 far): far items are smaller and slower (Depth Spread)
 //           and fainter (Depth Haze). The field is read as seen from the front (issue #70): the
 //           item's x gives the position along the front (Field X, Field Width), its depth d the
 //           distance from the surface. So motion near the surface stirs near items, far away the
 //           far ones, and someone standing still is an invisible column where items of their
 //           depth gather.
-//   Floor:  a view over the floor in front of the projection; a pixel at height y below the
-//           horizon H sees the floor at the distance Z = H / (H - y); plane coordinates (X, Z),
-//           X = (u - 0.5) * aspect * Z. The items drift over the floor from the bottom edge to
-//           Z = FAR (or the top edge when the horizon lies above the frame), smaller with the
-//           distance; they read the field where they are (Field Plane and the other Field controls).
+//   Floor:  a view over the floor in front of the projection. The horizon lies hS scene units
+//           above the bottom edge (Horizon Y x REF, anchored at the bottom); a pixel y' scene units
+//           above the bottom edge sees the floor at Z = hS / (hS - y'). Floor coordinates (X, D):
+//           X = x * Z, D = Z * hS, both in scene units. The items drift over the floor from the
+//           bottom edge to Z = FAR (or the top edge when the horizon lies above the frame), smaller
+//           with the distance; they read the field where they are (Field Plane and the other Field
+//           controls).
+// The field is a zone that grows with the frame (docs/PATCH_RULES.md): Field X, Y, Width and
+// Height are shares of the frame (on the floor: of its width at the bottom edge and of Z 1..FAR).
 //
 // Passes (pass targets are only read where they are not being written, see Star Globe):
 //   0 state (2 x 1): now, last counter, time of the last counter change | dt, real time, visibility in use
@@ -89,7 +99,9 @@
 
 const float SIG = 0.67;
 const float LSB = 1.0 / 255.0;
-const float FAR = 4.0;             // floor distance of the far edge of the field at rest
+const float FAR = 4.0;             // floor distance (Z) of the far edge of the field at rest
+const float REF = 2.0;             // scene units per output height at Scale 1 (Scaler: y +-1)
+const float HATCH_H = 0.013;       // Show Field: period of the hatching where nothing is evaluated, output heights
 const float BLUR_X = 0.06;         // blur radius of the field, in field units
 const float BLUR_D = 0.06;
 const float BAND_Y = 31.0 / 32.0;  // middle of the status band
@@ -136,30 +148,43 @@ void over(inout vec3 col, inout float a, vec3 c, float ca) {
     a = na;
 }
 
-// frame position -> plane coordinates (xy) and whether the plane is there (z)
-vec3 toPlane(vec2 uv, bool onFloor, float aspect, float H) {
-    if (!onFloor) return vec3((uv.x - 0.5) * aspect, uv.y, 1.0);
-    if (uv.y >= H - 1e-4) return vec3(0.0, 0.0, 0.0);
-    float Z = H / (H - uv.y);
-    return vec3((uv.x - 0.5) * aspect * Z, Z, 1.0);
+// frame position <-> scene coordinates (Scaler): origin in the centre, y +-1/S, x +-aspect/S
+vec2 toScene(vec2 uv, float aspect, float S) {
+    return vec2((uv.x - 0.5) * 2.0 * aspect / S, (uv.y - 0.5) * 2.0 / S);
+}
+vec2 fromScene(vec2 p, float aspect, float S) {
+    return vec2(p.x * S / (2.0 * aspect) + 0.5, p.y * S * 0.5 + 0.5);
 }
 
-// plane coordinates -> frame position (xy) and whether it exists (z)
-vec3 toFrame(vec2 P, bool onFloor, float aspect, float H) {
-    if (!onFloor) return vec3(P.x / aspect + 0.5, P.y, 1.0);
+// frame position -> plane coordinates (xy) and whether the plane is there (z). Screen: scene
+// coordinates. Floor: (X, Z), X in scene units, Z the distance (1 at the bottom edge).
+vec3 toPlane(vec2 uv, bool onFloor, float aspect, float S, float hS) {
+    vec2 p = toScene(uv, aspect, S);
+    if (!onFloor) return vec3(p, 1.0);
+    float yb = p.y + 1.0 / S;                          // scene units above the bottom edge
+    if (yb >= hS - 1e-4) return vec3(0.0, 0.0, 0.0);
+    float Z = hS / (hS - yb);
+    return vec3(p.x * Z, Z, 1.0);
+}
+
+// plane coordinates (as toPlane) -> frame position (xy) and whether it exists (z)
+vec3 toFrame(vec2 P, bool onFloor, float aspect, float S, float hS) {
+    if (!onFloor) return vec3(fromScene(P, aspect, S), 1.0);
     if (P.y < 1e-3) return vec3(0.0, 0.0, 0.0);
-    return vec3(P.x / (aspect * P.y) + 0.5, H - H / P.y, 1.0);
+    vec2 p = vec2(P.x / P.y, hS - hS / P.y - 1.0 / S);
+    return vec3(fromScene(p, aspect, S), 1.0);
 }
 
-// frame position -> field coordinates (x along the front, y = depth) and whether inside (z)
-vec3 toField(vec2 uv, float aspect, float H) {
+// frame position -> field coordinates (x along the base line, y = depth) and whether inside (z)
+vec3 toField(vec2 uv, float aspect, float S, float hS) {
     bool onFloor = safe(fieldPlane, 0.0, 1.0) < 0.5;
-    vec3 P = toPlane(uv, onFloor, aspect, H);
+    vec3 P = toPlane(uv, onFloor, aspect, S, hS);
     if (P.z < 0.5) return vec3(-1.0, -1.0, 0.0);
     float fxp = safe(fieldX, -100.0, 100.0);
     float fyp = safe(fieldY, -100.0, 100.0);
-    vec2 c = onFloor ? vec2((fxp - 0.5) * aspect, 1.0 + fyp * (FAR - 1.0)) : vec2((fxp - 0.5) * aspect, fyp);
-    vec2 E = onFloor ? vec2(aspect, FAR - 1.0) : vec2(aspect, 1.0);
+    float W = 2.0 * aspect / S;                        // the frame (on the floor: at the bottom edge), scene units
+    vec2 c = onFloor ? vec2((fxp - 0.5) * W, 1.0 + fyp * (FAR - 1.0)) : vec2((fxp - 0.5) * W, (fyp - 0.5) * 2.0 / S);
+    vec2 E = onFloor ? vec2(W, FAR - 1.0) : vec2(W, 2.0 / S);
     float r = radians(safe(fieldRotation, -3600.0, 3600.0));
     vec2 dl = rot(P.xy - c, -r);
     float cr = abs(cos(r)), sr = abs(sin(r));
@@ -173,7 +198,7 @@ vec3 toField(vec2 uv, float aspect, float H) {
 // The processed field at a frame position: x occupancy, y excitation (0 outside the field).
 // Interpolated by hand (Wire reads float textures unfiltered). Macros, because Wire's ISF reads
 // images only directly in main().
-#define FIELD_UV(UVP, OUT) { vec3 ff_ = toField(UVP, aspect, H); OUT = vec2(0.0); if (ff_.z > 0.5) { vec2 fp_ = clamp(ff_.xy, 0.0, 1.0) * FIELD_RES - 0.5; vec2 fi_ = floor(fp_); vec2 fq_ = fp_ - fi_; vec2 f0_ = (clamp(fi_, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec2 f1_ = (clamp(fi_ + 1.0, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec4 fv_ = mix(mix(IMG_NORM_PIXEL(field, f0_), IMG_NORM_PIXEL(field, vec2(f1_.x, f0_.y)), fq_.x), mix(IMG_NORM_PIXEL(field, vec2(f0_.x, f1_.y)), IMG_NORM_PIXEL(field, f1_), fq_.x), fq_.y); OUT = vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)); } }
+#define FIELD_UV(UVP, OUT) { vec3 ff_ = toField(UVP, aspect, S, hS); OUT = vec2(0.0); if (ff_.z > 0.5) { vec2 fp_ = clamp(ff_.xy, 0.0, 1.0) * FIELD_RES - 0.5; vec2 fi_ = floor(fp_); vec2 fq_ = fp_ - fi_; vec2 f0_ = (clamp(fi_, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec2 f1_ = (clamp(fi_ + 1.0, vec2(0.0), FIELD_RES - 1.0) + 0.5) / FIELD_RES; vec4 fv_ = mix(mix(IMG_NORM_PIXEL(field, f0_), IMG_NORM_PIXEL(field, vec2(f1_.x, f0_.y)), fq_.x), mix(IMG_NORM_PIXEL(field, vec2(f0_.x, f1_.y)), IMG_NORM_PIXEL(field, f1_), fq_.x), fq_.y); OUT = vec2(safe(fv_.g, 0.0, 1.0), safe(fv_.r, 0.0, 1.0)); } }
 // an item j from the buffer that is not being written in this pass: SRC 0 = partsA, 1 = partsB
 #define PART(SRC, J, OUT) { vec2 t_ = vec2((float(J) + 0.5) / float(N), 0.25); vec2 t2_ = vec2(t_.x, 0.75); vec4 sg_ = SRC == 0 ? IMG_NORM_PIXEL(partsA, t2_) : IMG_NORM_PIXEL(partsB, t2_); OUT = abs(sg_.r - SIG) < 0.01 ? (SRC == 0 ? IMG_NORM_PIXEL(partsA, t_) : IMG_NORM_PIXEL(partsB, t_)) : vec4(OFF, OFF, 0.0, 0.0); }
 #define PART_ROW1(SRC, J, OUT) { vec2 t2_ = vec2((float(J) + 0.5) / float(N), 0.75); OUT = SRC == 0 ? IMG_NORM_PIXEL(partsA, t2_) : IMG_NORM_PIXEL(partsB, t2_); }
@@ -189,8 +214,8 @@ void main() {
     // in a pass, RENDERSIZE is the size of the pass; the input has the output's size
     vec2 res = max(inSize.x > 0.5 && inSize.y > 0.5 ? inSize : RENDERSIZE, vec2(1.0));
     float aspect = res.x / res.y;
-    float S = clamp(scale, 0.001, 1000.0);
-    float H = clamp(horizonY * S, 0.001, 1000.0);
+    float S = clamp(scale, 0.001, 1000.0);                  // safeScale
+    float hS = clamp(horizonY * REF, 0.001, 1e5);          // horizon above the bottom edge, scene units
 
     // ---------- pass 0: time, the bridge's sign of life, visibility in use ----------
     if (PASSINDEX == 0) {
@@ -303,22 +328,25 @@ void main() {
     // Screen: the frame. Floor: from the bottom edge to FAR, or to the top edge when the horizon
     // lies above the frame.
     bool fFloor = safe(itemPlane, 0.0, 1.0) < 0.5;
-    float zFar = H > 1.0001 ? min(FAR, H / (H - 1.0)) : FAR;
-    float area = fFloor ? aspect * (zFar * zFar - 1.0) * 0.5 : aspect;
-    vec2 lo = vec2(-0.5 * aspect, 0.0), hi = vec2(0.5 * aspect, 1.0);
-    if (fFloor) { lo = vec2(-0.5 * aspect * zFar, 1.0); hi = vec2(0.5 * aspect * zFar, zFar); }
+    float fh = 2.0 / S;                                    // frame height, scene units
+    float zFar = hS > fh * 1.0001 ? min(FAR, hS / (hS - fh)) : FAR;
+    float xw = aspect / S;                                 // half the frame width, scene units
+    // the area the items drift in, scene units squared: the frame, or the floor in view
+    float area = fFloor ? xw * hS * (zFar * zFar - 1.0) : 4.0 * aspect / (S * S);
+    vec2 lo = vec2(-xw, -1.0 / S), hi = vec2(xw, 1.0 / S);
+    if (fFloor) { lo = vec2(-xw * zFar, hS); hi = vec2(xw * zFar, hS * zFar); }
 
-    // Each Density is items per reference area (output height x output height at Scale 1; on the
-    // floor its size at the bottom edge); when they ask for more than Performance Cap (and 1024),
+    // Each Density is items per reference area (output height x output height at Scale 1 = REF x
+    // REF scene units); when they ask for more than Performance Cap (and 1024),
     // all kinds are scaled down together. Item i gets its kind from where it lies in the sum.
     float k0 = safe(leafDensity, 0.0, 1e4), k1 = safe(mapleSeedDensity, 0.0, 1e4);
     float k2 = safe(chestnutDensity, 0.0, 1e4), k3 = safe(twigDensity, 0.0, 1e4);
     float k4 = safe(featherDensity, 0.0, 1e4);
     float ksum = k0 + k1 + k2 + k3 + k4;
-    float wantF = ksum * area / (S * S);
+    float wantF = ksum * area / (REF * REF);
     float countF = min(min(wantF, floor(safe(performanceCap, 0.0, 1e5))), float(N));
     int count = int(ceil(countF));
-    float rad = max(safe(itemSize, 0.0, 100.0), 0.0) * 0.2 * S;     // half length of an item, output heights
+    float rad = max(safe(itemSize, 0.0, 100.0), 0.0) * 0.2 * REF;   // half length of an item, scene units
     float spread = clamp(safe(depthSpread, 0.0, 1.0), 0.0, 1.0);
 
     // ---------- passes 4 and 5: two simulation steps ----------
@@ -344,7 +372,7 @@ void main() {
             vec2 pos = mix(lo, hi, rnd);
             if (fFloor) {
                 float Z = sqrt(1.0 + rnd.y * (zFar * zFar - 1.0));   // evenly over the floor in view
-                pos = vec2((rnd.x - 0.5) * aspect * Z, Z);
+                pos = vec2((rnd.x - 0.5) * 2.0 * xw * Z, Z * hS);
             }
             gl_FragColor = rowH ? vec4(SIG, hash3(vec3(seed, 7.7, rt)) * TAU, 0.0, hash3(vec3(seed, 8.1, rt)) * TAU) : vec4(pos, 0.0, 0.0);
             return;
@@ -360,12 +388,12 @@ void main() {
         // the field where the item is
         vec2 g = vec2(0.0);
         if (fFloor) {
-            vec3 fu = toFrame(pos, true, aspect, H);
+            vec3 fu = toFrame(vec2(pos.x, pos.y / hS), true, aspect, S, hS);
             if (fu.z > 0.5) FIELD_UV(fu.xy, g)
         } else {
             // as seen from the front: x along the front, the item's depth as the distance
             float fw = max(safe(fieldWidth, 0.0, 100.0), 1e-4);
-            float fx = (pos.x / aspect + 0.5 - (safe(fieldX, -100.0, 100.0) - 0.5 * fw)) / fw;
+            float fx = (fromScene(pos, aspect, S).x - (safe(fieldX, -100.0, 100.0) - 0.5 * fw)) / fw;
             float fd = dep / max(safe(fieldHeight, 0.0, 100.0), 1e-4);
             if (fx >= 0.0 && fx <= 1.0 && fd <= 1.0) {
                 vec2 fp_ = vec2(fx, fd) * FIELD_RES - 0.5; vec2 fi_ = floor(fp_); vec2 fq_ = fp_ - fi_;
@@ -382,16 +410,16 @@ void main() {
         // wind, fall, gusts across the wind, eddies
         float wa = radians(safe(windDirection, -3600.0, 3600.0)), fa = radians(safe(fallDirection, -3600.0, 3600.0));
         vec2 wdir = vec2(cos(wa), sin(wa));
-        vec2 target = (wdir * safe(windStrength, 0.0, 100.0) + vec2(cos(fa), sin(fa)) * safe(fallStrength, 0.0, 100.0)) * S;
-        target += vec2(-wdir.y, wdir.x) * (noise1(rt * 0.7 + seed * 0.37, seed) - 0.5) * 2.0 * safe(gustSway, 0.0, 100.0) * 0.5 * S;
+        vec2 target = (wdir * safe(windStrength, 0.0, 100.0) + vec2(cos(fa), sin(fa)) * safe(fallStrength, 0.0, 100.0)) * REF;
+        target += vec2(-wdir.y, wdir.x) * (noise1(rt * 0.7 + seed * 0.37, seed) - 0.5) * 2.0 * safe(gustSway, 0.0, 100.0) * 0.5 * REF;
         // eddies: the curl of a slowly drifting noise field, small and large ones around Eddy Size
-        float es = max(safe(eddySize, 0.0, 100.0), 0.01) * S;
+        float es = max(safe(eddySize, 0.0, 100.0), 0.01) * REF;
         vec2 ep = pos / es + vec2(rt * 0.13, -rt * 0.11);
         float n0 = vnoise(ep) + 0.5 * vnoise(ep * 2.3 + 4.1);
         float nx = vnoise(ep + vec2(0.05, 0.0)) + 0.5 * vnoise((ep + vec2(0.05, 0.0)) * 2.3 + 4.1);
         float ny = vnoise(ep + vec2(0.0, 0.05)) + 0.5 * vnoise((ep + vec2(0.0, 0.05)) * 2.3 + 4.1);
         vec2 grad = vec2(nx - n0, ny - n0) / 0.05;
-        target += vec2(grad.y, -grad.x) * safe(eddies, 0.0, 100.0) * 0.15 * S;
+        target += vec2(grad.y, -grad.x) * safe(eddies, 0.0, 100.0) * 0.15 * REF;
         target *= kv;
         v += (target - v) * (1.0 - exp(-2.0 * sdt)) * (1.0 - stuck);
 
@@ -401,7 +429,7 @@ void main() {
             float ka = hash3(vec3(seed, floor(rt * 3.0), 5.1)) * TAU;
             vec2 kick = vec2(cos(ka), sin(ka));
             if (!fFloor) kick = normalize(kick + vec2(0.0, 1.2));
-            v += kick * exc * st * 6.0 * S * kd * sdt;
+            v += kick * exc * st * 6.0 * REF * kd * sdt;
             stuck = max(stuck - exc * st * 4.0 * sdt, 0.0);
         }
         // occupancy without motion holds it: it gets stuck while the object stands
@@ -410,7 +438,7 @@ void main() {
         else stuck = max(stuck - 1.5 * sdt, 0.0);           // the object has gone: it lets go
         v *= 1.0 - stuck * stuck;
 
-        float spd = length(v), vmax = 4.0 * S * kd;
+        float spd = length(v), vmax = 4.0 * REF * kd;
         if (spd > vmax) v *= vmax / spd;
         pos += v * sdt;
 
@@ -422,9 +450,9 @@ void main() {
 
         // out of the frame (or of the floor in view): back in on the other side
         if (fFloor) {
-            if (pos.y < 1.0) pos.y += zFar - 1.0;
-            if (pos.y > zFar) pos.y -= zFar - 1.0;
-            float xe = 0.5 * aspect * pos.y + rad;
+            if (pos.y < hS) pos.y += hS * (zFar - 1.0);
+            if (pos.y > hS * zFar) pos.y -= hS * (zFar - 1.0);
+            float xe = xw * pos.y / hS + rad;
             if (pos.x < -xe) pos.x += 2.0 * xe;
             if (pos.x > xe) pos.x -= 2.0 * xe;
         } else {
@@ -440,8 +468,8 @@ void main() {
     }
 
     // ---------- pass 6: the picture ----------
-    vec2 P = vec2((uv.x - 0.5) * aspect, uv.y);
-    float px = 1.0 / res.y;                                // one output pixel in output heights
+    vec2 P = toScene(uv, aspect, S);
+    float px = 2.0 / (S * res.y);                          // one output pixel in scene units
     float haze = clamp(safe(depthHaze, 0.0, 1.0), 0.0, 1.0);
     float cv = clamp(safe(colorVariation, 0.0, 1.0), 0.0, 1.0);
     // the nearest item in front, and one behind it
@@ -460,11 +488,12 @@ void main() {
         vec2 sp = s.xy;
         float k = 1.0 - 0.8 * spread * dep, depth = dep;
         if (fFloor) {
-            vec3 fr = toFrame(s.xy, true, aspect, H);
+            float Zs = s.y / hS;
+            vec3 fr = toFrame(vec2(s.x, Zs), true, aspect, S, hS);
             if (fr.z < 0.5) continue;
-            sp = vec2((fr.x - 0.5) * aspect, fr.y);
-            k = 1.0 / max(s.y, 1.0);
-            depth = (s.y - 1.0) / max(FAR - 1.0, 1e-3);
+            sp = toScene(fr.xy, aspect, S);
+            k = 1.0 / max(Zs, 1.0);
+            depth = (Zs - 1.0) / max(FAR - 1.0, 1e-3);
         }
         float r = rad * k;
         if (r <= 0.0) continue;
@@ -530,7 +559,7 @@ void main() {
     if (safe(showField, 0.0, 1.0) > 0.5) {
         vec3 F = vec3(-1.0, -1.0, 0.0);
         if (fFloor) {
-            F = toField(uv, aspect, H);
+            F = toField(uv, aspect, S, hS);
         } else {
             // as the items see it: x along the front, the picture's height as the distance (near at the bottom)
             float fw = max(safe(fieldWidth, 0.0, 100.0), 1e-4);
@@ -538,11 +567,24 @@ void main() {
             float fd = (1.0 - uv.y) / max(safe(fieldHeight, 0.0, 100.0), 1e-4);
             F = vec3(fx, fd, (fx >= 0.0 && fx <= 1.0 && fd <= 1.0) ? 1.0 : 0.0);
         }
+        // hatched where nothing is evaluated: outside the field, outside the area, in a shadow, and
+        // everything without the bridge; light grey where a sensor sees (without a sensor: the field)
+        bool seenNow = alive > 0.5;
+        if (seenNow && F.z > 0.5 && safe(s1.b, 0.0, 1.0) > 0.5)
+            seenNow = IMG_NORM_PIXEL(inputImage, vec2(clamp(F.x, 0.0, 1.0), clamp(F.y, 0.0, 1.0) * FIELD_H)).b > 0.5;
+        if (F.z < 0.5 || !seenNow) {
+            float hp = mod((gl_FragCoord.x + gl_FragCoord.y) / max(HATCH_H * res.y, 2.0), 1.0);
+            float line = 1.0 - smoothstep(0.18, 0.26, abs(hp - 0.5));      // a soft diagonal stripe
+            float ha = 0.8;
+            outC.rgb = mix(outC.rgb, mix(vec3(0.0), vec3(0.28), line), ha * (1.0 - outC.a * 0.5));
+            outC.a = max(outC.a, ha);
+        }
         if (F.z > 0.5) {
-            // red occupancy, green motion, blue a held shadow
+            // seen cells brightened, red occupancy, green motion; in the hatched part only what is held
             vec4 fc = IMG_NORM_PIXEL(field, clamp(F.xy, 0.0, 1.0));
-            vec3 fcol = vec3(safe(fc.g, 0.0, 1.0), safe(fc.r, 0.0, 1.0), safe(fc.b, 0.0, 1.0) * 0.8);
-            float fa = max(max(max(fcol.r, fcol.g), fcol.b * 0.6) * 0.8, 0.12);
+            float occ = safe(fc.g, 0.0, 1.0), ex = safe(fc.r, 0.0, 1.0);
+            vec3 fcol = seenNow ? mix(vec3(0.85), vec3(occ, ex, 0.0), max(occ, ex)) : vec3(occ, ex, 0.0);
+            float fa = seenNow ? max(max(occ, ex) * 0.8, 0.45) : max(occ, ex) * 0.8;
             outC.rgb = mix(outC.rgb, fcol, fa * (1.0 - outC.a * 0.5));
             outC.a = max(outC.a, fa);
         }
