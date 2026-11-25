@@ -22,7 +22,7 @@ Patches that process the clip below. In Arena they go onto a clip, layer, group 
 
 | Patch | Description |
 |---|---|
-| [Autumn Wind](effects/Autumn%20Wind/) | 16 kinds of items (leaves, hats, newspapers, …) drift across the clip with depth, gusts, tumble and eddies. |
+| [Autumn Wind](effects/Autumn%20Wind/) | 16 kinds of items (leaves, hats, newspapers, …) drift through a real space over the clip, across the picture, towards or away from the viewer, with gusts, tumble and eddies. |
 | [Deco Fan](effects/Deco%20Fan/) | One Art Deco fan of rays and rings; add it several times for several fans. |
 | [Deco Marquee](effects/Deco%20Marquee/) | Art Deco theatre frame with chasing marquee lamps. |
 | [Fire Edges](effects/Fire%20Edges/) | Flames and smoke grow from the edges of the frame, from a glow to an inferno. |
