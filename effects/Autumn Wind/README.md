@@ -54,12 +54,12 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena).
 - `Wind Direction Z` (0 to 360, default 90): where the wind blows to in depth. 0 = away from the viewer (tailwind), 180 = towards the viewer (headwind), 90 = in the picture plane along `Wind Direction`, 270 = in the picture plane against it.
 - `Fall Strength` (0 to 10, default 0.15), `Fall Direction` (0 to 360, default 270): where the items fall to; 270 = down.
 - `Gust Sway` (0 to 5, default 0.3): the swing of gusts across the wind. Gusts run through the items as fronts, so neighbours sway together.
-- `Tumble` (0 to 5, default 0.25): how much items spin and flip; the back of a flipped item is darker.
+- `Tumble` (0 to 5, default 0.25): how much items spin. Flat items (leaves, maple seeds, twigs, feathers, hearts, snowflakes, confetti, newspapers) also flip; the back of a flipped item is darker. Hats, bubbles, notes, stars, paper planes and raindrops do not flip.
 - `Speed Variation` (0 to 1, default 0.3).
-- `Eddies` (0 to 5, default 0.5): how often and how strongly eddies whirl the items around and lift them. 0 = no eddies. An eddy is a volume of air in the space, as deep as it is wide, with its own axis; the wind carries it, and it only catches items near it, also in depth.
+- `Eddies` (0 to 5, default 0.5): how often and how strongly eddies whirl the items around and lift them. 0 = no eddies. An eddy is a volume of air in the space, as deep as it is wide, with its own axis; the wind carries it, and it only catches items near it, also in depth. Heavy items are whirled less, light ones more (the same weight as for the wind).
 - `Eddy Size` (0 to 5, default 0.6): small and large eddies alternate around this size.
 
-Every kind has its own weight: chestnuts drop, feathers drift, bubbles rise, paper planes and raindrops point along their path.
+Every kind has its own weight and size: raindrops fall straight, feathers drift, bubbles rise, paper planes and raindrops point along their path. Sizes relative to a leaf: newspaper 2, twig 1.2, bowler and paper plane 1.1, cap and oak leaf 1, feather 0.9, maple seed 0.8, heart and note 0.7, bubble 0.6, snowflake 0.3, confetti 0.25, star and raindrop 0.2.
 
 **Items**
 - `Performance Cap` (0 to 1024, default 1024): upper limit of items in flight, for performance only. When the densities ask for more, all kinds are scaled down together.
@@ -67,12 +67,12 @@ Every kind has its own weight: chestnuts drop, feathers drift, bubbles rise, pap
 - `Depth Spread` (0 to 1, default 0.5): how deep the space is. 0 = everything in the picture plane; 1 = the space reaches 50 times as far.
 - `Depth Haze` (0 to 1, default 0.35): distant items fade, so near items stand out.
 - `Vanishing Point X` (-10 to 10, default 0), `Vanishing Point Y` (-10 to 10, default 1): where depth converges. X from the centre, Y from the bottom edge, in output heights × `Scale`; the default lies in the middle of the picture at `Scale` 1.
-- `Color Variation` (0 to 1, default 0.4), `Variation Color`: some items take on this second color.
+- `Hue Variation` (0 to 180, default 20): each item's hue is turned by a fixed random amount of up to this many degrees, so autumn leaves range from red over orange to yellow. Grey and white items stay as they are.
 
 **Autumn**, **Street**, **Party**, **Sky**
 
 Each item has a `Density` (0 to 64) and a `Color`, next to each other. A Density is the number of items per reference area (output height × output height at `Scale` 1): a 16:9 frame holds about 1.8 times the value, three screens side by side 5.3 times. Items in flight stay until they leave the space; raising a Density releases more at once. Defaults: `Leaf Density` 6.75 and `Newspaper Density` 2.25.
-- Autumn: Leaf, Maple Seed, Chestnut, Twig, Feather.
+- Autumn: Leaf, Maple Seed, Oak Leaf, Twig, Feather.
 - Street: Bowler, Cap, Paper Plane, Newspaper.
 - Party: Confetti, Bubble, Heart, Note.
 - Sky: Raindrop, Snowflake, Star, and `Star Twinkle` (0 to 1).
@@ -106,6 +106,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-25: Item sizes balanced against each other (raindrops, snowflakes and stars smaller, newspaper larger). `Hue Variation` (degrees) replaces `Color Variation` and `Variation Color`. Only flat items flip (bowlers no longer look stretched). Eddies whirl heavy items less, so raindrops fall straight. Oak Leaf replaces Chestnut (`Oak Leaf Density`, `Oak Leaf Color`).
 - 2026-11-25: Real depth (#142). The items fly in a space in front of the viewer; new `Wind Direction Z` (towards and away from the viewer), `Vanishing Point X`, `Vanishing Point Y`. Real time instead of `Clock`. Items leaving the space re-enter where the wind brings them in. Gusts travel as fronts, `Tumble` also flips the items (darker back), eddies are volumes with their own axis and are carried by the wind. Near items are drawn over far ones.
 - 2026-11-13: Glossary (#95, #89): `<Item> Amount` → `<Item> Density` (items per reference area, so wider surfaces and a smaller `Scale` get more items; defaults adjusted to keep the 16:9 look); `Max Items` → `Performance Cap` (limit only); `Object Size` → `Item Size`; no degree unit in `Wind Direction` and `Fall Direction`. `Variation Color` stays.
 - 2026-11-13: `Scale` is now the first parameter, before `Clock` (#92). Section `Clock` renamed to `Timing` (#108). `licenseName` set to Unlicense (#91).
