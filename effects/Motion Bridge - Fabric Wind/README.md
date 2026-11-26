@@ -6,7 +6,7 @@ Motion Bridge - Fabric Wind is an effect on the [Motion Bridge](../../tools/Moti
 
 Formerly *Bulging Lines*; renamed because the look changed from lines to fabric and the prefix says that it needs the Motion Bridge.
 
-Last updated: 2026-11-22
+Last updated: 2026-11-26
 
 ## Vision
 
@@ -33,7 +33,7 @@ The bridge always delivers the same field; how its sensor is set up decides what
 | File | Purpose |
 |---|---|
 | `Motion Bridge - Fabric Wind.wire` | The patch |
-| `Resource/FabricWind.fs` | ISF shader: sign of life of the bridge, blurred field, excitation and held shadows, the ribbons and their fabric |
+| `Resource/FabricWind.fs` | ISF shader: sign of life of the bridge, spread field, excitation and held shadows, the ribbons and their fabric |
 
 ## Installation
 
@@ -107,10 +107,10 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show
 What the bridge sends is described in its README (Output; "From the room to the picture" under Usage). This patch takes the field and does the following, in one ISF shader with eight passes (`Resource/FabricWind.fs`):
 
 1. **Sign of life** (pass 1, 2 × 1, kept from frame to frame): the patch reads the status band at the top of the texture at three points across the width. It counts as live when R = G = B > 0 there and the value changes. The time since the last change decides how much the field may act: full up to 0.25 s, nothing after 1 s. The clock of the computer (`System Time`) gives the frame time. It also checks 64 points of the visibility channel (B): only when some part of the field is seen does visibility count; otherwise (simulated objects only, no sensor) it is ignored.
-2. **Blur** (passes 2 and 3, 160 × 120): occupancy (R) and motion (G) are blurred over about 6 % of the field in x and in depth, so single cells and sensor noise do not make the ribbons jitter. Visibility goes along unblurred.
+2. **Spread** (passes 2 and 3, 160 × 120): occupancy (R) and motion (G) are spread over about 6 % of the field in x and in depth with a soft maximum, so single cells and sensor noise do not make the ribbons jitter and a person, only a thin arc to the sensor, keeps its full strength. Visibility goes along unspread.
 3. **Memory** (pass 4, 160 × 120, kept from frame to frame):
-   - *Excitation*: blurred motion × 2.5, at most 1, falling off over `Flutter Life`.
-   - *Occupancy*: follows the blurred occupancy × 1.5 (at most 1) with a delay of 0.15 s.
+   - *Excitation*: spread motion × 2.5, at most 1, falling off over `Flutter Life`.
+   - *Occupancy*: follows the spread occupancy × 1.5 (at most 1) with a delay of 0.15 s.
    - *Shadow*: where no sensor sees the cell, there is no new motion and the occupancy fades out over `Shadow Hold` instead of following the bridge's 0 ("unknown").
    - Without the bridge both fall to 0.
 4. **Flow around** (passes 5 to 7, half the output size; one column per ribbon, rows along the wind):
@@ -162,6 +162,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-26: The field is spread with a soft maximum instead of an average, as in Motion Bridge - Autumn Wind: the sensor sees a person only as a thin arc, which the average thinned out below the thresholds, so live the fabric barely parted around someone standing. Controls unchanged. Tested in Arena with the live sensor (the fabric parts around someone standing and flutters at motion) and a simulated object, at 1920×1080, 5760×1080, 1920×3240, 1080×1920, 4096×512 and 512×512.
 - 2026-11-22: `Show Field` without the bridge hatches everything (before: the whole field light grey, as if it were evaluated). Tested in Arena (1920×1080): bridge stopped, all hatched; bridge started, the seen area light grey again.
 - 2026-11-22: `Field Size` in the group Field scales the field as it is set, proportions and rotation kept (built in Wire: it multiplies `Field Width` and `Field Height`; the shader is unchanged). Tested in Arena (1920×1080) with the live sensor: 0.5 halves the field around its centre with rotation and proportions kept, 0 leaves no field (all hatched, ribbons calm, no NaN), 10 covers the frame; the patch loads in Wire.
 - 2026-11-22: `Show Field` shows what is evaluated: the part a sensor sees is light grey, everything else (outside the field, outside the area, in a shadow) is hatched. Held shadows are no longer shown in blue. Tested in Arena (1920×1080) with the live sensor and a simulated object: Field Plane Screen and Floor, ribbons on and off, field smaller than the frame, `Show Field` Off unchanged, bridge stopped (whole field light grey, outside hatched, no NaN) and restarted.

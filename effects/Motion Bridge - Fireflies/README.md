@@ -4,7 +4,7 @@ Motion Bridge - Fireflies is an effect on the [Motion Bridge](../../tools/Motion
 
 **It needs the Motion Bridge.** The patch reacts only to the bridge's Spout texture `Motion Bridge`: the bridge with a 2D lidar, set up for the room, must run on the same computer as Arena. Without it the fireflies just fly about.
 
-Last updated: 2026-11-22
+Last updated: 2026-11-26
 
 ## Vision
 
@@ -25,7 +25,7 @@ A summer night. Small fireflies drift over the whole surface, light up for a few
 | File | Purpose |
 |---|---|
 | `Motion Bridge - Fireflies.wire` | The patch |
-| `Resource/Fireflies.fs` | ISF shader: the bridge's sign of life, the field (blur, memory, held shadows), the firefly simulation and the picture |
+| `Resource/Fireflies.fs` | ISF shader: the bridge's sign of life, the field (spread, memory, held shadows), the firefly simulation and the picture |
 
 ## Installation
 
@@ -78,7 +78,7 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show
 - `Reverse` (0 to 1, default 0): below 0.5 they swarm around what stands still and flee from motion; above 0.5 they swarm around motion and flee from what stands still; a soft change around 0.5. See Timing for swapping it automatically.
 
 **Halo**
-- `Halo On` (Off / On, default Off): shows what stands still as a soft light that follows the blurred field.
+- `Halo On` (Off / On, default Off): shows what stands still as a soft light that follows the spread field.
 - `Halo Color` (default warm white), `Halo Opacity` (0 to 1, default 0.35).
 
 **View**
@@ -88,14 +88,14 @@ All ranges are deliberately wide; the extremes are safe (tested in Arena). `Show
 
 What the bridge sends is described in its README (Output). This patch does the following in one ISF shader (`Resource/Fireflies.fs`):
 
-1. **Field** (passes 1 to 4, as in Motion Bridge - Fabric Wind): the bridge's sign of life from the status band, occupancy and motion blurred over about 6 % of the field, motion fading out over 1.5 s, occupancy smoothed over 0.15 s, held shadows.
+1. **Field** (passes 1 to 4, as in Motion Bridge - Fabric Wind): the bridge's sign of life from the status band, occupancy and motion spread over about 6 % of the field with a soft maximum (a person is only a thin arc to the sensor; an average thinned it out), motion fading out over 1.5 s, occupancy smoothed over 0.15 s, held shadows.
 2. **Fireflies** (passes 5 and 6, two steps per frame, each reading the buffer the other one wrote): position, velocity, heading and turning sense of every firefly, in the scene coordinates of its plane (Scaler: origin in the centre, y ±1/`Scale`; on the floor: across and distance, both in scene units, the distance measured from the camera as if it stood at the horizon height), so on the floor everything far away is smaller and slower in the picture.
    - *Wander*: each keeps its own heading, which turns at random per distance flown; the frame is the wall.
    - *Sensing*: each reads the field where it is and in 16 points around it, at 0.15 and 0.4 output heights (in scene units, so they follow `Scale`). *Still* is occupancy without motion; *motion* is the motion channel. `Reverse` swaps the two.
    - *Flee*: away from motion, the closer the harder, with a higher top speed.
-   - *Swarm*: towards what stands still, held on its soft edge (where the blurred occupancy is about a third) and circling it in its own direction; while swarming, a firefly follows its own heading much less.
+   - *Swarm*: towards what stands still, held on its soft edge (where the spread occupancy is about a third) and circling it in its own direction; while swarming, a firefly follows its own heading much less.
    - *Fleeing wins*: as soon as there is motion nearby, the attraction is switched off.
-3. **Picture** (pass 7): the halo from the blurred field, then every lit firefly as a bright core with a soft glow (on the floor at its place in perspective, its size divided by its distance). Each firefly has its own durations and phase for being lit and dark, with a short fade in and out, and twinkles while lit.
+3. **Picture** (pass 7): the halo from the spread field, then every lit firefly as a bright core with a soft glow (on the floor at its place in perspective, its size divided by its distance). Each firefly has its own durations and phase for being lit and dark, with a short fade in and out, and twinkles while lit.
    - The output is premultiplied (colour × alpha), so the patch needs no Premultiply Alpha node; Arena's *Alpha* blend adds it over what is below.
 
 ## Any surface
@@ -123,6 +123,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-26: The field is spread with a soft maximum instead of an average, as in Motion Bridge - Autumn Wind: the sensor sees a person only as a thin arc, which the average thinned out below the thresholds, so live the fireflies barely gathered and barely fled. Controls unchanged. Tested in Arena with the live sensor (fireflies gather at someone standing and flee from motion) and a simulated object, at 1920×1080, 5760×1080, 1920×3240, 1080×1920, 4096×512 and 512×512.
 - 2026-11-22: `Show Field` without the bridge hatches everything (before: the whole field light grey, as if it were evaluated). Tested in Arena (1920×1080): bridge stopped, all hatched; bridge started, the seen area light grey again.
 - 2026-11-22: `Scale` follows the surface model with the scene coordinates of the example Scaler, as in Rolling Landscape: one transform, everything in scene units; before, single quantities were multiplied by `Scale` by hand (#133). The floor plane is measured in scene units both ways, so at the default horizon about a third fewer fireflies are on the floor. `Show Field` is the second control after `Scale`, the group Field follows it; `Show Field` shows what is evaluated (light grey) and hatches the rest; `Field Size` scales the field as set; `Field Height` documents true proportions. Controls and their ranges are unchanged. Tested in Arena (1920×1080) with the live sensor and a simulated object, next to the previous version: at `Scale` 1 fireflies of the same size and number on the screen and on the floor; `Scale` 0.33 (more, smaller; on the floor the horizon lower) and 3 (few, big); field placement as before; `Show Field` on the screen and on the floor, `Field Size` 0.5; bridge stopped (no NaN) and restarted; the fireflies gather at a standing object. Patch loads in Wire.
 - 2026-11-22: Documentation: the Motion Bridge front is now its base line (#135); the wording here and in the patch description follows. Nothing else changed.
