@@ -36,8 +36,8 @@
 // depth 0..1 into the area at 15/16 of the height, R occupancy, G motion, B visibility; the top
 // sixteenth is the status band whose counter changes every frame.
 //
-// Passes 0 to 3 are the field preparation of the Motion Bridge patches (Fireflies, Fabric Wind):
-// the bridge's sign of life, occupancy and motion blurred, motion fading out over 1.5 s,
+// Passes 0 to 3 follow the field preparation of the Motion Bridge patches (Fireflies, Fabric Wind):
+// the bridge's sign of life, occupancy and motion spread with a soft maximum (not averaged), motion fading out over 1.5 s,
 // occupancy smoothed over 0.15 s, held shadows. The last pass places the field in the picture
 // exactly as in Fireflies (Field Plane Floor / Screen, Field X, Y, Width, Height, Size, Rotation,
 // Horizon Y) and writes either
@@ -162,39 +162,38 @@ void main() {
     float alive = 1.0 - smoothstep(0.25, 1.0, age);       // fade the field's influence out without the bridge
     float dt = safe(s1.r, 0.0, 0.1);
 
-    // ---------- pass 1: blur along x (r occupancy, g motion), in field space; b visibility ----------
+    // ---------- pass 1: spread along x (r occupancy, g motion), in field space; b visibility ----------
+    // A soft maximum, not an average: the lidar sees only the side of a body facing it, a thin arc
+    // one or two cells deep; averaging would thin it out below the thresholds of the items, the
+    // maximum keeps its strength and widens it to a zone of BLUR_X around it.
     if (PASSINDEX == 1) {
-        vec2 sum = vec2(0.0);
-        float wsum = 0.0;
+        vec2 mx = vec2(0.0);
         for (int k = -6; k <= 6; k++) {
             float o = float(k) / 6.0;
             float w = exp(-o * o * 2.0);
             float fx = uv.x + o * BLUR_X;
             vec2 v = IMG_NORM_PIXEL(inputImage, vec2(clamp(fx, 0.0, 1.0), uv.y * FIELD_H)).rg;
             if (fx < 0.0 || fx > 1.0) v = vec2(0.0);
-            sum += v * w;
-            wsum += w;
+            mx = max(mx, v * w);
         }
         float vis = IMG_NORM_PIXEL(inputImage, vec2(uv.x, uv.y * FIELD_H)).b;
-        gl_FragColor = vec4(sum / wsum, vis, 1.0);
+        gl_FragColor = vec4(mx, vis, 1.0);
         return;
     }
 
-    // ---------- pass 2: blur along depth ----------
+    // ---------- pass 2: spread along depth (soft maximum, as pass 1) ----------
     if (PASSINDEX == 2) {
-        vec2 sum = vec2(0.0);
-        float wsum = 0.0;
+        vec2 mx = vec2(0.0);
         for (int k = -6; k <= 6; k++) {
             float o = float(k) / 6.0;
             float w = exp(-o * o * 2.0);
             float fd = uv.y + o * BLUR_D;
             vec2 v = IMG_NORM_PIXEL(blurX, vec2(uv.x, clamp(fd, 0.0, 1.0))).rg;
             if (fd < 0.0 || fd > 1.0) v = vec2(0.0);
-            sum += v * w;
-            wsum += w;
+            mx = max(mx, v * w);
         }
         float vis = IMG_NORM_PIXEL(blurX, uv).b;
-        gl_FragColor = vec4(sum / wsum, vis, 1.0);
+        gl_FragColor = vec4(mx, vis, 1.0);
         return;
     }
 
