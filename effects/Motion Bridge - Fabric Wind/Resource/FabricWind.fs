@@ -72,7 +72,7 @@
 // state (2 x 1, persistent, signature in alpha):
 //   pixel 0: now (s), last counter, time of the last counter change (s)
 //   pixel 1: frame time dt (s), real time (s) for the flutter, visibility in use (0/1)
-// blurX, blurXY (160 x 120 over x and depth): r occupancy, g motion blurred; b visibility unblurred
+// blurX, blurXY (160 x 120 over x and depth): r occupancy, g motion spread with a soft maximum; b visibility unspread
 // field (160 x 120, persistent): r excitation, g occupancy smoothed, b 1 in a held shadow
 // raw (output / 2): one column per ribbon, rows along the wind: r the half width of the object
 //   the ribbon meets in this row (x Avoid Strength, plus half a ribbon), g its centre relative to
@@ -479,39 +479,35 @@ void main() {
     float rt = safe(s1.g, 0.0, 3600.0);                                // real time: flutter
     float ct = safe(clock, 0.0, 1000.0);                                // Clock: the wind's waves
 
-    // ---------- pass 1: blur along x (r occupancy, g motion), in field space; b visibility ----------
+    // ---------- pass 1: spread along x with a soft maximum (r occupancy, g motion), in field space; b visibility ----------
     if (PASSINDEX == 1) {
-        vec2 sum = vec2(0.0);
-        float wsum = 0.0;
+        vec2 mx = vec2(0.0);   // soft maximum, not an average (a body is a thin arc to the lidar)
         for (int k = -6; k <= 6; k++) {
             float o = float(k) / 6.0;
             float w = exp(-o * o * 2.0);
             float fx = uv.x + o * BLUR_X;
             vec2 v = IMG_NORM_PIXEL(inputImage, vec2(clamp(fx, 0.0, 1.0), uv.y * FIELD_H)).rg;
             if (fx < 0.0 || fx > 1.0) v = vec2(0.0);
-            sum += v * w;
-            wsum += w;
+            mx = max(mx, v * w);
         }
         float vis = IMG_NORM_PIXEL(inputImage, vec2(uv.x, uv.y * FIELD_H)).b;
-        gl_FragColor = vec4(sum / wsum, vis, 1.0);
+        gl_FragColor = vec4(mx, vis, 1.0);
         return;
     }
 
-    // ---------- pass 2: blur along depth ----------
+    // ---------- pass 2: spread along depth (soft maximum, as pass 1) ----------
     if (PASSINDEX == 2) {
-        vec2 sum = vec2(0.0);
-        float wsum = 0.0;
+        vec2 mx = vec2(0.0);   // soft maximum, not an average (a body is a thin arc to the lidar)
         for (int k = -6; k <= 6; k++) {
             float o = float(k) / 6.0;
             float w = exp(-o * o * 2.0);
             float fd = uv.y + o * BLUR_D;
             vec2 v = IMG_NORM_PIXEL(blurX, vec2(uv.x, clamp(fd, 0.0, 1.0))).rg;
             if (fd < 0.0 || fd > 1.0) v = vec2(0.0);
-            sum += v * w;
-            wsum += w;
+            mx = max(mx, v * w);
         }
         float vis = IMG_NORM_PIXEL(blurX, uv).b;
-        gl_FragColor = vec4(sum / wsum, vis, 1.0);
+        gl_FragColor = vec4(mx, vis, 1.0);
         return;
     }
 
