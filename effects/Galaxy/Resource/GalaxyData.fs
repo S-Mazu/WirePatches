@@ -270,15 +270,15 @@ void main() {
         float n = clamp(floor(starCount), 0.0, SKY0 - STAR0);
         if (j < n) {
             bool bulge = j < 0.3 * n;
-            // twinkle: three groups of stars, each fading in and out on its own smooth curve (about 0.8 changes per
-            // clock unit), plus a fifth of individual variation; from dark up to 1.8 times as bright.
-            // The core twinkles with a third of the strength, so the dense centre stays calm.
+            // twinkle: three groups of stars, each fading in and out on its own smooth curve (about 1 change per
+            // clock unit), plus a third of individual variation; from dark up to about twice as bright.
+            // The core twinkles with less than half the strength, so the dense centre stays calm.
             float grp = floor(rnd(idx, 15.0) * 3.0);
-            float nG = noise1(clock * 0.8 + grp * 37.3 + seed * 0.37);
-            float nS = noise1(clock * 1.0 + rnd(idx, 9.0) * 100.0);
-            float nT = mix(nG, nS, 0.2);
-            float twk = tw * (bulge ? 0.33 : 1.0);
-            float twinkle = 1.0 + twk * (1.8 * nT - 1.0);
+            float nG = noise1(clock * 1.0 + grp * 37.3 + seed * 0.37);
+            float nS = noise1(clock * 1.2 + rnd(idx, 9.0) * 100.0);
+            float nT = clamp((mix(nG, nS, 0.3) - 0.5) * 1.4 + 0.5, 0.0, 1.0);   // stretched: the mix sits mostly near the middle
+            float twk = tw * (bulge ? 0.45 : 1.0);
+            float twinkle = 1.0 + twk * (2.0 * nT - 1.0);
             float big = pow(rnd(idx, 6.0), 6.0);
             size = vec2(2.0 * max(starSize, 0.0) * (0.6 + 2.4 * big));   // Star Size relative to the output height (2 scene units)
             vec3 c;
