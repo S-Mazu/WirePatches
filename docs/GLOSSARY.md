@@ -35,6 +35,7 @@ Fixed terms for control names. Every patch and every revision uses only these.
 | `<Thing> Direction` | Where something moves or points to (wind, fall, flight) | Angle as in "Angles", 0 to 360. Always where it goes, never where it comes from. |
 | `<Thing> Direction Z` | Where something moves in depth, for a scene with real depth (e.g. wind towards the viewer) | Angle as in "Angles", 0 to 360, together with `<Thing> Direction`: 0 = away from the viewer into the depth (tailwind), 180 = towards the viewer (headwind), 90 = in the picture plane along `<Thing> Direction`, 270 = in the picture plane against it. |
 | `<Element> Rotation` | Orientation of an element | Angle as in "Angles", -180 to 180. 0 = the element's rest position. |
+| `<Element> Tilt` | Tilt of a flat element out of the picture plane, into depth | Angle as in "Angles", -180 to 180. 0 = facing the viewer, 90 = seen edge-on with its top edge turned away. `Rotation` turns in the picture plane, `Tilt` out of it. |
 | `<Element> Aspect` | Proportions of a shape | |
 | `<Element> Spacing` | Distance between copies | Relative to the output height, multiplied by `Scale`; never pixels. |
 | `<Element> Opacity` | Opacity of an element | Plural for several elements (`Strings Opacity`), singular for one (`Moon Opacity`). |
@@ -57,6 +58,7 @@ One convention for every angle in every patch:
 - Directions (`<Thing> Direction`): 0 to 360, where something goes.
   In depth (`<Thing> Direction Z`): 0 = away from the viewer, 180 = towards the viewer, 90 = along `<Thing> Direction` in the picture plane.
 - Rotations (`<Element> Rotation`): -180 to 180, one full turn with the rest position in the middle.
+- Tilts (`<Element> Tilt`): -180 to 180; 0 = facing the viewer, 90 = edge-on.
   Amounts of turning that are not an orientation (e.g. `Blade Twist`) may exceed one turn.
 - Spans (`Spread`, `<Element> Fill`, `Hue Range`): 0 to 360; `<Property> Variation` 0 to 180.
 - Hue: 0 to 360 on the color wheel.
