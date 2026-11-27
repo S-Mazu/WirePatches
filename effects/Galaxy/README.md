@@ -63,7 +63,7 @@ Everything moves with `Clock` (0 to 1000, default 0): the galaxy turns (about on
 **Stars**
 - `Star Count` (0 to 30 000, default 12 000): number of stars, about 30 % of them in the core. For performance only; the look comes from the other controls.
 - `Star Size` (0 to 0.5, default 0.007): size of a star relative to the output height; a few stars are larger and brighter.
-- `Star Twinkle` (0 to 1, default 0.5): the stars flicker restlessly, about 2.5 times per clock unit, from dark up to almost twice as bright; 0 = steady. The stars flicker in three random groups, each with its own rhythm, plus a little flicker of their own, so the twinkling shows even in the dense core.
+- `Star Twinkle` (0 to 1, default 0.5): the stars fade in and out smoothly, about 0.8 times per clock unit, from dark up to almost twice as bright; 0 = steady. They twinkle in three random groups, each with its own rhythm, plus a little variation of their own. The core twinkles with a third of the strength, so the dense centre stays calm.
 - `Hue Variation` (0 to 180, default 30): random shift of hue per star and nebula, in degrees.
 
 **Colors**
@@ -122,6 +122,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-27: `Star Twinkle` calmer: about 0.8 instead of 2.5 changes per clock unit, a smooth curve that fades in and out instead of a sharpened one, and the core twinkles with a third of the strength; before, the twinkling looked erratic, above all in the core. Tested in Arena (1920×1080) with the timeline on `Clock`: `Star Twinkle` 1, core and arms. Patch loads in Wire.
 - 2026-11-27: `Star Twinkle` rebuilt: three random groups of stars with their own restless rhythm (noise instead of a slow sine) and some individual flicker; stars now also brighten, up to almost twice as bright. Before, each star dimmed on its own slow sine, which evened out and barely showed. Tested in Arena (1920×1080) with the timeline on `Clock`: `Star Twinkle` 0, 0.5 and 1, core and arms. Patch loads in Wire.
 - 2026-11-27: `Galaxy Aspect` replaced by `Galaxy Tilt`, an angle (new glossary pattern `<Element> Tilt`). The disc has a real thickness and is tilted in space instead of squashed; the dust follows the line of sight, so edge-on shows a glowing band with a dark dust band. Tested in Arena (1920×1080, 5760×1080, 1920×3240, 1080×1920, 4096×512, 512×512): tilts 0, 50, -60, 78, 80, 90, ±180, edge-on at `Galaxy Size` 3 and 10, `Scale` 0. Patch loads in Wire.
 - 2026-11-27: First version (#80). Tested in Arena (1920×1080, 5760×1080, 1920×3240, 1080×1920, 4096×512, 512×512): forms (bar, 4.5 arms, elliptical, irregular, edge-on), `Clock` 0 to 1000, supernova, distant galaxies, `Star Count` 12 000 and 30 000, every slider at both extremes. Patch loads in Wire.
