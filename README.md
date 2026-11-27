@@ -28,6 +28,7 @@ Patches that process the clip below. In Arena they go onto a clip, layer, group 
 | [Fire Edges](effects/Fire%20Edges/) | Flames and smoke grow from the edges of the frame, from a glow to an inferno. |
 | [Fire Mask](effects/Fire%20Mask/) | The brightness of the clip decides what burns: logos, text, silhouettes. |
 | [Fire Point](effects/Fire%20Point/) | Flames and smoke rise from one burning shape: point, square or heart. |
+| [Galaxy](effects/Galaxy/) | A glowing, twinkling galaxy over the clip that turns, morphs from spiral to bar, ellipse or chaos, and lets supernovae flash on a trigger. |
 | [Iris Diaphragm](effects/Iris%20Diaphragm/) | Mechanical blade iris with overlapping blades that closes over the clip. |
 | [Motion Bridge - Autumn Wind](effects/Motion%20Bridge%20-%20Autumn%20Wind/) | Autumn Wind on the Motion Bridge field: the same 16 kinds of items in the same space; motion stirs them up, stillness holds them. The field lies freely in the picture, flat or on the floor. |
 | [Motion Bridge - Fabric Wind](effects/Motion%20Bridge%20-%20Fabric%20Wind/) | Ribbons of fabric (rags, silk, velvet, …) blow in the wind over the floor or across the screen, flow around whatever stands there and flutter where something moves; driven by the Motion Bridge field. |
