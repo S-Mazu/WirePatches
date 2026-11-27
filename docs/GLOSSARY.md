@@ -40,6 +40,7 @@ Fixed terms for control names. Every patch and every revision uses only these.
 | `<Element> Opacity` | Opacity of an element | Plural for several elements (`Strings Opacity`), singular for one (`Moon Opacity`). |
 | `<Element> Color` | Color of an element | |
 | `<Element> Life` | Lifetime of emitted elements | |
+| `<Element> Twinkle` | Flicker of each element on its own, as stars twinkle | 0 = steady. Strength of the flicker, not its speed. |
 | `<Force> Strength` | Strength of a force or of a reaction (`Wind Strength`, `Fall Strength`, later e.g. `Wave Strength`) | 0 = no effect. Negative only where the reverse makes sense. |
 | `<Element> On` | Switches an element on or off | |
 | `Show <X>` | Helper view or overlay (`Show Input`, `Show Meter`) | |
