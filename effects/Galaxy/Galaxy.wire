@@ -933,7 +933,7 @@
 				],
 				"to": [
 					40,
-					"galaxyAspect"
+					"galaxyTilt"
 				]
 			},
 			{
@@ -1303,7 +1303,7 @@
 				],
 				"to": [
 					109,
-					"galaxyAspect"
+					"galaxyTilt"
 				]
 			},
 			{
@@ -1599,7 +1599,7 @@
 					"patch": 0
 				}
 			},
-			"description": "Galaxy - an effect over the clip below: a glowing, twinkling galaxy of light points, nebulae and dust lanes that turns, morphs and lets supernovae flash. All shape controls are continuous, so a timeline or the sound can morph one form into another: spiral, barred spiral, lenticular, elliptical, irregular. Clock moves everything (rotation, orbits, nebulae, twinkle); if it stops, the galaxy stops. Scale sizes everything relative to the output height. Galaxy: X and Y move it in galaxy radii (zooming keeps the point in place), Size is its diameter relative to the output height (zoom), Rotation, Aspect tilts it (1 = from above, near 0 = edge-on). Shape: Core Size and Core Aspect (share of the galaxy; a stretched core), Disc Opacity (0 = only the core, an elliptical galaxy), Arm Count (fractions grow a new arm; 0 = smooth disc), Arm Twist (winding in degrees; negative mirrors), Arm Width, Bar Size (0 = no bar), Scatter (order to chaos). Stars: Star Count (for performance), Star Size (relative to the output height), Star Twinkle, Hue Variation. Colors: Core, Arm, Nebula, Dust. Nebula: Opacity, Size. Dust: Opacity, Width (lanes at the inner edge of the arms; they also darken the clip below). Supernova: trigger (button, MIDI, beat) flashes a star with a spreading ring; Size, Life in seconds, Color. Sky: Galaxy Density, small distant galaxies over the whole surface (at most 256). Seed.",
+			"description": "Galaxy - an effect over the clip below: a glowing, twinkling galaxy of light points, nebulae and dust lanes that turns, morphs and lets supernovae flash. All shape controls are continuous, so a timeline or the sound can morph one form into another: spiral, barred spiral, lenticular, elliptical, irregular. Clock moves everything (rotation, orbits, nebulae, twinkle); if it stops, the galaxy stops. Scale sizes everything relative to the output height. Galaxy: X and Y move it in galaxy radii (zooming keeps the point in place), Size is its diameter relative to the output height (zoom), Rotation, Tilt in degrees (0 = from above, 90 = edge-on: a band with thickness and a dark dust band). Shape: Core Size and Core Aspect (share of the galaxy; a stretched core), Disc Opacity (0 = only the core, an elliptical galaxy), Arm Count (fractions grow a new arm; 0 = smooth disc), Arm Twist (winding in degrees; negative mirrors), Arm Width, Bar Size (0 = no bar), Scatter (order to chaos). Stars: Star Count (for performance), Star Size (relative to the output height), Star Twinkle, Hue Variation. Colors: Core, Arm, Nebula, Dust. Nebula: Opacity, Size. Dust: Opacity, Width (lanes at the inner edge of the arms; they also darken the clip below). Supernova: trigger (button, MIDI, beat) flashes a star with a spreading ring; Size, Life in seconds, Color. Sky: Galaxy Density, small distant galaxies over the whole surface (at most 256). Seed.",
 			"displayName": "Galaxy",
 			"identifier": "2192d299-a005-43b7-8b33-b96c9819ba8d",
 			"licenseName": "Unlicense",
@@ -11651,10 +11651,10 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.6000000238418579,
-										"max": 10,
-										"min": 0,
-										"name": "galaxyAspect",
+										"defaultValue": 50,
+										"max": 180,
+										"min": -180,
+										"name": "galaxyTilt",
 										"type": "float"
 									},
 									{
@@ -11815,10 +11815,6 @@
 						"type": "float",
 						"value": 0.05999999865889549
 					},
-					"galaxyAspect": {
-						"type": "float",
-						"value": 0.6000000238418579
-					},
 					"galaxyRotation": {
 						"type": "float",
 						"value": 0
@@ -11826,6 +11822,10 @@
 					"galaxySize": {
 						"type": "float",
 						"value": 0.800000011920929
+					},
+					"galaxyTilt": {
+						"type": "float",
+						"value": 50
 					},
 					"galaxyX": {
 						"type": "float",
@@ -14046,10 +14046,10 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.6000000238418579,
-										"max": 10,
-										"min": 0,
-										"name": "galaxyAspect",
+										"defaultValue": 50,
+										"max": 180,
+										"min": -180,
+										"name": "galaxyTilt",
 										"type": "float"
 									},
 									{
@@ -14109,7 +14109,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.01400000043213367,
+										"defaultValue": 0.00700000021606684,
 										"max": 1,
 										"min": 0,
 										"name": "starSize",
@@ -14174,7 +14174,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.30000001192092896,
+										"defaultValue": 0.15000000596046448,
 										"max": 10,
 										"min": 0,
 										"name": "supernovaSize",
@@ -14358,10 +14358,6 @@
 						"type": "float",
 						"value": 1
 					},
-					"galaxyAspect": {
-						"type": "float",
-						"value": 0.6000000238418579
-					},
 					"galaxyDensity": {
 						"type": "float",
 						"value": 0
@@ -14373,6 +14369,10 @@
 					"galaxySize": {
 						"type": "float",
 						"value": 0.800000011920929
+					},
+					"galaxyTilt": {
+						"type": "float",
+						"value": 50
 					},
 					"galaxyX": {
 						"type": "float",
@@ -14571,10 +14571,10 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.6000000238418579,
-										"max": 10,
-										"min": 0,
-										"name": "galaxyAspect",
+										"defaultValue": 50,
+										"max": 180,
+										"min": -180,
+										"name": "galaxyTilt",
 										"type": "float"
 									},
 									{
@@ -14634,7 +14634,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.01400000043213367,
+										"defaultValue": 0.00700000021606684,
 										"max": 1,
 										"min": 0,
 										"name": "starSize",
@@ -14699,7 +14699,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.30000001192092896,
+										"defaultValue": 0.15000000596046448,
 										"max": 10,
 										"min": 0,
 										"name": "supernovaSize",
@@ -14883,10 +14883,6 @@
 						"type": "float",
 						"value": 1
 					},
-					"galaxyAspect": {
-						"type": "float",
-						"value": 0.6000000238418579
-					},
 					"galaxyDensity": {
 						"type": "float",
 						"value": 0
@@ -14898,6 +14894,10 @@
 					"galaxySize": {
 						"type": "float",
 						"value": 0.800000011920929
+					},
+					"galaxyTilt": {
+						"type": "float",
+						"value": 50
 					},
 					"galaxyX": {
 						"type": "float",
@@ -15096,10 +15096,10 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.6000000238418579,
-										"max": 10,
-										"min": 0,
-										"name": "galaxyAspect",
+										"defaultValue": 50,
+										"max": 180,
+										"min": -180,
+										"name": "galaxyTilt",
 										"type": "float"
 									},
 									{
@@ -15159,7 +15159,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.01400000043213367,
+										"defaultValue": 0.00700000021606684,
 										"max": 1,
 										"min": 0,
 										"name": "starSize",
@@ -15224,7 +15224,7 @@
 										"type": "float"
 									},
 									{
-										"defaultValue": 0.30000001192092896,
+										"defaultValue": 0.15000000596046448,
 										"max": 10,
 										"min": 0,
 										"name": "supernovaSize",
@@ -15408,10 +15408,6 @@
 						"type": "float",
 						"value": 1
 					},
-					"galaxyAspect": {
-						"type": "float",
-						"value": 0.6000000238418579
-					},
 					"galaxyDensity": {
 						"type": "float",
 						"value": 0
@@ -15423,6 +15419,10 @@
 					"galaxySize": {
 						"type": "float",
 						"value": 0.800000011920929
+					},
+					"galaxyTilt": {
+						"type": "float",
+						"value": 50
 					},
 					"galaxyX": {
 						"type": "float",
@@ -137937,11 +137937,11 @@
 					},
 					"max": {
 						"type": "float",
-						"value": 2
+						"value": 180
 					},
 					"min": {
 						"type": "float",
-						"value": 0
+						"value": -180
 					},
 					"options-count": {
 						"type": "integer",
@@ -137971,7 +137971,7 @@
 				"constants": {
 					"input": {
 						"type": "float",
-						"value": 0.6000000238418579
+						"value": 50
 					}
 				},
 				"hidden": [
@@ -137986,7 +137986,7 @@
 					"unit",
 					"widget"
 				],
-				"name": "Galaxy Aspect",
+				"name": "Galaxy Tilt",
 				"thumbnail_visible": true
 			},
 			"71": {

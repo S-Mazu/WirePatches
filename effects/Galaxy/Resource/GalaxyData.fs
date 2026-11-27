@@ -15,7 +15,7 @@
     { "NAME": "galaxyY", "TYPE": "float", "DEFAULT": 0.0, "MIN": -100.0, "MAX": 100.0 },
     { "NAME": "galaxySize", "TYPE": "float", "DEFAULT": 0.8, "MIN": 0.0, "MAX": 100.0 },
     { "NAME": "galaxyRotation", "TYPE": "float", "DEFAULT": 0.0, "MIN": -180.0, "MAX": 180.0 },
-    { "NAME": "galaxyAspect", "TYPE": "float", "DEFAULT": 0.6, "MIN": 0.0, "MAX": 10.0 },
+    { "NAME": "galaxyTilt", "TYPE": "float", "DEFAULT": 50.0, "MIN": -180.0, "MAX": 180.0 },
     { "NAME": "coreSize", "TYPE": "float", "DEFAULT": 0.15, "MIN": 0.0, "MAX": 10.0 },
     { "NAME": "coreAspect", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 10.0 },
     { "NAME": "discOpacity", "TYPE": "float", "DEFAULT": 1.0, "MIN": 0.0, "MAX": 1.0 },
@@ -62,6 +62,9 @@
 // and stars move along their loops through them, so the arms never wind up. Inside Bar Size the loops are
 // long and untwisted (a bar). All shape controls are continuous, so a timeline can morph one form into another.
 //
+// Depth. The disc has a thickness (thicker towards the core, a faint thicker disc around a thin one); Galaxy Tilt
+// turns it out of the picture plane, so seen edge-on it is a glowing band with the round core in the middle.
+//
 // Scene units follow the surface model (example Scaler): the output height is 2 units at Scale 1; the camera
 // of the patch applies Scale. Galaxy Size is the galaxy radius in these units, Galaxy X / Y move it in galaxy
 // radii, so zooming with Galaxy Size keeps the same point of the galaxy in place.
@@ -95,13 +98,28 @@ vec3 hueShift(vec3 c, float deg) {
 
 vec2 rot(vec2 v, float a) { float c = cos(a), s = sin(a); return vec2(c * v.x - s * v.y, s * v.x + c * v.y); }
 
-// galaxy plane (radius 1) to scene units; tilted = flattened by Galaxy Aspect
-vec2 toScene(vec2 g, bool tilted) {
+// Galaxy Tilt: 0 = disc facing the viewer, 90 = edge-on with the top edge turned away
+float tiltCos() { return cos(radians(galaxyTilt)); }
+float tiltSin() { return sin(radians(galaxyTilt)); }
+
+// galaxy space (radius 1; x, y in the disc plane, z = height above it) to scene units
+vec2 toScene3(vec3 p) {
     float s = max(galaxySize, 0.0);
-    vec2 v = tilted ? vec2(g.x, g.y * max(galaxyAspect, 0.0)) : g;
+    vec2 v = vec2(p.x, p.y * tiltCos() + p.z * tiltSin());
     v = rot(v, radians(galaxyRotation));
     return (v + vec2(galaxyX, galaxyY)) * s;
 }
+// untilted (round in space: core, bulge)
+vec2 toScene(vec2 g) { return (rot(g, radians(galaxyRotation)) + vec2(galaxyX, galaxyY)) * max(galaxySize, 0.0); }
+
+// height above the disc plane: thicker towards the core, roughly normal distributed; k scales it
+// (young stars and nebulae lie flatter, a quarter of the stars form a thicker disc around the thin one)
+float discHeight(float idx, float a, float k) {
+    float n = (rnd(idx, 11.0) + rnd(idx, 12.0) + rnd(idx, 13.0) - 1.5) * 1.4;
+    return (0.035 + 0.08 * exp(-a / 0.3)) * k * n;
+}
+// how flat a sprite in the disc looks: squashed by the tilt, but never thinner than the disc
+float flatness(float minimum) { return max(abs(tiltCos()), minimum); }
 
 float twistRad() { return radians(armTwist); }
 float patternSpin() { return clock * 0.05; }            // radians per clock unit: one turn in about 2 minutes
@@ -169,7 +187,6 @@ void main() {
     float idx = mod(row, BAND_ROWS) * W + col;
 
     float s = max(galaxySize, 0.0);
-    float A = max(galaxyAspect, 0.0);
     float disc = clamp(discOpacity, 0.0, 1.0);
     vec2 pos = vec2(0.0);
     vec2 size = vec2(0.0);
@@ -182,7 +199,7 @@ void main() {
         // core glow: four soft layers
         float k = idx;
         float cs = max(coreSize, 0.0) * s * (0.5 * pow(2.0, k));
-        pos = toScene(vec2(0.0), false);
+        pos = toScene(vec2(0.0));
         size = cs * vec2(1.0, max(coreAspect, 0.0));
         float inten = 0.6 / (1.0 + k * 1.1) * (0.92 + 0.08 * sin(clock * 0.7 + k));
         light = coreColor.rgb * inten;
@@ -199,7 +216,7 @@ void main() {
             float a = 0.15 + 0.8 * hash11(sd * 977.0 + 3.1);
             float phi0 = TAU * hash11(sd * 613.0 + 1.7);
             vec3 o = discOrbit(sIdx, a, phi0);
-            vec2 c = toScene(o.xy, true);
+            vec2 c = toScene3(vec3(o.xy, discHeight(sIdx, a, 0.6)));
             float q = 1.0 - env;                        // progress 0 .. 1
             float R = max(supernovaSize, 0.0);          // final ring radius in scene units: diameter = Supernova Size x output height
             if (k < 0.5) {
@@ -211,7 +228,8 @@ void main() {
             } else {
                 float ang = TAU * (k - 1.0) / 47.0 + sd * TAU;
                 float rr = R * sqrt(q);
-                vec2 off = rr * vec2(cos(ang), sin(ang) * max(A, 0.05));
+                float tc = tiltCos();
+                vec2 off = rr * vec2(cos(ang), sin(ang) * (tc < 0.0 ? min(tc, -0.03) : max(tc, 0.03)));
                 off = rot(off, radians(galaxyRotation));
                 pos = c + off;
                 size = vec2(R * 0.18 * (0.6 + q));
@@ -225,9 +243,9 @@ void main() {
         bool haze = j < HAZE_N;
         float a = haze ? 0.05 + 0.95 * pow(rnd(idx, 1.0), 0.8) : 0.15 + 0.85 * rnd(idx, 1.0);
         vec3 o = discOrbit(idx, a, TAU * rnd(idx, 2.0));
-        pos = toScene(o.xy, true);
+        pos = toScene3(vec3(o.xy, discHeight(idx, a, haze ? 1.5 : 0.5)));
         float sz = max(nebulaSize, 0.0) * s * (0.5 + rnd(idx, 4.0)) * (haze ? 2.2 : 1.0);
-        size = sz * vec2(1.0, max(A, 0.05));
+        size = sz * vec2(1.0, flatness(haze ? 0.3 : 0.2));
         float breathe = 0.75 + 0.25 * sin(clock * 0.3 + TAU * rnd(idx, 5.0));
         float inten;
         vec3 c;
@@ -257,7 +275,7 @@ void main() {
                 float ang = TAU * rnd(idx, 2.0) + clock * 0.08 / (0.3 + a / max(coreSize, 0.001));
                 vec2 g = a * vec2(cos(ang), sin(ang) * max(coreAspect, 0.0));
                 g += max(scatter, 0.0) * 0.1 * (vec2(rnd(idx, 7.0), rnd(idx, 8.0)) - 0.5);
-                pos = toScene(g, false);
+                pos = toScene(g);
                 c = hueShift(coreColor.rgb, (rnd(idx, 3.0) - 0.5) * hv);
                 inten = 0.7 * twinkle;
             } else {
@@ -265,7 +283,8 @@ void main() {
                 float r1 = rnd(idx, 1.0);
                 float a = -0.4 * log(1.0 - r1 * (1.0 - exp(-1.0 / 0.4)));
                 vec3 o = discOrbit(idx, a, TAU * rnd(idx, 2.0));
-                pos = toScene(o.xy, true);
+                float thick = rnd(idx, 14.0) < 0.25 ? 3.0 : 1.0;
+                pos = toScene3(vec3(o.xy, discHeight(idx, a, thick)));
                 vec3 base = mix(coreColor.rgb, armColor.rgb, smoothstep(0.08, 0.55, a));
                 base = mix(base, armColor.rgb * 1.15, 0.5 * o.z);
                 c = hueShift(base, (rnd(idx, 3.0) - 0.5) * hv);

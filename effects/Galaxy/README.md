@@ -48,7 +48,7 @@ Everything moves with `Clock` (0 to 1000, default 0): the galaxy turns (about on
 - `Galaxy X`, `Galaxy Y` (-10 to 10, default 0): position of the galaxy in galaxy radii. Because they are in galaxy radii, zooming with `Galaxy Size` keeps the same point of the galaxy in place.
 - `Galaxy Size` (0 to 10, default 0.8): diameter of the galaxy relative to the output height. Large values zoom into the galaxy; the light points stay points.
 - `Galaxy Rotation` (-180 to 180, default 0): orientation in the picture.
-- `Galaxy Aspect` (0 to 2, default 0.6): tilt of the disc; 1 = seen from above, near 0 = seen edge-on (a thin line with a dust lane). The core stays round.
+- `Galaxy Tilt` (-180 to 180, default 50): tilt of the disc out of the picture plane; 0 = seen from above, 90 = seen edge-on: a glowing band with thickness, the round core in the middle and a dark dust band through it. Negative values turn the other side towards the viewer.
 
 **Shape**
 - `Core Size` (0 to 2, default 0.15): size of the core as a share of the galaxy.
@@ -94,8 +94,9 @@ All sliders are safe at their extremes: no NaN, no frozen picture; `Galaxy Size`
 
 1. **Orbits** (`GalaxyData.fs`): each star of the disc runs on a loop with as many lobes as arms. The loops are turned a little more the further out they lie (`Arm Twist`). Where neighbouring loops crowd, arms appear, and the stars move along their loops through them, so the arms never wind up while the galaxy turns (the density wave picture of real spiral galaxies). Stars on the arm crests are brighter and bluer; nebulae only light up there.
 2. **Sprites** (Wire): one instance per star, nebula, core glow and supernova point is drawn as a soft light point, added up in one render. The data for all of them come from the shader, so the processor load hardly depends on `Star Count`.
-3. **Dust** (`GalaxyComposite.fs`): per pixel, the point of the galaxy behind it is found and the picture is dimmed where a dust lane lies, at the inner edge of each arm, broken up by noise.
-4. **Distant galaxies**: the shader draws a small picture of the galaxy; up to 256 copies, turned, tilted and tinted, are spread over the surface.
+3. **Depth**: the disc has a thickness, larger towards the core; a quarter of the stars form a thicker disc around the thin one, nebulae lie flatter. `Galaxy Tilt` turns the disc in space; the core is a ball and stays round.
+4. **Dust** (`GalaxyComposite.fs`): a thin layer in the disc plane, densest at the inner edge of each arm and broken up by noise. Per pixel the line of sight through the tilted layer is followed and the dust along it is added up: lanes along the arms seen from above, a dark band through the middle seen edge-on. The picture behind is dimmed accordingly, never to black.
+5. **Distant galaxies**: the shader draws a small picture of the galaxy; up to 256 copies, turned, tilted and tinted, are spread over the surface.
 
 ## Any surface
 
@@ -121,6 +122,7 @@ See [open issues for this patch](https://github.com/S-Mazu/WirePatches/issues?q=
 
 ## Changelog
 
+- 2026-11-27: `Galaxy Aspect` replaced by `Galaxy Tilt`, an angle (new glossary pattern `<Element> Tilt`). The disc has a real thickness and is tilted in space instead of squashed; the dust follows the line of sight, so edge-on shows a glowing band with a dark dust band. Tested in Arena (1920×1080, 5760×1080, 1920×3240, 1080×1920, 4096×512, 512×512): tilts 0, 50, -60, 78, 80, 90, ±180, edge-on at `Galaxy Size` 3 and 10, `Scale` 0. Patch loads in Wire.
 - 2026-11-27: First version (#80). Tested in Arena (1920×1080, 5760×1080, 1920×3240, 1080×1920, 4096×512, 512×512): forms (bar, 4.5 arms, elliptical, irregular, edge-on), `Clock` 0 to 1000, supernova, distant galaxies, `Star Count` 12 000 and 30 000, every slider at both extremes. Patch loads in Wire.
 
 ---
