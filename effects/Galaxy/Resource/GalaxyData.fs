@@ -96,6 +96,13 @@ vec3 hueShift(vec3 c, float deg) {
     return c * cs + cross(k, c) * sn + k * dot(k, c) * (1.0 - cs);
 }
 
+// smooth 1D value noise, 0..1
+float noise1(float x) {
+    float i = floor(x), f = fract(x);
+    float u = f * f * (3.0 - 2.0 * f);
+    return mix(hash11(i * 13.1 + 7.0), hash11((i + 1.0) * 13.1 + 7.0), u);
+}
+
 vec2 rot(vec2 v, float a) { float c = cos(a), s = sin(a); return vec2(c * v.x - s * v.y, s * v.x + c * v.y); }
 
 // Galaxy Tilt: 0 = disc facing the viewer, 90 = edge-on with the top edge turned away
@@ -263,8 +270,13 @@ void main() {
         float n = clamp(floor(starCount), 0.0, SKY0 - STAR0);
         if (j < n) {
             bool bulge = j < 0.3 * n;
-            float tPh = TAU * rnd(idx, 5.0);
-            float twinkle = 1.0 - tw * (0.5 + 0.5 * sin(clock * (1.5 + 3.0 * rnd(idx, 9.0)) + tPh));
+            // twinkle: three groups of stars, each with its own restless brightness curve (about 2.5 changes per
+            // clock unit), plus a fifth of individual flicker; from dark up to 1.8 times as bright
+            float grp = floor(rnd(idx, 15.0) * 3.0);
+            float nG = noise1(clock * 2.5 + grp * 37.3 + seed * 0.37);
+            float nS = noise1(clock * 3.1 + rnd(idx, 9.0) * 100.0);
+            float n = smoothstep(0.2, 0.8, mix(nG, nS, 0.2));
+            float twinkle = 1.0 + tw * (1.8 * n - 1.0);
             float big = pow(rnd(idx, 6.0), 6.0);
             size = vec2(2.0 * max(starSize, 0.0) * (0.6 + 2.4 * big));   // Star Size relative to the output height (2 scene units)
             vec3 c;
